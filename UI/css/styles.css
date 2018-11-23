@@ -173,6 +173,9 @@ a {
 .footer ul li a:hover{
   color: #2D49FF;
 }
+.footer li {
+  float: left;
+}
 
 .container-login{
     margin: 0;
