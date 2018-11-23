@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>iReporter Red Flag</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <nav class="navbar">
+      <span class="navbar-toggle" id="js-navbar-toggle">
+        <i class="fa fa-bars"></i>
+      </span>
+      <a href="home.html" class="logo">iReporter</a>
+      <ul class="main-nav" id="js-menu">
+        <li>
+          <a href="redflags.html"  class="nav-links">red flags</a>
+        </li>
+        <li>
+          <a href="interventions.html"  class="nav-links">interventions</a>
+        </li>
+        <li>
+          <a href="profile.html" class="nav-links ">profile</a>
+        </li>
+        <li>
+          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
+        </li>        
+      </ul>
+    </nav>
+    <div class="container wrapper">
+        <!-- Trigger/Open The Modal -->
+        <div class="modal-container-buttons">
+            <button id="myBtn" class="button-modal">Upload Image/Video</button>
+            <button id="myBtn" class="button-modal">Geolocate</button>
+            <button id="myBtn" class="button-modal danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+            <div id="myModal" class="modal">
+  
+                <!--Upload Modal -->
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <div  class="modal-form">
+                      <form action="" method="POST" enctype="multipart/form-data">
+                        <p class="contact"><label for="profilepic">Upload Image or Video</label></p>
+                        <input type="file" id="name" name="profilepic" accept="image/*" multiple>
+                        
+                        <br>
+                        <input class="button-modal" name="submit" id="submit" tabindex="5" value="Update Profile" type="submit">
+    
+                    </form>       
+                  </div>
+                </div>
+              
+              </div>              
+        </div>
+        <div class="container">
+            <h2 class="black">Bad roads in Kilifi County</h2>
+            
+            <div class="row  bg-color">
+              <div class="column-50 bg-color">
+                <p><img src="img/bad-road.jpeg" alt=""></p>
+              </div>
+              <div class="column-50  bg-color align-justify">
+                <h2>Description:</h2>
+                <p class="black ">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cras adipiscing enim eu turpis egestas pretium. Sit amet purus gravida quis blandit turpis cursus in hac. Mattis enim ut tellus elementum sagittis. At ultrices mi tempus imperdiet nulla malesuada pellentesque elit. Diam in arcu cursus euismod quis viverra. Pharetra pharetra massa massa ultricies mi quis. Augue mauris augue neque gravida in fermentum. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Sed lectus vestibulum mattis ullamcorper velit. Ac turpis egestas maecenas pharetra convallis posuere. Varius morbi enim nunc faucibus a pellentesque sit amet porttitor.
+
+                    Non arcu risus quis varius quam quisque id. Porta nibh venenatis cras sed felis eget. Aliquet enim tortor at auctor urna nunc. Placerat duis ultricies lacus sed. Neque viverra justo nec ultrices dui sapien eget mi proin. Nunc consequat interdum varius sit amet mattis vulputate enim nulla. Cursus turpis massa tincidunt dui ut ornare lectus sit amet. Lacinia quis vel eros donec ac. Purus sit amet volutpat consequat mauris nunc congue nisi. Fusce ut placerat orci nulla pellentesque dignissim enim sit. Porttitor lacus luctus accumsan tortor posuere ac. Vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor. Integer malesuada nunc vel risus commodo viverra maecenas accumsan. Odio ut sem nulla pharetra diam sit amet nisl.            
+                </p>
+              </div>
+            </div>
+        </div>
+        
+        </div>  
+
+        <div class="push"></div>
+    </div>
+    <div class="footer">
+      <ul>
+        <li>
+          <a href="contact.html"  class="nav-links">contact</a>
+        </li>
+        <li>
+          <a href="about.html"  class="nav-links">about</a>
+        </li>    
+        <li><a href="#" class="nav-links">privacy & terms</a></li>    
+      </ul>
+    </div>
+  </body>
+  <script src="js/main.js"></script>
+  <script src="js/modal.js"></script>
+</html>
