@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>iReporter Red Flags</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <nav class="navbar">
+      <span class="navbar-toggle" id="js-navbar-toggle">
+        <i class="fa fa-bars"></i>
+      </span>
+      <a href="home.html" class="logo">iReporter</a>
+      <ul class="main-nav" id="js-menu">
+        <li>
+          <a href="redflags.html"  class="nav-links">red flags</a>
+        </li>
+        <li>
+          <a href="interventions.html"  class="nav-links">interventions</a>
+        </li>
+        <li>
+          <a href="profile.html" class="nav-links ">profile</a>
+        </li>
+        <li>
+          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
+        </li>        
+      </ul>
+    </nav>
+    <div class="container wrapper">
+      <div>
+        <!-- Trigger/Open The Modal -->
+        <button class="button-modal" id="myBtn">Add Red Flag</button>
+      <!-- The Modal -->
+      <div id="myModal" class="modal">
+
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div  class="modal-form">
+                <form action="" method="POST" enctype="multipart/form-data">
+                  <p class="contact"><label for="title">Title</label></p>
+                  <input name="title" placeholder="Title" required="" tabindex="1" type="text">
+                  <p class="contact"><label for="description">Description</label></p>
+                  <textarea rows="4" cols="50" name="description">
+                    What was the incident you witnessed?
+                  </textarea>            
+                  <p class="contact"><label for="date">Date of Incident</label></p>
+                  <input name="date" placeholder="Date of occurance" required="" type="date">
+                  <p class="contact"><label for="file">Upload Image/Video Evidence</label></p>
+                  <input type="file" name="file" accept="image/*,video/*" multiple>
+                  
+                  <br>
+                  <input name="submit" class="button-modal" tabindex="5" value="Add Red Flag" type="submit">
+
+              </form>       
+            </div>
+          </div>
+        
+        </div>        
+      </div> 
+        <div class="table-responsive">
+                <table>
+                        <tr>
+                          <th>Title</th>
+                          <th>Status</th> 
+                          <th>Date Added</th>
+                          <th>Actions</th>
+                        </tr>
+                        <tr>
+                          <td>Bad Roads in Kilifi</td>
+                          <td>Resolved</td> 
+                          <td>2017-02-23 14:22:56</td>
+                          <td>
+                            <a href="view_redflag.html">View More</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Corruption at Immigration</td>
+                          <td>Under Investigation</td> 
+                          <td>2017-02-23 14:22:56</td>
+                          <td>
+                            <a href="view_redflag.html">View More</a>
+                          </td>
+                        </tr>
+                      </table>            
+        </div>  
+        <div class="push"></div>           
+    </div>
+    <div class="footer">
+      <ul>
+        <li>
+          <a href="contact.html"  class="nav-links">contact</a>
+        </li>
+        <li>
+          <a href="about.html"  class="nav-links">about</a>
+        </li>    
+        <li><a href="#" class="nav-links">privacy & terms</a></li>    
+      </ul>
+    </div>
+  </body>
+  <script src="js/main.js"></script>
+  <script src="js/modal.js"></script> 
+</html>
