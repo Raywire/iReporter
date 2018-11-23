@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>iReporter Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <nav class="navbar">
+      <span class="navbar-toggle" id="js-navbar-toggle">
+        <i class="fa fa-bars"></i>
+      </span>
+      <a href="home.html" class="logo">iReporter</a>
+      <ul class="main-nav" id="js-menu">
+        <li>
+          <a href="redflags.html"  class="nav-links">red flags</a>
+        </li>
+        <li>
+          <a href="interventions.html"  class="nav-links">interventions</a>
+        </li>
+        <li>
+          <a href="profile.html" class="nav-links ">profile</a>
+        </li>
+        <li>
+          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
+        </li>        
+      </ul>
+    </nav>
+    <div class="container row wrapper">
+      <div class="column">
+        <div class="card">
+          <img src="img/img_avatar2.png" alt="Jane">
+          <p>Jane Doe</p>
+          <p class="title">jane@doe.com</p>
+          <p>username: thegreatreporter</p>
+          <p><button class="button-modal" id="myBtn">Update Profile</button></p>
+          <div id="myModal" class="modal">
+
+              <!-- Modal content -->
+              <div class="modal-content">
+                <span class="close">&times;</span>
+                <div  class="modal-form">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                      <p class="contact"><label for="name">First Name</label></p>
+                      <input name="firstname" placeholder="First Name" tabindex="1" type="text" value="Jane">
+                      <p class="contact"><label for="firstname">Last Name</label></p>
+                      <input  name="lastname" placeholder="Last Name" tabindex="1" type="text" value="Doe">
+                      <p class="contact"><label for="username">Username</label></p>
+                      <input name="username" placeholder="username" tabindex="1" type="text" value="thegreatreporter">
+                      <p class="contact"><label for="profilepic">Upload Profile Photo</label></p>
+                      <input type="file" id="name" name="profilepic" accept="image/*" multiple>
+                      
+                      <br>
+                      <input class="button-modal" name="submit" id="submit" tabindex="5" value="Update Profile" type="submit">
+  
+                  </form>       
+                </div>
+              </div>
+            
+            </div>            
+        </div>        
+      </div>      
+      <div class="column">
+          <div class="card">
+              <div class="container2">
+                <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+                <h4 class="black"><b>Red Flags</b></h4>
+                <p class="black"><a href="redflags.html"> View All</a></p>
+      
+              </div>
+            </div>        
+        <div class="card">
+            <div class="container2">
+              <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+              <h4 class="black"><b>Red Flags</b></h4>
+              <p class="black">Resolved</p>
+              <p>15</p>
+    
+            </div>
+          </div>
+          <div class="card">
+            <div class="container2">
+              <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+              <h4 class="black"><b>Red Flags</b></h4>
+              <p class="black">Under Investigation</p>
+              <p>6</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="container2">
+              <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+              <h4 class="black"><b>Red Flags</b></h4>
+              <p class="black">Rejected</p>
+              <p>2</p>
+            </div>
+          </div>        
+      </div>
+      <div class="column">
+          <div class="card">
+              <div class="container2">
+                <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                <h4 class="black"><b>Interventions</b></h4>
+                <p class="black"><a href="interventions.html"> View All</a></p>
+      
+              </div>
+            </div>         
+          <div class="card">
+              <div class="container2">
+                <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                <h4 class="black"><b>Interventions</b></h4>
+                <p class="black">Resolved</p>
+                <p>10</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="container2">
+                <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                <h4 class="black"><b>Interventions</b></h4>
+                <p class="black">Under Investigation</p>
+                <p>7</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="container2">
+                <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                <h4 class="black"><b>Interventions</b></h4>
+                <p class="black">Rejected</p>
+                <p class="black">4</p>
+              </div>
+            </div>   
+      </div>
+      <div class="push"></div>                             
+    </div>
+    <div class="footer">
+      <ul>
+        <li>
+          <a href="contact.html"  class="nav-links">contact</a>
+        </li>
+        <li>
+          <a href="about.html"  class="nav-links">about</a>
+        </li>    
+        <li><a href="#" class="nav-links">privacy & terms</a></li>    
+      </ul>
+    </div>
+  </body>
+  <script src="js/main.js"></script>
+  <script src="js/modal.js"></script>
+</html>
