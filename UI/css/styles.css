@@ -358,11 +358,13 @@ margin:8px;
 
 input[type=text], select, textarea, input[type=file], input[type=date] {
 width: 100%;
-
 display: inline-block;
 border: 1px solid #ccc;
 border-radius: 4px;
 box-sizing: border-box;
+}
+.modal-form input[type=text], textarea, input[type=file], input[type=date]{
+  padding: 16px;
 }
 
 input[type=submit] {
