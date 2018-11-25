@@ -49,9 +49,9 @@ a {
  .active {
   display: block;
 }
-.signin-link {
+.signin-link,.active {
   border: 2px solid #2D49FF;
-  padding: 5px;
+  padding: 0 5px 0 5px;
   border-radius: 5px
 }
 /* Centered text */
@@ -243,7 +243,7 @@ a {
   outline: none;
   height: 40px;
   background: #296de8;
-  color:#fff;
+  color:black;
 }  
 .card {
   /* Add shadows to create the "card" effect */
@@ -266,6 +266,12 @@ color: black;
 /* Add some padding inside the card container */
 .container {
   padding: 2px 16px;
+}
+.fa{
+  color:#296de8;
+}
+.fa-power-off{
+  color:red;
 }
 .black{
 color:black;
@@ -313,7 +319,7 @@ width: 80%;
 
 /* The Close Button */
 .close {
-color: #aaaaaa;
+color: red;
 float: right;
 font-size: 28px;
 font-weight: bold;
@@ -338,14 +344,17 @@ width: 100%;
 
 th, td {
 padding: 15px;
-color:black;
+color:#000;
+}
+th{
+  color:#296de8; 
 }
 
 .table-responsive{
 overflow-x:auto;
 }
 .button-modal {
-background-color: #4CAF50; /* Green */
+background-color: #296de8; 
 border: none;
 color: white;
 padding: 15px 32px;
@@ -356,6 +365,11 @@ font-size: 16px;
 margin:8px;
 }
 
+.button-modal:hover{
+  background-color: #29c1e8;
+  color: black;
+}
+
 input[type=text], select, textarea, input[type=file], input[type=date] {
 width: 100%;
 display: inline-block;
@@ -363,12 +377,12 @@ border: 1px solid #ccc;
 border-radius: 4px;
 box-sizing: border-box;
 }
-.modal-form input[type=text], textarea, input[type=file], input[type=date]{
-  padding: 16px;
+.modal-form input[type=text], textarea, input[type=file], input[type=date], select{
+  padding: 12px;
 }
 
 input[type=submit] {
-background-color: #4CAF50;
+background-color: #2d49ff;
 color: white;
 padding: 14px 20px;
 margin: 8px 0;
@@ -378,7 +392,8 @@ cursor: pointer;
 }
 
 input[type=submit]:hover {
-background-color: #45a049;
+background-color: #29c1e8;
+color:black;
 }
 
 form p{
@@ -405,12 +420,12 @@ transition: 0.3s;
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-background-color: #ddd;
+background-color: #2D49FF;
 }
 
 /* Create an active/current tablink class */
 .tab button.active {
-background-color: #ccc;
+background-color: #296de8;
 }
 
 /* Style the tab content */
@@ -419,6 +434,11 @@ display: none;
 padding: 6px 12px;
 border: 1px solid #ccc;
 border-top: none;
+}
+
+.tabcontent h2{
+  color: #20a0ff;
+  padding: 8px;
 }
 
 
