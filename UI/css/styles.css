@@ -130,7 +130,7 @@ a {
     height: auto;
 }
  /* Container holding the image and the text */
-.container {
+.container,.container-main {
     position: relative;
     text-align: center;
     color: white;
