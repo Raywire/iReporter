@@ -92,3 +92,29 @@ class RedFlag(Resource):
             "error" : "Red-flag does not exist"
         }), 404)
 
+    def put(self, redflag_id):
+        """method to update a redflag"""
+        for incident in self.db:
+            if incident['id'] == redflag_id:
+                incident['createdBy'] = request.json.get('createdBy', incident['createdBy'])
+                incident['location'] = request.json.get('location', incident['location'])
+                incident['images'] = request.json.get('images', incident['images'])
+                incident['videos'] = request.json.get('videos', incident['videos'])
+                incident['title'] = request.json.get('title', incident['title'])
+                incident['comment'] = request.json.get('comment', incident['comment'])
+
+                success_message = {
+                    "id" : redflag_id,
+                    "message" : "Red-flag has been updated"
+                }
+
+                return make_response(jsonify({
+                    "status" : 200,
+                    "data" : success_message
+                }), 200)
+        return make_response(jsonify({
+            "status" : 404,
+            "error" : "Red-flag does not exist"
+        }), 404)
+
+   
