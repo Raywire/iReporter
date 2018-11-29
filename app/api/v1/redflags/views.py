@@ -24,3 +24,31 @@ class RedFlags(Resource):
             "data" : self.db
         }), 200) 
        
+    
+    def post(self):
+        """method to post a redflag"""
+        
+        data = {
+            'id' : self.id,
+            'createdOn' : datetime.datetime.utcnow(),
+            'createdBy' : request.json['createdBy'],
+            'type' : 'red-flags',
+            'location' : request.json.get('location', ""),
+            'status' : "draft",
+            'images' : request.json.get('images', ""),
+            'videos' : request.json.get('videos', ""),
+            'title' : request.json['title'],
+            'comment' : request.json.get('comment', "")
+        }
+        self.db.append(data)
+        
+        success_message = {
+            "id" : self.id,
+            "message" : "Created red-flag record"
+        }
+
+        return make_response(jsonify({
+            "status" : 201,
+            "data" : success_message
+        }), 201)
+    
