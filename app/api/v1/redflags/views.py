@@ -117,3 +117,36 @@ class RedFlag(Resource):
             "error" : "Red-flag does not exist"
         }), 404)
 
+class UpdateRedFlagLocation(Resource):
+    """docstring of UpdateRedFlagLocation"""
+
+    def __init__(self):
+        self.db = incidents
+
+    def patch(self, redflag_id):
+        """method to update location"""
+        for incident in self.db:
+            if incident['id'] == redflag_id:
+                incident['location'] = request.json.get('location', 'keyerror')
+
+                if incident['location'] == 'keyerror':
+                    return make_response(jsonify({
+                        "status" : 500,
+                        "error" : "KeyError Red-flag location not updated"
+                    }), 500)
+                else:
+                    success_message = {
+                        "id" : redflag_id,
+                        "message" : "Updated red-flag record's location"
+                    }
+
+                    return make_response(jsonify({
+                        "status" : 200,
+                        "data" : success_message
+                    }), 200)
+        return make_response(jsonify({
+            "status" : 404,
+            "error" : "Red-flag does not exist"
+        }), 404)        
+
+
