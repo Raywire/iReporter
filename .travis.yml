@@ -1,7 +1,7 @@
 language: python
 
 python:
-  - : 3.6
+  - 3.6
 
 install:
   - pip install -r requirements.txt
@@ -12,5 +12,6 @@ script:
 branches:
   only:
     -ft-update-redflag-comment-162250235
+    -ft-user-endpoins-162357018
 after_success:
 - coveralls
