@@ -9,6 +9,9 @@ install:
 
 script:
   - pytest --with-coverage --cover-package=app/tests
-
+branches:
+  only:
+    -develop
+    -ft-update-redflag-comment-162250235
 after_success:
 - coveralls
