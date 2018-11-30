@@ -8,10 +8,9 @@ install:
   - pip install coveralls
 
 script:
-  - pytest --with-coverage --cover-package=app/tests
+  - py.test --cov=app/tests
 branches:
   only:
-    -develop
     -ft-update-redflag-comment-162250235
 after_success:
 - coveralls
