@@ -1,49 +1,33 @@
+"""Views for red-flags"""
 from flask_restful import Resource
-from flask import jsonify, make_response, request, abort
-
-import datetime
-
-incidents = []
-
+from flask import jsonify, make_response
+from app.api.v1.redflags.models import RedFlagModel
 
 class RedFlags(Resource):
     """docstring for RedFlags"""
-    
+
     def __init__(self):
-        self.db = incidents
-        if len(self.db) == 0:
-            self.id = 1
-        else:
-            self.id = self.db[-1]['id'] + 1    
+        self.db = RedFlagModel()
 
     def get(self):
         """method to get all redflags"""
 
         return make_response(jsonify({
             "status" : 200,
-            "data" : self.db
-        }), 200) 
-       
-    
+            "data" : self.db.get_redflags()
+        }), 200)
+
     def post(self):
         """method to post a redflag"""
-        
-        data = {
-            'id' : self.id,
-            'createdOn' : datetime.datetime.utcnow(),
-            'createdBy' : request.json['createdBy'],
-            'type' : 'red-flags',
-            'location' : request.json.get('location', ""),
-            'status' : "draft",
-            'images' : request.json.get('images', ""),
-            'videos' : request.json.get('videos', ""),
-            'title' : request.json['title'],
-            'comment' : request.json.get('comment', "")
-        }
-        self.db.append(data)
-        
+        redflag_id = self.db.save_redflag()
+
+        if redflag_id == "keyerror":
+            return make_response(jsonify({
+                "status" : 500,
+                "error" : "KeyError for createdBy Red-flag not posted"
+            }), 500)
         success_message = {
-            "id" : self.id,
+            "id" : redflag_id,
             "message" : "Created red-flag record"
         }
 
@@ -51,132 +35,122 @@ class RedFlags(Resource):
             "status" : 201,
             "data" : success_message
         }), 201)
-    
+
 class RedFlag(Resource):
     """docstring of RedFlag"""
 
     def __init__(self):
-        self.db = incidents
+        self.db = RedFlagModel()
 
     def get(self, redflag_id):
         """method to get a specific redflag"""
-
-        for incident in self.db:
-            if incident['id'] == redflag_id:
-                return make_response(jsonify({
-                    "status" : 200,
-                    "data" : incident
-                }), 200)
+        incident = self.db.get_redflag(redflag_id)
+        if incident == "no redflag":
+            return make_response(jsonify({
+                "status" : 404,
+                "error" : "Red-flag does not exist"
+            }), 404)
         return make_response(jsonify({
-            "status" : 404,
-            "error" : "Red-flag does not exist"
-        }), 404)                
-          
+            "status" : 200,
+            "data" : incident
+        }), 200)
+
     def delete(self, redflag_id):
         """method to delete redflag"""
-        for incident in self.db:
-            if incident['id'] == redflag_id:
-                self.db.remove(incident)
-
-                success_message = {
-                    "id" : redflag_id,
-                    "message" : "red-flag record has been deleted"
-                }
-
-                return make_response(jsonify({
-                    "status" : 200,
-                    "data" : success_message
-                }), 200)
-        return make_response(jsonify({
-            "status" : 404,
-            "error" : "Red-flag does not exist"
-        }), 404)
+        delete_status = self.db.delete_redflag(redflag_id)
+        if delete_status == "no redflag":
+            return make_response(jsonify({
+                "status" : 404,
+                "error" : "Red-flag does not exist"
+            }), 404)
+        elif delete_status == "deleted":
+            success_message = {
+                "id" : redflag_id,
+                "message" : "red-flag record has been deleted"
+            }
+            return make_response(jsonify({
+                "status" : 200,
+                "data" : success_message
+            }))
 
     def put(self, redflag_id):
         """method to update a redflag"""
-        for incident in self.db:
-            if incident['id'] == redflag_id:
-                incident['createdBy'] = request.json.get('createdBy', incident['createdBy'])
-                incident['location'] = request.json.get('location', incident['location'])
-                incident['images'] = request.json.get('images', incident['images'])
-                incident['videos'] = request.json.get('videos', incident['videos'])
-                incident['title'] = request.json.get('title', incident['title'])
-                incident['comment'] = request.json.get('comment', incident['comment'])
+        edit_status = self.db.edit_redflag(redflag_id)
 
-                success_message = {
-                    "id" : redflag_id,
-                    "message" : "Red-flag has been updated"
-                }
-
-                return make_response(jsonify({
-                    "status" : 200,
-                    "data" : success_message
-                }), 200)
-        return make_response(jsonify({
-            "status" : 404,
-            "error" : "Red-flag does not exist"
-        }), 404)
+        if edit_status == "no redflag":
+            return make_response(jsonify({
+                "status" : 404,
+                "error" : "Red-flag does not exist"
+            }), 404)
+        elif edit_status == "updated":
+            success_message = {
+                "id" : redflag_id,
+                "message" : "red-flag record has been updated"
+            }
+            return make_response(jsonify({
+                "status" : 200,
+                "data" : success_message
+            }))
 
 class UpdateRedFlagLocation(Resource):
     """docstring of UpdateRedFlagLocation"""
 
     def __init__(self):
-        self.db = incidents
+        self.db = RedFlagModel()
 
     def patch(self, redflag_id):
-        """method to update location"""
-        for incident in self.db:
-            if incident['id'] == redflag_id:
-                incident['location'] = request.json.get('location', 'keyerror')
+        """method to update redflag location"""
 
-                if incident['location'] == 'keyerror':
-                    return make_response(jsonify({
-                        "status" : 500,
-                        "error" : "KeyError Red-flag location not updated"
-                    }), 500)
-                else:
-                    success_message = {
-                        "id" : redflag_id,
-                        "message" : "Updated red-flag record's location"
-                    }
+        edit_status = self.db.edit_redflag_location(redflag_id)
 
-                    return make_response(jsonify({
-                        "status" : 200,
-                        "data" : success_message
-                    }), 200)
-        return make_response(jsonify({
-            "status" : 404,
-            "error" : "Red-flag does not exist"
-        }), 404)        
+        if edit_status == "no redflag":
+            return make_response(jsonify({
+                "status" : 404,
+                "error" : "Red-flag does not exist"
+            }), 404)
+
+        elif edit_status == "keyerror":
+            return make_response(jsonify({
+                "status" : 500,
+                "error" : "KeyError Red-flag's location not updated"
+            }), 500)
+        elif edit_status == "updated":
+            success_message = {
+                "id" : redflag_id,
+                "message" : "Updated red-flag record's location"
+            }
+            return make_response(jsonify({
+                "status" : 200,
+                "data" : success_message
+            }), 200)
 
 class UpdateRedFlagComment(Resource):
     """docstring of UpdateRedFlagComment"""
 
     def __init__(self):
-        self.db = incidents
+        self.db = RedFlagModel()
 
     def patch(self, redflag_id):
         """method to update comment in a redflag"""
-        for incident in self.db:
-            if incident['id'] == redflag_id:
-                incident['comment'] = request.json.get('comment', 'keyerror')
+        edit_status = self.db.edit_redflag_comment(redflag_id)
 
-                if incident['comment'] == 'keyerror':
-                    return make_response(jsonify({
-                        "status" : 500,
-                        "error" : "KeyError Red-flag comment not updated"
-                    }), 500)
-                else:
-                    success_message = {
-                        "id" : redflag_id,
-                        "message" : "Updated red-flag record's comment"
-                    }
+        if edit_status == "no redflag":
+            return make_response(jsonify({
+                "status" : 404,
+                "error" : "Red-flag does not exist"
+            }), 404)
 
-                    return make_response(jsonify({
-                        "status" : 200,
-                        "data" : success_message
-                    }), 200)
-        return make_response(jsonify({
-            "status" : 404,
-            "error" : "Red-flag does not exist"
-        }), 404)      
+        elif edit_status == "keyerror":
+            return make_response(jsonify({
+                "status" : 500,
+                "error" : "KeyError Red-flag's comment not updated"
+            }), 500)
+        elif edit_status == "updated":
+            success_message = {
+                "id" : redflag_id,
+                "message" : "Updated red-flag record's comment"
+            }
+            return make_response(jsonify({
+                "status" : 200,
+                "data" : success_message
+            }), 200)

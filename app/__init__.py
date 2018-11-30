@@ -1,11 +1,11 @@
+"""App module init file"""
 from flask import Flask, Blueprint
 from instance.config import APP_CONFIG
 
-from .api.v1 import version_one as v1
+from .api.v1 import VERSION_ONE as v1
 
 def create_app(config_name='development'):
     """Create app docstring"""
-    
     app = Flask(__name__, instance_relative_config=True)
     app.url_map.strict_slashes = False
     app.config.from_object(APP_CONFIG[config_name])
