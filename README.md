@@ -4,4 +4,4 @@ general public. Users can also report on things that needs government interventi
 
 GitHub Pages Link: https://raywire.github.io/iReporter/
 
-[![Build Status](https://travis-ci.org/Raywire/iReporter.svg?branch=master)](https://travis-ci.org/Raywire/iReporter)
+[![Build Status](https://travis-ci.org/Raywire/iReporter.svg?branch=ft-user-endpoins-162357018)](https://travis-ci.org/Raywire/iReporter)
