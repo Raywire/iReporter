@@ -38,6 +38,32 @@ class UserTestCase(unittest.TestCase):
             'isAdmin' : True
         }
 
+        self.data3 = {
+            'id' : 1,
+            'firstname' : "Ryan",
+            'lastname' : "Wire",
+            'othernames' : "Simiyu",
+            'email' : "rayosim09@gmail.com",
+            'phoneNumber' : "+254724374281",
+            'username' : "rayosim",
+            'registered' : "Tue, 27 Nov 2018 21:18:13 GMT",
+            'password' : "123456",
+            'isAdmin' : True
+        }
+
+        self.data4 = {
+            'id' : 1,
+            'firstname' : "Ryan",
+            'lastname' : "Wire",
+            'othernames' : "Simiyu",
+            'email' : "ryansimiyu@gmail.com",
+            'phoneNumber' : "+254724374281",
+            'username' : "rayosim",
+            'registered' : "Tue, 27 Nov 2018 21:18:13 GMT",
+            'password' : "123456",
+            'isAdmin' : True
+        }
+
     def test_get_all_users(self):
         """Test all users"""
         response = self.app.get("/api/v1/users")
@@ -45,10 +71,26 @@ class UserTestCase(unittest.TestCase):
 
     def test_post_user(self):
         """Test post a user"""
-        response = self.app.post("/api/v1/users", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data))
+        response = self.app.post("/api/v1/users", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data3))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(result['data']['message'], 'Created user record')
+
+    def test_duplicate_user_email(self):
+        """Test post a user with existing email"""
+        self.app.post("/api/v1/users", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data3))
+        response = self.app.post("/api/v1/users", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data3))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(result['error'], 'email already exists')
+
+    def test_duplicate_username(self):
+        """Test post a user with existing username"""
+        self.app.post("/api/v1/users", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data3))
+        response = self.app.post("/api/v1/users", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data4))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(result['error'], 'username already exists')
 
     def test_wrong_key_in_post(self):
         """Tests for wrong key in user post request"""
@@ -113,4 +155,4 @@ class UserTestCase(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(result['error'], "user does not exist")
-        
+                

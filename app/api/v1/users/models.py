@@ -42,6 +42,12 @@ class UserModel:
         }
         if data['email'] == "keyerror" or data['password'] == "keyerror":
             return "keyerror"
+        for user in self.db:
+          if user['email'] == data['email']:
+            return 'email exists'
+        for user in self.db:
+          if user['username'] == data['username']:
+            return 'username exists'            
         self.db.append(data)
         return self.id
 
