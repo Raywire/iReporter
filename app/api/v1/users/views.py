@@ -44,15 +44,15 @@ class User(Resource):
 
     def get(self, user_id):
         """method to get a specific user"""
-        incident = self.db.get_user(user_id)
-        if incident == "no user":
+        user = self.db.get_user(user_id)
+        if user == "no user":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "user does not exist"
             }), 404)
         return make_response(jsonify({
             "status" : 200,
-            "data" : incident
+            "data" : user
         }), 200)
 
     def delete(self, user_id):
