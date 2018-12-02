@@ -1,4 +1,4 @@
-"""Views for red-flags"""
+"""Views for users"""
 from flask_restful import Resource
 from flask import jsonify, make_response
 from app.api.v1.users.models import UserModel
