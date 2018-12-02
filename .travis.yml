@@ -1,17 +1,9 @@
 language: python
-
 python:
-  - 3.6
-
-install:
-  - pip install -r requirements.txt
-  - pip install coveralls
-
-script:
-  - py.test --cov=app/tests
-branches:
-  only:
-    -ft-update-redflag-comment-162250235
-    -ft-user-endpoins-162357018
+  - '2.7'
+install: "pip install -r requirements.txt"
+script: 
+  - pytest --cov-report term-missing --cov=./app
 after_success:
-- coveralls
+  - coveralls
+cache: pip

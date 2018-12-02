@@ -7,7 +7,6 @@ enum34==1.1.6
 Flask==1.0.2
 Flask-RESTful==0.3.6
 funcsigs==1.0.2
-functools32==3.2.3.post2
 gunicorn==19.9.0
 itsdangerous==1.1.0
 Jinja2==2.10
@@ -16,6 +15,7 @@ MarkupSafe==1.1.0
 more-itertools==4.3.0
 pathlib2==2.3.2
 pluggy==0.8.0
+psycopg2==2.7.6.1
 py==1.7.0
 pytest==4.0.1
 pytest-cov==2.6.0

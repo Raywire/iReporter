@@ -1,4 +1,4 @@
-"""Tests for redflags run with pylint"""
+"""Tests for redflags run with pytest"""
 import unittest
 import json
 
@@ -62,6 +62,14 @@ class RedFlagTestCase(unittest.TestCase):
         response = self.app.get("/api/v1/red-flags/1")
         self.assertEqual(response.status_code, 200)
 
+    def test_edit_specific_redflag(self):
+        """Test to edit a specific redflag"""
+        self.app.post("/api/v1/red-flags", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data))
+        response = self.app.put("/api/v1/red-flags/1", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['data']['message'], "red-flag record has been updated")      
+
     def test_update_location_of_redflag(self):
         """Test update location of a specific redflag"""
         response = self.app.patch("/api/v1/red-flags/1/location", headers={'Content-Type': 'application/json'}, data=json.dumps({"location" : "Nairobi"}))
@@ -104,6 +112,4 @@ class RedFlagTestCase(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(result['error'], "Red-flag does not exist")
-
-if __name__ == "__main__":
-    unittest.main()
+        
