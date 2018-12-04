@@ -43,41 +43,27 @@ class RedFlagModel:
                 return incident
         return "no redflag"
 
-    def delete_redflag(self, redflag_id):
+    def delete_redflag(self, incident):
         "Method to delete a redflag"
-        incident = self.get_redflag(redflag_id)
-        if incident == "no redflag":
-            return "no redflag"
         self.db.remove(incident)
         return "deleted"
 
-    def edit_redflag_location(self, redflag_id):
+    def edit_redflag_location(self, incident):
         "Method to edit a redflag's location"
-        incident = self.get_redflag(redflag_id)
-        if incident == "no redflag":
-            return "no redflag"
-        else:
-            incident['location'] = request.json.get('location', 'keyerror')
-            if incident['location'] == 'keyerror':
-                return "keyerror"
-            return "updated"
+        incident['location'] = request.json.get('location', 'keyerror')
+        if incident['location'] == 'keyerror':
+            return "keyerror"
+        return "updated"
 
-    def edit_redflag_comment(self, redflag_id):
+    def edit_redflag_comment(self, incident):
         "Method to edit a redflag's comment"
-        incident = self.get_redflag(redflag_id)
-        if incident == "no redflag":
-            return "no redflag"
-        else:
-            incident['comment'] = request.json.get('comment', 'keyerror')
-            if incident['comment'] == 'keyerror':
-                return "keyerror"
-            return "updated"
+        incident['comment'] = request.json.get('comment', 'keyerror')
+        if incident['comment'] == 'keyerror':
+            return "keyerror"
+        return "updated"
 
-    def edit_redflag(self, redflag_id):
+    def edit_redflag(self, incident):
         """Method to edit redflag fields"""
-        incident = self.get_redflag(redflag_id)
-        if incident == "no redflag":
-            return "no redflag"
         incident['createdBy'] = request.json.get('createdBy', incident['createdBy'])
         incident['location'] = request.json.get('location', incident['location'])
         incident['status'] = request.json.get('status', incident['status'])

@@ -4,7 +4,7 @@ from flask import jsonify, make_response
 from app.api.v1.redflags.models import RedFlagModel
 
 class RedFlags(Resource):
-    """docstring for RedFlags"""
+    """Class with methods for getting and adding redflags"""
 
     def __init__(self):
         self.db = RedFlagModel()
@@ -26,18 +26,17 @@ class RedFlags(Resource):
                 "status" : 500,
                 "error" : "KeyError for createdBy Red-flag not posted"
             }), 500)
-        success_message = {
-            "id" : redflag_id,
-            "message" : "Created red-flag record"
-        }
 
         return make_response(jsonify({
             "status" : 201,
-            "data" : success_message
+            "data" : {
+                "id" : redflag_id,
+                "message" : "Created red-flag record"
+            }
         }), 201)
 
 class RedFlag(Resource):
-    """docstring of RedFlag"""
+    """Class with methods for getting, deleting and updating a  specific redflag"""
 
     def __init__(self):
         self.db = RedFlagModel()
@@ -57,100 +56,99 @@ class RedFlag(Resource):
 
     def delete(self, redflag_id):
         """method to delete redflag"""
-        delete_status = self.db.delete_redflag(redflag_id)
-        if delete_status == "no redflag":
+        incident = self.db.get_redflag(redflag_id)
+
+        if incident == "no redflag":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "Red-flag does not exist"
             }), 404)
-        elif delete_status == "deleted":
-            success_message = {
-                "id" : redflag_id,
-                "message" : "red-flag record has been deleted"
-            }
+        delete_status = self.db.delete_redflag(incident)
+        if delete_status == "deleted":
             return make_response(jsonify({
                 "status" : 200,
-                "data" : success_message
+                "data" : {
+                    "id" : redflag_id,
+                    "message" : "red-flag record has been deleted"
+                }
             }))
 
     def put(self, redflag_id):
         """method to update a redflag"""
-        edit_status = self.db.edit_redflag(redflag_id)
+        incident = self.db.get_redflag(redflag_id)       
 
-        if edit_status == "no redflag":
+        if incident == "no redflag":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "Red-flag does not exist"
             }), 404)
-        elif edit_status == "updated":
-            success_message = {
-                "id" : redflag_id,
-                "message" : "red-flag record has been updated"
-            }
+        edit_status = self.db.edit_redflag(incident)
+        if edit_status == "updated":
             return make_response(jsonify({
                 "status" : 200,
-                "data" : success_message
+                "data" : {
+                    "id" : redflag_id,
+                    "message" : "red-flag record has been updated"
+                }
             }))
 
 class UpdateRedFlagLocation(Resource):
-    """docstring of UpdateRedFlagLocation"""
+    """Class with method for updating a redflag's location"""
 
     def __init__(self):
         self.db = RedFlagModel()
 
     def patch(self, redflag_id):
         """method to update redflag location"""
+        incident = self.db.get_redflag(redflag_id)
 
-        edit_status = self.db.edit_redflag_location(redflag_id)
-
-        if edit_status == "no redflag":
+        if incident == "no redflag":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "Red-flag does not exist"
             }), 404)
-
-        elif edit_status == "keyerror":
+        edit_status = self.db.edit_redflag_location(incident)
+        if edit_status == "keyerror":
             return make_response(jsonify({
                 "status" : 500,
                 "error" : "KeyError Red-flag's location not updated"
             }), 500)
         elif edit_status == "updated":
-            success_message = {
-                "id" : redflag_id,
-                "message" : "Updated red-flag record's location"
-            }
             return make_response(jsonify({
                 "status" : 200,
-                "data" : success_message
+                "data" : {
+                    "id" : redflag_id,
+                    "message" : "Updated red-flag record's location"
+                }
             }), 200)
 
 class UpdateRedFlagComment(Resource):
-    """docstring of UpdateRedFlagComment"""
+    """Class with method for updating a redflag's comment"""
 
     def __init__(self):
         self.db = RedFlagModel()
 
     def patch(self, redflag_id):
         """method to update comment in a redflag"""
-        edit_status = self.db.edit_redflag_comment(redflag_id)
+        incident = self.db.get_redflag(redflag_id)
 
-        if edit_status == "no redflag":
+        if incident == "no redflag":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "Red-flag does not exist"
             }), 404)
 
-        elif edit_status == "keyerror":
+        edit_status = self.db.edit_redflag_comment(incident)
+        if edit_status == "keyerror":
             return make_response(jsonify({
                 "status" : 500,
                 "error" : "KeyError Red-flag's comment not updated"
             }), 500)
         elif edit_status == "updated":
-            success_message = {
-                "id" : redflag_id,
-                "message" : "Updated red-flag record's comment"
-            }
             return make_response(jsonify({
                 "status" : 200,
-                "data" : success_message
+                "data" : {
+                    "id" : redflag_id,
+                    "message" : "Updated red-flag record's comment"
+                }
             }), 200)

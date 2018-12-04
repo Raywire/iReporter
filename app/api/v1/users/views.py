@@ -4,7 +4,7 @@ from flask import jsonify, make_response
 from app.api.v1.users.models import UserModel
 
 class Users(Resource):
-    """docstring for users"""
+    """Class with methods for getting and adding users"""
 
     def __init__(self):
         self.db = UserModel()
@@ -50,7 +50,7 @@ class Users(Resource):
         }), 201)
 
 class User(Resource):
-    """docstring of User"""
+    """Class with methods for getting, deleting and updating a  specific user"""
 
     def __init__(self):
         self.db = UserModel()
@@ -70,13 +70,15 @@ class User(Resource):
 
     def delete(self, user_id):
         """method to delete user"""
-        delete_status = self.db.delete_user(user_id)
-        if delete_status == "no user":
+        user = self.db.get_user(user_id)
+        
+        if user == "no user":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "user does not exist"
             }), 404)
-        elif delete_status == "deleted":
+        delete_status = self.db.delete_user(user)
+        if delete_status == "deleted":
             success_message = {
                 "id" : user_id,
                 "message" : "user record has been deleted"
@@ -88,14 +90,16 @@ class User(Resource):
 
     def put(self, user_id):
         """method to update a user"""
-        edit_status = self.db.edit_user(user_id)
+        user = self.db.get_user(user_id)
 
-        if edit_status == "no user":
+        if user == "no user":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "user does not exist"
             }), 404)
-        elif edit_status == "updated":
+
+        edit_status = self.db.edit_user(user)
+        if edit_status == "updated":
             success_message = {
                 "id" : user_id,
                 "message" : "user record has been updated"
@@ -106,23 +110,23 @@ class User(Resource):
             }))
 
 class UpdateUserPassword(Resource):
-    """docstring of UpdateUserPassword"""
+    """Class with method for updating user's password"""
 
     def __init__(self):
         self.db = UserModel()
 
     def patch(self, user_id):
         """method to update user password"""
+        user = self.db.get_user(user_id)       
 
-        edit_status = self.db.edit_user_password(user_id)
-
-        if edit_status == "no user":
+        if user == "no user":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "User does not exist"
             }), 404)
 
-        elif edit_status == "keyerror":
+        edit_status = self.db.edit_user_password(user)
+        if edit_status == "keyerror":
             return make_response(jsonify({
                 "status" : 500,
                 "error" : "KeyError user's password not updated"
@@ -138,23 +142,23 @@ class UpdateUserPassword(Resource):
             }), 200)
 
 class UpdateUserStatus(Resource):
-    """docstring of UpdateUserStatus"""
+    """class with method for updating user's status"""
 
     def __init__(self):
         self.db = UserModel()
 
     def patch(self, user_id):
         """method to update user status"""
-
-        edit_status = self.db.edit_user_status(user_id)
-
-        if edit_status == "no user":
+        user = self.db.get_user(user_id)
+        
+        if user == "no user":
             return make_response(jsonify({
                 "status" : 404,
                 "error" : "User does not exist"
             }), 404)
 
-        elif edit_status == "keyerror":
+        edit_status = self.db.edit_user_status(user)
+        if edit_status == "keyerror":
             return make_response(jsonify({
                 "status" : 500,
                 "error" : "KeyError user's status not updated"

@@ -58,41 +58,27 @@ class UserModel:
                 return user
         return "no user"
 
-    def delete_user(self, user_id):
+    def delete_user(self, user):
         "Method to delete a user"
-        user = self.get_user(user_id)
-        if user == "no user":
-            return "no user"
         self.db.remove(user)
         return "deleted"
 
-    def edit_user_status(self, user_id):
+    def edit_user_status(self, user):
         "Method to edit a user's status"
-        user = self.get_user(user_id)
-        if user == "no user":
-            return "no user"
-        else:
-            user['isAdmin'] = request.json.get('isAdmin', 'keyerror')
-            if user['isAdmin'] == 'keyerror':
-                return "keyerror"
-            return "updated"
+        user['isAdmin'] = request.json.get('isAdmin', 'keyerror')
+        if user['isAdmin'] == 'keyerror':
+            return "keyerror"
+        return "updated"
 
-    def edit_user_password(self, user_id):
+    def edit_user_password(self, user):
         "Method to edit a user's comment"
-        user = self.get_user(user_id)
-        if user == "no user":
-            return "no user"
-        else:
-            user['password'] = request.json.get('password', 'keyerror')
-            if user['password'] == 'keyerror':
-                return "keyerror"
-            return "updated"
+        user['password'] = request.json.get('password', 'keyerror')
+        if user['password'] == 'keyerror':
+            return "keyerror"
+        return "updated"
 
-    def edit_user(self, user_id):
+    def edit_user(self, user):
         """Method to edit user fields"""
-        user = self.get_user(user_id)
-        if user == "no user":
-            return "no user"
         user['firstname'] = request.json.get('firstname', user['firstname'])
         user['lastname'] = request.json.get('lastname', user['lastname'])
         user['othernames'] = request.json.get('status', user['othernames'])
