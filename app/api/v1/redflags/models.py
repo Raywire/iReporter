@@ -1,9 +1,42 @@
 """Redflag Models"""
 import datetime
 from flask import request
+from flask_restful import reqparse
 
 INCIDENTS = []
+parser = reqparse.RequestParser(bundle_errors=True)
 
+parser.add_argument('createdBy',
+                    type=str,
+                    required=True,
+                    help="This key is required"
+                    )
+
+parser.add_argument('location',
+                    type=str,
+                    required=True,
+                    help="This key is required"
+                    )
+
+parser.add_argument('images',
+                    action='append',
+                    help="This key is required"
+                    )
+parser.add_argument('videos',
+                    action='append',
+                    help="This key is required"
+                    )
+
+parser.add_argument('comment',
+                    type=str,
+                    required=True,
+                    help="This key is required"
+                    )
+parser.add_argument('title',
+                    type=str,
+                    required=True,
+                    help="This key is required"
+                    )
 class RedFlagModel:
     """Redflag model class"""
     def __init__(self):
@@ -19,22 +52,23 @@ class RedFlagModel:
 
     def save_redflag(self):
         """method to post all red-flags"""
+        args = parser.parse_args()
         data = {
             'id' : self.id,
             'createdOn' : datetime.datetime.utcnow(),
-            'createdBy' : request.json.get('createdBy', 'keyerror'),
+            'createdBy' : request.json.get('createdBy'),
             'type' : 'red-flags',
-            'location' : request.json.get('location', ''),
+            'location' : request.json.get('location'),
             'status' : "draft",
-            'images' : request.json.get('images', ''),
-            'videos' : request.json.get('videos', ''),
-            'title' : request.json.get('title', ''),
-            'comment' : request.json.get('comment', '')
+            'images' : request.json.get('images'),
+            'videos' : request.json.get('videos'),
+            'title' : request.json.get('title'),
+            'comment' : request.json.get('comment')
         }
-        if data['createdBy'] == "keyerror":
-            return "keyerror"
+
         self.db.append(data)
-        return self.id
+        return data
+
 
     def get_redflag(self, redflag_id):
         "Method to get a redflag"

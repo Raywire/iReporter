@@ -96,7 +96,7 @@ class UserTestCase(unittest.TestCase):
         """Tests for wrong key in user post request"""
         response = self.app.post("/api/v1/users", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data2))
         result = json.loads(response.data)
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(result['error'], 'KeyError for email/password not posted')
 
     def test_get_specific_user(self):
@@ -131,14 +131,14 @@ class UserTestCase(unittest.TestCase):
         """Test wrong status key used in user"""
         response = self.app.patch("/api/v1/users/1/status", headers={'Content-Type': 'application/json'}, data=json.dumps({"isAdmina" : True}))
         result = json.loads(response.data)
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(result['error'], "KeyError user's status not updated")
 
     def test_wrong_password_key(self):
         """Test wrong password key used in user"""
         response = self.app.patch("/api/v1/users/1/password", headers={'Content-Type': 'application/json'}, data=json.dumps({"password1" : "Nairobi"}))
         result = json.loads(response.data)
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(result['error'], "KeyError user's password not updated")
 
     def test_delete_specific_user(self):
@@ -153,6 +153,6 @@ class UserTestCase(unittest.TestCase):
         """Test a user not found"""
         response = self.app.get("/api/v1/users/10")
         result = json.loads(response.data)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(result['error'], "user does not exist")
                 

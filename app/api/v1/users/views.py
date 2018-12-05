@@ -23,9 +23,9 @@ class Users(Resource):
 
         if user_id == "keyerror":
             return make_response(jsonify({
-                "status" : 500,
+                "status" : 400,
                 "error" : "KeyError for email/password not posted"
-            }), 500)
+            }), 400)
 
         if user_id == "email exists":
             return make_response(jsonify({
@@ -60,9 +60,9 @@ class User(Resource):
         user = self.db.get_user(user_id)
         if user == "no user":
             return make_response(jsonify({
-                "status" : 404,
+                "status" : 200,
                 "error" : "user does not exist"
-            }), 404)
+            }), 200)
         return make_response(jsonify({
             "status" : 200,
             "data" : user
@@ -74,9 +74,9 @@ class User(Resource):
         
         if user == "no user":
             return make_response(jsonify({
-                "status" : 404,
+                "status" : 200,
                 "error" : "user does not exist"
-            }), 404)
+            }), 200)
         delete_status = self.db.delete_user(user)
         if delete_status == "deleted":
             success_message = {
@@ -94,9 +94,9 @@ class User(Resource):
 
         if user == "no user":
             return make_response(jsonify({
-                "status" : 404,
+                "status" : 200,
                 "error" : "user does not exist"
-            }), 404)
+            }), 200)
 
         edit_status = self.db.edit_user(user)
         if edit_status == "updated":
@@ -121,16 +121,16 @@ class UpdateUserPassword(Resource):
 
         if user == "no user":
             return make_response(jsonify({
-                "status" : 404,
+                "status" : 200,
                 "error" : "User does not exist"
-            }), 404)
+            }), 200)
 
         edit_status = self.db.edit_user_password(user)
         if edit_status == "keyerror":
             return make_response(jsonify({
-                "status" : 500,
+                "status" : 400,
                 "error" : "KeyError user's password not updated"
-            }), 500)
+            }), 400)
         elif edit_status == "updated":
             success_message = {
                 "id" : user_id,
@@ -153,16 +153,16 @@ class UpdateUserStatus(Resource):
         
         if user == "no user":
             return make_response(jsonify({
-                "status" : 404,
+                "status" : 200,
                 "error" : "User does not exist"
-            }), 404)
+            }), 200)
 
         edit_status = self.db.edit_user_status(user)
         if edit_status == "keyerror":
             return make_response(jsonify({
-                "status" : 500,
+                "status" : 400,
                 "error" : "KeyError user's status not updated"
-            }), 500)
+            }), 400)
         elif edit_status == "updated":
             success_message = {
                 "id" : user_id,
