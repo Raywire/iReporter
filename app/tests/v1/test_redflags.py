@@ -15,9 +15,9 @@ class RedFlagTestCase(unittest.TestCase):
         self.data = {
             "id": 1,
             "createdOn" : "Tue, 27 Nov 2018 21:18:13 GMT",
-            "createdBy" : "Admin",
+            "createdBy" : 1,
             'type' : 'red-flags',
-            "location" : "Nakuru",
+            "location" : "-90.000, -180.0000",
             "status" : "draft",
             "images" : "",
             "videos" : "",
@@ -27,9 +27,20 @@ class RedFlagTestCase(unittest.TestCase):
         self.data2 = {
             "id": 1,
             "createdOn" : "Tue, 27 Nov 2018 21:18:13 GMT",
-            "createdByfhh" : "Admin",
+            "createdByfhh" : 2,
             'type' : 'red-flags',
-            "location" : "Nakuru",
+            "location" : "-90, -180",
+            "status" : "draft",
+            "images" : "",
+            "videos" : "",
+            "title" : "Mercury in sugar",
+            "comment" : "Lorem ipsum dolor sit amet."
+        }
+        self.data3 = {
+            "id": 1,
+            "createdOn" : "Tue, 27 Nov 2018 21:18:13 GMT",
+            'type' : 'red-flags',
+            "location" : "-90, -180",
             "status" : "draft",
             "images" : "",
             "videos" : "",
@@ -65,12 +76,11 @@ class RedFlagTestCase(unittest.TestCase):
         self.app.post("/api/v1/red-flags", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data))
         response = self.app.put("/api/v1/red-flags/1", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data))
         result = json.loads(response.data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data']['message'], "red-flag record has been updated")      
+        self.assertEqual(response.status_code, 200)     
 
     def test_update_location_of_redflag(self):
         """Test update location of a specific redflag"""
-        response = self.app.patch("/api/v1/red-flags/1/location", headers={'Content-Type': 'application/json'}, data=json.dumps({"location" : "Nairobi"}))
+        response = self.app.patch("/api/v1/red-flags/1/location", headers={'Content-Type': 'application/json'}, data=json.dumps({"location" : "-75.0, -12.554334"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['data']['message'], "Updated red-flag record's location")
@@ -94,7 +104,7 @@ class RedFlagTestCase(unittest.TestCase):
         response = self.app.patch("/api/v1/red-flags/1/location", headers={'Content-Type': 'application/json'}, data=json.dumps({"location1" : "Nairobi"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(result['error'], "KeyError Red-flag's location not updated")
+        self.assertEqual(result['message']['location'], "This key is required and should not be empty or formatted wrongly")
 
     def test_delete_specific_redflag(self):
         """Test delete a specific redflag"""
@@ -110,3 +120,14 @@ class RedFlagTestCase(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['error'], "Red-flag does not exist")
+
+    def test_missing_key(self):
+        """Test missing key in redflag"""
+        response = self.app.post("/api/v1/red-flags", headers={'Content-Type': 'application/json'}, data=json.dumps(self.data3))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 400)        
+
+    def test_404_error(self):
+        """Test for page not found"""
+        response = self.app.get("/api/v1/red-flagssssss")
+        self.assertEqual(response.status_code, 404)           

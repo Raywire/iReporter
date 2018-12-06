@@ -5,12 +5,8 @@ from app.api.v1.redflags.views import RedFlags, RedFlag, UpdateRedFlagComment, U
 from app.api.v1.users.views import User, Users, UpdateUserPassword, UpdateUserStatus
 
 VERSION_ONE = Blueprint('api_v1', __name__, url_prefix='/api/v1')
-errors = {
-        'message': "Page not found",
-        'status': 404
-}
 
-API = Api(VERSION_ONE, catch_all_404s=True, errors=errors)
+API = Api(VERSION_ONE)
 
 API.add_resource(RedFlags, '/red-flags')
 API.add_resource(RedFlag, '/red-flags/<int:redflag_id>')

@@ -11,7 +11,12 @@ class RedFlags(Resource):
 
     def get(self):
         """method to get all redflags"""
-
+        redflags = self.db.get_redflags()
+        if redflags == None:
+            return make_response(jsonify({
+                "status" : 200,
+                "message" : "No redflags found"
+            }))
         return make_response(jsonify({
             "status" : 200,
             "data" : self.db.get_redflags()
@@ -20,15 +25,11 @@ class RedFlags(Resource):
     def post(self):
         """method to post a redflag"""
         redflag = self.db.save_redflag()
-        if 'id' in redflag:
-            return make_response(jsonify({
-                "status" : 201,
-                "data" : redflag
-            }), 201)
         return make_response(jsonify({
-            "status" : 400,
-            "missing keys" : redflag
-        }), 400)
+            "status" : 201,
+            "data" : redflag
+        }), 201)
+
 
 class RedFlag(Resource):
     """Class with methods for getting, deleting and updating a  specific redflag"""
@@ -81,10 +82,7 @@ class RedFlag(Resource):
         if edit_status == "updated":
             return make_response(jsonify({
                 "status" : 200,
-                "data" : {
-                    "id" : redflag_id,
-                    "message" : "red-flag record has been updated"
-                }
+                "data" : incident
             }))
 
 class UpdateRedFlagLocation(Resource):
@@ -103,12 +101,7 @@ class UpdateRedFlagLocation(Resource):
                 "error" : "Red-flag does not exist"
             }), 200)
         edit_status = self.db.edit_redflag_location(incident)
-        if edit_status == "keyerror":
-            return make_response(jsonify({
-                "status" : 400,
-                "error" : "KeyError Red-flag's location not updated"
-            }), 400)
-        elif edit_status == "updated":
+        if edit_status == "updated":
             return make_response(jsonify({
                 "status" : 200,
                 "data" : {
