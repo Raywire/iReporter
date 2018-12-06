@@ -1,15 +1,22 @@
 """App module init file"""
 from flask import Flask, Blueprint
 from instance.config import APP_CONFIG
+from flask import jsonify, make_response
 
 from .api.v1.routes import VERSION_ONE as v1
+
+def url_not_found(error):
+    return make_response(jsonify({
+        "status": 404,
+        "error": "Page not found"
+    }), 404)
 
 def create_app(config_name='development'):
     """Create app docstring"""
     app = Flask(__name__, instance_relative_config=True)
+    app.register_error_handler(404, url_not_found)
     app.url_map.strict_slashes = False
     app.config.from_object(APP_CONFIG[config_name])
-    #app.config.from_pyfile('config.py')
 
     app.register_blueprint(v1)
     return app

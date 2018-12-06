@@ -45,7 +45,7 @@ class DataBaseConfig:
             Images VARCHAR(1000),
             Videos VARCHAR(1000),
             comment VARCHAR(1000) NOT NULL
-            )"""
+            );"""
 
         table2 = """CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY NOT NULL,
@@ -58,7 +58,7 @@ class DataBaseConfig:
             registered TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'UTC'),
             isAdmin boolean,
             password VARCHAR(120) NOT NULL
-            )"""
+            );"""
 
         queries = [table1, table2]
         return queries

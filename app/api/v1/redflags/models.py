@@ -2,40 +2,57 @@
 import datetime
 from flask import request
 from flask_restful import reqparse
+import re
 
 INCIDENTS = []
+def validator(value):
+    """method to check for only integers"""
+    if not re.match(r"^[0-9]+$", value):
+        raise ValueError("Pattern not matched")
+def validate_coordinates(value):
+    """method to check for valid coordinates"""
+    if not re.match(r"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$", value):
+        raise ValueError("Pattern not matched")
+def validate_comment(value):
+    """method to check comment only starts with A-Z"""
+    if not re.match(r"[A-Za-z1-9]", value):
+        raise ValueError("Pattern not matched")    
+
 parser = reqparse.RequestParser(bundle_errors=True)
+parser_location = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('createdBy',
-                    type=str,
+                    type=validator,
                     required=True,
-                    help="This key is required"
+                    nullable=False,
+                    help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('location',
-                    type=str,
+                    type=validate_coordinates,
                     required=True,
-                    help="This key is required"
+                    nullable=False,
+                    help="This key is required and should not be empty or formatted wrongly"
                     )
 
-parser.add_argument('images',
-                    action='append',
-                    help="This key is required"
-                    )
-parser.add_argument('videos',
-                    action='append',
-                    help="This key is required"
+parser_location.add_argument('location',
+                    type=validate_coordinates,
+                    required=True,
+                    nullable=False,
+                    help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('comment',
-                    type=str,
+                    type=validate_comment,
                     required=True,
-                    help="This key is required"
+                    nullable=False,
+                    help="This key is required and should not be empty or formatted wrongly"
                     )
 parser.add_argument('title',
-                    type=str,
+                    type=validate_comment,
                     required=True,
-                    help="This key is required"
+                    nullable=False,
+                    help="This key is required and should not be empty or formatted wrongly"
                     )
 class RedFlagModel:
     """Redflag model class"""
@@ -48,6 +65,8 @@ class RedFlagModel:
 
     def get_redflags(self):
         """method to get all red-flags"""
+        if not self.db:
+            return None
         return self.db
 
     def save_redflag(self):
@@ -84,27 +103,27 @@ class RedFlagModel:
 
     def edit_redflag_location(self, incident):
         "Method to edit a redflag's location"
-        incident['location'] = request.json.get('location', 'keyerror')
-        if incident['location'] == 'keyerror':
-            return "keyerror"
+        args = parser_location.parse_args()
+        incident['location'] = request.json.get('location')
         return "updated"
 
     def edit_redflag_comment(self, incident):
         "Method to edit a redflag's comment"
         incident['comment'] = request.json.get('comment', 'keyerror')
-        if incident['comment'] == 'keyerror':
+        if incident['comment'] == 'keyerror' or incident['comment'] == '':
             return "keyerror"
         return "updated"
 
     def edit_redflag(self, incident):
         """Method to edit redflag fields"""
-        incident['createdBy'] = request.json.get('createdBy', incident['createdBy'])
-        incident['location'] = request.json.get('location', incident['location'])
-        incident['status'] = request.json.get('status', incident['status'])
-        incident['images'] = request.json.get('images', incident['images'])
-        incident['videos'] = request.json.get('videos', incident['videos'])
-        incident['title'] = request.json.get('title', incident['title'])
-        incident['comment'] = request.json.get('comment', incident['comment'])
+        args = parser.parse_args()
+        incident['createdBy'] = request.json.get('createdBy')
+        incident['location'] = request.json.get('location')
+        incident['status'] = request.json.get('status')
+        incident['images'] = request.json.get('images')
+        incident['videos'] = request.json.get('videos')
+        incident['title'] = request.json.get('title')
+        incident['comment'] = request.json.get('comment')
 
         return "updated"
         
