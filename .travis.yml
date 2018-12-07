@@ -4,6 +4,11 @@ python:
 install: 
   - pip install -r requirements.txt
   - pip install coveralls codecov
+services:
+  - postgresql
+before_script:
+  - psql -c "CREATE DATABASE ireporter;" -U raywire
+  - psql -c "CREATE USER raywire WITH PASSWORD 'raywire2018';" -U postgres      
 script: 
   - pytest --cov-report term-missing --cov=./app
 after_success:
