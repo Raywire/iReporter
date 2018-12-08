@@ -175,7 +175,8 @@ class UserModel:
                 'username' : user['username'],
                 'registered' : user['registered'],
                 'password' : user['password'],
-                'isAdmin' : user['isadmin']
+                'isAdmin' : user['isadmin'],
+                'public_id' : user['public_id']
             }
 
         if user == None:
