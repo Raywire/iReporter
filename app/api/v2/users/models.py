@@ -23,6 +23,7 @@ def validate_characters(value):
         raise ValueError("Pattern not matched")    
 
 parser = reqparse.RequestParser(bundle_errors=True)
+parser_signin = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('firstname',
                     type=validate_characters,
@@ -51,6 +52,14 @@ parser.add_argument('username',
                     nullable=True,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
+
+parser_signin.add_argument('username',
+                    type=validate_characters,
+                    required=True,
+                    nullable=True,
+                    help="This key is required and should not be empty or formatted wrongly"
+                    )
+
 parser.add_argument('email',
                     type=validate_email,
                     required=False,
@@ -66,7 +75,12 @@ parser.add_argument('phoneNumber',
                     )
 
 parser.add_argument('password',
-                    type=validate_integers,
+                    required=True,
+                    nullable=False,
+                    help="This key is required and should not be empty or formatted wrongly"
+                    )
+
+parser_signin.add_argument('password',
                     required=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
@@ -137,11 +151,39 @@ class UserModel:
         "Method to get a user by username or email"
         query = """SELECT * from users WHERE username='{0}'""".format(username)
         self.cursor.execute(query)
-        row = self.cursor.fetchall()
+        row = self.cursor.fetchone()
 
         if self.cursor.rowcount == 0:
             return None
         return row
+
+    def sign_in(self):
+        args = parser_signin.parse_args()
+        data = {
+            'username' : request.json.get('username'),
+            'password' : request.json.get('password')
+        }        
+        user = self.get_user_by_username(data['username'])
+        if user != None:
+            user_data = {
+                'id' : user['id'],
+                'firstname' : user['firstname'],
+                'lastname' : user['lastname'],
+                'othernames' : user['othernames'],
+                'email' : user['email'],
+                'phoneNumber' : user['phonenumber'],
+                'username' : user['username'],
+                'registered' : user['registered'],
+                'password' : user['password'],
+                'isAdmin' : user['isadmin']
+            }
+
+        if user == None:
+            return None
+        if check_password_hash(user_data['password'], data['password']) == False:
+            return 'invalid password'
+        return user_data
+
 
     def get_users(self):
         """method to get all users"""
