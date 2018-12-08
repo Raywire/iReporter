@@ -92,4 +92,29 @@ class UpdateInterventionLocation(Resource):
                     "id" : intervention_id,
                     "message" : "Updated intervention record's location"
                 }
-            }), 200)                 
+            }), 200)
+
+class UpdateInterventionComment(Resource):
+    """Class with method for updating an intervention's comment"""
+
+    def __init__(self):
+        self.db = InterventionModel()
+
+    def patch(self, intervention_id):
+        """method to update intervention comment"""
+        edit_status = self.db.edit_intervention_comment(intervention_id)
+
+        if edit_status == None:
+            return make_response(jsonify({
+                "status" : 200,
+                "message" : "Intervention does not exist"
+            }), 200)
+        
+        if edit_status == "updated":
+            return make_response(jsonify({
+                "status" : 200,
+                "data" : {
+                    "id" : intervention_id,
+                    "message" : "Updated intervention record's comment"
+                }
+            }), 200)
