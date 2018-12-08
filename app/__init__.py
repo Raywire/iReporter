@@ -5,6 +5,7 @@ from flask import jsonify, make_response
 from db_config import create_tables
 
 from .api.v1.routes import VERSION_ONE as v1
+from .api.v2.routes import VERSION_TWO as v2
 
 def url_not_found(error):
     return make_response(jsonify({
@@ -21,4 +22,5 @@ def create_app(config_name='development'):
     app.config.from_object(APP_CONFIG[config_name])
 
     app.register_blueprint(v1)
+    app.register_blueprint(v2)
     return app
