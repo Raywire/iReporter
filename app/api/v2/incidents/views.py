@@ -25,3 +25,21 @@ class Interventions(Resource):
             "data" : self.db.get_interventions()
         }), 200)
 
+class Intervention(Resource):
+    """Class with methods for getting, deleting and updating a  specific intervention"""
+
+    def __init__(self):
+        self.db = InterventionModel()
+
+    def get(self, intervention_id):
+        """method to get a specific intervention"""
+        incident = self.db.get_intervention_by_id(intervention_id)
+        if incident == None:
+            return make_response(jsonify({
+                "status" : 200,
+                "error" : "Intervention does not exist"
+            }), 200)
+        return make_response(jsonify({
+            "status" : 200,
+            "data" : incident
+        }), 200)
