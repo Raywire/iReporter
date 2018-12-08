@@ -150,4 +150,18 @@ class InterventionModel:
         cursor = conn.cursor()
         cursor.execute(query)
         conn.commit()
-        return 'updated'               
+        return 'updated'
+
+    def edit_intervention_location(self, intervention_id):
+        "Method to edit an intervention's status"
+        args = parser_location.parse_args()
+        location = request.json.get('location')
+        if self.get_intervention_by_id(intervention_id) == None:
+            return None
+        
+        query = """UPDATE incidents SET location='{0}' WHERE id={1}""".format(location, intervention_id)
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        return 'updated'  
