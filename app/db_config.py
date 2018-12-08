@@ -36,6 +36,7 @@ def tables():
         status VARCHAR(20) NOT NULL,
         Images VARCHAR(500),
         Videos VARCHAR(500),
+        title VARCHAR(100),
         comment VARCHAR(1000) NOT NULL
         );"""
 
