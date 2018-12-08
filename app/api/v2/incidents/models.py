@@ -21,6 +21,7 @@ def validate_comment(value):
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
+parser_status = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('createdBy',
                     type=validator,
@@ -55,6 +56,14 @@ parser.add_argument('title',
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
+
+parser_status.add_argument('status',
+                    choices=['draft', 'under investigation', 'rejected', 'resolved'],
+                    required=True,
+                    nullable=False,
+                    help="This key is required and should not be empty or formatted wrongly(Accepted values: draft, under investigatin, rejected, resolved)"
+                    )
+
 class InterventionModel:
     """Intervention model class"""
     def __init__(self):
@@ -128,3 +137,17 @@ class InterventionModel:
             'comment' : intervention['comment']
         }
         return intervention_data
+
+    def edit_intervention_status(self, intervention_id):
+        "Method to edit an intervention's status"
+        args = parser_status.parse_args()
+        status = request.json.get('status')
+        if self.get_intervention_by_id(intervention_id) == None:
+            return None
+        
+        query = """UPDATE incidents SET status='{0}' WHERE id={1}""".format(status, intervention_id)
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        return 'updated'               
