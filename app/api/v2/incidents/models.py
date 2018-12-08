@@ -188,3 +188,15 @@ class InterventionModel:
         cursor.execute(query)
         conn.commit()
         return 'updated'
+
+    def delete_intervention(self, intervention_id):
+        "Method to delete an intervention record"
+        if self.get_intervention_by_id(intervention_id) == None:
+            return None
+        
+        query = """DELETE FROM incidents WHERE id={0}""".format(intervention_id)
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        return 'deleted'
