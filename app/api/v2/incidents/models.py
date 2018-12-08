@@ -104,4 +104,27 @@ class InterventionModel:
                 'comment' : intervention['comment']
             }            
             intervention_list.append(intervention_data)
-        return intervention_list    
+        return intervention_list
+
+    def get_intervention_by_id(self, intervention_id):
+        "Method to get an intervention by id"
+        query = """SELECT * from incidents WHERE type='intervention' AND id={0}""".format(intervention_id)
+        self.cursor.execute(query)
+        intervention = self.cursor.fetchone()
+
+        if self.cursor.rowcount == 0:
+            return None
+
+        intervention_data = {
+            'id' : intervention['id'],
+            'createdOn' : intervention['createdon'],
+            'createdBy' : intervention['createdby'],
+            'type' : intervention['type'],
+            'location' : intervention['location'],
+            'status' : intervention['status'],
+            'images' : intervention['images'],
+            'videos' : intervention['videos'],
+            'title' : intervention['title'],
+            'comment' : intervention['comment']
+        }
+        return intervention_data
