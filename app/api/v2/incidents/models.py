@@ -22,6 +22,7 @@ def validate_comment(value):
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
 parser_status = reqparse.RequestParser(bundle_errors=True)
+parser_comment = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('createdBy',
                     type=validator,
@@ -50,6 +51,14 @@ parser.add_argument('comment',
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
+
+parser_comment.add_argument('comment',
+                    type=validate_comment,
+                    required=True,
+                    nullable=False,
+                    help="This key is required and should not be empty or formatted wrongly"
+                    )
+
 parser.add_argument('title',
                     type=validate_comment,
                     required=True,
@@ -153,7 +162,7 @@ class InterventionModel:
         return 'updated'
 
     def edit_intervention_location(self, intervention_id):
-        "Method to edit an intervention's status"
+        "Method to edit an intervention's location"
         args = parser_location.parse_args()
         location = request.json.get('location')
         if self.get_intervention_by_id(intervention_id) == None:
@@ -165,3 +174,17 @@ class InterventionModel:
         cursor.execute(query)
         conn.commit()
         return 'updated'  
+
+    def edit_intervention_comment(self, intervention_id):
+        "Method to edit an intervention's comment"
+        args = parser_comment.parse_args()
+        comment = request.json.get('comment')
+        if self.get_intervention_by_id(intervention_id) == None:
+            return None
+        
+        query = """UPDATE incidents SET comment='{0}' WHERE id={1}""".format(comment, intervention_id)
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        return 'updated'
