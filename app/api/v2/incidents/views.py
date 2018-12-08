@@ -43,3 +43,28 @@ class Intervention(Resource):
             "status" : 200,
             "data" : incident
         }), 200)
+
+class UpdateInterventionStatus(Resource):
+    """Class with method for updating an intervention's status"""
+
+    def __init__(self):
+        self.db = InterventionModel()
+
+    def patch(self, intervention_id):
+        """method to update intervention status"""
+        edit_status = self.db.edit_intervention_status(intervention_id)
+
+        if edit_status == None:
+            return make_response(jsonify({
+                "status" : 200,
+                "message" : "Intervention does not exist"
+            }), 200)
+        
+        if edit_status == "updated":
+            return make_response(jsonify({
+                "status" : 200,
+                "data" : {
+                    "id" : intervention_id,
+                    "message" : "Updated intervention record status"
+                }
+            }), 200)        
