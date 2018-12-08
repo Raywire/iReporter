@@ -1,5 +1,6 @@
 """Database configuration"""
 import psycopg2
+import psycopg2.extras
 
 url = "dbname='ireporter' host='localhost' port='5432' user='raywire' password='raywire2018'"
 test_url = "dbname='test_ireporter' host='localhost' port='5432' user='raywire' password='raywire2018'"
@@ -7,6 +8,11 @@ test_url = "dbname='test_ireporter' host='localhost' port='5432' user='raywire' 
 def connection(url):
     con = psycopg2.connect(url)
     return con
+
+def create_cursor(url):
+    conn = connection(url)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return cursor
 
 def create_tables():
     conn = connection(url)
@@ -38,12 +44,13 @@ def tables():
         firstname VARCHAR(20) NOT NULL,
         lastname VARCHAR(20),
         othernames VARCHAR(20),
-        username VARCHAR(20) NOT NULL,
-        email VARCHAR(100),
+        username VARCHAR(20) UNIQUE,
+        email VARCHAR(100) UNIQUE,
         phoneNumber VARCHAR(20),
         registered TIMESTAMP,
         isAdmin boolean,
-        password VARCHAR(120) NOT NULL
+        password VARCHAR(120) NOT NULL,
+        public_id VARCHAR(120) NOT NULL
         );"""
 
     queries = [table1, table2]
