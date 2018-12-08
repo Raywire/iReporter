@@ -47,6 +47,35 @@ class UserSignUp(Resource):
             ]
         }), 201)
 
+class UserSignIn(Resource):
+    """Class containing user signin get method"""
+    def __init__(self):
+        self.db = UserModel()
+
+    def post(self):
+        """method to get a specific user"""
+        user = self.db.sign_in()
+        if user == None:
+            return make_response(jsonify({
+                "status" : 200,
+                "message" : "user does not exist"
+            }), 200)
+        if user == 'invalid password':
+            return make_response(jsonify({
+                "status" : 200,
+                "message" : "password is invalid"
+            }), 200)
+
+        return make_response(jsonify({
+            "status" : 200,
+            "data" : [
+                {
+                    "token" : "",
+                    "user" : user
+                }
+            ]
+        }), 200)
+
 class User(Resource):
     """Class with methods for getting, deleting and updating a  specific user"""
 
