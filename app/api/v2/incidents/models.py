@@ -1,4 +1,4 @@
-"""Interventions Models"""
+"""Incidents Models"""
 import datetime
 from flask import request
 from flask_restful import reqparse
@@ -56,13 +56,13 @@ parser.add_argument('title',
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 class InterventionModel:
-    """Redflag model class"""
+    """Intervention model class"""
     def __init__(self):
         self.db = connection(url)
         self.cursor = create_cursor(url)
 
     def save_intervention(self):
-        """method to post all red-flags"""
+        """method to post one or multiple interventions"""
         args = parser.parse_args()
         data = {
             'createdOn' : datetime.datetime.utcnow(),
@@ -83,4 +83,25 @@ class InterventionModel:
         conn.commit()
         return data
 
-        
+    def get_interventions(self):
+        """method to get all interventions"""
+        query = """SELECT * from incidents WHERE type='intervention'"""
+        self.cursor.execute(query)
+        interventions = self.cursor.fetchall()
+        intervention_list = []
+
+        for intervention in interventions:
+            intervention_data = {
+                'id' : intervention['id'],
+                'createdOn' : intervention['createdon'],
+                'createdBy' : intervention['createdby'],
+                'type' : intervention['type'],
+                'location' : intervention['location'],
+                'status' : intervention['status'],
+                'images' : intervention['images'],
+                'videos' : intervention['videos'],
+                'title' : intervention['title'],
+                'comment' : intervention['comment']
+            }            
+            intervention_list.append(intervention_data)
+        return intervention_list    
