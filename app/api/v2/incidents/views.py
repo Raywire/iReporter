@@ -44,6 +44,25 @@ class Intervention(Resource):
             "data" : incident
         }), 200)
 
+    def delete(self, intervention_id):
+        """method to delete intervention"""
+        delete_status = self.db.delete_intervention(intervention_id)
+
+        if delete_status == None:
+            return make_response(jsonify({
+                "status" : 200,
+                "error" : "Intervention does not exist"
+            }), 200)
+
+        if delete_status == "deleted":
+            return make_response(jsonify({
+                "status" : 200,
+                "data" : {
+                    "id" : intervention_id,
+                    "message" : "Intervention record has been deleted"
+                }
+            }), 200)
+
 class UpdateInterventionStatus(Resource):
     """Class with method for updating an intervention's status"""
 
