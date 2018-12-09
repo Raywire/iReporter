@@ -1,7 +1,14 @@
 """Views for users"""
 from flask_restful import Resource
-from flask import jsonify, make_response
+from flask import jsonify, make_response, request, session
 from app.api.v2.users.models import UserModel
+from functools import wraps
+
+import jwt
+import datetime
+
+secret_key = "d01815253d8243a221d12a681589155e"
+expiration_time = 59
 
 class Users(Resource):
     """Class with methods for getting and adding users"""
@@ -35,13 +42,15 @@ class UserSignUp(Resource):
             return make_response(jsonify({
                 "status" : 400,
                 "error" : "username already exists"
-            }), 400)            
-
+            }), 400)
+        session['username'] = user['username']
+        session['id'] = user['id']       
+        token = jwt.encode({'public_id' : user['public_id'], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=expiration_time) }, secret_key)
         return make_response(jsonify({
             "status" : 201,
             "data" : [
                 {
-                    "token" : "",
+                    "token" : token.decode('UTF-8'),
                     "user" : user
                 }
             ]
@@ -66,11 +75,14 @@ class UserSignIn(Resource):
                 "message" : "password is invalid"
             }), 200)
 
+        session['username'] = user['username']
+        session['id'] = user['id']
+        token = jwt.encode({'public_id' : user['public_id'], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=expiration_time) }, secret_key)
         return make_response(jsonify({
             "status" : 200,
             "data" : [
                 {
-                    "token" : "",
+                    "token" : token.decode('UTF-8'),
                     "user" : user
                 }
             ]
