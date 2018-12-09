@@ -73,19 +73,19 @@ parser_status.add_argument('status',
                     help="This key is required and should not be empty or formatted wrongly(Accepted values: draft, under investigatin, rejected, resolved)"
                     )
 
-class InterventionModel:
-    """Intervention model class"""
+class IncidentModel:
+    """Class with methods to perform Create, Read, Update and Delete operations on database"""
     def __init__(self):
         self.db = connection(url)
         self.cursor = create_cursor(url)
 
-    def save_intervention(self):
-        """method to post one or multiple interventions"""
+    def save_incident(self,incident_type):
+        """method to post one or multiple incidents"""
         args = parser.parse_args()
         data = {
             'createdOn' : datetime.datetime.utcnow(),
             'createdBy' : request.json.get('createdBy'),
-            'type' : 'intervention',
+            'type' : incident_type,
             'location' : request.json.get('location'),
             'status' : "draft",
             'images' : request.json.get('images'),
@@ -101,100 +101,103 @@ class InterventionModel:
         conn.commit()
         return data
 
-    def get_interventions(self):
-        """method to get all interventions"""
-        query = """SELECT * from incidents WHERE type='intervention'"""
+    def get_incidents(self, incident_type):
+        """method to get all incidents"""
+        query = """SELECT * from incidents WHERE type='{0}'""".format(incident_type)
         self.cursor.execute(query)
-        interventions = self.cursor.fetchall()
-        intervention_list = []
+        incidents = self.cursor.fetchall()
+        incident_list = []
 
-        for intervention in interventions:
-            intervention_data = {
-                'id' : intervention['id'],
-                'createdOn' : intervention['createdon'],
-                'createdBy' : intervention['createdby'],
-                'type' : intervention['type'],
-                'location' : intervention['location'],
-                'status' : intervention['status'],
-                'images' : intervention['images'],
-                'videos' : intervention['videos'],
-                'title' : intervention['title'],
-                'comment' : intervention['comment']
+        if self.cursor.rowcount == 0:
+            return None        
+
+        for incident in incidents:
+            incident_data = {
+                'id' : incident['id'],
+                'createdOn' : incident['createdon'],
+                'createdBy' : incident['createdby'],
+                'type' : incident['type'],
+                'location' : incident['location'],
+                'status' : incident['status'],
+                'images' : incident['images'],
+                'videos' : incident['videos'],
+                'title' : incident['title'],
+                'comment' : incident['comment']
             }            
-            intervention_list.append(intervention_data)
-        return intervention_list
+            incident_list.append(incident_data)
+        return incident_list
 
-    def get_intervention_by_id(self, intervention_id):
-        "Method to get an intervention by id"
-        query = """SELECT * from incidents WHERE type='intervention' AND id={0}""".format(intervention_id)
+    def get_incident_by_id(self, incident_type,intervention_id):
+        "Method to get an incident by id"
+        query = """SELECT * from incidents WHERE type='{0}' AND id={1}""".format(incident_type, intervention_id)
         self.cursor.execute(query)
-        intervention = self.cursor.fetchone()
+        incident = self.cursor.fetchone()
 
         if self.cursor.rowcount == 0:
             return None
 
-        intervention_data = {
-            'id' : intervention['id'],
-            'createdOn' : intervention['createdon'],
-            'createdBy' : intervention['createdby'],
-            'type' : intervention['type'],
-            'location' : intervention['location'],
-            'status' : intervention['status'],
-            'images' : intervention['images'],
-            'videos' : intervention['videos'],
-            'title' : intervention['title'],
-            'comment' : intervention['comment']
+        incident_data = {
+            'id' : incident['id'],
+            'createdOn' : incident['createdon'],
+            'createdBy' : incident['createdby'],
+            'type' : incident['type'],
+            'location' : incident['location'],
+            'status' : incident['status'],
+            'images' : incident['images'],
+            'videos' : incident['videos'],
+            'title' : incident['title'],
+            'comment' : incident['comment']
         }
-        return intervention_data
+        return incident_data
 
-    def edit_intervention_status(self, intervention_id):
-        "Method to edit an intervention's status"
+    def edit_incident_status(self, incident_type, incident_id):
+        "Method to edit an incident's status"
         args = parser_status.parse_args()
         status = request.json.get('status')
-        if self.get_intervention_by_id(intervention_id) == None:
+        if self.get_incident_by_id(incident_type, incident_id) == None:
             return None
         
-        query = """UPDATE incidents SET status='{0}' WHERE id={1}""".format(status, intervention_id)
+        query = """UPDATE incidents SET status='{0}' WHERE id={1}""".format(status, incident_id)
         conn = self.db
         cursor = conn.cursor()
         cursor.execute(query)
         conn.commit()
         return 'updated'
 
-    def edit_intervention_location(self, intervention_id):
-        "Method to edit an intervention's location"
+    def edit_incident_location(self, incident_type, incident_id):
+        "Method to edit an incident's location"
         args = parser_location.parse_args()
         location = request.json.get('location')
-        if self.get_intervention_by_id(intervention_id) == None:
+        if self.get_incident_by_id(incident_type, incident_id) == None:
             return None
         
-        query = """UPDATE incidents SET location='{0}' WHERE id={1}""".format(location, intervention_id)
+        query = """UPDATE incidents SET location='{0}' WHERE id={1}""".format(location, incident_id)
         conn = self.db
         cursor = conn.cursor()
         cursor.execute(query)
         conn.commit()
         return 'updated'  
 
-    def edit_intervention_comment(self, intervention_id):
-        "Method to edit an intervention's comment"
+    def edit_incident_comment(self, incident_type, incident_id):
+        "Method to edit an incident's comment"
         args = parser_comment.parse_args()
         comment = request.json.get('comment')
-        if self.get_intervention_by_id(intervention_id) == None:
+        if self.get_incident_by_id(incident_type, incident_id) == None:
             return None
         
-        query = """UPDATE incidents SET comment='{0}' WHERE id={1}""".format(comment, intervention_id)
+        query = """UPDATE incidents SET comment='{0}' WHERE id={1}""".format(comment, incident_id)
         conn = self.db
         cursor = conn.cursor()
         cursor.execute(query)
         conn.commit()
         return 'updated'
 
-    def delete_intervention(self, intervention_id):
-        "Method to delete an intervention record"
-        if self.get_intervention_by_id(intervention_id) == None:
+    def delete_incident(self, incident_type, incident_id):
+        "Method to delete an incident record"
+        if self.get_incident_by_id(incident_type, incident_id) == None:
             return None
         
-        query = """DELETE FROM incidents WHERE id={0}""".format(intervention_id)
+        query = """DELETE FROM incidents WHERE id={0}""".format(incident_id)
         conn = self.db
         cursor = conn.cursor()
         cursor.execute(query)
