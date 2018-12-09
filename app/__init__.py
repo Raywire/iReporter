@@ -20,6 +20,7 @@ def create_app(config_name='development'):
     app.register_error_handler(404, url_not_found)
     app.url_map.strict_slashes = False
     app.config.from_object(APP_CONFIG[config_name])
+    app.config['SECRET_KEY'] = "d01815253d8243a221d12a681589155e"
 
     app.register_blueprint(v1)
     app.register_blueprint(v2)

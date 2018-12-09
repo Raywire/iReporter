@@ -1,6 +1,6 @@
 """Incidents Models"""
 import datetime
-from flask import request
+from flask import request, session
 from flask_restful import reqparse
 from app.db_config import connection, create_cursor
 import re
@@ -23,13 +23,6 @@ parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
 parser_status = reqparse.RequestParser(bundle_errors=True)
 parser_comment = reqparse.RequestParser(bundle_errors=True)
-
-parser.add_argument('createdBy',
-                    type=validator,
-                    required=True,
-                    nullable=False,
-                    help="This key is required and should not be empty or formatted wrongly"
-                    )
 
 parser.add_argument('location',
                     type=validate_coordinates,
@@ -84,7 +77,7 @@ class IncidentModel:
         args = parser.parse_args()
         data = {
             'createdOn' : datetime.datetime.utcnow(),
-            'createdBy' : request.json.get('createdBy'),
+            'createdBy' : session['id'],
             'type' : incident_type,
             'location' : request.json.get('location'),
             'status' : "draft",
@@ -168,8 +161,11 @@ class IncidentModel:
         "Method to edit an incident's location"
         args = parser_location.parse_args()
         location = request.json.get('location')
-        if self.get_incident_by_id(incident_type, incident_id) == None:
+        incident = self.get_incident_by_id(incident_type, incident_id)
+        if incident == None:
             return None
+        if session['id'] != incident['createdBy']:
+            return 'no access'
         
         query = """UPDATE incidents SET location='{0}' WHERE id={1}""".format(location, incident_id)
         conn = self.db
@@ -182,8 +178,12 @@ class IncidentModel:
         "Method to edit an incident's comment"
         args = parser_comment.parse_args()
         comment = request.json.get('comment')
-        if self.get_incident_by_id(incident_type, incident_id) == None:
+        incident = self.get_incident_by_id(incident_type, incident_id)
+        if incident == None:
             return None
+
+        if session['id'] != incident['createdBy']:
+            return 'no access'            
         
         query = """UPDATE incidents SET comment='{0}' WHERE id={1}""".format(comment, incident_id)
         conn = self.db
@@ -194,9 +194,13 @@ class IncidentModel:
 
     def delete_incident(self, incident_type, incident_id):
         "Method to delete an incident record"
-        if self.get_incident_by_id(incident_type, incident_id) == None:
+        incident = self.get_incident_by_id(incident_type, incident_id)
+        if incident == None:
             return None
-        
+
+        if session['id'] != incident['createdBy']:
+            return 'no access'  
+
         query = """DELETE FROM incidents WHERE id={0}""".format(incident_id)
         conn = self.db
         cursor = conn.cursor()

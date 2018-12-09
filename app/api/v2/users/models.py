@@ -19,7 +19,7 @@ def validate_email(value):
         raise ValueError("Pattern not matched")
 def validate_characters(value):
     """method to check if variable contains only characters"""
-    if not re.match(r"^[a-zA-Z\d\-']+$", value):
+    if not re.match(r"^[a-zA-Z\d\-]+$", value):
         raise ValueError("Pattern not matched")    
 
 parser = reqparse.RequestParser(bundle_errors=True)

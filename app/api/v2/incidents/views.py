@@ -1,15 +1,44 @@
 """Views for incidents"""
 from flask_restful import Resource
-from flask import jsonify, make_response
+from flask import jsonify, make_response, request, session
 from app.api.v2.incidents.models import IncidentModel
+from app.api.v2.users.models import UserModel
+from functools import wraps
 
+import jwt
+import datetime
+
+secret_key = "d01815253d8243a221d12a681589155e"
+
+
+def  token_required(f):
+    @wraps(f)
+    def decorated(*args, ** kwargs):
+        token = None
+
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+        if not token:
+            return make_response(jsonify({
+                "message" : "Token is missing"
+            }), 401)
+        try:
+            data = jwt.decode(token, secret_key)
+            current_user = UserModel().get_user_by_username(session['username'])
+        except:
+            return make_response(jsonify({
+                "message" : "Token is invalid"
+            }), 401)
+        return f(current_user, *args, **kwargs)
+    return decorated
 class Interventions(Resource):
     """Class with methods for getting and adding interventions"""
 
     def __init__(self):
         self.db = IncidentModel()
 
-    def post(self):
+    @token_required
+    def post(current_user, self):
         """method to post one or multiple interventions"""
         intervention = self.db.save_incident("intervention")
         return make_response(jsonify({
@@ -17,7 +46,8 @@ class Interventions(Resource):
             "data" : [intervention]
         }), 201)
 
-    def get(self):
+    @token_required
+    def get(current_user ,self):
         """method to get all interventions"""
         if self.db.get_incidents("intervention") == None:
             return make_response(jsonify({
@@ -36,7 +66,8 @@ class Intervention(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def get(self, intervention_id):
+    @token_required
+    def get(current_user ,self, intervention_id):
         """method to get a specific intervention"""
         incident_type = "intervention"
         incident = self.db.get_incident_by_id(incident_type, intervention_id)
@@ -50,8 +81,9 @@ class Intervention(Resource):
             "data" : [incident]
         }), 200)
 
-    def delete(self, intervention_id):
-        """method to delete intervention"""
+    @token_required
+    def delete(current_user ,self, intervention_id):
+        """method to delete intervention"""       
         delete_status = self.db.delete_incident("intervention", intervention_id)
 
         if delete_status == None:
@@ -59,6 +91,12 @@ class Intervention(Resource):
                 "status" : 200,
                 "message" : "Intervention does not exist"
             }), 200)
+
+        if delete_status == "no access":
+            return make_response(jsonify({
+                "status" : 401,
+                "message" : "Only the user who created this intervention record can delete it"
+            }), 401) 
 
         if delete_status == "deleted":
             return make_response(jsonify({
@@ -75,8 +113,14 @@ class UpdateInterventionStatus(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def patch(self, intervention_id):
+    @token_required
+    def patch(current_user ,self, intervention_id):
         """method to update intervention status"""
+        if current_user['isadmin'] == False:
+            return make_response(jsonify({
+                "status" : 401,
+                "message" : "Only an admin can change the status of an intervention"
+            }), 401)
         edit_status = self.db.edit_incident_status("intervention", intervention_id)
 
         if edit_status == None:
@@ -100,7 +144,8 @@ class UpdateInterventionLocation(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def patch(self, intervention_id):
+    @token_required
+    def patch(current_user ,self, intervention_id):
         """method to update intervention location"""
         edit_status = self.db.edit_incident_location("intervention", intervention_id)
 
@@ -109,7 +154,13 @@ class UpdateInterventionLocation(Resource):
                 "status" : 200,
                 "message" : "Intervention does not exist"
             }), 200)
-        
+
+        if edit_status == "no access":
+            return make_response(jsonify({
+                "status" : 401,
+                "message" : "Only the user who created this intervention record can edit it"
+            }), 401) 
+
         if edit_status == "updated":
             return make_response(jsonify({
                 "status" : 200,
@@ -125,7 +176,8 @@ class UpdateInterventionComment(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def patch(self, intervention_id):
+    @token_required
+    def patch(current_user ,self, intervention_id):
         """method to update intervention comment"""
         edit_status = self.db.edit_incident_comment("intervention", intervention_id)
 
@@ -134,7 +186,13 @@ class UpdateInterventionComment(Resource):
                 "status" : 200,
                 "message" : "Intervention does not exist"
             }), 200)
-        
+
+        if edit_status == "no access":
+            return make_response(jsonify({
+                "status" : 401,
+                "message" : "Only the user who created this intervention record can edit it"
+            }), 401) 
+
         if edit_status == "updated":
             return make_response(jsonify({
                 "status" : 200,
@@ -150,7 +208,8 @@ class Redflags(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def post(self):
+    @token_required
+    def post(current_user ,self):
         """method to post one or multiple redflags"""
         intervention = self.db.save_incident("redflag")
         return make_response(jsonify({
@@ -158,7 +217,8 @@ class Redflags(Resource):
             "data" : [intervention]
         }), 201)
 
-    def get(self):
+    @token_required
+    def get(current_user ,self):
         """method to get all redflags"""
         redflags = self.db.get_incidents("redflag")
         if redflags == None:
@@ -178,7 +238,8 @@ class Redflag(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def get(self, redflag_id):
+    @token_required
+    def get(current_user ,self, redflag_id):
         """method to get a specific redflag"""
         incident_type = "redflag"
         incident = self.db.get_incident_by_id(incident_type, redflag_id)
@@ -192,7 +253,8 @@ class Redflag(Resource):
             "data" : [incident]
         }), 200)
 
-    def delete(self, redflag_id):
+    @token_required
+    def delete(current_user ,self, redflag_id):
         """method to delete redflag"""
         delete_status = self.db.delete_incident("redflag", redflag_id)
 
@@ -201,6 +263,12 @@ class Redflag(Resource):
                 "status" : 200,
                 "message" : "Redflag does not exist"
             }), 200)
+
+        if delete_status == "no access":
+            return make_response(jsonify({
+                "status" : 401,
+                "message" : "Only the user who created this intervention record can delete it"
+            }), 401) 
 
         if delete_status == "deleted":
             return make_response(jsonify({
@@ -217,8 +285,14 @@ class UpdateRedflagStatus(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def patch(self, redflag_id):
+    @token_required
+    def patch(current_user ,self, redflag_id):
         """method to update redflag status"""
+        if current_user['isadmin'] == False:
+            return make_response(jsonify({
+                "status" : 401,
+                "message" : "Only an admin can change the status of a redflag"
+            }), 401)        
         edit_status = self.db.edit_incident_status("redflag", redflag_id)
 
         if edit_status == None:
@@ -242,7 +316,8 @@ class UpdateRedflagLocation(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def patch(self, redflag_id):
+    @token_required
+    def patch(current_user ,self, redflag_id):
         """method to update redflag location"""
         edit_status = self.db.edit_incident_location("redflag", redflag_id)
 
@@ -251,7 +326,13 @@ class UpdateRedflagLocation(Resource):
                 "status" : 200,
                 "message" : "Redflag does not exist"
             }), 200)
-        
+
+        if edit_status == "no access":
+            return make_response(jsonify({
+                "status" : 401,
+                "message" : "Only the user who created this intervention record can edit it"
+            }), 401) 
+
         if edit_status == "updated":
             return make_response(jsonify({
                 "status" : 200,
@@ -267,7 +348,8 @@ class UpdateRedflagComment(Resource):
     def __init__(self):
         self.db = IncidentModel()
 
-    def patch(self, redflag_id):
+    @token_required
+    def patch(current_user ,self, redflag_id):
         """method to update redflag comment"""
         edit_status = self.db.edit_incident_comment("redflag", redflag_id)
 
@@ -276,7 +358,13 @@ class UpdateRedflagComment(Resource):
                 "status" : 200,
                 "message" : "Redflag does not exist"
             }), 200)
-        
+
+        if edit_status == "no access":
+            return make_response(jsonify({
+                "status" : 401,
+                "message" : "Only the user who created this intervention record can edit it"
+            }), 401) 
+
         if edit_status == "updated":
             return make_response(jsonify({
                 "status" : 200,
