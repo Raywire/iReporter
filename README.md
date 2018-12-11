@@ -14,24 +14,46 @@ git clone https://github.com/Raywire/iReporter
 
 ### Prerequisites
 
+A database called ireporter with a user called raywire and password raywire2018 is required
+You can also add your username and password to app/db_config.py
+```
+sudo -u postgres psql
+postgres=# create database ireporter;
+postgres=# create user raywire with encrypted password 'raywire2018';
+postgres=# grant all privileges on database ireporter to raywire;
+```
+Contents of .env file
+```
+source venv/bin/activate
+
+export FLASK_ENV="development"
+
+export DATABASE_URL="dbname='ireporter' host='localhost' port='5432' user='raywire' password='raywire2018'"
+export DATABBASE_URL_TEST="dbname='test_ireporter' host='localhost' port='5432' user='raywire' password='raywire2018'"
+export SECRET_KEY="d01815253d8243a221d12a681589155e"
+
+```
+## Running the app
+Cd into the iReporter folder
+
+Create a virtual environment
+
+```
+python virtualenv venv
+```
+Run the virtual environment
+
+```
+source venv/bin/activate
+```
 Run the command to install all requirements
 
 ```
 pip install -r requirements.txt
 ```
-
-### Installing
-
-Install a virtual environment
-
 ```
-python virtualenv venv
-```
-
-Run the virtual environment
-
-```
-source venv/bin/activate
+source .env
+flask run
 ```
 
 ## Running the tests
@@ -43,6 +65,7 @@ Tests are to be run with pytest or py.test on the root of iReporter folder
 Tests check all redflag and user endpoints
 
 ```
+source .env
 pytest --cov=app/
 ```
 
@@ -81,3 +104,7 @@ versioning for the endpoints
 ## Author
 
 * **Ryan Simiyu** 
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
