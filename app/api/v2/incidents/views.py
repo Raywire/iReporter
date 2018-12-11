@@ -57,7 +57,7 @@ class Interventions(Resource):
             return make_response(jsonify({
                 "status": 200,
                 "message": "No interventions",
-                "data": self.db.get_interventions()
+                "data": self.db.get_incidents("intervention")
             }), 200)
         return make_response(jsonify({
             "status": 200,
