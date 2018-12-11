@@ -6,8 +6,10 @@ import datetime
 import os
 
 from ... import create_app
+from app.db_config import create_test_user
 
 APP = create_app()
+create_test_user()
 expiration_time = 10
 
 secret_key = os.getenv('SECRET_KEY')
