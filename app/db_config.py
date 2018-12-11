@@ -1,9 +1,10 @@
 """Database configuration"""
 import psycopg2
 import psycopg2.extras
+import os
 
-url = "dbname='ireporter' host='localhost' port='5432' user='raywire' password='raywire2018'"
-test_url = "dbname='test_ireporter' host='localhost' port='5432' user='raywire' password='raywire2018'"
+url = os.getenv('DATABASE_URL')
+test_url =  os.getenv('DATABASE_URL_TEST')
 
 def connection(url):
     con = psycopg2.connect(url)
@@ -30,7 +31,7 @@ def tables():
     table1 = """CREATE TABLE IF NOT EXISTS incidents(
         id SERIAL PRIMARY KEY NOT NULL,
         createdOn TIMESTAMP,
-        createdBy INT NOT NULL,
+        createdBy INT NOT NULL REFERENCES users(id),
         type VARCHAR(20) NOT NULL,
         location VARCHAR(50),
         status VARCHAR(20) NOT NULL,
@@ -54,5 +55,5 @@ def tables():
         public_id VARCHAR(120) NOT NULL
         );"""
 
-    queries = [table1, table2]
+    queries = [table2, table1]
     return queries

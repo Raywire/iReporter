@@ -11,7 +11,7 @@ class Config:
     DEBUG = False
     CSRF_ENABLED = True
     TESTING = False
-    SECRET_KEY = 'mysecretkey'
+    SECRET_KEY = 'd01815253d8243a221d12a681589155e'
     #DATABASE_URL = os.getenv(DATABASE_URL)
     #DATABASE_URL_TEST = os.getenv(DATABASE_URL_TEST)
 
