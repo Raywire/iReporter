@@ -5,7 +5,7 @@ general public. Users can also report on things that needs government interventi
 GitHub Pages Link: https://raywire.github.io/iReporter/
 
 [![Build Status](https://travis-ci.org/Raywire/iReporter.svg?branch=ft-user-endpoins-162357018)](https://travis-ci.org/Raywire/iReporter)
-[![Coverage Status](https://coveralls.io/repos/github/Raywire/iReporter/badge.svg?branch=ch-codecov-badge-162391750)](https://coveralls.io/github/Raywire/iReporter?branch=ch-codecov-badge-162391750)
+[![Coverage Status](https://coveralls.io/repos/github/Raywire/iReporter/badge.svg?branch=develop)](https://coveralls.io/github/Raywire/iReporter?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1569388b5eb50371ab82/maintainability)](https://codeclimate.com/github/Raywire/iReporter/maintainability)
 
 ## Getting Started
@@ -14,12 +14,12 @@ git clone https://github.com/Raywire/iReporter
 
 ### Prerequisites
 
-A database called ireporter with a user called raywire and password raywire2018 is required
+A database called ireporter with a user called raywire and password is required
 You can also add your username and password to app/db_config.py
 ```
 sudo -u postgres psql
 postgres=# create database ireporter;
-postgres=# create user raywire with encrypted password 'raywire2018';
+postgres=# create user raywire with encrypted password 'password';
 postgres=# grant all privileges on database ireporter to raywire;
 ```
 Contents of .env file
@@ -28,9 +28,9 @@ source venv/bin/activate
 
 export FLASK_ENV="development"
 
-export DATABASE_URL="dbname='ireporter' host='localhost' port='5432' user='raywire' password='raywire2018'"
-export DATABBASE_URL_TEST="dbname='test_ireporter' host='localhost' port='5432' user='raywire' password='raywire2018'"
-export SECRET_KEY="d01815253d8243a221d12a681589155e"
+export DATABASE_URL="dbname='ireporter' host='localhost' port='5432' user='raywire' password='password'"
+export DATABASE_URL_TEST="dbname='test_ireporter' host='localhost' port='5432' user='raywire' password='password'"
+export SECRET_KEY="secret-key-goes-here"
 
 ```
 ## Running the app
@@ -46,7 +46,7 @@ Run the virtual environment
 ```
 source venv/bin/activate
 ```
-Run the command to install all requirements
+Run the command to install all requirements inside the virtual environment
 
 ```
 pip install -r requirements.txt
@@ -62,7 +62,8 @@ Tests are to be run with pytest or py.test on the root of iReporter folder
 
 ### Break down into end to end tests
 
-Tests check all redflag and user endpoints
+Tests check all interventions, user sign up and login endpoints
+Note an admin user is created by default in case none is present upon running the tests
 
 ```
 source .env
@@ -72,7 +73,7 @@ pytest --cov=app/
 
 ## Deployment on Heroku
 
-https://pure-wildwood-82378.herokuapp.com/api/v1/red-flags
+https://pure-wildwood-82378.herokuapp.com/api/v2/signup
 
 ## Built With
 
@@ -82,25 +83,12 @@ https://pure-wildwood-82378.herokuapp.com/api/v1/red-flags
 ## API Endpoints
 
 versioning for the endpoints
-/api/v1/
-	 	
+/api/v2/
 
-|  Method  | Endpoint |  Description |
-|---|---|---|
-| POST  | /api/v1/red-flags  | Create a red-flag record  |
-| GET  | /api/v1/red-flags  | Fetch all red-flag records  |
-| GET  | /api/v1/red-flags/1  | Fetch a specific red-flag record  |
-| PATCH  | /api/v1/red-flags/1/location  | Edit the location of a specific record  |
-| PATCH  | /api/v1/red-flags/1/comment  | Edit the comment of a specific record  |
-| DELETE  | /api/v1/red-flags/1   | Delete a specific red flag record  |
-| PUT  | /api/v1/red-flags/1  | Edit the whole red-flag record at once  |
-| POST  | /api/v1/users  | Create a user  |
-| GET  | /api/v1/users  | Fetch all users  |
-| GET  | /api/v1/users/1  | Fetch a specific user  |
-| PATCH  | /api/v1/users/1/password  | Edit the password of a specific user  |
-| PATCH  | /api/v1/users/1/status  | Edit the comment of a specific record  |
-| DELETE  | /api/v1/users/1   | Delete a specific user  |
-| PUT  | /api/v1/users/1  | Edit the whole user details  |
+## API Documentation
+https://web.postman.co/collections/5905120-3d945622-5406-4eb7-97a0-d4b439dd7f4a?workspace=17077477-b7d0-4571-89d7-427b4b5a1bd8	 	
+
+
 ## Author
 
 * **Ryan Simiyu** 
