@@ -2,21 +2,10 @@
 import datetime
 from flask import request
 from flask_restful import reqparse
+from app.validators import validate_coordinates, validate_comment, validator
 import re
 
-INCIDENTS = []
-def validator(value):
-    """method to check for only integers"""
-    if not re.match(r"^[0-9]+$", value):
-        raise ValueError("Pattern not matched")
-def validate_coordinates(value):
-    """method to check for valid coordinates"""
-    if not re.match(r"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$", value):
-        raise ValueError("Pattern not matched")
-def validate_comment(value):
-    """method to check comment only starts with A-Z"""
-    if not re.match(r"[A-Za-z1-9]", value):
-        raise ValueError("Pattern not matched")    
+INCIDENTS = [] 
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
