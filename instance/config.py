@@ -12,7 +12,6 @@ class Config:
     CSRF_ENABLED = True
     TESTING = False
     DATABASE_URL = os.getenv('DATABASE_URL')
-    DATABASE_URL_TEST = os.getenv('DATABASE_URL_TEST')
 
 
 class DevelopmentConfig(Config):
@@ -29,6 +28,7 @@ class TestingConfig(Config):
     """
     TESTING = True
     DEBUG = True
+    DATABASE_URL = os.getenv('DATABASE_URL_TEST')
 
 
 class StagingConfig(Config):

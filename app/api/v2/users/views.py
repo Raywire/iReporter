@@ -1,6 +1,6 @@
 """Views for users"""
-from flask_restful import Resource
-from flask import jsonify, make_response, request
+from flask_restplus import Resource
+from flask import jsonify, request
 from app.api.v2.users.models import UserModel
 
 import jwt
@@ -20,10 +20,10 @@ class Users(Resource):
     def get(self):
         """method to get all users"""
 
-        return make_response(jsonify({
+        return jsonify({
             "status": 200,
             "data": self.db.get_users()
-        }), 200)
+        })
 
 
 class UserSignUp(Resource):
@@ -37,20 +37,20 @@ class UserSignUp(Resource):
         user = self.db.save_user()
 
         if user == "email exists":
-            return make_response(jsonify({
+            return jsonify({
                 "status": 400,
-                "error": "email already exists"
-            }), 400)
+                "message": "email already exists"
+            })
 
         if user == "username exists":
-            return make_response(jsonify({
+            return jsonify({
                 "status": 400,
-                "error": "username already exists"
-            }), 400)
+                "message": "username already exists"
+            })
 
         token = jwt.encode({'public_id': user['public_id'], 'exp': datetime.datetime.utcnow(
         ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')
-        return make_response(jsonify({
+        return jsonify({
             "status": 201,
             "data": [
                 {
@@ -58,7 +58,7 @@ class UserSignUp(Resource):
                     "user": user
                 }
             ]
-        }), 201)
+        })
 
 
 class UserSignIn(Resource):
@@ -71,19 +71,19 @@ class UserSignIn(Resource):
         """method to get a specific user"""
         user = self.db.sign_in()
         if user == None:
-            return make_response(jsonify({
+            return jsonify({
                 "status": 200,
                 "message": "user does not exist"
-            }), 200)
+            })
         if user == 'invalid password':
-            return make_response(jsonify({
+            return jsonify({
                 "status": 200,
                 "message": "password is invalid"
-            }), 200)
+            })
 
         token = jwt.encode({'public_id': user['public_id'], 'exp': datetime.datetime.utcnow(
         ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')
-        return make_response(jsonify({
+        return jsonify({
             "status": 200,
             "data": [
                 {
@@ -91,7 +91,7 @@ class UserSignIn(Resource):
                     "user": user
                 }
             ]
-        }), 200)
+        })
 
 
 class User(Resource):
@@ -104,44 +104,44 @@ class User(Resource):
         """method to get a specific user"""
         user = self.db.get_user_by_username(username)
         if user == None:
-            return make_response(jsonify({
+            return jsonify({
                 "status": 200,
                 "message": "user does not exist"
-            }), 200)
-        return make_response(jsonify({
+            })
+        return jsonify({
             "status": 200,
             "data": user
-        }), 200)
+        })
 
     def delete(self, user_id):
         """method to delete user"""
         user = self.db.get_user(user_id)
 
         if user == "no user":
-            return make_response(jsonify({
+            return jsonify({
                 "status": 200,
                 "error": "user does not exist"
-            }), 200)
+            })
         delete_status = self.db.delete_user(user)
         if delete_status == "deleted":
             success_message = {
                 "id": user_id,
                 "message": "user record has been deleted"
             }
-            return make_response(jsonify({
+            return jsonify({
                 "status": 200,
                 "data": success_message
-            }))
+            })
 
     def patch(self, username):
         """method to promote user"""
         user = self.db.get_user_by_username(username)
 
         if user == None:
-            return make_response(jsonify({
+            return jsonify({
                 "status": 200,
                 "error": "user does not exist"
-            }), 200)
+            })
 
         user_status = self.db.promote_user(username)
         if user_status == "updated":
@@ -149,7 +149,7 @@ class User(Resource):
                 "id": user_id,
                 "message": "User status has been updated"
             }
-            return make_response(jsonify({
+            return jsonify({
                 "status": 200,
                 "data": success_message
-            }))
+            })

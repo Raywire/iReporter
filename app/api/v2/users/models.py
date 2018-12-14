@@ -1,34 +1,15 @@
 """User models"""
 from werkzeug import generate_password_hash, check_password_hash
-from app.db_config import connection, create_cursor
+from app.db_config import connection, init_database
 from flask import request
-from flask_restful import reqparse
+from flask_restplus import reqparse
+from app.validators import validate_characters, validate_email, validate_integers
+import psycopg2.extras
 
 import datetime
 import re
 import uuid
 import os
-
-url = os.getenv('DATABASE_URL')
-
-
-def validate_integers(value):
-    """method to check for only integers"""
-    if not re.match(r"^[0-9]+$", value):
-        raise ValueError("Pattern not matched")
-
-
-def validate_email(value):
-    """method to check for valid coordinates"""
-    if not re.match(r"^[^@]+@[^@]+\.[^@]+$", value):
-        raise ValueError("Pattern not matched")
-
-
-def validate_characters(value):
-    """method to check if variable contains only characters"""
-    if not re.match(r"^[a-zA-Z\d\-]+$", value):
-        raise ValueError("Pattern not matched")
-
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_signin = reqparse.RequestParser(bundle_errors=True)
@@ -110,8 +91,15 @@ class UserModel:
         self.registered = datetime.datetime.utcnow()
         self.isAdmin = False
         self.public_id = str(uuid.uuid4())
-        self.db = connection(url)
-        self.cursor = create_cursor(url)
+        self.db = init_database()
+
+    def execute_query(self, query):
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()
+        conn.close()   
 
     def set_password(self, password):
         return generate_password_hash(password)
@@ -143,29 +131,31 @@ class UserModel:
 
         query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
             data['firstname'], data['lastname'], data['othernames'], data['email'], data['phoneNumber'], data['username'], data['registered'], data['password'], data['isAdmin'], data['public_id'])
-        conn = self.db
-        cursor = conn.cursor()
-        cursor.execute(query)
-        conn.commit()
+
+        self.execute_query(query)
         return data
 
     def get_user_by_email(self, email):
         "Method to get a user by email"
         query = """SELECT * from users WHERE email='{0}'""".format(email)
-        self.cursor.execute(query)
-        row = self.cursor.fetchall()
+        conn = self.db
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)        
+        cursor.execute(query)
+        row = cursor.fetchall()
 
-        if self.cursor.rowcount == 0:
+        if cursor.rowcount == 0:
             return None
         return row
 
     def get_user_by_username(self, username):
         "Method to get a user by username"
         query = """SELECT * from users WHERE username='{0}'""".format(username)
-        self.cursor.execute(query)
-        row = self.cursor.fetchone()
+        conn = self.db
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)          
+        cursor.execute(query)
+        row = cursor.fetchone()
 
-        if self.cursor.rowcount == 0:
+        if cursor.rowcount == 0:
             return None
         return row
 
@@ -173,10 +163,12 @@ class UserModel:
         "Method to get a user by username"
         query = """SELECT * from users WHERE public_id='{0}'""".format(
             public_id)
-        self.cursor.execute(query)
-        row = self.cursor.fetchone()
+        conn = self.db
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)              
+        cursor.execute(query)
+        row = cursor.fetchone()
 
-        if self.cursor.rowcount == 0:
+        if cursor.rowcount == 0:
             return None
         return row
 
@@ -211,8 +203,10 @@ class UserModel:
     def get_users(self):
         """method to get all users"""
         query = """SELECT * from users"""
-        self.cursor.execute(query)
-        rows = self.cursor.fetchall()
+        conn = self.db
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)          
+        cursor.execute(query)
+        rows = cursor.fetchall()
         return rows
 
     def promote_user(self, username):
@@ -222,8 +216,6 @@ class UserModel:
 
         query = """UPDATE users SET isadmin='{0}' WHERE username={1}""".format(
             isAdmin, username)
-        conn = self.db
-        cursor = conn.cursor()
-        cursor.execute(query)
-        conn.commit()
+
+        self.execute_query(query)
         return 'updated'

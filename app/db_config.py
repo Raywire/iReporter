@@ -1,22 +1,20 @@
 """Database configuration"""
 import psycopg2
-import psycopg2.extras
 import os
+from instance.config import APP_CONFIG
+from werkzeug import generate_password_hash, check_password_hash
 
-url = os.getenv('DATABASE_URL')
-test_url = os.getenv('DATABASE_URL_TEST')
+environment = os.getenv('FLASK_CONFIG')
+url = APP_CONFIG["testing"].DATABASE_URL
 
 
 def connection(url):
     con = psycopg2.connect(url)
     return con
 
-
-def create_cursor(url):
-    conn = connection(url)
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    return cursor
-
+def init_database():
+    con = connection(url)
+    return con
 
 def create_tables():
     conn = connection(url)
@@ -29,7 +27,12 @@ def create_tables():
 
 
 def destroy_tables():
-    pass
+    query = """DROP TABLE IF EXISTS users, incidents;"""
+    test_url = os.getenv('DATABASE_URL_TEST')
+    conn = connection(test_url)
+    cursor =  conn.cursor()
+    cursor.execute(query)
+    conn.commit()
 
 
 def tables():
@@ -57,21 +60,22 @@ def tables():
         registered TIMESTAMP,
         isAdmin boolean,
         password VARCHAR(120) NOT NULL,
-        public_id VARCHAR(120) NOT NULL
+        public_id VARCHAR(120) NOT NULL UNIQUE
         );"""
 
     queries = [table2, table1]
     return queries
 
 
-def create_test_user():
+def create_super_user():
+    password = generate_password_hash("1212121")
     test_user = {
         "email": "ryanwire@outlook.com",
-        "firstname": "Ryan1",
+        "firstname": "Ryan",
         "isAdmin": True,
         "lastname": "Wire",
         "othernames": "Simiyu",
-        "password": "pbkdf2:sha256:50000$ziQztAJR$ea5d5a2cc01a0d919d60fe803ced2a8c8f0974f018607012f87802dc116f1ead",
+        "password": password,
         "phoneNumber": "0727272727",
         "public_id": "f3b8a1c3-f775-49e1-991c-5bfb963eb419",
         "registered": "Sat, 08 Dec 2018 08:34:45 GMT",
