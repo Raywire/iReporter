@@ -2,8 +2,12 @@
 from flask_restful import Api
 from flask import Blueprint
 from app.api.v2.users.views import User, Users, UserSignUp, UserSignIn
-from app.api.v2.incidents.views import Intervention, Interventions, UpdateInterventionStatus, UpdateInterventionLocation, UpdateInterventionComment
-from app.api.v2.incidents.views import Redflag, Redflags, UpdateRedflagStatus, UpdateRedflagLocation, UpdateRedflagComment
+from app.api.v2.incidents.views import (
+    Intervention, Interventions, UpdateInterventionStatus,
+    UpdateInterventionLocation, UpdateInterventionComment)
+from app.api.v2.incidents.views import (
+    Redflag, Redflags, UpdateRedflagStatus, UpdateRedflagLocation,
+    UpdateRedflagComment)
 
 VERSION_TWO = Blueprint('api_v2', __name__, url_prefix='/api/v2')
 
