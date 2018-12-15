@@ -6,7 +6,7 @@ Project: iReporter
 Description:iReporter enables any citizen to bring any form of corruption to the notice of appropriate authorities and the
 general public. Users can also report on things that needs government intervention.
 
-GitHub Pages Link: https://raywire.github.io/iReporter/
+GitHub Pages Link: https://raywire.github.io/iReporter/UI
 
 ## Getting Started
 
@@ -14,8 +14,10 @@ git clone https://github.com/Raywire/iReporter
 
 ### Prerequisites
 
-A database called ireporter with a user called raywire and password is required
-You can also add your username and password to app/db_config.py
+A postgres database is required
+You can add your username and password to app/db_config.py
+
+**Setting up the database with a user who has all privileges**
 ```
 sudo -u postgres psql
 postgres=# create database ireporter;
@@ -27,10 +29,12 @@ Contents of .env file
 source venv/bin/activate
 
 export FLASK_ENV="development"
-
+export FLASK_CONFIG="development"
 export DATABASE_URL="dbname='ireporter' host='localhost' port='5432' user='raywire' password='password'"
 export DATABASE_URL_TEST="dbname='test_ireporter' host='localhost' port='5432' user='raywire' password='password'"
 export SECRET_KEY="secret-key-goes-here"
+export MAIL_USERNAME="your-gmail-account"
+export MAIL_PASSWORD="your-password"
 
 ```
 ## Running the app
@@ -59,11 +63,12 @@ flask run
 ## Running the tests
 
 Tests are to be run with pytest or py.test on the root of iReporter folder
+Set FLASK_CONFIG to testing on your .env file before running tests
 
 ### Break down into end to end tests
 
 Tests check all interventions, user sign up and login endpoints
-Note an admin user is created by default in case none is present upon running the tests
+Note a super user is created by default in case none is present upon running the app
 
 ```
 source .env
@@ -73,7 +78,7 @@ pytest --cov=app/
 
 ## Deployment on Heroku
 
-https://pure-wildwood-82378.herokuapp.com/api/v2/signup
+https://enigmatic-inlet-54773.herokuapp.com/api/v2/auth/signup
 
 ## Built With
 
@@ -86,7 +91,7 @@ versioning for the endpoints
 /api/v2/
 
 ## API Documentation
-https://web.postman.co/collections/5905120-3d945622-5406-4eb7-97a0-d4b439dd7f4a?workspace=17077477-b7d0-4571-89d7-427b4b5a1bd8	 	
+https://web.postman.co/collections/5905120-3d945622-5406-4eb7-97a0-d4b439dd7f4a?workspace=17077477-b7d0-4571-89d7-427b4b5a1bd8
 
 
 ## Author

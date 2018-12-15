@@ -2,7 +2,7 @@
 from flask import Flask, Blueprint
 from instance.config import APP_CONFIG
 from flask import jsonify, make_response
-from app.db_config import create_tables, create_super_user
+from .db_config import create_tables, create_super_user
 import os
 
 from .api.v1.routes import VERSION_ONE as v1
