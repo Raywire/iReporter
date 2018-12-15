@@ -4,13 +4,13 @@ from flask import jsonify, request
 from app.api.v2.incidents.models import IncidentModel
 from app.api.v2.users.models import UserModel
 from functools import wraps
+from app.api.v2.send_email import send
 
 import jwt
 import datetime
 import os
 
 secret_key = os.getenv('SECRET_KEY')
-
 
 def token_required(f):
     @wraps(f)
@@ -32,7 +32,6 @@ def token_required(f):
             }, 401
         return f(current_user, *args, **kwargs)
     return decorated
-
 
 class Interventions(Resource):
     """Class with methods for getting and adding interventions"""
@@ -63,7 +62,6 @@ class Interventions(Resource):
             "status": 200,
             "data": self.db.get_incidents("intervention")
         })
-
 
 class Intervention(Resource):
     """Class with methods for getting, deleting and updating a  specific intervention"""
@@ -113,7 +111,6 @@ class Intervention(Resource):
                 }
             })
 
-
 class UpdateInterventionStatus(Resource):
     """Class with method for updating an intervention's status"""
 
@@ -138,14 +135,16 @@ class UpdateInterventionStatus(Resource):
             })
 
         if edit_status == "updated":
+            if current_user['email']:
+                status = self.db.get_incident_status()
+                send(current_user['email'], 'intervention', intervention_id, status)
             return jsonify({
                 "status": 200,
                 "data": [{
                     "id": intervention_id,
                     "message": "Updated intervention record status"
                 }]
-            })
-
+            })            
 
 class UpdateInterventionLocation(Resource):
     """Class with method for updating an intervention's location"""
@@ -180,7 +179,6 @@ class UpdateInterventionLocation(Resource):
                 }]
             })
 
-
 class UpdateInterventionComment(Resource):
     """Class with method for updating an intervention's comment"""
 
@@ -213,7 +211,6 @@ class UpdateInterventionComment(Resource):
                     "message": "Updated intervention record's comment"
                 }]
             })
-
 
 class Redflags(Resource):
     """Class with methods for getting and adding redflags"""
@@ -294,7 +291,6 @@ class Redflag(Resource):
                 }
             })
 
-
 class UpdateRedflagStatus(Resource):
     """Class with method for updating an redflag's status"""
 
@@ -318,6 +314,9 @@ class UpdateRedflagStatus(Resource):
             })
 
         if edit_status == "updated":
+            if current_user['email']:
+                status = self.db.get_incident_status()
+                send(current_user['email'], 'redflag', redflag_id, status)            
             return jsonify({
                 "status": 200,
                 "data": [{
@@ -325,7 +324,6 @@ class UpdateRedflagStatus(Resource):
                     "message": "Updated redflag record status"
                 }]
             })
-
 
 class UpdateRedflagLocation(Resource):
     """Class with method for updating an redflag's location"""
