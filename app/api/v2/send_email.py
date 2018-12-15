@@ -1,8 +1,8 @@
 import smtplib
 import os
 
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 email_address = os.getenv('MAIL_USERNAME')
 email_password = os.getenv('MAIL_PASSWORD')
