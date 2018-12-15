@@ -4,8 +4,8 @@ import os
 from instance.config import APP_CONFIG
 from werkzeug import generate_password_hash, check_password_hash
 
-environment = os.getenv('FLASK_CONFIG')
-url = APP_CONFIG["development"].DATABASE_URL
+configuration = os.getenv('FLASK_CONFIG')
+url = APP_CONFIG[configuration].DATABASE_URL
 
 
 def connection(url):
