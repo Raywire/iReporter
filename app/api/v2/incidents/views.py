@@ -56,7 +56,7 @@ class Interventions(Resource):
             return jsonify({
                 "status": 200,
                 "message": "No interventions",
-                "data": self.db.get_incidents("intervention")
+                "data": []
             })
         return jsonify({
             "status": 200,
@@ -235,7 +235,7 @@ class Redflags(Resource):
             return jsonify({
                 "status": 200,
                 "message": "No redflags",
-                "data": redflags
+                "data": []
             })
         return jsonify({
             "status": 200,
