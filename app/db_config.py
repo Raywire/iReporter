@@ -5,7 +5,7 @@ from instance.config import APP_CONFIG
 from werkzeug import generate_password_hash, check_password_hash
 
 configuration = os.getenv('FLASK_CONFIG')
-url = APP_CONFIG[configuration].DATABASE_URL
+url = "dbname='doegbut4609qk' host='ec2-54-227-249-201.compute-1.amazonaws.com' port='5432' user='labsbmsbsepgpz' password='71013fe01c407f6385bc2c0e107a6594cf20e8e5c71c05bbbd46d07350133dc7'"
 
 
 def connection(url):

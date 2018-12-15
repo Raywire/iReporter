@@ -181,22 +181,18 @@ class UserModel:
         user = self.get_user_by_username(data['username'])
         if user != None:
             user_data = {
-                'id': user['id'],
                 'firstname': user['firstname'],
                 'lastname': user['lastname'],
                 'othernames': user['othernames'],
                 'email': user['email'],
                 'phoneNumber': user['phonenumber'],
                 'username': user['username'],
-                'registered': user['registered'],
-                'password': user['password'],
-                'isAdmin': user['isadmin'],
                 'public_id': user['public_id']
             }
 
         if user == None:
             return None
-        if check_password_hash(user_data['password'], data['password']) == False:
+        if check_password_hash(user['password'], data['password']) == False:
             return 'invalid password'
         return user_data
 
