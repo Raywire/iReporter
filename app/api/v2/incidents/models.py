@@ -135,6 +135,10 @@ class IncidentModel:
             status, incident_id)
         self.execute_query(query)
         return 'updated'
+        
+    def get_incident_status(self):
+        current_status = request.json.get('status')
+        return current_status
 
     def edit_incident_location(self, incident_type, incident_id, current_user_id):
         "Method to edit an incident's location"
