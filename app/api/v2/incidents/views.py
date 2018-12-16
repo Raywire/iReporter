@@ -1,37 +1,29 @@
 """Views for incidents"""
 from flask_restplus import Resource
-from flask import jsonify, request
+from flask import jsonify
 from app.api.v2.incidents.models import IncidentModel
-from app.api.v2.users.models import UserModel
-from functools import wraps
 from app.api.v2.send_email import send
+from app.api.v2.decorator import token_required
 
-import jwt
-import datetime
-import os
 
-secret_key = os.getenv('SECRET_KEY')
+def nonexistent_incident(incident_type):
+    return jsonify({
+        "status": 200,
+        "message": "{0} does not exist".format(incident_type)
+    })
 
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, ** kwargs):
-        token = None
 
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
-        if not token:
-            return {
-                "message": "Token is missing"
-            }, 401
-        try:
-            data = jwt.decode(token, secret_key, algorithms=['HS256'])
-            current_user = UserModel().get_user_by_public_id(data['public_id'])
-        except:
-            return {
-                "message": "Token is invalid"
-            }, 401
-        return f(current_user, *args, **kwargs)
-    return decorated
+def owner_can_edit():
+    return jsonify({
+        "status": 401,
+        "message": "Only the user who created this record can edit it"
+    })
+
+def draft_is_editable():
+    return jsonify({
+        "status": 401,
+        "message": "Incident can only be edited when the status is draft"
+    })
 
 class Interventions(Resource):
     """Class with methods for getting and adding interventions"""
@@ -63,8 +55,9 @@ class Interventions(Resource):
             "data": self.db.get_incidents("intervention")
         })
 
+
 class Intervention(Resource):
-    """Class with methods for getting, deleting and updating a  specific intervention"""
+    """Class with methods for getting and deleting a  specific intervention"""
 
     def __init__(self):
         self.db = IncidentModel()
@@ -75,10 +68,7 @@ class Intervention(Resource):
         incident_type = "intervention"
         incident = self.db.get_incident_by_id(incident_type, intervention_id)
         if incident is None:
-            return jsonify({
-                "status": 200,
-                "message": "Intervention does not exist"
-            })
+            return nonexistent_incident('Intervention')
         return jsonify({
             "status": 200,
             "data": [incident]
@@ -91,18 +81,15 @@ class Intervention(Resource):
             "intervention", intervention_id, current_user['id'])
 
         if delete_status is None:
-            return jsonify({
-                "status": 200,
-                "message": "Intervention does not exist"
-            })
+            return nonexistent_incident("Intervention")
 
-        if delete_status == "no access":
+        if delete_status is False:
             return jsonify({
                 "status": 401,
-                "message": "Only the user who created this intervention record can delete it"
+                "message": "Only the creator of this record can delete it"
             })
 
-        if delete_status == "deleted":
+        if delete_status is True:
             return jsonify({
                 "status": 200,
                 "data": {
@@ -110,6 +97,7 @@ class Intervention(Resource):
                     "message": "Intervention record has been deleted"
                 }
             })
+
 
 class UpdateInterventionStatus(Resource):
     """Class with method for updating an intervention's status"""
@@ -123,28 +111,27 @@ class UpdateInterventionStatus(Resource):
         if current_user['isadmin'] is False:
             return jsonify({
                 "status": 401,
-                "message": "Only an admin can change the status of an intervention"
+                "message": "Only an admin can change the status of the record"
             })
         edit_status = self.db.edit_incident_status(
             "intervention", intervention_id)
 
         if edit_status is None:
-            return jsonify({
-                "status": 200,
-                "message": "Intervention does not exist"
-            })
+            return nonexistent_incident("Intervention")
 
-        if edit_status == "updated":
+        if edit_status is True:
             if current_user['email']:
                 status = self.db.get_incident_status()
-                send(current_user['email'], 'intervention', intervention_id, status)
+                send(current_user['email'], 'intervention',
+                     intervention_id, status)
             return jsonify({
                 "status": 200,
                 "data": [{
                     "id": intervention_id,
                     "message": "Updated intervention record status"
                 }]
-            })            
+            })
+
 
 class UpdateInterventionLocation(Resource):
     """Class with method for updating an intervention's location"""
@@ -159,18 +146,15 @@ class UpdateInterventionLocation(Resource):
             "intervention", intervention_id, current_user['id'])
 
         if edit_status is None:
-            return jsonify({
-                "status": 200,
-                "message": "Intervention does not exist"
-            })
+            return nonexistent_incident("Intervention")
 
-        if edit_status == "no access":
-            return jsonify({
-                "status": 401,
-                "message": "Only the user who created this intervention record can edit it"
-            })
+        if edit_status == 'not draft':
+            return draft_is_editable()            
 
-        if edit_status == "updated":
+        if edit_status is False:
+            return owner_can_edit()
+
+        if edit_status is True:
             return jsonify({
                 "status": 200,
                 "data": [{
@@ -178,6 +162,7 @@ class UpdateInterventionLocation(Resource):
                     "message": "Updated intervention record's location"
                 }]
             })
+
 
 class UpdateInterventionComment(Resource):
     """Class with method for updating an intervention's comment"""
@@ -192,18 +177,15 @@ class UpdateInterventionComment(Resource):
             "intervention", intervention_id, current_user['id'])
 
         if edit_status is None:
-            return jsonify({
-                "status": 200,
-                "message": "Intervention does not exist"
-            })
+            return nonexistent_incident("Intervention")
 
-        if edit_status == "no access":
-            return jsonify({
-                "status": 401,
-                "message": "Only the user who created this intervention record can edit it"
-            })
+        if edit_status == 'not draft':
+            return draft_is_editable()           
 
-        if edit_status == "updated":
+        if edit_status is False:
+            return owner_can_edit()
+
+        if edit_status is True:
             return jsonify({
                 "status": 200,
                 "data": [{
@@ -211,6 +193,7 @@ class UpdateInterventionComment(Resource):
                     "message": "Updated intervention record's comment"
                 }]
             })
+
 
 class Redflags(Resource):
     """Class with methods for getting and adding redflags"""
@@ -244,7 +227,7 @@ class Redflags(Resource):
 
 
 class Redflag(Resource):
-    """Class with methods for getting, deleting and updating a  specific redflag"""
+    """Class with methods for getting and deleting specific redflag"""
 
     def __init__(self):
         self.db = IncidentModel()
@@ -255,10 +238,7 @@ class Redflag(Resource):
         incident_type = "redflag"
         incident = self.db.get_incident_by_id(incident_type, redflag_id)
         if incident is None:
-            return jsonify({
-                "status": 200,
-                "message": "Redflag does not exist"
-            })
+            return nonexistent_incident("Redflag")
         return jsonify({
             "status": 200,
             "data": [incident]
@@ -271,18 +251,15 @@ class Redflag(Resource):
             "redflag", redflag_id, current_user['id'])
 
         if delete_status is None:
-            return jsonify({
-                "status": 200,
-                "message": "Redflag does not exist"
-            })
+            return nonexistent_incident("Redflag")
 
-        if delete_status == "no access":
+        if delete_status is False:
             return jsonify({
                 "status": 401,
-                "message": "Only the user who created this redflag record can delete it"
+                "message": "Only the creator of this record can delete it"
             })
 
-        if delete_status == "deleted":
+        if delete_status is True:
             return jsonify({
                 "status": 200,
                 "data": {
@@ -290,6 +267,7 @@ class Redflag(Resource):
                     "message": "Redflag record has been deleted"
                 }
             })
+
 
 class UpdateRedflagStatus(Resource):
     """Class with method for updating an redflag's status"""
@@ -308,15 +286,12 @@ class UpdateRedflagStatus(Resource):
         edit_status = self.db.edit_incident_status("redflag", redflag_id)
 
         if edit_status is None:
-            return jsonify({
-                "status": 200,
-                "message": "Redflag does not exist"
-            })
+            return nonexistent_incident("Redflag")
 
-        if edit_status == "updated":
+        if edit_status is True:
             if current_user['email']:
                 status = self.db.get_incident_status()
-                send(current_user['email'], 'redflag', redflag_id, status)            
+                send(current_user['email'], 'redflag', redflag_id, status)
             return jsonify({
                 "status": 200,
                 "data": [{
@@ -324,6 +299,7 @@ class UpdateRedflagStatus(Resource):
                     "message": "Updated redflag record status"
                 }]
             })
+
 
 class UpdateRedflagLocation(Resource):
     """Class with method for updating an redflag's location"""
@@ -338,18 +314,15 @@ class UpdateRedflagLocation(Resource):
             "redflag", redflag_id, current_user['id'])
 
         if edit_status is None:
-            return jsonify({
-                "status": 200,
-                "message": "Redflag does not exist"
-            })
+            return nonexistent_incident("Redflag")
 
-        if edit_status == "no access":
-            return jsonify({
-                "status": 401,
-                "message": "Only the user who created this redflag record can edit it"
-            })
+        if edit_status == 'not draft':
+            return draft_is_editable()             
 
-        if edit_status == "updated":
+        if edit_status is False:
+            return owner_can_edit()
+
+        if edit_status is True:
             return jsonify({
                 "status": 200,
                 "data": [{
@@ -372,18 +345,15 @@ class UpdateRedflagComment(Resource):
             "redflag", redflag_id, current_user['id'])
 
         if edit_status is None:
-            return jsonify({
-                "status": 200,
-                "message": "Redflag does not exist"
-            })
+            return nonexistent_incident("Redflag")
 
-        if edit_status == "no access":
-            return jsonify({
-                "status": 401,
-                "message": "Only the user who created this redflag record can edit it"
-            })
+        if edit_status == 'not draft':
+            return draft_is_editable()             
 
-        if edit_status == "updated":
+        if edit_status is False:
+            return owner_can_edit()
+
+        if edit_status is True:
             return jsonify({
                 "status": 200,
                 "data": [{

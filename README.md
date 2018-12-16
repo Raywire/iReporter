@@ -91,7 +91,7 @@ versioning for the endpoints
 /api/v2/
 
 ## API Documentation
-https://web.postman.co/collections/5905120-3d945622-5406-4eb7-97a0-d4b439dd7f4a?workspace=17077477-b7d0-4571-89d7-427b4b5a1bd8
+[Postman Documentation](https://web.postman.co/collections/5905120-3d945622-5406-4eb7-97a0-d4b439dd7f4a?workspace=17077477-b7d0-4571-89d7-427b4b5a1bd8)
 
 
 ## Author

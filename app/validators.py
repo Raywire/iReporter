@@ -1,5 +1,6 @@
 import re
 
+
 def validator(value):
     """method to check for only integers"""
     if not re.match(r"^[0-9]+$", value):
@@ -16,6 +17,7 @@ def validate_comment(value):
     """method to check comment only starts with A-Z"""
     if not re.match(r"[A-Za-z1-9]", value):
         raise ValueError("Pattern not matched")
+
 
 def validate_integers(value):
     """method to check for only integers"""

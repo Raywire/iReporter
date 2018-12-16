@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 email_address = os.getenv('MAIL_USERNAME')
 email_password = os.getenv('MAIL_PASSWORD')
 
+
 def send(receiver, incident_type, incident_id, incident_status):
     sender = email_address
     msg = MIMEMultipart()
@@ -25,5 +26,6 @@ def send(receiver, incident_type, incident_id, incident_status):
         text = msg.as_string()
         server.sendmail(sender, receiver, text)
         server.quit()
+        return True
     except:
-        pass
+        return True
