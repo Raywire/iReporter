@@ -1,7 +1,7 @@
 """Incidents Models"""
 import datetime
 from flask import request
-from flask_restplus import reqparse
+from flask_restful import reqparse
 from app.db_config import connection, init_database
 from app.validators import validate_comment, validate_coordinates, validator
 import psycopg2.extras
@@ -16,44 +16,22 @@ parser.add_argument('location',
                     type=validate_coordinates,
                     required=True,
                     nullable=False,
-                    
+                    help="This key is required and should not be empty or formatted wrongly"
                     )
-
-parser_location.add_argument('location',
-                             type=validate_coordinates,
-                             required=True,
-                             nullable=False,
-                            
-                             )
 
 parser.add_argument('comment',
                     type=validate_comment,
                     required=True,
                     nullable=False,
-                    
+                    help="This key is required and should not be empty or formatted wrongly"
                     )
-
-parser_comment.add_argument('comment',
-                            type=validate_comment,
-                            required=True,
-                            nullable=False,
-                            
-                            )
 
 parser.add_argument('title',
                     type=validate_comment,
                     required=True,
                     nullable=False,
-                    
+                    help="This key is required and should not be empty or formatted wrongly"
                     )
-
-parser_status.add_argument('status',
-                           choices=['draft', 'under investigation',
-                                    'rejected', 'resolved'],
-                           required=True,
-                           nullable=False,
-                           help="(Accepted values: draft, under investigatin, rejected, resolved)"
-                           )
 
 
 class IncidentModel:
@@ -68,7 +46,7 @@ class IncidentModel:
         cursor.execute(query)
         conn.commit()
         cursor.close()
-        conn.close()      
+        conn.close()
 
     def save_incident(self, incident_type, user_id):
         """method to post one or multiple incidents"""
@@ -85,11 +63,12 @@ class IncidentModel:
             'comment': request.json.get('comment')
         }
 
-        query = """INSERT INTO incidents (createdon,createdby,type,location,status,images,videos,title,comment) VALUES('{0}',{1},'{2}','{3}','{4}','{5}','{6}','{7}','{8}');""".format(
-            data['createdOn'], data['createdBy'], data['type'], data['location'], data['status'], data['images'], data['videos'], data['title'], data['comment'])
+        query = """INSERT INTO incidents (createdon,createdby,type,location,status,images,videos,title,comment) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        values = data['createdOn'], data['createdBy'], data['type'], data['location'], data['status'], data['images'], data['videos'], data['title'], data['comment']
+                
         conn = self.db
         cursor = conn.cursor()
-        cursor.execute(query)
+        cursor.execute(query, values)
         conn.commit()
         return data
 
@@ -98,7 +77,7 @@ class IncidentModel:
         query = """SELECT * from incidents WHERE type='{0}'""".format(
             incident_type)
         conn = self.db
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)            
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cursor.execute(query)
         incidents = cursor.fetchall()
         incident_list = []
@@ -115,7 +94,7 @@ class IncidentModel:
         query = """SELECT * from incidents WHERE type='{0}' AND id={1}""".format(
             incident_type, incident_id)
         conn = self.db
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)            
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cursor.execute(query)
         incident = cursor.fetchone()
 
@@ -126,6 +105,13 @@ class IncidentModel:
 
     def edit_incident_status(self, incident_type, incident_id):
         "Method to edit an incident's status"
+        parser_status.add_argument('status',
+                                   choices=['draft', 'under investigation',
+                                            'rejected', 'resolved'],
+                                   required=True,
+                                   nullable=False,
+                                   help="(Accepted values: draft, under investigation, rejected, resolved)"
+                                   )
         args = parser_status.parse_args()
         status = request.json.get('status')
         if self.get_incident_by_id(incident_type, incident_id) is None:
@@ -134,29 +120,43 @@ class IncidentModel:
         query = """UPDATE incidents SET status='{0}' WHERE id={1}""".format(
             status, incident_id)
         self.execute_query(query)
-        return 'updated'
-        
+        return True
+
     def get_incident_status(self):
         current_status = request.json.get('status')
         return current_status
 
     def edit_incident_location(self, incident_type, incident_id, current_user_id):
         "Method to edit an incident's location"
+        parser_location.add_argument('location',
+                                     type=validate_coordinates,
+                                     required=True,
+                                     nullable=False,
+                                     help="This key is required and should not be empty or formatted wrongly"
+                                     )
         args = parser_location.parse_args()
         location = request.json.get('location')
         incident = self.get_incident_by_id(incident_type, incident_id)
         if incident is None:
             return None
         if current_user_id != incident['createdby']:
-            return 'no access'
+            return False
+        if incident['status'] != 'draft':
+            return 'not draft'
 
         query = """UPDATE incidents SET location='{0}' WHERE id={1}""".format(
             location, incident_id)
         self.execute_query(query)
-        return 'updated'
+        return True
 
     def edit_incident_comment(self, incident_type, incident_id, current_user_id):
         "Method to edit an incident's comment"
+        parser_comment.add_argument('comment',
+                                    type=validate_comment,
+                                    required=True,
+                                    nullable=False,
+                                    help="This key is required and should not be empty or formatted wrongly"
+                                    )
         args = parser_comment.parse_args()
         comment = request.json.get('comment')
         incident = self.get_incident_by_id(incident_type, incident_id)
@@ -164,12 +164,15 @@ class IncidentModel:
             return None
 
         if current_user_id != incident['createdby']:
-            return 'no access'
+            return False
+
+        if incident['status'] != 'draft':
+            return 'not draft'
 
         query = """UPDATE incidents SET comment='{0}' WHERE id={1}""".format(
             comment, incident_id)
         self.execute_query(query)
-        return 'updated'
+        return True
 
     def delete_incident(self, incident_type, incident_id, current_user_id):
         "Method to delete an incident record"
@@ -178,8 +181,8 @@ class IncidentModel:
             return None
 
         if current_user_id != incident['createdby']:
-            return 'no access'
+            return False
 
         query = """DELETE FROM incidents WHERE id={0}""".format(incident_id)
         self.execute_query(query)
-        return 'deleted'
+        return True

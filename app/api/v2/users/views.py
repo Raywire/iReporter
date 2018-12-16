@@ -2,6 +2,7 @@
 from flask_restplus import Resource
 from flask import jsonify, request
 from app.api.v2.users.models import UserModel
+from app.api.v2.decorator import token_required
 
 import jwt
 import datetime
@@ -11,15 +12,31 @@ secret_key = os.getenv('SECRET_KEY')
 expiration_time = 59
 
 
+def nonexistent_user():
+    return jsonify({
+        "status": 200,
+        "message": "user does not exist"
+    })
+
+
+def admin_user():
+    return jsonify({
+        "status": 200,
+        "message": "Only admin can access this route"
+    })
+
+
 class Users(Resource):
     """Class with methods for getting and adding users"""
 
     def __init__(self):
         self.db = UserModel()
 
-    def get(self):
+    @token_required
+    def get(current_user, self):
         """method to get all users"""
-
+        if current_user['isadmin'] is False:
+            return admin_user()
         return jsonify({
             "status": 200,
             "data": self.db.get_users()
@@ -70,12 +87,9 @@ class UserSignIn(Resource):
     def post(self):
         """method to get a specific user"""
         user = self.db.sign_in()
-        if user == None:
-            return jsonify({
-                "status": 200,
-                "message": "user does not exist"
-            })
-        if user == 'invalid password':
+        if user is None:
+            return nonexistent_user()
+        if user is False:
             return jsonify({
                 "status": 200,
                 "message": "password is invalid"
@@ -95,37 +109,42 @@ class UserSignIn(Resource):
 
 
 class User(Resource):
-    """Class with methods for getting, deleting and updating a  specific user"""
+    """Class with methods for getting and deleting a  specific user"""
 
     def __init__(self):
         self.db = UserModel()
 
-    def get(self, username):
+    @token_required
+    def get(current_user, self, username):
         """method to get a specific user"""
+        if current_user['isadmin'] is False:
+            return admin_user()
         user = self.db.get_user_by_username(username)
-        if user == None:
-            return jsonify({
-                "status": 200,
-                "message": "user does not exist"
-            })
+        if user is None:
+            return nonexistent_user()
         return jsonify({
             "status": 200,
             "data": user
         })
 
-    def delete(self, user_id):
+    @token_required
+    def delete(current_user, self, username):
         """method to delete user"""
-        user = self.db.get_user(user_id)
+        user = self.db.get_user_by_username(username)
 
-        if user == "no user":
+        if user is None:
+            return nonexistent_user()
+
+        if current_user['isadmin'] is not True:
             return jsonify({
-                "status": 200,
-                "error": "user does not exist"
+                "status": 401,
+                "message": "Only an admin can delete a user"
             })
-        delete_status = self.db.delete_user(user)
-        if delete_status == "deleted":
+
+        delete_status = self.db.delete_user(username)
+        if delete_status is True:
             success_message = {
-                "id": user_id,
+                "username": username,
                 "message": "user record has been deleted"
             }
             return jsonify({
@@ -133,20 +152,31 @@ class User(Resource):
                 "data": success_message
             })
 
-    def patch(self, username):
+
+class UserStatus(Resource):
+    """Class with method for updating a  specific user admin status"""
+
+    def __init__(self):
+        self.db = UserModel()
+
+    @token_required
+    def patch(current_user, self, username):
         """method to promote user"""
         user = self.db.get_user_by_username(username)
 
-        if user == None:
+        if user is None:
+            return nonexistent_user()
+
+        if current_user['isadmin'] is not True:
             return jsonify({
-                "status": 200,
-                "error": "user does not exist"
+                "status": 401,
+                "message": "Only an admin can change the status of a user"
             })
 
-        user_status = self.db.promote_user(username)
-        if user_status == "updated":
+        user_status_updated = self.db.promote_user(username)
+        if user_status_updated is True:
             success_message = {
-                "id": user_id,
+                "username": username,
                 "message": "User status has been updated"
             }
             return jsonify({

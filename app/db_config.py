@@ -12,9 +12,11 @@ def connection(url):
     con = psycopg2.connect(url)
     return con
 
+
 def init_database():
     con = connection(url)
     return con
+
 
 def create_tables():
     conn = connection(url)
@@ -30,7 +32,7 @@ def destroy_tables():
     query = """DROP TABLE IF EXISTS users, incidents;"""
     test_url = os.getenv('DATABASE_URL_TEST')
     conn = connection(test_url)
-    cursor =  conn.cursor()
+    cursor = conn.cursor()
     cursor.execute(query)
     conn.commit()
 
@@ -43,8 +45,8 @@ def tables():
         type VARCHAR(20) NOT NULL,
         location VARCHAR(50),
         status VARCHAR(20) NOT NULL,
-        Images VARCHAR(500),
-        Videos VARCHAR(500),
+        Images VARCHAR(500) NULL,
+        Videos VARCHAR(500) NULL,
         title VARCHAR(100),
         comment VARCHAR(1000) NOT NULL
         );"""

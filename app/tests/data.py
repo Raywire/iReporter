@@ -61,6 +61,11 @@ data5 = {
     "password" : "1212121"
 }
 
+data6 = {
+    "username" : "jayd",
+    "password" : "12121213"
+}
+
 redflag_data = {
     "createdOn": "Tue, 27 Nov 2018 21:18:13 GMT",
     "createdBy": 1,
