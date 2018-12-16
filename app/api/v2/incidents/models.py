@@ -169,9 +169,12 @@ class IncidentModel:
         if incident['status'] != 'draft':
             return 'not draft'
 
-        query = """UPDATE incidents SET comment='{0}' WHERE id={1}""".format(
-            comment, incident_id)
-        self.execute_query(query)
+        query = """UPDATE incidents SET comment=%s WHERE id=%s"""
+        values = comment, incident_id
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
         return True
 
     def delete_incident(self, incident_type, incident_id, current_user_id):

@@ -1,5 +1,5 @@
 """Views for incidents"""
-from flask_restplus import Resource
+from flask_restful import Resource
 from flask import jsonify
 from app.api.v2.incidents.models import IncidentModel
 from app.api.v2.send_email import send

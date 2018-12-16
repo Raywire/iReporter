@@ -78,7 +78,7 @@ pytest --cov=app/
 
 ## Deployment on Heroku
 
-https://enigmatic-inlet-54773.herokuapp.com/api/v2/auth/signup
+[Heroku Application Link](https://enigmatic-inlet-54773.herokuapp.com/api/v2/auth/signup)
 
 ## Built With
 
@@ -91,7 +91,9 @@ versioning for the endpoints
 /api/v2/
 
 ## API Documentation
-[Postman Documentation](https://web.postman.co/collections/5905120-3d945622-5406-4eb7-97a0-d4b439dd7f4a?workspace=17077477-b7d0-4571-89d7-427b4b5a1bd8)
+[Postman Documentation Link](https://web.postman.co/collections/5905120-3d945622-5406-4eb7-97a0-d4b439dd7f4a?workspace=17077477-b7d0-4571-89d7-427b4b5a1bd8)
+
+[Apiary API Documentation](https://ireporter14.docs.apiary.io/#)
 
 
 ## Author
