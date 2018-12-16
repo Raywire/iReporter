@@ -1,5 +1,5 @@
 """Views for users"""
-from flask_restplus import Resource
+from flask_restful import Resource
 from flask import jsonify, request
 from app.api.v2.users.models import UserModel
 from app.api.v2.decorator import token_required
