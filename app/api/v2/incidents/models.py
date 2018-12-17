@@ -22,6 +22,7 @@ parser.add_argument('location',
 parser.add_argument('comment',
                     type=validate_comment,
                     required=True,
+                    trim=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
@@ -29,6 +30,7 @@ parser.add_argument('comment',
 parser.add_argument('title',
                     type=validate_comment,
                     required=True,
+                    trim=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
@@ -185,6 +187,9 @@ class IncidentModel:
 
         if current_user_id != incident['createdby']:
             return False
+
+        if incident['status'] != 'draft':
+            return 'not draft'
 
         query = """DELETE FROM incidents WHERE id={0}""".format(incident_id)
         self.execute_query(query)

@@ -88,11 +88,14 @@ class UserSignIn(Resource):
         """method to get a specific user"""
         user = self.db.sign_in()
         if user is None:
-            return nonexistent_user()
+            return jsonify({
+                "status": 403,
+                "message": "password or username is invalid"
+            })
         if user is False:
             return jsonify({
-                "status": 200,
-                "message": "password is invalid"
+                "status": 403,
+                "message": "password or username is invalid"
             })
 
         token = jwt.encode({'public_id': user['public_id'], 'exp': datetime.datetime.utcnow(

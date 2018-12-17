@@ -4,7 +4,7 @@ from app.db_config import connection, init_database
 from flask import request
 from flask_restful import reqparse
 from app.validators import (
-    validate_characters, validate_email, validate_integers)
+    validate_characters, validate_email, validate_integers,validate_password)
 import psycopg2.extras
 
 import datetime
@@ -60,9 +60,10 @@ parser.add_argument('phoneNumber',
                     )
 
 parser.add_argument('password',
+                    type=validate_password,
                     required=True,
                     nullable=False,
-                    help="This key is required and should not be empty or formatted wrongly"
+                    help="Password must be at least 6 characters"
                     )
 
 class UserModel:
