@@ -35,3 +35,8 @@ def validate_characters(value):
     """method to check if variable contains only characters"""
     if not re.match(r"^[a-zA-Z\d\-]+$", value):
         raise ValueError("Pattern not matched")
+
+def validate_password(value):
+    """method to check if password contains more than 6 characters"""
+    if not re.match(r"^[A-Za-z0-9!@#$%^&+*=]{6,}$", value):
+        raise ValueError("Pattern not matched")

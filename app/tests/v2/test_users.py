@@ -89,7 +89,7 @@ class UserTestCase(unittest.TestCase):
         response = self.app.post("/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data6))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['message'], 'password is invalid')
+        self.assertEqual(result['message'], 'password or username is invalid')
 
     def test_duplicate_user_email(self):
         """Test post a user with existing email"""

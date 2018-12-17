@@ -25,6 +25,12 @@ def draft_is_editable():
         "message": "Incident can only be edited when the status is draft"
     })
 
+def draft_is_deletable():
+    return jsonify({
+        "status": 401,
+        "message": "Incident can only be deleted when the status is draft"
+    })    
+
 class Interventions(Resource):
     """Class with methods for getting and adding interventions"""
 
@@ -82,6 +88,9 @@ class Intervention(Resource):
 
         if delete_status is None:
             return nonexistent_incident("Intervention")
+
+        if delete_status == 'not draft':
+            return draft_is_deletable()
 
         if delete_status is False:
             return jsonify({
@@ -252,6 +261,9 @@ class Redflag(Resource):
 
         if delete_status is None:
             return nonexistent_incident("Redflag")
+
+        if delete_status == 'not draft':
+            return draft_is_deletable()            
 
         if delete_status is False:
             return jsonify({
