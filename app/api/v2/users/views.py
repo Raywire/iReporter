@@ -67,12 +67,19 @@ class UserSignUp(Resource):
 
         token = jwt.encode({'public_id': user['public_id'], 'exp': datetime.datetime.utcnow(
         ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')
+        user_data = {
+            "name" : user['firstname']+' '+user['lastname'],
+            "usename" : user['username'],
+            "email" : user['email'],
+            "public_id" : user['public_id']
+        }
         return jsonify({
             "status": 201,
+            "message" : "You have been registered successfully",
             "data": [
                 {
                     "token": token.decode('UTF-8'),
-                    "user": user
+                    "user": user_data
                 }
             ]
         })
