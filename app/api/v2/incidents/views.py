@@ -164,13 +164,10 @@ class UpdateInterventionComment(Resource):
 class Redflags(Resource):
     """Class with methods for getting and adding redflags"""
 
-    def __init__(self):
-        self.redflag_model = IncidentModel()
-
     @token_required
     def post(current_user, self):
         """method to post one or multiple redflags"""
-        redflag = self.redflag_model.save_incident(
+        redflag = IncidentModel().save_incident(
             "redflag", current_user['id'])
         return jsonify({
             "status": 201,
@@ -180,7 +177,7 @@ class Redflags(Resource):
     @token_required
     def get(current_user, self):
         """method to get all redflags"""
-        redflags = self.redflag_model.get_incidents("redflag")
+        redflags = IncidentModel().get_incidents("redflag")
         if redflags is None:
             return jsonify({
                 "status": 200,
@@ -195,13 +192,10 @@ class Redflags(Resource):
 class Redflag(Resource):
     """Class with methods for getting and deleting specific redflag"""
 
-    def __init__(self):
-        self.redflag_model = IncidentModel()
-
     @token_required
     def get(current_user, self, redflag_id):
         """method to get a specific redflag"""
-        incident = self.redflag_model.get_incident_by_id("redflag", redflag_id)
+        incident = IncidentModel().get_incident_by_id("redflag", redflag_id)
         if incident is None:
             return nonexistent_incident("Redflag")
         return jsonify({
@@ -212,7 +206,7 @@ class Redflag(Resource):
     @token_required
     def delete(current_user, self, redflag_id):
         """method to delete redflag"""
-        delete_status = self.redflag_model.delete_incident(
+        delete_status = IncidentModel().delete_incident(
             "redflag", redflag_id, current_user['id'])
 
         if delete_status is None:
@@ -240,9 +234,6 @@ class Redflag(Resource):
 class UpdateRedflagStatus(Resource):
     """Class with method for updating an redflag's status"""
 
-    def __init__(self):
-        self.redflag_model = IncidentModel()
-
     @token_required
     def patch(current_user, self, redflag_id):
         """method to update redflag status"""
@@ -251,7 +242,7 @@ class UpdateRedflagStatus(Resource):
                 "status": 401,
                 "message": "Only an admin can change the status of a redflag"
             })
-        edit_status = self.redflag_model.edit_incident_status(
+        edit_status = IncidentModel().edit_incident_status(
             "redflag", redflag_id)
 
         if edit_status is None:
@@ -259,7 +250,7 @@ class UpdateRedflagStatus(Resource):
 
         if edit_status is True:
             if current_user['email']:
-                status = self.redflag_model.get_incident_status()
+                status = IncidentModel().get_incident_status()
                 send(current_user['email'], 'redflag', redflag_id, status)
             return updated_incident(redflag_id, "redflag", "status")
 
@@ -267,13 +258,10 @@ class UpdateRedflagStatus(Resource):
 class UpdateRedflagLocation(Resource):
     """Class with method for updating an redflag's location"""
 
-    def __init__(self):
-        self.redflag_model = IncidentModel()
-
     @token_required
     def patch(current_user, self, redflag_id):
         """method to update redflag location"""
-        edit_status = self.redflag_model.edit_incident_location(
+        edit_status = IncidentModel().edit_incident_location(
             "redflag", redflag_id, current_user['id'])
 
         if edit_status is None:
@@ -292,13 +280,10 @@ class UpdateRedflagLocation(Resource):
 class UpdateRedflagComment(Resource):
     """Class with method for updating an redflag's comment"""
 
-    def __init__(self):
-        self.redflag_model = IncidentModel()
-
     @token_required
     def patch(current_user, self, redflag_id):
         """method to update redflag comment"""
-        edit_status = self.redflag_model.edit_incident_comment(
+        edit_status = IncidentModel().edit_incident_comment(
             "redflag", redflag_id, current_user['id'])
 
         if edit_status is None:
