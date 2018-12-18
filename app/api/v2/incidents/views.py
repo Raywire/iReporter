@@ -53,7 +53,6 @@ class Interventions(Resource):
         if self.db.get_incidents("intervention") is None:
             return jsonify({
                 "status": 200,
-                "message": "No interventions",
                 "data": []
             })
         return jsonify({
@@ -71,8 +70,7 @@ class Intervention(Resource):
     @token_required
     def get(current_user, self, intervention_id):
         """method to get a specific intervention"""
-        incident_type = "intervention"
-        incident = self.db.get_incident_by_id(incident_type, intervention_id)
+        incident = self.db.get_incident_by_id("intervention", intervention_id)
         if incident is None:
             return nonexistent_incident('Intervention')
         return jsonify({
@@ -213,10 +211,10 @@ class Redflags(Resource):
     @token_required
     def post(current_user, self):
         """method to post one or multiple redflags"""
-        intervention = self.db.save_incident("redflag", current_user['id'])
+        redflag = self.db.save_incident("redflag", current_user['id'])
         return jsonify({
             "status": 201,
-            "data": [intervention]
+            "data": [redflag]
         })
 
     @token_required
@@ -226,7 +224,6 @@ class Redflags(Resource):
         if redflags is None:
             return jsonify({
                 "status": 200,
-                "message": "No redflags",
                 "data": []
             })
         return jsonify({
@@ -244,8 +241,7 @@ class Redflag(Resource):
     @token_required
     def get(current_user, self, redflag_id):
         """method to get a specific redflag"""
-        incident_type = "redflag"
-        incident = self.db.get_incident_by_id(incident_type, redflag_id)
+        incident = self.db.get_incident_by_id("redflag", redflag_id)
         if incident is None:
             return nonexistent_incident("Redflag")
         return jsonify({
