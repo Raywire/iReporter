@@ -8,7 +8,7 @@ from app.api.v2.decorator import token_required
 
 def nonexistent_incident(incident_type):
     return jsonify({
-        "status": 200,
+        "status": 404,
         "message": "{0} does not exist".format(incident_type)
     })
 

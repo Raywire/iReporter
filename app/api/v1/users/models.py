@@ -56,7 +56,7 @@ class UserModel:
         for user in self.db:
             if user['id'] == user_id:
                 return user
-        return "no user"
+        return None
 
     def delete_user(self, user):
         "Method to delete a user"
