@@ -3,23 +3,29 @@ from flask_restful import Resource
 from flask import jsonify, make_response
 from app.api.v1.users.models import UserModel
 
+db = UserModel()
+
+def nonexistent_user():
+    return jsonify({
+        "status": 404,
+        "error": "user does not exist"
+    })
+
 class Users(Resource):
     """Class with methods for getting and adding users"""
 
-    def __init__(self):
-        self.db = UserModel()
 
     def get(self):
         """method to get all users"""
 
         return make_response(jsonify({
             "status" : 200,
-            "data" : self.db.get_users()
+            "data" : db.get_users()
         }), 200)
 
     def post(self):
         """method to post a user"""
-        user_id = self.db.save_user()
+        user_id = db.save_user()
 
         if user_id == "keyerror":
             return make_response(jsonify({
@@ -52,17 +58,12 @@ class Users(Resource):
 class User(Resource):
     """Class with methods for getting, deleting and updating a  specific user"""
 
-    def __init__(self):
-        self.db = UserModel()
 
     def get(self, user_id):
         """method to get a specific user"""
-        user = self.db.get_user(user_id)
-        if user == "no user":
-            return make_response(jsonify({
-                "status" : 200,
-                "error" : "user does not exist"
-            }), 200)
+        user = db.get_user(user_id)
+        if user is None:
+            return nonexistent_user()
         return make_response(jsonify({
             "status" : 200,
             "data" : user
@@ -70,14 +71,12 @@ class User(Resource):
 
     def delete(self, user_id):
         """method to delete user"""
-        user = self.db.get_user(user_id)
+        user = db.get_user(user_id)
         
-        if user == "no user":
-            return make_response(jsonify({
-                "status" : 200,
-                "error" : "user does not exist"
-            }), 200)
-        delete_status = self.db.delete_user(user)
+        if user is None:
+            return nonexistent_user()
+
+        delete_status = db.delete_user(user)
         if delete_status == "deleted":
             success_message = {
                 "id" : user_id,
@@ -90,15 +89,12 @@ class User(Resource):
 
     def put(self, user_id):
         """method to update a user"""
-        user = self.db.get_user(user_id)
+        user = db.get_user(user_id)
 
-        if user == "no user":
-            return make_response(jsonify({
-                "status" : 200,
-                "error" : "user does not exist"
-            }), 200)
+        if user is None:
+            return nonexistent_user()
 
-        edit_status = self.db.edit_user(user)
+        edit_status = db.edit_user(user)
         if edit_status == "updated":
             success_message = {
                 "id" : user_id,
@@ -112,20 +108,15 @@ class User(Resource):
 class UpdateUserPassword(Resource):
     """Class with method for updating user's password"""
 
-    def __init__(self):
-        self.db = UserModel()
 
     def patch(self, user_id):
         """method to update user password"""
-        user = self.db.get_user(user_id)       
+        user = db.get_user(user_id)       
 
-        if user == "no user":
-            return make_response(jsonify({
-                "status" : 200,
-                "error" : "User does not exist"
-            }), 200)
+        if user is None:
+            return nonexistent_user()
 
-        edit_status = self.db.edit_user_password(user)
+        edit_status = db.edit_user_password(user)
         if edit_status == "keyerror":
             return make_response(jsonify({
                 "status" : 400,
@@ -144,20 +135,14 @@ class UpdateUserPassword(Resource):
 class UpdateUserStatus(Resource):
     """class with method for updating user's status"""
 
-    def __init__(self):
-        self.db = UserModel()
-
     def patch(self, user_id):
         """method to update user status"""
-        user = self.db.get_user(user_id)
+        user = db.get_user(user_id)
         
-        if user == "no user":
-            return make_response(jsonify({
-                "status" : 200,
-                "error" : "User does not exist"
-            }), 200)
+        if user is None:
+            return nonexistent_user()
 
-        edit_status = self.db.edit_user_status(user)
+        edit_status = db.edit_user_status(user)
         if edit_status == "keyerror":
             return make_response(jsonify({
                 "status" : 400,

@@ -83,7 +83,7 @@ class RedFlagModel:
         for incident in self.db:
             if incident['id'] == redflag_id:
                 return incident
-        return "no redflag"
+        return None
 
     def delete_redflag(self, incident):
         "Method to delete a redflag"

@@ -14,14 +14,14 @@ expiration_time = 59
 
 def nonexistent_user():
     return jsonify({
-        "status": 200,
+        "status": 404,
         "message": "user does not exist"
     })
 
 
 def admin_user():
     return jsonify({
-        "status": 200,
+        "status": 403,
         "message": "Only admin can access this route"
     })
 
@@ -94,14 +94,20 @@ class UserSignIn(Resource):
     def post(self):
         """method to get a specific user"""
         user = self.db.sign_in()
+        if user == 'BadRequest':
+            return jsonify({
+                "status": 401,
+                "message": "password or username is invalid"
+            })
+                        
         if user is None:
             return jsonify({
-                "status": 403,
+                "status": 401,
                 "message": "password or username is invalid"
             })
         if user is False:
             return jsonify({
-                "status": 403,
+                "status": 401,
                 "message": "password or username is invalid"
             })
 
@@ -147,7 +153,7 @@ class User(Resource):
 
         if current_user['isadmin'] is not True:
             return jsonify({
-                "status": 401,
+                "status": 403,
                 "message": "Only an admin can delete a user"
             })
 
@@ -179,7 +185,7 @@ class UserStatus(Resource):
 
         if current_user['isadmin'] is not True:
             return jsonify({
-                "status": 401,
+                "status": 403,
                 "message": "Only an admin can change the status of a user"
             })
 
