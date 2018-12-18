@@ -97,11 +97,6 @@ class UserSignIn(Resource):
     def post(self):
         """method to get a specific user"""
         user = self.db.sign_in()
-        if user == 'BadRequest':
-            return jsonify({
-                "status": 401,
-                "message": "password or username is invalid"
-            })
                         
         if user is None:
             return jsonify({
@@ -136,7 +131,7 @@ class User(Resource):
         """method to get a specific user"""
         if current_user['isadmin'] is False:
             return admin_user()
-        user = self.db.get_user_by_username(username)
+        user = self.db.get_user(username)
         if user is None:
             return nonexistent_user()
         return jsonify({
@@ -148,7 +143,7 @@ class User(Resource):
     def delete(current_user, self, username):
         """method to delete a user"""
 
-        if self.db.get_user_by_username(username) is None:
+        if self.db.get_user(username) is None:
             return nonexistent_user()
 
         if current_user['isadmin'] is not True:
@@ -178,7 +173,7 @@ class UserStatus(Resource):
     @token_required
     def patch(current_user, self, username):
         """method to promote a user"""
-        user = self.db.get_user_by_username(username)
+        user = self.db.get_user(username)
 
         if user is None:
             return nonexistent_user()

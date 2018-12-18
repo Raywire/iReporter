@@ -75,14 +75,6 @@ class UserModel:
         self.public_id = str(uuid.uuid4())
         self.db = init_database()
 
-    def execute_user_query(self, query):
-        connection = self.db
-        cursor = connection.cursor()
-        cursor.execute(query)
-        connection.commit()
-        cursor.close()
-        connection.close()
-
     def set_password(self, password):
         return generate_password_hash(password)
 
@@ -104,8 +96,8 @@ class UserModel:
             'isAdmin': self.isAdmin,
             'public_id': self.public_id
         }
-        userByEmail = self.get_user_by_email(data['email'])
-        userByUsername = self.get_user_by_username(data['username'])
+        userByEmail = self.get_user(data['email'])
+        userByUsername = self.get_user(data['username'])
         if userByEmail is not None:
             return 'email exists'
         elif userByUsername is not None:
@@ -120,22 +112,10 @@ class UserModel:
         conn.commit()
         return data
 
-    def get_user_by_email(self, email):
-        "Method to get a user by email"
-        query = """SELECT firstname,lastname,othernames,email,phoneNumber,username from users WHERE email='{0}'""".format(
-            email)
-        conn = self.db
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cursor.execute(query)
-        row = cursor.fetchall()
-
-        if cursor.rowcount == 0:
-            return None
-        return row
-
-    def get_user_by_username(self, username):
-        "Method to get a user by username"
-        query = """SELECT * from users WHERE username='{0}'""".format(username)
+    def get_user(self, value):
+        "Method to get a user by username or public_id"
+        query = """SELECT * from users WHERE public_id='{0}' OR username='{0}' OR email='{0}'""".format(
+            value)
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cursor.execute(query)
@@ -143,20 +123,7 @@ class UserModel:
 
         if cursor.rowcount == 0:
             return None
-        return row
-
-    def get_user_by_public_id(self, public_id):
-        "Method to get a user by username"
-        query = """SELECT * from users WHERE public_id='{0}'""".format(
-            public_id)
-        conn = self.db
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cursor.execute(query)
-        row = cursor.fetchone()
-
-        if cursor.rowcount == 0:
-            return None
-        return row
+        return row        
 
     def sign_in(self):
         parser_signin.add_argument('username',
@@ -177,7 +144,7 @@ class UserModel:
             'username': request.json.get('username'),
             'password': request.json.get('password')
         }
-        user = self.get_user_by_username(data['username'])
+        user = self.get_user(data['username'])
         if user is not None:
             user_data = {
                 'firstname': user['firstname'],
@@ -219,13 +186,17 @@ class UserModel:
         query = """UPDATE users SET isadmin='{0}' WHERE username='{1}'""".format(
             isAdmin, username)
 
-        self.execute_user_query(query)
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()        
         return True
 
     def delete_user(self, username):
         """method to delete a user"""
 
-        query = """DELETE FROM users WHERE username='{0}'""".format(username)
-
-        self.execute_user_query(query)
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute("""DELETE FROM users WHERE username='{0}'""".format(username))
+        conn.commit() 
         return True

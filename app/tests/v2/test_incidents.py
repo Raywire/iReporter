@@ -80,45 +80,71 @@ class IncidentTestCase(unittest.TestCase):
 
     def test_update_status_of_redflag(self):
         """Test update status of a specific redflag"""
+        self.app.post(
+            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))        
         response = self.app.patch(
             "/api/v2/redflags/1/status", headers=self.headers, data=json.dumps({"status": "resolved"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['data'][0]['message'],"Updated redflag record status")
+
+    def test_update_location_of_nonexistent_redflag(self):
+        """Test update status of a specific redflag"""       
+        response = self.app.patch(
+            "/api/v2/redflags/2/location", headers=self.headers, data=json.dumps({"location": "-75.0, -12.554334"}))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['message'], 'Redflag does not exist')     
 
     def test_update_location_of_redflag(self):
         """Test update location of a specific redflag"""
+        self.app.post(
+            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))        
         response = self.app.patch("/api/v2/redflags/1/location", headers=self.headers,
                                   data=json.dumps({"location": "-75.0, -12.554334"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['data'][0]['message'],"Updated redflag record's location")
 
     def test_update_comment_of_redflag(self):
         """Test update comment of a specific redflag"""
+        self.app.post(
+            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))        
         response = self.app.patch("/api/v2/redflags/1/comment", headers=self.headers,
                                   data=json.dumps({"comment": "Cartels are taking over Kenya"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['data'][0]['message'],"Updated redflag record's comment")
 
     def test_update_status_of_intervention(self):
         """Test update status of a specific intervention"""
+        self.app.post(
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))        
         response = self.app.patch("/api/v2/interventions/1/status",
                                   headers=self.headers, data=json.dumps({"status": "resolved"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['data'][0]['message'],"Updated intervention record status")
 
     def test_update_location_of_intervention(self):
         """Test update location of a specific intervention"""
+        self.app.post(
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))         
         response = self.app.patch("/api/v2/interventions/1/location",
                                   headers=self.headers, data=json.dumps({"location": "-75.0, -12.554334"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['data'][0]['message'],"Updated intervention record's location")
 
     def test_update_comment_of_intervention(self):
         """Test update comment of a specific intervention"""
+        self.app.post(
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))         
         response = self.app.patch("/api/v2/interventions/1/comment", headers=self.headers,
                                   data=json.dumps({"comment": "Cartels are taking over Kenya"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['data'][0]['message'],"Updated intervention record's comment")
 
     def test_get_all_redflags_no_token(self):
         """Test all redflags"""

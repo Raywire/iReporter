@@ -22,7 +22,7 @@ def token_required(f):
             }, 401
         try:
             data = jwt.decode(token, secret_key, algorithms=['HS256'])
-            current_user = UserModel().get_user_by_public_id(data['public_id'])
+            current_user = UserModel().get_user(data['public_id'])
         except:
             return {
                 "message": "Token is invalid"
