@@ -113,26 +113,12 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['data']['message'], "user record has been updated")  
 
-    def test_update_status_of_user(self):
-        """Test update status of a specific user"""
-        response = self.app.patch("/api/v1/users/1/status", headers={'Content-Type': 'application/json'}, data=json.dumps({"isAdmin" : False}))
-        result = json.loads(response.data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data']['message'], "Updated user's status")
-
     def test_update_password_of_user(self):
         """Test update password of a specific user"""
         response = self.app.patch("/api/v1/users/1/password", headers={'Content-Type': 'application/json'}, data=json.dumps({"password" : "Cartels"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['data']['message'], "Updated user's password")
-
-    def test_wrong_status_key(self):
-        """Test wrong status key used in user"""
-        response = self.app.patch("/api/v1/users/1/status", headers={'Content-Type': 'application/json'}, data=json.dumps({"isAdmina" : True}))
-        result = json.loads(response.data)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(result['error'], "KeyError user's status not updated")
 
     def test_wrong_password_key(self):
         """Test wrong password key used in user"""

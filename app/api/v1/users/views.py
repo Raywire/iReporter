@@ -11,6 +11,15 @@ def nonexistent_user():
         "error": "user does not exist"
     })
 
+def success_message(user_id, status):
+    return jsonify({
+        "id" : user_id,
+        "data" : {
+            "message" : "user record has been {0}".format(status)
+        }
+        
+    })
+
 class Users(Resource):
     """Class with methods for getting and adding users"""
 
@@ -71,21 +80,14 @@ class User(Resource):
 
     def delete(self, user_id):
         """method to delete user"""
-        user = db.get_user(user_id)
+        get_user = db.get_user(user_id)
         
-        if user is None:
+        if get_user == None:
             return nonexistent_user()
 
-        delete_status = db.delete_user(user)
-        if delete_status == "deleted":
-            success_message = {
-                "id" : user_id,
-                "message" : "user record has been deleted"
-            }
-            return make_response(jsonify({
-                "status" : 200,
-                "data" : success_message
-            }))
+        delete_status = db.delete_user(get_user)
+        if delete_status:
+            return success_message(user_id, "deleted")
 
     def put(self, user_id):
         """method to update a user"""
@@ -96,14 +98,7 @@ class User(Resource):
 
         edit_status = db.edit_user(user)
         if edit_status == "updated":
-            success_message = {
-                "id" : user_id,
-                "message" : "user record has been updated"
-            }
-            return make_response(jsonify({
-                "status" : 200,
-                "data" : success_message
-            }))
+            return success_message(user_id, "updated")
 
 class UpdateUserPassword(Resource):
     """Class with method for updating user's password"""
@@ -126,32 +121,6 @@ class UpdateUserPassword(Resource):
             success_message = {
                 "id" : user_id,
                 "message" : "Updated user's password"
-            }
-            return make_response(jsonify({
-                "status" : 200,
-                "data" : success_message
-            }), 200)
-
-class UpdateUserStatus(Resource):
-    """class with method for updating user's status"""
-
-    def patch(self, user_id):
-        """method to update user status"""
-        user = db.get_user(user_id)
-        
-        if user is None:
-            return nonexistent_user()
-
-        edit_status = db.edit_user_status(user)
-        if edit_status == "keyerror":
-            return make_response(jsonify({
-                "status" : 400,
-                "error" : "KeyError user's status not updated"
-            }), 400)
-        elif edit_status == "updated":
-            success_message = {
-                "id" : user_id,
-                "message" : "Updated user's status"
             }
             return make_response(jsonify({
                 "status" : 200,

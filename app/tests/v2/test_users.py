@@ -7,7 +7,7 @@ import os
 
 from ... import create_app
 from app.db_config import create_super_user, destroy_tables, create_tables
-from app.tests.data import test_user, data, data2, data3, data4, data5, data6
+from app.tests.data import test_user, data, data2, data3, data4, data5, data6, data7
 
 
 expiration_time = 10
@@ -38,6 +38,7 @@ class UserTestCase(unittest.TestCase):
         self.data4 = data4
         self.data5 = data5
         self.data6 = data6
+        self.data7 = data7
 
     def test_user_signup(self):
         """Test post a user signup"""       
@@ -87,6 +88,14 @@ class UserTestCase(unittest.TestCase):
         """Test post a user signin"""
         self.app.post("/api/v2/auth/signup", headers=self.headers, data=json.dumps(self.data))
         response = self.app.post("/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data6))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['message'], 'password or username is invalid')
+
+    def test_user_signin_wrong_username(self):
+        """Test post a user signin"""
+        self.app.post("/api/v2/auth/signup", headers=self.headers, data=json.dumps(self.data))
+        response = self.app.post("/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data7))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['message'], 'password or username is invalid')
