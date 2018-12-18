@@ -78,6 +78,14 @@ class IncidentTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['status'], 201)
 
+    def test_update_status_of_nonexistent_redflag(self):
+        """Test update status of a nonexistant redflag"""       
+        response = self.app.patch(
+            "/api/v2/redflags/2/status", headers=self.headers, data=json.dumps({"status": "resolved"}))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['message'], 'Redflag does not exist') 
+
     def test_update_status_of_redflag(self):
         """Test update status of a specific redflag"""
         self.app.post(
@@ -89,7 +97,7 @@ class IncidentTestCase(unittest.TestCase):
         self.assertEqual(result['data'][0]['message'],"Updated redflag record's status")
 
     def test_update_location_of_nonexistent_redflag(self):
-        """Test update status of a specific redflag"""       
+        """Test update location of a specific redflag"""       
         response = self.app.patch(
             "/api/v2/redflags/2/location", headers=self.headers, data=json.dumps({"location": "-75.0, -12.554334"}))
         result = json.loads(response.data)
@@ -106,6 +114,14 @@ class IncidentTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['data'][0]['message'],"Updated redflag record's location")
 
+    def test_update_comment_of_nonexistent_redflag(self):
+        """Test update comment of a specific redflag"""       
+        response = self.app.patch(
+            "/api/v2/redflags/2/comment", headers=self.headers, data=json.dumps({"comment": "Now is what you see"}))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['message'], 'Redflag does not exist') 
+
     def test_update_comment_of_redflag(self):
         """Test update comment of a specific redflag"""
         self.app.post(
@@ -115,6 +131,14 @@ class IncidentTestCase(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['data'][0]['message'],"Updated redflag record's comment")
+
+    def test_update_status_of_nonexistent_intervention(self):
+        """Test update status of a nonexistant intervention"""       
+        response = self.app.patch(
+            "/api/v2/interventions/2/status", headers=self.headers, data=json.dumps({"status": "resolved"}))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['message'], 'Intervention does not exist')         
 
     def test_update_status_of_intervention(self):
         """Test update status of a specific intervention"""
@@ -135,6 +159,14 @@ class IncidentTestCase(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['data'][0]['message'],"Updated intervention record's location")
+
+    def test_update_comment_of_nonexistent_intervention(self):
+        """Test update comment of a specific intervention"""       
+        response = self.app.patch(
+            "/api/v2/interventions/2/comment", headers=self.headers, data=json.dumps({"comment": "Now is what you see"}))
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result['message'], 'Intervention does not exist') 
 
     def test_update_comment_of_intervention(self):
         """Test update comment of a specific intervention"""
