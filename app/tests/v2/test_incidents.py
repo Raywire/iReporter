@@ -86,7 +86,7 @@ class IncidentTestCase(unittest.TestCase):
             "/api/v2/redflags/1/status", headers=self.headers, data=json.dumps({"status": "resolved"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data'][0]['message'],"Updated redflag record status")
+        self.assertEqual(result['data'][0]['message'],"Updated redflag record's status")
 
     def test_update_location_of_nonexistent_redflag(self):
         """Test update status of a specific redflag"""       
@@ -124,7 +124,7 @@ class IncidentTestCase(unittest.TestCase):
                                   headers=self.headers, data=json.dumps({"status": "resolved"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data'][0]['message'],"Updated intervention record status")
+        self.assertEqual(result['data'][0]['message'],"Updated intervention record's status")
 
     def test_update_location_of_intervention(self):
         """Test update location of a specific intervention"""
