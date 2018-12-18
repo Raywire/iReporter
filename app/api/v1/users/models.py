@@ -61,14 +61,7 @@ class UserModel:
     def delete_user(self, user):
         "Method to delete a user"
         self.db.remove(user)
-        return "deleted"
-
-    def edit_user_status(self, user):
-        "Method to edit a user's status"
-        user['isAdmin'] = request.json.get('isAdmin', 'keyerror')
-        if user['isAdmin'] == 'keyerror':
-            return "keyerror"
-        return "updated"
+        return True
 
     def edit_user_password(self, user):
         "Method to edit a user's comment"

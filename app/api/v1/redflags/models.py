@@ -88,7 +88,7 @@ class RedFlagModel:
     def delete_redflag(self, incident):
         "Method to delete a redflag"
         self.db.remove(incident)
-        return "deleted"
+        return True
 
     def edit_redflag_location(self, incident):
         "Method to edit a redflag's location"

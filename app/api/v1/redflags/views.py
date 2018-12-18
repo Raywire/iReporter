@@ -56,12 +56,12 @@ class RedFlag(Resource):
 
     def delete(self, redflag_id):
         """method to delete redflag"""
-        incident = self.db.get_redflag(redflag_id)
+        redflag = self.db.get_redflag(redflag_id)
 
-        if incident is None:
+        if redflag == None:
             return nonexistent_redflag()
-        delete_status = self.db.delete_redflag(incident)
-        if delete_status == "deleted":
+        delete_status = self.db.delete_redflag(redflag)
+        if delete_status:
             return make_response(jsonify({
                 "status" : 200,
                 "data" : {
