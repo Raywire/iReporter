@@ -25,6 +25,11 @@ def admin_user():
         "message": "Only admin can access this route"
     })
 
+def get_token(public_id):
+    token = jwt.encode({'public_id': public_id, 'exp': datetime.datetime.utcnow(
+    ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')
+    return token    
+
 
 class Users(Resource):
     """Class with methods for getting and adding users"""
@@ -65,8 +70,6 @@ class UserSignUp(Resource):
                 "message": "username already exists"
             })
 
-        token = jwt.encode({'public_id': user['public_id'], 'exp': datetime.datetime.utcnow(
-        ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')
         user_data = {
             "name" : user['firstname']+' '+user['lastname'],
             "usename" : user['username'],
@@ -78,7 +81,7 @@ class UserSignUp(Resource):
             "message" : "You have been registered successfully",
             "data": [
                 {
-                    "token": token.decode('UTF-8'),
+                    "token": get_token(user['public_id']).decode('UTF-8'),
                     "user": user_data
                 }
             ]
@@ -111,13 +114,11 @@ class UserSignIn(Resource):
                 "message": "password or username is invalid"
             })
 
-        token = jwt.encode({'public_id': user['public_id'], 'exp': datetime.datetime.utcnow(
-        ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')
         return jsonify({
             "status": 200,
             "data": [
                 {
-                    "token": token.decode('UTF-8'),
+                    "token": get_token(user['public_id']).decode('UTF-8'),
                     "user": user
                 }
             ]
@@ -145,10 +146,9 @@ class User(Resource):
 
     @token_required
     def delete(current_user, self, username):
-        """method to delete user"""
-        user = self.db.get_user_by_username(username)
+        """method to delete a user"""
 
-        if user is None:
+        if self.db.get_user_by_username(username) is None:
             return nonexistent_user()
 
         if current_user['isadmin'] is not True:
@@ -159,13 +159,13 @@ class User(Resource):
 
         delete_status = self.db.delete_user(username)
         if delete_status is True:
-            success_message = {
-                "username": username,
-                "message": "user record has been deleted"
-            }
+
             return jsonify({
                 "status": 200,
-                "data": success_message
+                "data": {
+                    "username": username,
+                    "message": "user record has been deleted"
+                }
             })
 
 
@@ -177,7 +177,7 @@ class UserStatus(Resource):
 
     @token_required
     def patch(current_user, self, username):
-        """method to promote user"""
+        """method to promote a user"""
         user = self.db.get_user_by_username(username)
 
         if user is None:

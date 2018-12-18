@@ -75,13 +75,13 @@ class UserModel:
         self.public_id = str(uuid.uuid4())
         self.db = init_database()
 
-    def execute_query(self, query):
-        conn = self.db
-        cursor = conn.cursor()
+    def execute_user_query(self, query):
+        connection = self.db
+        cursor = connection.cursor()
         cursor.execute(query)
-        conn.commit()
+        connection.commit()
         cursor.close()
-        conn.close()
+        connection.close()
 
     def set_password(self, password):
         return generate_password_hash(password)
@@ -219,7 +219,7 @@ class UserModel:
         query = """UPDATE users SET isadmin='{0}' WHERE username='{1}'""".format(
             isAdmin, username)
 
-        self.execute_query(query)
+        self.execute_user_query(query)
         return True
 
     def delete_user(self, username):
@@ -227,5 +227,5 @@ class UserModel:
 
         query = """DELETE FROM users WHERE username='{0}'""".format(username)
 
-        self.execute_query(query)
+        self.execute_user_query(query)
         return True
