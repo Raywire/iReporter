@@ -29,3 +29,38 @@ def token_required(f):
             }, 401
         return f(current_user, *args, **kwargs)
     return decorated
+
+
+def nonexistent_incident(incident_type):
+    return jsonify({
+        "status": 404,
+        "message": "{0} does not exist".format(incident_type)
+    })
+
+
+def owner_can_edit():
+    return jsonify({
+        "status": 401,
+        "message": "Only the user who created this record can edit it"
+    })
+
+def draft_is_editable():
+    return jsonify({
+        "status": 401,
+        "message": "Incident can only be edited when the status is draft"
+    })
+
+def draft_is_deletable():
+    return jsonify({
+        "status": 401,
+        "message": "Incident can only be deleted when the status is draft"
+    })
+
+def updated_incident(incident_id, incident_type, field):
+    return jsonify({
+        "status": 200,
+        "data": [{
+            "id": incident_id,
+            "message": "Updated {0} record's {1}".format(incident_type, field)
+        }]
+    })
