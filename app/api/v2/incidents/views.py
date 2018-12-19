@@ -120,8 +120,9 @@ class UpdateInterventionLocation(Resource):
     @token_required
     def patch(current_user, self, intervention_id):
         """method to update intervention location"""
+        intervention_type = "intervention"
         edit_status = self.intervention_model.edit_incident_location(
-            "intervention", intervention_id, current_user['id'])
+            intervention_type, intervention_id, current_user['id'])
 
         if edit_status is None:
             return nonexistent_incident("Intervention")
@@ -139,26 +140,32 @@ class UpdateInterventionLocation(Resource):
 class UpdateInterventionComment(Resource):
     """Contains method for updating an intervention's comment"""
 
-    def __init__(self):
-        self.intervention_model = IncidentModel()
-
     @token_required
     def patch(current_user, self, intervention_id):
         """method to update intervention comment"""
-        edit_status = self.intervention_model.edit_incident_comment(
+        edit_status = IncidentModel().edit_incident_comment(
             "intervention", intervention_id, current_user['id'])
 
         if edit_status is None:
-            return nonexistent_incident("Intervention")
-
-        if edit_status == 'not draft':
-            return draft_is_editable()
+            return jsonify({
+                "status": 404,
+                "message": "Intervention does not exist"
+            })
 
         if edit_status is False:
             return owner_can_edit()
 
-        if edit_status is True:
-            return updated_incident(intervention_id, "intervention", "comment")
+        if edit_status == 'not draft':
+            return draft_is_editable()
+
+        if edit_status:
+            return jsonify({
+                "status": 200,
+                "data": [{
+                    "id": intervention_id,
+                    "message": "Updated intervention record's comment"
+                }]
+            })            
 
 
 class Redflags(Resource):
@@ -279,21 +286,23 @@ class UpdateRedflagLocation(Resource):
 
 class UpdateRedflagComment(Resource):
     """Class with method for updating an redflag's comment"""
+    def __init__(self):
+        self.redflag_type = "redflag"
 
     @token_required
     def patch(current_user, self, redflag_id):
         """method to update redflag comment"""
         edit_status = IncidentModel().edit_incident_comment(
-            "redflag", redflag_id, current_user['id'])
+            self.redflag_type, redflag_id, current_user['id'])
 
         if edit_status is None:
             return nonexistent_incident("Redflag")
 
+        if edit_status is False:
+            return owner_can_edit()            
+
         if edit_status == 'not draft':
             return draft_is_editable()
 
-        if edit_status is False:
-            return owner_can_edit()
-
         if edit_status is True:
-            return updated_incident(redflag_id, "redflag", "comment")
+            return updated_incident(redflag_id, self.redflag_type, "comment")
