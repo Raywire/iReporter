@@ -122,7 +122,21 @@ a {
     float: left;
     width: 50%;
     padding: 5px;
-  }    
+  }
+  .login-box{
+    width: 60%;
+  }
+  .container-name{
+    width: 100%
+  }
+  .container-name-right, .container-name-left{
+    width: 50%;
+    float:left;
+    padding:5px
+  }   
+  .container-name p{
+    text-align: left
+  } 
 }
  /*responsive image class*/
 .responsive {
@@ -130,7 +144,7 @@ a {
     height: auto;
 }
  /* Container holding the image and the text */
-.container,.container-main {
+.container ,.container-main{
     position: relative;
     text-align: center;
     color: white;
@@ -141,6 +155,10 @@ a {
   }
    .bottom-right h3, .top-left h2 {
     color: rgba(0, 0, 0, 0.5);
+  }
+  .login-box{
+    width: 100%;
+    margin-top: 2.2em;
   }
   .column {
     float: left;
@@ -176,7 +194,6 @@ a {
 .footer li {
   float: left;
 }
-
 .container-login{
     margin: 0;
     padding: 0;
@@ -186,7 +203,7 @@ a {
     font-family: sans-serif;
 }
 .login-box{
-    width: 50%;     
+    /* width: 60%;      */
     background: #000;
     top:50%;
     color: #fff;
@@ -221,7 +238,7 @@ a {
   width: 100%;
   margin-bottom: 20px;
 }
-.login-box input[type=text], input[type=password]{
+.login-box input[type=text], input[type=password], input[type=email] {
   border:none;
   border-bottom: 1px solid #fff;
   background: transparent;
@@ -238,12 +255,15 @@ a {
   color:#fff;
   width: 50%;
 }
+input[type="submit"]::-moz-focus-inner {
+  border: 0;
+}
 .login-box input[type=submit]:hover{
   cursor: pointer;
   outline: none;
   height: 40px;
   background: #296de8;
-  color:black;
+  color:#000;
 }  
 .card {
   /* Add shadows to create the "card" effect */
@@ -319,7 +339,7 @@ width: 80%;
 
 /* The Close Button */
 .close {
-color: red;
+color: #aaaaaa;
 float: right;
 font-size: 28px;
 font-weight: bold;
@@ -344,17 +364,14 @@ width: 100%;
 
 th, td {
 padding: 15px;
-color:#000;
-}
-th{
-  color:#296de8; 
+color:black;
 }
 
 .table-responsive{
 overflow-x:auto;
 }
 .button-modal {
-background-color: #296de8; 
+background-color: #296de8; /* Green */
 border: none;
 color: white;
 padding: 15px 32px;
@@ -372,17 +389,19 @@ margin:8px;
 
 input[type=text], select, textarea, input[type=file], input[type=date] {
 width: 100%;
+
 display: inline-block;
 border: 1px solid #ccc;
 border-radius: 4px;
 box-sizing: border-box;
 }
+
 .modal-form input[type=text], textarea, input[type=file], input[type=date], select{
   padding: 12px;
 }
 
 input[type=submit] {
-background-color: #2d49ff;
+background-color: #4CAF50;
 color: white;
 padding: 14px 20px;
 margin: 8px 0;
@@ -392,8 +411,8 @@ cursor: pointer;
 }
 
 input[type=submit]:hover {
-background-color: #29c1e8;
-color:black;
+  background-color: #29c1e8;
+  color:black;
 }
 
 form p{
@@ -420,7 +439,7 @@ transition: 0.3s;
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-background-color: #2D49FF;
+background-color: #2D49FF;;
 }
 
 /* Create an active/current tablink class */
@@ -440,7 +459,6 @@ border-top: none;
   color: #20a0ff;
   padding: 8px;
 }
-
 
 .wrapper {
 min-height: 100%;
@@ -471,4 +489,11 @@ text-align: justify;
 }
 .modal-form p{
 padding:8px;
+}
+#fa-spin{
+  display: none;
+}
+#error-message{
+  font-size: 0.8em;
+  color: #ff3333
 }
