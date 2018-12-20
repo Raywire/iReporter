@@ -29,26 +29,135 @@
       <div class="login-box">
         <img src="img/avatar.jpg" class="avatar" alt="Login Image">
         <h1>Sign Up</h1>
-        <form action="signin.html" >
-                      
-          <p>User Name</p>
-          <input type="text" name="username" placeholder="Enter Username">
-          <p>Password</p>
-          <input type="password" name="password" placeholder="Enter Password">
-          <p>Confirm Password</p>
-          <input type="password" name="confirm_password" placeholder="Confirm Password">          
-          <input type="submit" name="submit" value="Sign Up"> 
-          <a href=""></a>         
+        <form id="postData" action="signin.html">
+          <div class="container-name">
+            <div class="container-name-left">
+                <p>First Name</p>
+                <input type="text" id="firstname" name="firstname" placeholder="Enter First Name">
+            </div>
+            <div class="container-name-right">
+                <p>Last Name</p>
+                <input type="text" id="lastname" name="lastname" placeholder="Enter Last Name">
+            </div>
+          </div>
+          <div class="container-name">
+            <div class="container-name-left">
+                <p>User Name</p>
+                <input type="text" id="username" name="username" placeholder="Enter Username">
+            </div>
+            <div class="container-name-right">
+                <p>Email</p>
+                <input type="email" id="email" name="email" placeholder="Enter Email">
+            </div>
+          </div>                             
+          <div class="container-name">
+            <div class="container-name-left">
+                <p>Password</p>
+                <input type="password" id="password" name="password" placeholder="Enter Password">
+            </div>
+            <div class="container-name-right">
+                <p>Confirm Password</p>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
+            </div>
+          </div>          
+          <input id='submit' type="submit" name="submit" value="Sign Up"> 
+          <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+          <p id="error-message"></p>         
         </form>
-      
+<script>
+  document.getElementById('postData').addEventListener('submit', postData);
+    function postData(event){
+      event.preventDefault();
+      document.getElementById('error-message').innerHTML = "";
+      document.getElementById('firstname').style.borderBottomColor = "white";
+      document.getElementById('lastname').style.borderBottomColor = "white";
+      document.getElementById('username').style.borderBottomColor = "white";
+      document.getElementById('email').style.borderBottomColor = "white";
+      document.getElementById('error-message').style.color = "red";
+      document.getElementById('fa-spin').style.display = "block";
+      document.getElementById('submit').value = "Signing Up";
+
+      const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+      let uri = root + 'auth/signup';
+
+      let firstname = document.getElementById('firstname').value;
+      let lastname = document.getElementById('lastname').value;
+      let username = document.getElementById('username').value;
+      let email = document.getElementById('email').value;
+      let password = document.getElementById('password').value;
+      let confirm_password = document.getElementById('confirm_password').value;
+
+      if (password != confirm_password){
+        document.getElementById('fa-spin').style.display = "none";
+        document.getElementById('submit').value = "Sign Up";
+        document.getElementById('error-message').innerHTML = "Passwords do not match";
+      }
+
+      let options = {
+          method: 'POST',
+          mode: "cors",
+          headers: new Headers({
+            "Content-Type": "application/json; charset=utf-8",
+          }),
+          body: JSON.stringify({firstname:firstname,lastname:lastname,username:username,email:email, password:password})
+      }
+      let req = new Request(uri, options);
+
+      fetch(req)
+          .then((response)=>{
+              if(response.ok){
+                document.getElementById('fa-spin').style.display = "none";
+                document.getElementById('submit').value = "Sign Up";
+
+                return response.json();
+              }else{
+                document.getElementById('fa-spin').style.display = "none";
+                document.getElementById('submit').value = "Sign Up";
+                return response.json();
+              }
+          })
+          .then( (j) =>{
+              console.log(j);
+              if(j.hasOwnProperty('message')){
+                if(j['message'].hasOwnProperty('password')){
+                  document.getElementById('error-message').innerHTML = j['message']['password'];
+                }
+                if(j['message'].hasOwnProperty('firstname')){
+                  document.getElementById('firstname').style.borderBottomColor = "red";
+                }
+                if(j['message'].hasOwnProperty('lastname')){
+                  document.getElementById('lastname').style.borderBottomColor = "red";
+                }
+                if(j['message'].hasOwnProperty('username')){
+                  document.getElementById('username').style.borderBottomColor = "red";
+                }
+                if(j['message'] == 'email already exists'){
+                  document.getElementById('email').style.borderBottomColor = "red";
+                  document.getElementById('error-message').innerHTML = j['message'];
+                }
+                if(j['message'] == 'username already exists'){
+                  document.getElementById('username').style.borderBottomColor = "red";
+                  document.getElementById('error-message').innerHTML = j['message'];
+                }
+                if(j['message'] == 'You have been registered successfully'){
+                  document.getElementById('error-message').style.color = "green";
+                  document.getElementById('error-message').innerHTML = j['message'];
+                }
+                
+              }
+             
+              
+          })
+          .catch( (err) =>{
+              console.log(err);
+              document.getElementById('error-message').innerHTML = err;
+          });
+  }
+</script>      
       </div>
       <div class="push"></div>
     </div>
-    <div class="footer">
-      <ul>
-        <li><a href="#">privacy & terms</a></li>
-      </ul>
-    </div>
+
   </body>
   <script src="js/main.js"></script>
 </html>
