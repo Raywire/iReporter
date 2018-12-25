@@ -1,3 +1,4 @@
+<script src="js/loggedIn.js"></script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -29,14 +30,96 @@
       <div class="login-box">
         <img src="img/avatar.jpg" class="avatar" alt="Login Image">
         <h1>Login</h1>
-        <form action="home.html">
+        <form id="postData">
           <p>Username</p>
-          <input type="text" name="username" placeholder="Enter Username">
+          <input type="text" id="username" name="username" placeholder="Enter Username">
           <p>Password</p>
-          <input type="password" name="username" placeholder="Enter Password">
-          <input type="submit" name="submit" value="Login"> 
-          <a href=""></a>         
+          <input type="password" id="password" name="username" placeholder="Enter Password">
+          <input id='submit' type="submit" name="submit" value="Login"> 
+          <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+          <p id="error-message"></p>        
         </form>
+        <script>
+            document.getElementById('postData').addEventListener('submit', postData);
+              function postData(event){
+                event.preventDefault();
+                document.getElementById('error-message').innerHTML = "";
+
+                document.getElementById('username').style.borderBottomColor = "white";
+                document.getElementById('password').style.borderBottomColor = "white";
+                document.getElementById('error-message').style.color = "red";
+                document.getElementById('fa-spin').style.display = "block";
+                document.getElementById('submit').value = "Loggin In";
+          
+                const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                let uri = root + 'auth/login';
+          
+
+                let username = document.getElementById('username').value;
+                let password = document.getElementById('password').value;
+          
+                let options = {
+                    method: 'POST',
+                    mode: "cors",
+                    headers: new Headers({
+                      "Content-Type": "application/json; charset=utf-8",
+                    }),
+                    body: JSON.stringify({username:username,password:password})
+                }
+                let req = new Request(uri, options);
+          
+                fetch(req)
+                    .then((response)=>{
+                        if(response.ok){
+                          document.getElementById('fa-spin').style.display = "none";
+                          document.getElementById('submit').value = "Login";
+          
+                          return response.json();
+                        }else{
+                          document.getElementById('fa-spin').style.display = "none";
+                          document.getElementById('submit').value = "Login";
+                          return response.json();
+                        }
+                    })
+                    .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'].hasOwnProperty('password')){
+                            document.getElementById('username').style.borderBottomColor = "red";
+                          }
+                          if(j['message'].hasOwnProperty('username')){
+                            document.getElementById('username').style.borderBottomColor = "red";
+                          }                                                  
+                          if(j['message'] == 'password or username is invalid'){
+                            document.getElementById('username').style.borderBottomColor = "red";
+                            document.getElementById('password').style.borderBottomColor = "red";
+                            document.getElementById('error-message').innerHTML = j['message'];
+                          }
+                          
+                        }
+                        if(j.hasOwnProperty('data')){
+                            document.getElementById('error-message').style.color = "green";
+                            document.getElementById('error-message').innerHTML = "Login successful";
+                            let access_token = j['data'][0]['token'];
+                            let name = j['data'][0]['user']['firstname'] + ' ' + j['data'][0]['user']['lastname'];
+                            let email = j['data'][0]['user']['email'];
+                            let username = j['data'][0]['user']['username']
+                            document.cookie = "token=" + access_token;
+                            document.cookie = "name=" + name;
+                            document.cookie = "email=" + email;
+                            document.cookie = "username=" + username;
+                            window.location.replace("home.html");
+                        }
+                       
+                        
+                    })
+                    .catch( (err) =>{
+                        console.log(err);
+                        document.getElementById('error-message').innerHTML = err;
+                    });
+            }
+            
+          </script>          
         <div class="container">
             <a href="signup.html">Don't have an account Sign Up here</a>
         </div>        

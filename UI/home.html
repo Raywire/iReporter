@@ -1,3 +1,18 @@
+<noscript>
+    <h1>Your browser does not support Javascript</h1>
+</noscript>  
+<script>
+  let cookie = document.cookie.split(";");
+  let token = cookie[2];
+  let name = cookie[3];
+  let email = cookie[0];
+  let username = cookie[1];
+  
+  if (document.cookie.length == 0){
+    window.location.replace("signin.html");
+  }
+
+</script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -5,7 +20,7 @@
     <title>iReporter Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">  
   </head>
   <body>
     <nav class="navbar">
@@ -24,7 +39,7 @@
           <a href="profile.html" class="nav-links ">profile</a>
         </li>
         <li>
-          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
+          <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
         </li>        
       </ul>
     </nav>
@@ -73,4 +88,5 @@
     </div>
   </body>
   <script src="js/main.js"></script>
+  <script src="js/logout.js"></script>
 </html>
