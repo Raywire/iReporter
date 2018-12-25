@@ -1,3 +1,4 @@
+<script src="js/loggedIn.js"></script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -29,7 +30,7 @@
       <div class="login-box">
         <img src="img/avatar.jpg" class="avatar" alt="Login Image">
         <h1>Sign Up</h1>
-        <form id="postData" action="signin.html">
+        <form id="postData">
           <div class="container-name">
             <div class="container-name-left">
                 <p>First Name</p>
@@ -117,7 +118,7 @@
               }
           })
           .then( (j) =>{
-              console.log(j);
+              
               if(j.hasOwnProperty('message')){
                 if(j['message'].hasOwnProperty('password')){
                   document.getElementById('error-message').innerHTML = j['message']['password'];
@@ -142,14 +143,25 @@
                 if(j['message'] == 'You have been registered successfully'){
                   document.getElementById('error-message').style.color = "green";
                   document.getElementById('error-message').innerHTML = j['message'];
+                  window.location.replace("signin.html");
                 }
                 
               }
-             
+
+              if(j.hasOwnProperty('data')){
+                let access_token = j['data'][0]['token'];
+                let name = j['data'][0]['user']['name'];
+                let email = j['data'][0]['user']['email'];
+                let username = j['data'][0]['user']['username']
+                document.cookie = "token=" + access_token;
+                document.cookie = "name=" + name;
+                document.cookie = "email=" + email;
+                document.cookie = "username=" + username;
+                window.location.replace("home.html");
+                }
               
           })
           .catch( (err) =>{
-              console.log(err);
               document.getElementById('error-message').innerHTML = err;
           });
   }

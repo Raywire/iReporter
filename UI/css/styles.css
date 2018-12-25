@@ -54,6 +54,19 @@ a {
   padding: 0 5px 0 5px;
   border-radius: 5px
 }
+.logout-button {
+  background: none;
+  border: none;
+  margin-left: 40px;
+  padding: 0 5px 0 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+}
+.logout-button:hover i{
+  color: #296de8
+}
 /* Centered text */
 .centered {
     position: absolute;
