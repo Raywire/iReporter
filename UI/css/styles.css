@@ -383,8 +383,11 @@ color:black;
 .table-responsive{
 overflow-x:auto;
 }
+.table-responsive th{
+  color: #296de8;
+}
 .button-modal {
-background-color: #296de8; /* Green */
+background-color: #296de8;
 border: none;
 color: white;
 padding: 15px 32px;
