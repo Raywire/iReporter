@@ -1,105 +1,319 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>iReporter Interventions</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-  </head>
-  <body>
-    <nav class="navbar">
-      <span class="navbar-toggle" id="js-navbar-toggle">
-        <i class="fa fa-bars"></i>
-      </span>
-      <a href="home.html" class="logo">iReporter</a>
-      <ul class="main-nav" id="js-menu">
-        <li>
-          <a href="redflags.html"  class="nav-links">red flags</a>
-        </li>
-        <li>
-          <a href="interventions.html"  class="nav-links active">interventions</a>
-        </li>
-        <li>
-          <a href="profile.html" class="nav-links ">profile</a>
-        </li>
-        <li>
-          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
-        </li>        
-      </ul>
-    </nav>
-    <div class="container wrapper">
-      <div>
-        <!-- Trigger/Open The Modal -->
-        <button class="button-modal" id="myBtn">Add Intervention</button>
+<noscript>
+    <h1>Your browser does not support Javascript</h1>
+  </noscript>  
+  <script>
+    let cookie = document.cookie.split(";");
+    let token = cookie[0];
+    let name = cookie[1];
+    let email = cookie[2];
+    let username = cookie[3];
+    
+    if (document.cookie.length == 0){
+      window.location.replace("signin.html");
+    }
+  
+  </script>
+  <!DOCTYPE html>
+  <html lang="en" dir="ltr">
+    <head>
+      <meta charset="utf-8">
+      <title>iReporter Interventions</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <body>
+      <nav class="navbar">
+        <span class="navbar-toggle" id="js-navbar-toggle">
+          <i class="fa fa-bars"></i>
+        </span>
+        <a href="home.html" class="logo">iReporter</a>
+        <ul class="main-nav" id="js-menu">
+          <li>
+            <a href="redflags.html"  class="nav-links">red flags</a>
+          </li>
+          <li>
+            <a href="interventions.html"  class="nav-links active">interventions</a>
+          </li>
+          <li>
+            <a href="profile.html" class="nav-links ">profile</a>
+          </li>
+          <li>
+            <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+          </li>        
+        </ul>
+      </nav>
+      <div class="container wrapper">
+        <div>
+          <!-- Trigger/Open The Modal -->
+          <button class="button-modal" id="myBtn">Add Interventions</button>
         <!-- The Modal -->
         <div id="myModal" class="modal">
-
+  
             <!-- Modal content -->
             <div class="modal-content">
               <span class="close">&times;</span>
               <div  class="modal-form">
-                  <form action="" method="POST" enctype="multipart/form-data">
+                  <form id="postData" method="POST" enctype="multipart/form-data">
                     <p class="contact"><label for="title">Title</label></p>
-                    <input name="title" placeholder="Title" required="" tabindex="1" type="text">
-                    <p class="contact"><label for="description">Description</label></p>
-                    <textarea rows="4" cols="50" name="description">
-                      Write description
-                    </textarea>            
-                    <p class="contact"><label for="date">Intervention Date</label></p>
-                    <input name="date" placeholder="Date of occurance" required="" type="date">
+                    <input id="title" name="title" placeholder="Title" tabindex="1" type="text">
+                    <!-- <p class="contact"><label for="description">Description</label></p>
+                    <textarea id="description" rows="4" cols="50" name="description"></textarea> -->
+                    <p class="contact"><label for="comment">Comment</label></p>
+                    <textarea name="comment" id="comment" cols="30" rows="10"></textarea>          
+                    <p class="contact"><label for="date">Location</label></p>
+                    <div id="googleMap" style="width:100%;height:400px;"></div>
+                    <input id="location" readonly name="location" placeholder="Location" required="" type="text">
                     <p class="contact"><label for="file">Upload Image/Video Evidence</label></p>
                     <input type="file" name="file" accept="image/*,video/*" multiple>
                     
                     <br>
-                    <input name="submit" class="button-modal" tabindex="5" value="Add Intervention" type="submit">
-        
-                </form>       
+                    <input id='submit' name="submit" class="button-modal" tabindex="5" value="Add Intervention" type="submit">
+                    <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                    <p id="error-message"></p>
+                </form>
+                
+                <script>
+                function myMap() {
+                  var markers = [];
+                  var mapProp= {
+                    center:new google.maps.LatLng(-1.2921,36.8219),
+                    zoom:6,
+                  };
+                  var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+                  // Update lat/long value of div when anywhere in the map is clicked    
+                  google.maps.event.addListener(map,'click',function(event) {
+                      let location = event.latLng.lat()+', '+event.latLng.lng();            
+                      document.getElementById('location').value = location;
+                  });
+  
+                  // Create new marker on single click event on the map
+                  google.maps.event.addListener(map,'click',function(event) {
+                    deleteMarker();
+                    addNewMarkers(event.latLng);             
+                  });           
+                  function addNewMarkers(location) {
+                  var marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    // icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+                    //   title: event.latLng.lat()+', '+event.latLng.lng()
+                  });
+                  markers.push(marker);
+                }
+                  function deleteMarker() {
+                    for (var i = 0; i < markers.length; i++) {
+                      markers[i].setMap(null);
+                    }
+                    markers = [];
+                  };                                          
+                }
+  
+              
+                </script>
+                
+                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0&callback=myMap"></script>              
+                <script>
+                  document.getElementById('postData').addEventListener('submit', postData);
+                    function postData(event){
+                      event.preventDefault();
+                      document.getElementById('error-message').innerHTML = "";
+      
+                      document.getElementById('title').style.borderBottomColor = "gray";
+                      document.getElementById('comment').style.borderBottomColor = "gray";
+                      document.getElementById('location').style.borderBottomColor = "gray";
+                      document.getElementById('error-message').style.color = "red";
+                      document.getElementById('fa-spin').style.display = "block";
+                      document.getElementById('submit').value = "Adding Intervention";
+                
+                      const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                      let uri = root + 'interventions';
+                
+      
+                      let title = document.getElementById('title').value;
+                      let comment = document.getElementById('comment').value;
+                      let location = document.getElementById('location').value;
+  
+                      let cookie = document.cookie.split(";");
+                      let tokenKeyValue = cookie[0];
+                      let tokenSplit = tokenKeyValue.split("token=");
+                      let token = tokenSplit[1];
+                      // console.log(token);
+                
+                      let options = {
+                          method: 'POST',
+                          mode: "cors",
+                          headers: new Headers({
+                            "Content-Type": "application/json; charset=utf-8",
+                            "x-access-token": token
+                          }),
+                          body: JSON.stringify({title:title,comment:comment,location:location})
+                      }
+                      let req = new Request(uri, options);
+                
+                      fetch(req)
+                          .then((response)=>{
+                              if(response.ok){
+                                document.getElementById('fa-spin').style.display = "none";
+                                document.getElementById('submit').value = "Add Intervention";
+                
+                                return response.json();
+                              }else{
+                                document.getElementById('fa-spin').style.display = "none";
+                                document.getElementById('submit').value = "Add Intervention";
+                                return response.json();
+                              }
+                          })
+                          .then( (j) =>{
+                            // console.log(j);
+                            if(j.hasOwnProperty('message')){
+                              if(j['message'] == 'Token is missing'){
+                                logout();
+                              }
+                              if(j['message'] == 'Token is invalid'){
+                                logout();
+                              }
+                              if(j['message'].hasOwnProperty('comment')){
+                                document.getElementById('comment').style.borderBottomColor = "red";
+                                document.getElementById('error-message').innerHTML = "Comment cannot be empty or start with special characters";
+                              }
+                              if(j['message'].hasOwnProperty('title')){
+                                document.getElementById('title').style.borderBottomColor = "red";
+                                document.getElementById('error-message').innerHTML = "Title cannot be empty or start with special characters";
+                              }
+                              if(j['message'].hasOwnProperty('location')){
+                                document.getElementById('location').style.borderBottomColor = "red";
+                                document.getElementById('error-message').innerHTML = "Location cannot be empty";
+                              }                           
+                            }
+                            if(j.hasOwnProperty('data')){
+                              document.getElementById('error-message').style.color = "green";
+                              document.getElementById('error-message').innerHTML = "Intervention has been created";
+                              getData();
+                              window.location.reload(true);
+                            }
+                                                        
+                          })
+                          .catch( (err) =>{
+                              
+                              document.getElementById('error-message').innerHTML = err;
+                          });
+                  }
+                  
+                </script>
+                <script>
+                </script>                
               </div>
             </div>
           
           </div>        
-      </div> 
-        <div class="table-responsive">
-                <table>
+        </div> 
+          <div class="table-responsive">
+                  <table>
+                    <thead>
                         <tr>
-                          <th>Title</th>
-                          <th>Status</th> 
-                          <th>Date Added</th>
-                          <th>Actions</th>
-                        </tr>
-                        <tr>
-                          <td>Kilifi County Government Intervention</td>
-                          <td>Resolved</td> 
-                          <td>2017-02-23 14:22:56</td>
-                          <td>
-                            <a href="view_interventions.html">View More</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>PWC Audit at Immigration</td>
-                          <td>Under Investigation</td> 
-                          <td>2017-02-23 14:22:56</td>
-                          <td>
-                            <a href="view_interventions.html">View More</a>
-                          </td>
-                        </tr>
-                      </table>            
-        </div>  
-        <div class="push"></div>           
-    </div>
-    <div class="footer">
-      <ul>
-        <li>
-          <a href="contact.html"  class="nav-links">contact</a>
-        </li>
-        <li>
-          <a href="about.html"  class="nav-links">about</a>
-        </li>    
-        <li><a href="#" class="nav-links">privacy & terms</a></li>    
-      </ul>
-    </div>
-  </body>
-  <script src="js/main.js"></script>
-  <script src="js/modal.js"></script> 
-</html>
+                            <th>Title</th>
+                            <th>Status</th> 
+                            <th>Date Added</th>
+                            <th>Details</th>
+                          </tr>
+                          <tr>
+                    </thead>
+                    <tbody id="intervention-data">
+                      <tr>
+                        <td colspan="4">
+                          <p id="message"></p>
+                          <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i></center>
+                        </td>
+                      </tr>
+                    </tbody>
+                        </table>
+                        <script>
+                         
+                            function getData(event){
+                        
+                              const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                              let uri = root + 'interventions';
+          
+                              let cookie = document.cookie.split(";");
+                              let tokenKeyValue = cookie[0];
+                              let tokenSplit = tokenKeyValue.split("token=");
+                              let token = tokenSplit[1];
+                              // console.log(token);
+                        
+                              let options = {
+                                  method: 'GET',
+                                  mode: "cors",
+                                  headers: new Headers({
+                                    "Content-Type": "application/json; charset=utf-8",
+                                    "x-access-token": token
+                                  })
+                              }
+                              let req = new Request(uri, options);
+                        
+                              fetch(req)
+                                  .then((response)=>{
+                                      if(response.ok){
+                                        document.getElementById('fa-spin-data').style.display = "none";
+                                        return response.json();
+                                      }else{
+                                        document.getElementById('fa-spin-data').style.display = "none";
+                                        return response.json();
+                                      }
+                                  })
+                                  .then( (j) =>{
+                                    
+                                    if(j.hasOwnProperty('message')){
+                                      if(j['message'] == 'Token is missing'){
+                                        logout();
+                                      }
+                                      if(j['message'] == 'Token is invalid'){
+                                        logout();
+                                      }
+                                    }
+                                    if(j.hasOwnProperty('data')){
+                                      let result = '';
+                                        j['data'].forEach((redflag) => {
+                                          const { title, status, createdon } = redflag
+                                          result += `
+                                          <tr>
+                                            <td>${title}</td>
+                                            <td>${status}</td> 
+                                            <td>${createdon}</td>
+                                            <td>
+                                              <a href="view_intervention.html"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                                            </td>
+                                          </tr>
+                                          `;
+                                          document.getElementById('intervention-data').innerHTML = result;
+                                        });
+                                    }
+                                                                
+                                  })
+                                  .catch( (err) =>{
+                                      
+                                      document.getElementById('message').innerHTML = err;
+                                  });
+                          }
+                          getData();
+                        </script>                                  
+          </div>  
+          <div class="push"></div>           
+      </div>
+      <div class="footer">
+        <ul>
+          <li>
+            <a href="contact.html"  class="nav-links">contact</a>
+          </li>
+          <li>
+            <a href="about.html"  class="nav-links">about</a>
+          </li>    
+          <li><a href="#" class="nav-links">privacy & terms</a></li>    
+        </ul>
+      </div>
+    </body>
+    <script src="js/main.js"></script>
+    <script src="js/modal.js"></script> 
+    <script src="js/logout.js"></script>
+  </html>
+  

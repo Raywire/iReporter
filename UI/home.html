@@ -3,10 +3,10 @@
 </noscript>  
 <script>
   let cookie = document.cookie.split(";");
-  let token = cookie[2];
-  let name = cookie[3];
-  let email = cookie[0];
-  let username = cookie[1];
+  let token = cookie[0];
+  let name = cookie[1];
+  let email = cookie[2];
+  let username = cookie[3];
   
   if (document.cookie.length == 0){
     window.location.replace("signin.html");

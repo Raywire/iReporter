@@ -82,7 +82,7 @@
                         }
                     })
                     .then( (j) =>{
-                        console.log(j);
+                      
                         if(j.hasOwnProperty('message')){
                           if(j['message'].hasOwnProperty('password')){
                             document.getElementById('username').style.borderBottomColor = "red";
@@ -114,7 +114,7 @@
                         
                     })
                     .catch( (err) =>{
-                        console.log(err);
+                        
                         document.getElementById('error-message').innerHTML = err;
                     });
             }
