@@ -365,14 +365,9 @@ font-weight: bold;
 
 .close:hover,
 .close:focus {
-color: #000;
+color: #c0392b;
 text-decoration: none;
 cursor: pointer;
-}
-
-table, td, th {    
-border: 1px solid #ddd;
-text-align: left;
 }
 
 table {
@@ -381,8 +376,14 @@ width: 100%;
 }
 
 th, td {
-padding: 15px;
-color:black;
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  color:rgb(103, 103, 103);
+}
+td:first-child {
+  color: black;
+  font-weight: bold;
 }
 
 .table-responsive{
@@ -522,8 +523,14 @@ text-align: justify;
 .modal-form p{
 padding:8px;
 }
-#fa-spin{
+.fa-spin{
+  color: #27ae60;
+}
+#fa-spin, #fa-spin-data-delete{
   display: none;
+}
+#fa-spin-data-delete{
+  color: #ff3333
 }
 #error-message{
   font-size: 0.8em;
