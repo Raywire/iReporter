@@ -21,23 +21,20 @@
           <a href="interventions.html"  class="nav-links">interventions</a>
         </li>
         <li>
-          <a href="profile.html" class="nav-links ">profile</a>
+          <a href="signin.html" class="nav-links">sign in</a>
         </li>
         <li>
-          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
-        </li>        
+          <a href="signup.html" class="nav-links">sign up</a>
+        </li>       
       </ul>
     </nav>
     <div class="container row wrapper">
             <div  class="modal-form">
                     <form action="" method="POST" enctype="multipart/form-data">
                       <p class="contact"><label for="name">Full Name</label></p>
-                      <input name="name" placeholder="Full Name" required="" tabindex="1" type="text">
-                      <p class="contact"><label for="name">Message</label></p>
-                      <textarea rows="4" cols="50" name="subject" >
-                        Message
-                      </textarea>            
-                      
+                      <input name="name" placeholder="Full Name" required="" tabindex="1" type="text">           
+                      <p class="contact"><label for="comment">Message</label></p>
+                      <textarea name="comment" id="comment" maxlength="1000" cols="30" rows="10"></textarea>                       
                       <br>
                       <input name="submit" class="button-modal" tabindex="5" value="Contact Us" type="submit">
           
