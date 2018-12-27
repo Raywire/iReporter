@@ -1,18 +1,7 @@
 <noscript>
     <h1>Your browser does not support Javascript</h1>
 </noscript>  
-  <script>
-    let cookie = document.cookie.split(";");
-    let token = cookie[0];
-    let name = cookie[1];
-    let email = cookie[2];
-    let username = cookie[3];
-    
-    if (document.cookie.length == 0){
-      window.location.replace("signin.html");
-    }
-  
-  </script>
+<script src="js/auth.js"></script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>

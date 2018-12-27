@@ -1,3 +1,7 @@
+<noscript>
+  <h1>Your browser does not support Javascript</h1>
+</noscript>  
+<script src="js/auth.js"></script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -24,17 +28,17 @@
           <a href="profile.html" class="nav-links active">profile</a>
         </li>
         <li>
-          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
+            <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
         </li>        
       </ul>
     </nav>
     <div class="container row wrapper">
       <div class="column">
         <div class="card">
-          <img src="img/img_avatar2.png" alt="Jane">
-          <p>Jane Doe</p>
-          <p class="title">jane@doe.com</p>
-          <p>username: thegreatreporter</p>
+          <img src="img/img_avatar3.jpeg" alt="Profile Picture">
+          <p id="name"></p>
+          <p id="email" class="title"></p>
+          <p id="username"></p>
           <p><button class="button-modal" id="myBtn">Update Profile</button></p>
           <div id="myModal" class="modal">
 
@@ -44,11 +48,13 @@
                 <div  class="modal-form">
                     <form action="" enctype="multipart/form-data">
                       <p class="contact"><label for="name">First Name</label></p>
-                      <input name="firstname" placeholder="First Name" tabindex="1" type="text" value="Jane">
+                      <input id="firstnameForm" name="firstname" placeholder="First Name" tabindex="1" type="text">
                       <p class="contact"><label for="firstname">Last Name</label></p>
-                      <input  name="lastname" placeholder="Last Name" tabindex="1" type="text" value="Doe">
+                      <input id="lastnameForm"  name="lastname" placeholder="Last Name" tabindex="1" type="text">
+                      <p class="contact"><label for="othername">Other Name</label></p>
+                      <input id="othernameForm"  name="othername" placeholder="Other Name" tabindex="1" type="text">
                       <p class="contact"><label for="username">Username</label></p>
-                      <input name="username" placeholder="username" tabindex="1" type="text" value="thegreatreporter">
+                      <input id="usernameForm" name="username" placeholder="username" tabindex="1" type="text">
                       <p class="contact"><label for="profilepic">Upload Profile Photo</label></p>
                       <input type="file" id="name" name="profilepic" accept="image/*" multiple>
                       
@@ -60,15 +66,43 @@
               </div>
             
             </div>            
-        </div>        
+        </div>
+        <script>
+            let userName = name.split("=");
+            let userEmail = email.split("=");
+            let userUsername = username.split("=");
+            userName = userName[1];
+            userEmail = userEmail[1];
+            userUsername = userUsername[1];
+
+            let userNameSplit = userName.split(" ");
+            let firstname = userNameSplit[0];
+            let lastname = userNameSplit[1];
+            let othername = userNameSplit[2];
+
+            if(othername == null){
+              othername = '';
+            }
+
+            document.getElementById('name').innerHTML = userName;
+            document.getElementById('email').innerHTML = userEmail;
+            document.getElementById('username').innerHTML = userUsername;
+
+            document.getElementById('firstnameForm').value = firstname;
+            document.getElementById('lastnameForm').value = lastname;
+            document.getElementById('othernameForm').value = othername;
+            document.getElementById('usernameForm').value = userUsername;
+            
+          </script>                
       </div>      
       <div class="column">
           <div class="card">
               <div class="container2">
-                <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
-                <h4 class="black"><b>Red Flags</b></h4>
-                <p class="black"><a href="redflags.html"> View All</a></p>
-      
+                <a href="redflags.html">
+                  <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+                  <h4 class="black"><b>Red Flags</b></h4>
+                  <p class="black"><i class="fa fa-external-link" aria-hidden="true"></i></p>
+                </a>
               </div>
             </div>        
         <div class="card">
@@ -100,10 +134,11 @@
       <div class="column">
           <div class="card">
               <div class="container2">
-                <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
-                <h4 class="black"><b>Interventions</b></h4>
-                <p class="black"><a href="interventions.html"> View All</a></p>
-      
+                <a href="interventions.html">
+                  <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                  <h4 class="black"><b>Interventions</b></h4>
+                  <p class="black"><i class="fa fa-external-link" aria-hidden="true"></i></p>
+                </a>
               </div>
             </div>         
           <div class="card">
@@ -147,4 +182,5 @@
   </body>
   <script src="js/main.js"></script>
   <script src="js/modal.js"></script>
+  <script src="js/logout.js"></script>
 </html>

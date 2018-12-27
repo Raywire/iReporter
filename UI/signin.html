@@ -22,7 +22,7 @@
           <a href="about.html"  class="nav-links">about</a>
         </li>
         <li>
-          <a href="signin.html" class="nav-links signin-link">sign in</a>
+          <a href="signup.html" class="nav-links signin-link">sign up</a>
         </li>
       </ul>
     </nav>
@@ -101,13 +101,22 @@
                             document.getElementById('error-message').style.color = "green";
                             document.getElementById('error-message').innerHTML = "Login successful";
                             let access_token = j['data'][0]['token'];
-                            let name = j['data'][0]['user']['firstname'] + ' ' + j['data'][0]['user']['lastname'];
+                            if(j['data'][0]['user']['othernames']!=null){
+                              othernames =  ' ' + j['data'][0]['user']['othernames'];
+                            }else{
+                              othernames = '';
+                            }
+                            let name = j['data'][0]['user']['firstname'] + ' ' + j['data'][0]['user']['lastname'] + othernames;
                             let email = j['data'][0]['user']['email'];
-                            let username = j['data'][0]['user']['username']
+                            let username = j['data'][0]['user']['username'];
+                            let id = j['data'][0]['user']['id'];
+                            let isAdmin = j['data'][0]['user']['isAdmin']
                             document.cookie = "token=" + access_token;
                             document.cookie = "name=" + name;
                             document.cookie = "email=" + email;
                             document.cookie = "username=" + username;
+                            document.cookie = "id=" + id;
+                            document.cookie = "isAdmin=" + isAdmin;
                             window.location.replace("home.html");
                         }
                        

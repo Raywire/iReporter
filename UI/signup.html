@@ -149,15 +149,7 @@
               }
 
               if(j.hasOwnProperty('data')){
-                let access_token = j['data'][0]['token'];
-                let name = j['data'][0]['user']['name'];
-                let email = j['data'][0]['user']['email'];
-                let username = j['data'][0]['user']['username']
-                document.cookie = "token=" + access_token;
-                document.cookie = "name=" + name;
-                document.cookie = "email=" + email;
-                document.cookie = "username=" + username;
-                window.location.replace("home.html");
+                window.location.replace("signin.html");
                 }
               
           })
