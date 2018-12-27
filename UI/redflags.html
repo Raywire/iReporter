@@ -57,8 +57,6 @@
                 <form id="postData" method="POST" enctype="multipart/form-data">
                   <p class="contact"><label for="title">Title</label></p>
                   <input id="title" name="title" placeholder="Title" tabindex="1" type="text">
-                  <!-- <p class="contact"><label for="description">Description</label></p>
-                  <textarea id="description" rows="4" cols="50" name="description"></textarea> -->
                   <p class="contact"><label for="comment">Comment</label></p>
                   <textarea name="comment" id="comment" cols="30" rows="10"></textarea>          
                   <p class="contact"><label for="date">Location</label></p>
@@ -281,7 +279,7 @@
                                           <td>${status}</td> 
                                           <td>${createdon}</td>
                                           <td>
-                                            <a href="view_redflag.html"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                                            <a href="view_redflag.html?redflag_id=${id}"><i class="fa fa-external-link" aria-hidden="true"></i></a>
                                           </td>
                                         </tr>
                                         `;
