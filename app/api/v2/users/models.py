@@ -147,13 +147,15 @@ class UserModel:
         user = self.get_user(data['username'])
         if user is not None:
             user_data = {
+                'id': user['id'],
                 'firstname': user['firstname'],
                 'lastname': user['lastname'],
                 'othernames': user['othernames'],
                 'email': user['email'],
                 'phoneNumber': user['phonenumber'],
                 'username': user['username'],
-                'public_id': user['public_id']
+                'public_id': user['public_id'],
+                'isAdmin': user['isadmin']
             }
 
         if user is None:
