@@ -1,3 +1,18 @@
+<noscript>
+    <h1>Your browser does not support Javascript</h1>
+</noscript>  
+  <script>
+    let cookie = document.cookie.split(";");
+    let token = cookie[0];
+    let name = cookie[1];
+    let email = cookie[2];
+    let username = cookie[3];
+    
+    if (document.cookie.length == 0){
+      window.location.replace("signin.html");
+    }
+  
+  </script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -24,7 +39,7 @@
           <a href="profile.html" class="nav-links ">profile</a>
         </li>
         <li>
-          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
+            <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
         </li>        
       </ul>
     </nav>
@@ -32,7 +47,7 @@
         <!-- Trigger/Open The Modal -->
         <div class="modal-container-buttons">
             <button id="myBtn" class="button-modal">Upload Image/Video</button>
-            <button id="myBtn" class="button-modal">Geolocate</button>
+            <button id="btnGeolocate" class="button-modal"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
             <button id="myBtn" class="button-modal danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
             <div id="myModal" class="modal">
   
@@ -53,24 +68,99 @@
               
               </div>              
         </div>
-        <div class="container">
-            <h2 class="black">Bad roads in Kilifi County</h2>
-            
-            <div class="row  bg-color">
-              <div class="column-50 bg-color">
-                <p><img src="img/bad-road.jpeg" alt=""></p>
-              </div>
-              <div class="column-50  bg-color align-justify">
-                <h2>Description:</h2>
-                <p class="black ">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cras adipiscing enim eu turpis egestas pretium. Sit amet purus gravida quis blandit turpis cursus in hac. Mattis enim ut tellus elementum sagittis. At ultrices mi tempus imperdiet nulla malesuada pellentesque elit. Diam in arcu cursus euismod quis viverra. Pharetra pharetra massa massa ultricies mi quis. Augue mauris augue neque gravida in fermentum. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Sed lectus vestibulum mattis ullamcorper velit. Ac turpis egestas maecenas pharetra convallis posuere. Varius morbi enim nunc faucibus a pellentesque sit amet porttitor.
+        <div id='intervention-data' class="container">
+            <h2 class="black" id="message"></h2>
+            <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i></center>
+            <script>
+                let urlParams = new URLSearchParams(window.location.search);
+                let redflagId = urlParams.get('redflag_id');
+                document.getElementById("btnGeolocate").disabled = true;
 
-                    Non arcu risus quis varius quam quisque id. Porta nibh venenatis cras sed felis eget. Aliquet enim tortor at auctor urna nunc. Placerat duis ultricies lacus sed. Neque viverra justo nec ultrices dui sapien eget mi proin. Nunc consequat interdum varius sit amet mattis vulputate enim nulla. Cursus turpis massa tincidunt dui ut ornare lectus sit amet. Lacinia quis vel eros donec ac. Purus sit amet volutpat consequat mauris nunc congue nisi. Fusce ut placerat orci nulla pellentesque dignissim enim sit. Porttitor lacus luctus accumsan tortor posuere ac. Vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor. Integer malesuada nunc vel risus commodo viverra maecenas accumsan. Odio ut sem nulla pharetra diam sit amet nisl.            
-                </p>
-              </div>
-            </div>
+                function getData(event){
+            
+                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                  let uri = root + 'redflags/' + redflagId;
+
+                  let cookie = document.cookie.split(";");
+                  let tokenKeyValue = cookie[0];
+                  let tokenSplit = tokenKeyValue.split("token=");
+                  let token = tokenSplit[1];
+            
+                  let options = {
+                      method: 'GET',
+                      mode: "cors",
+                      headers: new Headers({
+                        "Content-Type": "application/json; charset=utf-8",
+                        "x-access-token": token
+                      })
+                  }
+                  let req = new Request(uri, options);
+            
+                  fetch(req)
+                      .then((response)=>{
+                          if(response.ok){
+                            document.getElementById('fa-spin-data').style.display = "none";
+                            document.getElementById("btnGeolocate").disabled = false;
+                            return response.json();
+                          }else{
+                            document.getElementById('fa-spin-data').style.display = "none";
+                            return response.json();
+                          }
+                      })
+                      .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'] == 'Token is missing'){
+                            logout();
+                          }
+                          if(j['message'] == 'Token is invalid'){
+                            logout();
+                          }
+                          if(j['message'] == 'Redflag does not exist'){
+                            document.getElementById('message').innerHTML = j['message'];
+                          }
+                        }
+                        if(j.hasOwnProperty('data')){
+                          let result = '';
+                            j['data'].map((redflag) => {
+                              const { title, comment, status, createdon, location } = redflag
+                              result += `
+                              <h2>${title}</h2>
+                              <h3><span class="black">Status:</span> <span class="italic">${status}</span></h3>
+                              <h4><span class="black">Created On:</span> <span class="italic">${createdon}</span></h4>
+            
+                              <div class="row  bg-color">
+                                <div class="column-50 bg-color">
+                                  
+                                  <p><img src="img/bad-road.jpeg" alt=""></p>
+                                  <p><img src="" alt=""></p>
+                                </div>
+                                <div class="column-50  bg-color align-justify">
+                                  <!-- <h2 class="black">Description:</h2> -->
+                                  <p>${comment}</p>
+                                </div>
+                              </div>  
+                              `;
+                              localStorage.clear();
+                              localStorage.setItem('coordinates', location);
+                              document.getElementById('intervention-data').innerHTML = result;
+                            });
+
+                        }
+                                                    
+                      })
+                      .catch( (err) =>{
+                          console.log(err);
+                          // document.getElementById('message').innerHTML = err;
+                      });
+              }
+              getData();
+             
+            </script>          
         </div>
-        
+        <p><div id="googleMap" style="width:100%;height:400px;"></div></p>         
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0"></script>
+            <script src="js/geolocation.js"></script>        
         </div>  
 
         <div class="push"></div>
@@ -89,4 +179,5 @@
   </body>
   <script src="js/main.js"></script>
   <script src="js/modal.js"></script>
+  <script src="js/logout.js"></script>
 </html>

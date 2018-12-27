@@ -300,9 +300,6 @@ color: black;
 .container {
   padding: 2px 16px;
 }
-.fa{
-  color:#296de8;
-}
 .fa-power-off{
   color:red;
 }
@@ -315,10 +312,18 @@ color:red;
 p{
 color:black;
 }
-
-
-
-
+.italic {
+  font-style: italic;
+}
+#intervention-data h2{
+  color:rgb(143, 143, 143);
+}
+#intervention-data h2,h3,h4{
+  color:rgb(153, 153, 153);
+}
+#intervention-data p{
+  color:rgb(103, 103, 103);
+}
 /* Clear floats after image containers */
 .row::after {
 content: "";
@@ -390,17 +395,22 @@ overflow-x:auto;
 background-color: #296de8;
 border: none;
 color: white;
-padding: 15px 32px;
+padding: 16px 16px;
+margin: 30px auto;
 text-align: center;
 text-decoration: none;
 display: inline-block;
 font-size: 16px;
 margin:8px;
+border-width: 0;
+outline: none;
+border-radius: 2px;
+box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+transition: background-color .3s;
 }
 
-.button-modal:hover{
-  background-color: #29c1e8;
-  color: black;
+.button-modal:hover,.button-modal:focus{
+  background-color: #0b47b6;
 }
 
 input[type=text], select, textarea, input[type=file], input[type=date] {
@@ -417,18 +427,21 @@ box-sizing: border-box;
 }
 
 input[type=submit] {
-background-color: #4CAF50;
-color: white;
+background-color: #2ecc71;
+color: #ecf0f1;
 padding: 14px 20px;
 margin: 8px 0;
 border: none;
 border-radius: 4px;
 cursor: pointer;
+outline: none;
+border-radius: 2px;
+box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+transition: background-color .3s;
 }
 
-input[type=submit]:hover {
-  background-color: #29c1e8;
-  color:black;
+input[type=submit]:hover,input[type=submit]:focus {
+  background-color: #27ae60;
 }
 
 form p{
@@ -495,7 +508,10 @@ overflow: hidden;
 background-color: #fff;
 }
 .danger{
-background-color:red;
+  background-color: #e74c3c;
+}
+.danger:hover,.danger:focus{
+  background-color: #c0392b;
 }
 .container2{
 padding: 12px;
