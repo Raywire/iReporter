@@ -1,0 +1,371 @@
+<noscript>
+    <h1>Your browser does not support Javascript</h1>
+  </noscript>  
+  <script src="js/auth.js"></script>
+  <!DOCTYPE html>
+  <html lang="en" dir="ltr">
+    <head>
+      <meta charset="utf-8">
+      <title>iReporter Admin</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <body>
+      <nav class="navbar">
+        <span class="navbar-toggle" id="js-navbar-toggle">
+          <i class="fa fa-bars"></i>
+        </span>
+        <a href="home.html" class="logo">iReporter</a>
+        <ul class="main-nav" id="js-menu">
+          <li>
+            <a href="redflags.html"  class="nav-links">red flags</a>
+          </li>
+          <li>
+            <a href="interventions.html"  class="nav-links">interventions</a>
+          </li>
+          <li>
+            <a href="profile.html" class="nav-links ">profile</a>
+          </li>
+          <li>
+            <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+          </li>        
+        </ul>
+      </nav>
+      <div class="container wrapper">
+        <!-- Trigger/Open The Modal -->
+        <div class="modal-container-buttons">
+            <button id="myBtn" class="button-modal danger" data-modal="modal-window-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+            <span  id="modal-admin-buttons"></span>
+            <script>
+                let adminStatus = isAdmin.split("=");
+      
+                adminStatus = adminStatus[1];
+                
+                if(adminStatus == 'true'){
+                  let result = '';
+                  result +=`
+                  <button id="btnEditStatus" class="button-modal orange" data-modal="modal-window-edit-status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
+                  <!-- The Modal -->
+                  <div id="modal-window-edit-status" class="modal">
+            
+                      <!-- Modal content -->
+                      <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div  class="modal-form">
+                            <form id="patchStatus" method="POST" >
+                              <p><label for="status">Edit Admin Status</label></p>
+                              <select name="status" id="status">
+                                  <option value="False">False</option>
+                                  <option value="True">True</option>
+                              </select>
+
+                              
+                              <br>
+                              <input name="submit" class="button-normal" tabindex="5" value="Change Status" type="submit">
+                              <i id="fa-spin-edit-status" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                              <p id="status-message"></p>
+                          </form>       
+                        </div>
+                      </div>
+                    
+                    </div>           
+                  `;
+                  document.getElementById('modal-admin-buttons').innerHTML = result;
+                }
+      
+              </script>
+            
+            <div id="modal-window-delete" class="modal">
+                <!--Delete Modal -->
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <div class="modal-body">
+                          <p>Are you sure you want to delete this user?</p>
+                          <p id="error-message"></p>
+                      </div>
+                      <div class="modal-footer">
+                        <button id="btnDelConfirm" type="button" class="button-modal danger" >Delete</button>
+                        <i id="fa-spin-data-delete" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                      </div>    
+                </div>
+              
+              </div> 
+             
+        </div>
+        <div id='user-data' class="container">
+            <h2 class="black" id="message"></h2>
+            <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i></center>
+            <script>
+                let urlParams = new URLSearchParams(window.location.search);
+                let usernameId = urlParams.get('username');
+
+                function getData(event){
+            
+                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                  let uri = root + 'users/' + usernameId;
+
+                  let cookie = document.cookie.split(";");
+                  let tokenKeyValue = cookie[0];
+                  let tokenSplit = tokenKeyValue.split("token=");
+                  let token = tokenSplit[1];
+            
+                  let options = {
+                      method: 'GET',
+                      mode: "cors",
+                      headers: new Headers({
+                        "Content-Type": "application/json; charset=utf-8",
+                        "x-access-token": token
+                      })
+                  }
+                  let req = new Request(uri, options);
+            
+                  fetch(req)
+                      .then((response)=>{
+                          if(response.ok){
+                            document.getElementById('fa-spin-data').style.display = "none";
+                           
+                            return response.json();
+                          }else{
+                            document.getElementById('fa-spin-data').style.display = "none";
+                            return response.json();
+                          }
+                      })
+                      .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'] == 'Token is missing'){
+                            logout();
+                          }
+                          if(j['message'] == 'Token is invalid'){
+                            logout();
+                          }
+                          if(j['message'] == 'Only admin can access this route'){
+                            logout();
+                          }
+                          if(j['message'] == 'User does not exist'){
+                            document.getElementById('message').innerHTML = j['message'];
+                          }
+                        }
+                        if(j.hasOwnProperty('data')){
+                          let result = '';
+                          let fullname = '';
+                            j['data'].map((user) => {
+                              const { firstname, lastname, othernames, username, email, phonenumber, isAdmin, registered, public_id } = user
+                              if(othernames==null){
+                                  fullname = firstname + ' ' + lastname;
+                              }
+                              else{
+                                  fullname = firstname + ' ' + lastname + ' ' + othernames;
+                              }
+                              result += `
+                              <h2>${fullname}</h2>
+                              <h3><span class="black">Admin Status:</span> <span id='status-data' class="italic">${isAdmin}</span></h3>
+                              <h4><span class="black">Created On:</span> <span class="italic">${registered}</span></h4>
+                              <h4 id='comment-data'><span class="black">Public Id: </span>${public_id}</h4>
+                              <div class="row  bg-color">
+                                <div class="column-50 bg-color">                       
+                                  <p><img src="img/img_avatar3.jpeg" alt=""></p>
+                                </div>
+                                <div class="column-50  bg-color align-justify">
+                                  <p id='comment-data'><span class="black">Email: </span>${email}</p>
+                                  <p id='comment-data'><span class="black">Phone Number: </span>${phonenumber}</p>
+                                  <p id='comment-data'><span class="black">Username: </span>${username}</p>
+                                </div>
+                              </div>  
+                              `;
+                              document.getElementById('user-data').innerHTML = result;
+
+                            });
+
+                        }
+                                                    
+                      })
+                      .catch( (err) =>{
+                          console.log(err);
+                          // document.getElementById('message').innerHTML = err;
+                      });
+              }
+              getData();
+             
+
+                var btnDelConfirm = document.getElementById('btnDelConfirm');
+                btnDelConfirm.addEventListener("click", deleteData);
+
+
+                function deleteData(event){
+                  document.getElementById('fa-spin-data-delete').style.display = "block";
+                  document.getElementById('error-message').innerHTML = '';
+            
+                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                  let uri = root + 'users/' + usernameId;
+
+                  let cookie = document.cookie.split(";");
+                  let tokenKeyValue = cookie[0];
+                  let tokenSplit = tokenKeyValue.split("token=");
+                  let token = tokenSplit[1];
+            
+                  let options = {
+                      method: 'DELETE',
+                      mode: "cors",
+                      headers: new Headers({
+                        "Content-Type": "application/json; charset=utf-8",
+                        "x-access-token": token
+                      })
+                  }
+                  let req = new Request(uri, options);
+            
+                  fetch(req)
+                      .then((response)=>{
+                          if(response.ok){
+                            return response.json();
+                          }else{
+                            return response.json();
+                          }
+                      })
+                      .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'] == 'Token is missing'){
+                            logout();
+                          }
+                          if(j['message'] == 'Token is invalid'){
+                            logout();
+                          }
+                          if(j['message'] == 'Only admin can access this route'){
+                            logout();
+                          }
+                          if(j['message'] == 'User does not exist'){
+                            document.getElementById('error-message').innerHTML = j['message'];
+                          }
+                          if(j['message'] == 'Only an admin can delete a user'){
+                            document.getElementById('error-message').innerHTML = j['message'];
+                          }
+
+                        }
+                        if(j.hasOwnProperty('data')){
+                          if(j['data']['message'] == 'user record has been deleted'){
+                            document.getElementById('error-message').innerHTML = j['data']['message'];
+                          }                          
+                        }
+                        document.getElementById('fa-spin-data-delete').style.display = "none";
+                                                    
+                      })
+                      .catch( (err) =>{
+                          console.log(err);
+                          document.getElementById('error-message').innerHTML = err;
+                          document.getElementById('fa-spin-data-delete').style.display = "none";
+                      });
+              }
+  
+              //Function for an Admin to Promote a specific Users Admin Status
+              try {
+                document.getElementById('patchStatus').addEventListener('submit', editStatus);
+              }
+              catch(error) {
+                
+              } 
+
+              function editStatus(event){
+                event.preventDefault();
+                  document.getElementById('fa-spin-edit-status').style.display = "block";
+                  document.getElementById('status-message').innerHTML = '';
+                  document.getElementById('status-message').style.color = "red";
+            
+                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                  let uri = root + 'users/' + usernameId + '/promote';
+
+                  let status = document.getElementById('status').value;
+
+                  let cookie = document.cookie.split(";");
+                  let tokenKeyValue = cookie[0];
+                  let tokenSplit = tokenKeyValue.split("token=");
+                  let token = tokenSplit[1];
+            
+                  let options = {
+                      method: 'PATCH',
+                      mode: "cors",
+                      headers: new Headers({
+                        "Content-Type": "application/json; charset=utf-8",
+                        "x-access-token": token
+                      }),
+                      body: JSON.stringify({isadmin:status})
+                  }
+                  let req = new Request(uri, options);
+            
+                  fetch(req)
+                      .then((response)=>{
+                          if(response.ok){
+                            return response.json();
+                          }else{
+                            return response.json();
+                          }
+                      })
+                      .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'] == 'Token is missing'){
+                            logout();
+                          }
+                          if(j['message'] == 'Token is invalid'){
+                            logout();
+                          }
+                          if(j['message'] == 'Only admin can access this route'){
+                            logout();
+                          }
+                          if(j['message'] == 'User does not exist'){
+                            document.getElementById('status-message').innerHTML = j['message'];
+                          }
+                          if(j['message'].hasOwnProperty('isadmin')){
+                              document.getElementById('isadmin').style.borderBottomColor = "red";
+                              document.getElementById('status-message').innerHTML = "(Accepted values: True, False)";
+                          }    
+                          if(j['message'] == 'Only an admin can change the status of a user'){
+                            document.getElementById('status-message').innerHTML = j['message'];
+                          }
+
+                        }
+                        if(j.hasOwnProperty('data')){
+                          if(j['data']['message'] == "User status has been updated"){
+                            document.getElementById('status-message').style.color = "green";
+                            document.getElementById('status-message').innerHTML = j['data']['message'];
+                            document.getElementById('status').value = status;
+                            document.getElementById('status-data').innerHTML = status;
+                          }                          
+                        }                        
+                        document.getElementById('fa-spin-edit-status').style.display = "none";
+                                                    
+                      })
+                      .catch( (err) =>{
+                          console.log(err);
+                          document.getElementById('status-message').innerHTML = err;
+                          document.getElementById('fa-spin-edit-status').style.display = "none";
+                      });
+              }           
+             
+            </script>          
+        </div>
+ 
+        </div>  
+      <div class="footer">
+        <ul>
+          <li>
+            <a href="contact.html"  class="nav-links">contact</a>
+          </li>
+          <li>
+            <a href="about.html"  class="nav-links">about</a>
+          </li>    
+          <li><a href="#" class="nav-links">privacy & terms</a></li>    
+        </ul>
+      </div>
+    </body>
+    <script src="js/main.js"></script>
+    <script src="js/modal.js"></script> 
+    <script src="js/logout.js"></script>
+  </html>
+  
