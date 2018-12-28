@@ -537,13 +537,13 @@ padding:8px;
 .fa-spin{
   color: #27ae60;
 }
-#fa-spin, #fa-spin-data-delete, #fa-spin-edit{
+#fa-spin, #fa-spin-data-delete, #fa-spin-edit, #fa-spin-edit-status{
   display: none;
 }
 #fa-spin-data-delete{
   color: #ff3333
 }
-#error-message, #edit-message, #edit-message-2{
+#error-message, #edit-message, #edit-message-2, #status-message{
   font-size: 0.8em;
   color: #ff3333
 }

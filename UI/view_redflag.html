@@ -37,9 +37,49 @@
         <div class="modal-container-buttons">
             <button id="myBtn1" class="button-modal">Upload Image/Video</button>
             <button id="btnGeolocate" class="button-normal"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
-            <button id="btnEdit" class="button-modal orange" data-modal="modal-window-edit"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+            <button id="btnEdit" class="button-modal orange" data-modal="modal-window-edit"><i class="fa fa-pencil" aria-hidden="true"></i></button> 
             <button id="myBtn" class="button-modal danger" data-modal="modal-window-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+            <span  id="modal-admin-buttons"></span>
+            <script>
+                let adminStatus = isAdmin.split("=");
+      
+                adminStatus = adminStatus[1];
+                
+                if(adminStatus == 'true'){
+                  let result = '';
+                  result +=`
+                  <button id="btnEditStatus" class="button-modal orange" data-modal="modal-window-edit-status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
+                  <!-- The Modal -->
+                  <div id="modal-window-edit-status" class="modal">
+            
+                      <!-- Modal content -->
+                      <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div  class="modal-form">
+                            <form id="patchStatus" method="POST" >
+                              <p><label for="status">Edit Status</label></p>
+                              <select name="status" id="status">
+                                  <option value="draft">Draft</option>
+                                  <option value="resolved">Resolve</option>
+                                  <option value="under investigation">Investigate</option>
+                                  <option value="rejected">Reject</option>
+                              </select>
 
+                              
+                              <br>
+                              <input name="submit" class="button-normal" tabindex="5" value="Change Status" type="submit">
+                              <i id="fa-spin-edit-status" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                              <p id="status-message"></p>
+                          </form>       
+                        </div>
+                      </div>
+                    
+                    </div>           
+                  `;
+                  document.getElementById('modal-admin-buttons').innerHTML = result;
+                }
+      
+              </script>
             <div id="modal-window-delete" class="modal">
                 <!--Delete Modal -->
                 <div  class="modal-content">
@@ -150,7 +190,7 @@
                               const { title, comment, status, createdon, location } = redflag
                               result += `
                               <h2>${title}</h2>
-                              <h3><span class="black">Status:</span> <span class="italic">${status}</span></h3>
+                              <h3><span class="black">Status:</span> <span id='status-data' class="italic">${status}</span></h3>
                               <h4><span class="black">Created On:</span> <span class="italic">${createdon}</span></h4>
             
                               <div class="row  bg-color">
@@ -379,7 +419,7 @@
                               document.getElementById('edit-message-2').innerHTML = "Comment cannot be empty or start with special characters";
                           }    
                           if(j['message'] == 'Only the user who created this record can edit it'){
-                            document.getElementById('edit-message').innerHTML = j['message'];
+                            document.getElementById('edit-message-2').innerHTML = j['message'];
                           }
                           if(j['message'] == 'Incident can only be edited when the status is draft'){
                             document.getElementById('edit-message-2').innerHTML = j['message'];
@@ -400,7 +440,91 @@
                           document.getElementById('edit-message-2').innerHTML = err;
                           document.getElementById('fa-spin-edit').style.display = "none";
                       });
-              }                
+              }  
+              
+
+              //Admin Update a specific Red Flag's Status
+              try {
+                document.getElementById('patchStatus').addEventListener('submit', editStatus);
+              }
+              catch(error) {
+
+              }              
+              
+
+              function editStatus(event){
+                event.preventDefault();
+                  document.getElementById('fa-spin-edit-status').style.display = "block";
+                  document.getElementById('status-message').innerHTML = '';
+                  document.getElementById('status-message').style.color = "red";
+            
+                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                  let uri = root + 'redflags/' + redflagId + '/status';
+
+                  let status = document.getElementById('status').value;
+
+                  let cookie = document.cookie.split(";");
+                  let tokenKeyValue = cookie[0];
+                  let tokenSplit = tokenKeyValue.split("token=");
+                  let token = tokenSplit[1];
+            
+                  let options = {
+                      method: 'PATCH',
+                      mode: "cors",
+                      headers: new Headers({
+                        "Content-Type": "application/json; charset=utf-8",
+                        "x-access-token": token
+                      }),
+                      body: JSON.stringify({status:status})
+                  }
+                  let req = new Request(uri, options);
+            
+                  fetch(req)
+                      .then((response)=>{
+                          if(response.ok){
+                            return response.json();
+                          }else{
+                            return response.json();
+                          }
+                      })
+                      .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'] == 'Token is missing'){
+                            logout();
+                          }
+                          if(j['message'] == 'Token is invalid'){
+                            logout();
+                          }
+                          if(j['message'] == 'Redflag does not exist'){
+                            document.getElementById('status-message').innerHTML = j['message'];
+                          }
+                          if(j['message'].hasOwnProperty('status')){
+                              document.getElementById('comment').style.borderBottomColor = "red";
+                              document.getElementById('status-message').innerHTML = "Accepted values: draft, under investigation, rejected, resolved";
+                          }    
+                          if(j['message'] == 'Only an admin can change the status of the record'){
+                            document.getElementById('status-message').innerHTML = j['message'];
+                          }
+
+                        }
+                        if(j.hasOwnProperty('data')){
+                          if(j['data'][0]['message'] == "Updated redflag record's status"){
+                            document.getElementById('status-message').style.color = "green";
+                            document.getElementById('status-message').innerHTML = j['data'][0]['message'];
+                            document.getElementById('status').value = status;
+                            document.getElementById('status-data').innerHTML = status;
+                          }                          
+                        }                        
+                        document.getElementById('fa-spin-edit-status').style.display = "none";
+                                                    
+                      })
+                      .catch( (err) =>{
+                          console.log(err);
+                          document.getElementById('status-message').innerHTML = err;
+                          document.getElementById('fa-spin-edit-status').style.display = "none";
+                      });
+              }               
             </script>          
         </div>
         <p id="locationArea"></p>
