@@ -15,8 +15,7 @@ function myMap() {
   var incidentLocation = {lat: lat, lng: lon};
 
   addNewMarkers(incidentLocation);
-  var location = geocodeLatLng(geocoder,coordinates);
-  console.log(location);
+  geocodeLatLng(geocoder,coordinates);
   
   function addNewMarkers(location) {
     var marker = new google.maps.Marker({
@@ -40,6 +39,7 @@ function geocodeLatLng(geocoder, coordinates) {
         } else {
             location[0] ='No results found';
         }
+        document.getElementById('locationArea').innerHTML = location[0];
       } else {
         location[0] = 'Geocoder failed due to: ' + status;
       }

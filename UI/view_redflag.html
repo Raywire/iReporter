@@ -36,29 +36,60 @@
         <!-- Trigger/Open The Modal -->
         <div class="modal-container-buttons">
             <button id="myBtn1" class="button-modal">Upload Image/Video</button>
-            <button id="btnGeolocate" class="button-modal"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
-            <button id="myBtn" class="button-modal danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-            <div id="myModal" class="modal">
-  
+            <button id="btnGeolocate" class="button-normal"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
+            <button id="btnEdit" class="button-modal orange" data-modal="modal-window-edit"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+            <button id="myBtn" class="button-modal danger" data-modal="modal-window-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+
+            <div id="modal-window-delete" class="modal">
                 <!--Delete Modal -->
-                <div class="modal-content">
+                <div  class="modal-content">
                     <span class="close">&times;</span>
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delete Appointment</h5>
-                              <span aria-hidden="true">&times;</span>
+                            <h5 class="modal-title" id="exampleModalLabel">Delete Red Flag</h5>
+                              <span aria-hidden="true" data-modal="modal-window-delete">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>Are you sure you want to delete this redflag?</p>
+                            <p>Are you sure you want to delete this red flag?</p>
                             <p id="error-message"></p>
                         </div>
                         <div class="modal-footer">
-                          <button id="btnDelConfirm" type="button" class="button-modal danger" >Delete</button>
+                          <button id="btnDelConfirm" type="button" class="button-normal danger" >Delete</button>
                           <i id="fa-spin-data-delete" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
                         </div>    
                   </div>
               
-              </div>              
+              </div>
+              <div id="modal-window-edit" class="modal">
+                <!--Edit Modal -->
+                <div  class="modal-content">
+                    <span class="close">&times;</span>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Red Flag</h5>
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                          <div  class="modal-form">
+                            <form id="patchData" method="POST" enctype="multipart/form-data">
+                              <p class="contact"><label for="title">Title</label></p>
+                              <input id="title" name="title" placeholder="Title" maxlength="100" tabindex="1" type="text">
+                              <p class="contact"><label for="comment">Comment</label></p>
+                              <textarea name="comment" id="comment" maxlength="1000" cols="30" rows="10"></textarea>          
+                              <p class="contact"><label for="date">Location</label></p>
+                              <div id="addMarker" style="width:100%;height:400px;"></div>
+                              <input id="location" readonly name="location" placeholder="Location" required="" type="text">
+                                
+                              <br>
+                              <input id='submit' name="submit" class="button-normal" tabindex="5" value="Edit Red Flag" type="submit">
+                              <i id="fa-spin-edit" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                              <p id="edit-message"></p>
+                            </form>
+                          </div>
+                        </div>   
+                  </div>
+              
+              </div>          
         </div>
         <div id='intervention-data' class="container">
             <h2 class="black" id="message"></h2>
@@ -136,6 +167,9 @@
                               localStorage.clear();
                               localStorage.setItem('coordinates', location);
                               document.getElementById('intervention-data').innerHTML = result;
+                              document.getElementById('title').value = title;
+                              document.getElementById('comment').value = comment;
+                              document.getElementById('location').value = location;
                             });
 
                         }
@@ -148,8 +182,9 @@
               }
               getData();
 
+              //Deleting a specific Red Flag
               var btnDelConfirm = document.getElementById('btnDelConfirm');
-                btnDelConfirm.addEventListener("click", deleteData);
+              btnDelConfirm.addEventListener("click", deleteData);
 
 
                 function deleteData(event){
@@ -211,12 +246,85 @@
                           document.getElementById('error-message').innerHTML = err;
                           document.getElementById('fa-spin-data-delete').style.display = "none";
                       });
-              }              
+              }
+              
+
+              //Update a specific Red Flag's Location
+              document.getElementById('patchData').addEventListener('submit', editLocation);
+
+              function editLocation(event){
+                event.preventDefault();
+                  document.getElementById('fa-spin-edit').style.display = "block";
+                  document.getElementById('edit-message').innerHTML = '';
+                  document.getElementById('edit-message').style.color = "red";
+            
+                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                  let uri = root + 'redflags/' + redflagId + '/location';
+
+                  let location = document.getElementById('location').value;
+
+                  let cookie = document.cookie.split(";");
+                  let tokenKeyValue = cookie[0];
+                  let tokenSplit = tokenKeyValue.split("token=");
+                  let token = tokenSplit[1];
+            
+                  let options = {
+                      method: 'PATCH',
+                      mode: "cors",
+                      headers: new Headers({
+                        "Content-Type": "application/json; charset=utf-8",
+                        "x-access-token": token
+                      }),
+                      body: JSON.stringify({location:location})
+                  }
+                  let req = new Request(uri, options);
+            
+                  fetch(req)
+                      .then((response)=>{
+                          if(response.ok){
+                            return response.json();
+                          }else{
+                            return response.json();
+                          }
+                      })
+                      .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'] == 'Token is missing'){
+                            logout();
+                          }
+                          if(j['message'] == 'Token is invalid'){
+                            logout();
+                          }
+                          if(j['message'] == 'Redflag does not exist'){
+                            document.getElementById('edit-message').innerHTML = j['message'];
+                          }
+                          if(j['message'] == 'Only the user who created this record can edit it'){
+                            document.getElementById('edit-message').innerHTML = j['message'];
+                          }
+                        }
+                        if(j.hasOwnProperty('data')){
+                          if(j['data'][0]['message'] == "Updated redflag record's location"){
+                            document.getElementById('edit-message').style.color = "green";
+                            document.getElementById('edit-message').innerHTML = j['data'][0]['message'];
+                          }                          
+                        }                        
+                        document.getElementById('fa-spin-edit').style.display = "none";
+                                                    
+                      })
+                      .catch( (err) =>{
+                          console.log(err);
+                          document.getElementById('edit-message').innerHTML = err;
+                          document.getElementById('fa-spin-edit').style.display = "none";
+                      });
+              }  
             </script>          
         </div>
+        <p id="locationArea"></p>
         <p><div id="googleMap" style="width:100%;height:400px;"></div></p>         
             <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0"></script>
-            <script src="js/geolocation.js"></script>        
+            <script src="js/geolocation.js"></script>
+            <script src="js/mapper.js"></script>       
         </div>  
 
         <div class="push"></div>
