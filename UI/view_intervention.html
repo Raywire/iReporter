@@ -84,6 +84,7 @@
                                 <input id='submit' name="submit" class="button-normal" tabindex="5" value="Edit Intervention" type="submit">
                                 <i id="fa-spin-edit" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
                                 <p id="edit-message"></p>
+                                <p id="edit-message-2"></p>
                               </form>
                             </div>
                           </div>   
@@ -159,8 +160,7 @@
                                   <p><img src="" alt=""></p>
                                 </div>
                                 <div class="column-50  bg-color align-justify">
-                                  <!-- <h2 class="black">Description:</h2> -->
-                                  <p>${comment}</p>
+                                  <p id='comment-data'>${comment}</p>
                                 </div>
                               </div>  
                               `;
@@ -302,11 +302,16 @@
                           if(j['message'] == 'Only the user who created this record can edit it'){
                             document.getElementById('edit-message').innerHTML = j['message'];
                           }
+                          if(j['message'] == 'Incident can only be edited when the status is draft'){
+                            document.getElementById('edit-message').innerHTML = j['message'];
+                          }
                         }
                         if(j.hasOwnProperty('data')){
                           if(j['data'][0]['message'] == "Updated intervention record's location"){
                             document.getElementById('edit-message').style.color = "green";
                             document.getElementById('edit-message').innerHTML = j['data'][0]['message'];
+                            localStorage.clear();
+                            localStorage.setItem('coordinates', location);
                           }                          
                         }                        
                         document.getElementById('fa-spin-edit').style.display = "none";
@@ -318,6 +323,84 @@
                           document.getElementById('fa-spin-edit').style.display = "none";
                       });
               }  
+
+              //Update a specific Intervention's Comment
+              document.getElementById('patchData').addEventListener('submit', editComment);
+
+              function editComment(event){
+                event.preventDefault();
+                  document.getElementById('fa-spin-edit').style.display = "block";
+                  document.getElementById('edit-message-2').innerHTML = '';
+                  document.getElementById('edit-message-2').style.color = "red";
+            
+                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                  let uri = root + 'interventions/' + interventionId + '/comment';
+
+                  let comment = document.getElementById('comment').value;
+
+                  let cookie = document.cookie.split(";");
+                  let tokenKeyValue = cookie[0];
+                  let tokenSplit = tokenKeyValue.split("token=");
+                  let token = tokenSplit[1];
+            
+                  let options = {
+                      method: 'PATCH',
+                      mode: "cors",
+                      headers: new Headers({
+                        "Content-Type": "application/json; charset=utf-8",
+                        "x-access-token": token
+                      }),
+                      body: JSON.stringify({comment:comment})
+                  }
+                  let req = new Request(uri, options);
+            
+                  fetch(req)
+                      .then((response)=>{
+                          if(response.ok){
+                            return response.json();
+                          }else{
+                            return response.json();
+                          }
+                      })
+                      .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'] == 'Token is missing'){
+                            logout();
+                          }
+                          if(j['message'] == 'Token is invalid'){
+                            logout();
+                          }
+                          if(j['message'] == 'Intervention does not exist'){
+                            document.getElementById('edit-message-2').innerHTML = j['message'];
+                          }
+                          if(j['message'].hasOwnProperty('comment')){
+                              document.getElementById('comment').style.borderBottomColor = "red";
+                              document.getElementById('edit-message-2').innerHTML = "Comment cannot be empty or start with special characters";
+                          }    
+                          if(j['message'] == 'Only the user who created this record can edit it'){
+                            document.getElementById('edit-message-2').innerHTML = j['message'];
+                          }
+                          if(j['message'] == 'Incident can only be edited when the status is draft'){
+                            document.getElementById('edit-message-2').innerHTML = j['message'];
+                          }
+                        }
+                        if(j.hasOwnProperty('data')){
+                          if(j['data'][0]['message'] == "Updated intervention record's comment"){
+                            document.getElementById('edit-message-2').style.color = "green";
+                            document.getElementById('edit-message-2').innerHTML = j['data'][0]['message'];
+                            document.getElementById('comment-data').innerHTML = comment;
+                          }                          
+                        }                        
+                        document.getElementById('fa-spin-edit').style.display = "none";
+                                                    
+                      })
+                      .catch( (err) =>{
+                          console.log(err);
+                          document.getElementById('edit-message-2').innerHTML = err;
+                          document.getElementById('fa-spin-edit').style.display = "none";
+                      });
+              }   
              
             </script>          
         </div>

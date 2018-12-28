@@ -1,10 +1,22 @@
 function addLocation() {
+
+    let coordinates = document.getElementById('location').value;
+    let latlon = coordinates.split(", ");
+    let lat = parseFloat(latlon[0]);
+    let lon = parseFloat(latlon[1]);
+
     var markers = [];
     var mapProp= {
-      center:new google.maps.LatLng(-1.2921,36.8219),
+      center:new google.maps.LatLng(lat,lon),
       zoom:6,
     };
+
     var map = new google.maps.Map(document.getElementById("addMarker"),mapProp);
+
+    //Add marker of current location
+    var incidentLocation = {lat: lat, lng: lon};
+    addNewMarkers(incidentLocation);
+
     // Update lat/long value of div when anywhere in the map is clicked    
     google.maps.event.addListener(map,'click',function(event) {
         let location = event.latLng.lat()+', '+event.latLng.lng();            
@@ -20,8 +32,7 @@ function addLocation() {
     var marker = new google.maps.Marker({
       position: location,
       map: map,
-      // icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
-      //   title: event.latLng.lat()+', '+event.latLng.lng()
+
     });
     markers.push(marker);
   }
