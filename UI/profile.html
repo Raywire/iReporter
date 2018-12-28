@@ -39,14 +39,14 @@
           <p id="name"></p>
           <p id="email" class="title"></p>
           <p id="username"></p>
-          <p><button class="button-modal" id="myBtn">Update Profile</button></p>
-          <div id="myModal" class="modal">
+          <p><button class="button-modal" id="myBtn" data-modal="modal-window-profile">Update Profile</button></p>
+          <div id="modal-window-profile" class="modal">
 
               <!-- Modal content -->
               <div class="modal-content">
                 <span class="close">&times;</span>
                 <div  class="modal-form">
-                    <form action="" enctype="multipart/form-data">
+                    <form action="" method="POST" enctype="multipart/form-data">
                       <p class="contact"><label for="name">First Name</label></p>
                       <input id="firstnameForm" name="firstname" placeholder="First Name" tabindex="1" type="text">
                       <p class="contact"><label for="firstname">Last Name</label></p>
@@ -59,7 +59,7 @@
                       <input type="file" id="name" name="profilepic" accept="image/*" multiple>
                       
                       <br>
-                      <input class="button-modal" name="submit" id="submit" tabindex="5" value="Update Profile" type="submit">
+                      <input class="button-normal" name="submit" id="submit" tabindex="5" value="Update Profile" type="submit">
   
                   </form>       
                 </div>

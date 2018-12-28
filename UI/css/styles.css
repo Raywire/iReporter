@@ -543,7 +543,7 @@ padding:8px;
 #fa-spin-data-delete{
   color: #ff3333
 }
-#error-message, #edit-message{
+#error-message, #edit-message, #edit-message-2{
   font-size: 0.8em;
   color: #ff3333
 }
