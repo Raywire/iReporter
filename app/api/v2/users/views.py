@@ -134,9 +134,16 @@ class User(Resource):
         user = self.db.get_user(username)
         if user is None:
             return nonexistent_user()
+        user_data = {
+            'id': user['id'], 'public_id': user['public_id'],
+            'registered':user['registered'],'firstname': user['firstname'],
+            'othernames': user['othernames'],'lastname': user['lastname'],
+            'phoneNumber': user['phonenumber'],'email': user['email'],
+            'username': user['username'],'isAdmin': user['isadmin']
+            }            
         return jsonify({
             "status": 200,
-            "data": user
+            "data": [user_data]
         })
 
     @token_required
