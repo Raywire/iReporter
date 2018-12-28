@@ -79,6 +79,12 @@ a {
   color:white;
 }
  @media screen and (min-width: 768px) {
+  .truncate {
+    white-space: nowrap; 
+    width: 200px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .navbar {
     display: flex;
     justify-content: space-between;
@@ -316,13 +322,13 @@ color:black;
 .italic {
   font-style: italic;
 }
-#intervention-data h2{
+#intervention-data h2,#user-data h2{
   color:rgb(143, 143, 143);
 }
 #intervention-data h2,h3,h4{
   color:rgb(153, 153, 153);
 }
-#intervention-data p{
+#intervention-data p, #user-data p{
   color:rgb(103, 103, 103);
 }
 /* Clear floats after image containers */
@@ -551,4 +557,25 @@ padding:8px;
   padding:8px;
   color:#0b47b6;
   border-bottom: 1px solid silver;
+}
+.left{
+  float: left
+}
+.right{
+  float: right;
+}
+.align-right{
+  text-align: right;
+}
+.align-left{
+  text-align: left;
+}
+.align-center{
+  text-align: center;
+}
+.theme-blue{
+  color:#0b47b6;
+}
+.font-small{
+  font-size: 12px;
 }

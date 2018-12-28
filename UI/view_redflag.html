@@ -500,7 +500,7 @@
                             document.getElementById('status-message').innerHTML = j['message'];
                           }
                           if(j['message'].hasOwnProperty('status')){
-                              document.getElementById('comment').style.borderBottomColor = "red";
+                              document.getElementById('status').style.borderBottomColor = "red";
                               document.getElementById('status-message').innerHTML = "Accepted values: draft, under investigation, rejected, resolved";
                           }    
                           if(j['message'] == 'Only an admin can change the status of the record'){

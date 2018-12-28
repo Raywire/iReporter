@@ -4,6 +4,10 @@ function addLocation() {
     let latlon = coordinates.split(", ");
     let lat = parseFloat(latlon[0]);
     let lon = parseFloat(latlon[1]);
+    if(coordinates==''){
+      lat = -1.2921;
+      lon = 36.8219;
+    }
 
     var markers = [];
     var mapProp= {

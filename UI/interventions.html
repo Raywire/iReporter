@@ -157,24 +157,15 @@
         </div> 
           <div class="table-responsive">
                   <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Status</th> 
-                            <th>Date Added</th>
-                            <th>Details</th>
-                          </tr>
-                          <tr>
-                    </thead>
                     <tbody id="intervention-data">
                       <tr>
-                        <td colspan="4">
+                        <td>
                           <p id="message"></p>
                           <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i></center>
                         </td>
                       </tr>
                     </tbody>
-                        </table>
+                  </table>
                         <script>
                          
                             function getData(event){
@@ -223,14 +214,19 @@
                                         j['data'].forEach((redflag) => {
                                           const { id, title, status, createdon } = redflag
                                           result += `
-                                          <tr>
-                                            <td>${title}</td>
-                                            <td>${status}</td> 
-                                            <td class='italic'>${createdon}</td>
-                                            <td>
-                                              <a href="view_intervention.html?intervention_id=${id}"><i class="fa fa-external-link" aria-hidden="true"></i></a>
-                                            </td>
-                                          </tr>
+                                          <div class="column">
+                                          <div class="card">
+                                              <div class="container2">
+                                                <a href="view_intervention.html?intervention_id=${id}">
+                                                  <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                                                  <h4 class="black truncate"><b>${title}</b></h4>
+                                                  <p>${status}</p>
+                                                  <p class='italic font-small'>${createdon}</p>
+                                                  <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+                                                </a>
+                                              </div>
+                                            </div>               
+                                        </div> 
                                           `;
                                           document.getElementById('intervention-data').innerHTML = result;
                                         });

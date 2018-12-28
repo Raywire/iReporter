@@ -28,106 +28,102 @@
           <a href="profile.html" class="nav-links ">profile</a>
         </li>
         <li>
-          <a href="signin.html" class="nav-links "><i class="fa fa-power-off" aria-hidden="true"></i></a>
+          <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
         </li>        
       </ul>
     </nav>
     <div class="container wrapper">
-        <h1 class="page-title">Admin Page</h1>
-    <!-- Tab links -->
-    <div class="tab">
-        <button class="tablinks" id="defaultOpen" onclick="openCity(event, 'Red-flags')">Red Flags</button>
-        <button class="tablinks" onclick="openCity(event, 'Interventions')">Interventions</button>
-    </div>
+        <h2 class="page-title theme-blue">Users</h2>
+        <div class="table-responsive">
+          <table>
+            <tbody id="redflag-data">
+              <tr>
+                <td>
+                  <p id="message"></p>
+                  <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i></center>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+                <script>
+                 
+                    function getData(event){
+                
+                      const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                      let uri = root + 'users';
+  
+                      let cookie = document.cookie.split(";");
+                      let tokenKeyValue = cookie[0];
+                      let tokenSplit = tokenKeyValue.split("token=");
+                      let token = tokenSplit[1];
+                      // console.log(token);
+                
+                      let options = {
+                          method: 'GET',
+                          mode: "cors",
+                          headers: new Headers({
+                            "Content-Type": "application/json; charset=utf-8",
+                            "x-access-token": token
+                          })
+                      }
+                      let req = new Request(uri, options);
+                
+                      fetch(req)
+                          .then((response)=>{
+                              if(response.ok){
+                                document.getElementById('fa-spin-data').style.display = "none";
+                                return response.json();
+                              }else{
+                                document.getElementById('fa-spin-data').style.display = "none";
+                                return response.json();
+                              }
+                          })
+                          .then( (j) =>{
+                            
+                            if(j.hasOwnProperty('message')){
+                              if(j['message'] == 'Token is missing'){
+                                logout();
+                              }
+                              if(j['message'] == 'Token is invalid'){
+                                logout();
+                              }
+                            }
+                            if(j.hasOwnProperty('data')){
+                              let result = '';
+                                j['data'].forEach((user) => {
+                                  const { firstname, lastname, othernames, username, email, phonenumber } = user
+                                  result += `
+                                  <div class="column">
+                                          <div class="card">
+                                              <div class="container2 align-center">
+                                                <a href="view_user.html?username=${username}">
+                                                  <p><i class="fa fa-user-o fa-3x theme-blue" aria-hidden="true"></i></p>
+                                                  <h4 class="black"><b>${firstname} ${lastname}</b></h4>
+                                                  <p>${username}</p>
+                                                  <p class='italic font-small'>${email}</p>
+                                                  <p class='italic font-small'>${phonenumber}</p>
+                                                  <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+                                                </a>
+                                              </div>
+                                            </div>               
+                                        </div>
+                                  `;
+                                  document.getElementById('redflag-data').innerHTML = result;
+                                });
+                            }
+                                                        
+                          })
+                          .catch( (err) =>{
+                              
+                              document.getElementById('message').innerHTML = err;
+                          });
+                  }
+                  getData();
+                </script>                                  
+  </div>  
       
-      <!-- Tab content -->
-      <div id="Red-flags" class="tabcontent">
-            <h2>Red Flags</h2>
-            <div class="table-responsive">
-                    <table>
-                            <tr>
-                              <th>Title</th>
-                              <th>Status</th> 
-                              <th>Date Added</th>
-                              <th>Actions</th>
-                            </tr>
-                            <tr>
-                              <td>Bad Roads in Kilifi</td>
-                              <td>Resolved</td> 
-                              <td>2017-02-23 14:22:56</td>
-                              <td>
-                                <button class="button-modal" id="myBtn">Change Status</button>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Corruption at Immigration</td>
-                              <td>Under Investigation</td> 
-                              <td>2017-02-23 14:22:56</td>
-                              <td>
-                                <button class="button-modal" id="myBtn">Change Status</button>
-                              </td>
-                            </tr>
-                          </table>            
-            </div> 
-      </div>
-      
-      <div id="Interventions" class="tabcontent">
-          <h2>Interventions</h2>
-            <div class="table-responsive">
-                    <table>
-                            <tr>
-                              <th>Title</th>
-                              <th>Status</th> 
-                              <th>Date Added</th>
-                              <th>Actions</th>
-                            </tr>
-                            <tr>
-                              <td>Kilifi County Government Intervention</td>
-                              <td>Resolved</td> 
-                              <td>2017-02-23 14:22:56</td>
-                              <td>
-                                <button class="button-modal" id="myBtn">Change Status</button>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>PWC Audit at Immigration</td>
-                              <td>Under Investigation</td> 
-                              <td>2017-02-23 14:22:56</td>
-                              <td>
-                                <button class="button-modal" id="myBtn">Change Status</button>
-                              </td>
-                            </tr>
-                          </table>           
-            </div> 
-      </div>
-      <div>
-            
-            
-          <!-- The Modal -->
-          <div id="myModal" class="modal">
-    
-              <!-- Modal content -->
-              <div class="modal-content">
-                <span class="close">&times;</span>
-                <div  class="modal-form">
-                    <form action="" method="POST" >
-                      <p><label for="status">Status</label></p>
-                      <select name="status" id="status">
-                          <option value="Resolved">Resolve</option>
-                          <option value="Under Investigation">Investigate</option>
-                          <option value="Rejected">Reject</option>
-                      </select>
 
-                      
-                      <br>
-                      <input name="submit" class="button-modal" tabindex="5" value="Change Status" type="submit">
     
-                  </form>       
-                </div>
-              </div>
-            
-            </div>        
-          </div>       
  
         <div class="push"></div>           
     </div>
@@ -145,5 +141,5 @@
   </body>
   <script src="js/main.js"></script>
   <script src="js/modal.js"></script> 
-  <script src="js/tab.js"></script>
+  <script src="js/logout.js"></script>
 </html>
