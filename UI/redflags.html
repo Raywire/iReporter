@@ -35,9 +35,9 @@
     <div class="container wrapper">
       <div>
         <!-- Trigger/Open The Modal -->
-        <button class="button-modal" id="myBtn">Add Red Flag</button>
+        <button class="button-modal" id="btnEdit" data-modal="modal-window-create">Add Red Flag</button>
       <!-- The Modal -->
-      <div id="myModal" class="modal">
+      <div id="modal-window-create" class="modal">
 
           <!-- Modal content -->
           <div class="modal-content">
@@ -49,57 +49,19 @@
                   <p class="contact"><label for="comment">Comment</label></p>
                   <textarea name="comment" id="comment" maxlength="1000" cols="30" rows="10"></textarea>          
                   <p class="contact"><label for="date">Location</label></p>
-                  <div id="googleMap" style="width:100%;height:400px;"></div>
+                  <div id="addMarker" style="width:100%;height:400px;"></div>
                   <input id="location" readonly name="location" placeholder="Location" required="" type="text">
                   <p class="contact"><label for="file">Upload Image/Video Evidence</label></p>
                   <input type="file" name="file" accept="image/*,video/*" multiple>
                   
                   <br>
-                  <input id='submit' name="submit" class="button-modal" tabindex="5" value="Add Red Flag" type="submit">
+                  <input id='submit' name="submit" class="button-normal" tabindex="5" value="Add Red Flag" type="submit">
                   <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
                   <p id="error-message"></p>
               </form>
               
-              <script>
-              function myMap() {
-                var markers = [];
-                var mapProp= {
-                  center:new google.maps.LatLng(-1.2921,36.8219),
-                  zoom:6,
-                };
-                var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-                // Update lat/long value of div when anywhere in the map is clicked    
-                google.maps.event.addListener(map,'click',function(event) {
-                    let location = event.latLng.lat()+', '+event.latLng.lng();            
-                    document.getElementById('location').value = location;
-                });
-
-                // Create new marker on single click event on the map
-                google.maps.event.addListener(map,'click',function(event) {
-                  deleteMarker();
-                  addNewMarkers(event.latLng);             
-                });           
-                function addNewMarkers(location) {
-                var marker = new google.maps.Marker({
-                  position: location,
-                  map: map,
-                  // icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
-                  //   title: event.latLng.lat()+', '+event.latLng.lng()
-                });
-                markers.push(marker);
-              }
-                function deleteMarker() {
-                  for (var i = 0; i < markers.length; i++) {
-                    markers[i].setMap(null);
-                  }
-                  markers = [];
-                };                                          
-              }
-
-            
-              </script>
-              
-              <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0&callback=myMap"></script>              
+              <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0"></script>
+              <script src="js/mapper.js"></script>             
               <script>
                 document.getElementById('postData').addEventListener('submit', postData);
                   function postData(event){
@@ -187,9 +149,7 @@
                         });
                 }
                 
-              </script>
-              <script>
-              </script>                
+              </script>               
             </div>
           </div>
         

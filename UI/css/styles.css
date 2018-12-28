@@ -355,6 +355,9 @@ padding: 20px;
 border: 1px solid #888;
 width: 80%;
 }
+.modal-header h5{
+  color:gray;
+}
 
 /* The Close Button */
 .close {
@@ -393,7 +396,7 @@ overflow-x:auto;
 .table-responsive th{
   color: #296de8;
 }
-.button-modal {
+.button-modal,.button-normal {
 background-color: #296de8;
 border: none;
 color: white;
@@ -411,7 +414,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
 transition: background-color .3s;
 }
 
-.button-modal:hover,.button-modal:focus{
+.button-modal:hover,.button-normal:hover,.button-modal:focus,.button-normal:focus{
   background-color: #0b47b6;
 }
 
@@ -515,6 +518,13 @@ background-color: #fff;
 .danger:hover,.danger:focus{
   background-color: #c0392b;
 }
+.orange {
+  background-color: #e67e22;
+}
+
+.orange:hover, .orange:focus {
+  background-color: #d35400;
+}
 .container2{
 padding: 12px;
 }
@@ -527,13 +537,18 @@ padding:8px;
 .fa-spin{
   color: #27ae60;
 }
-#fa-spin, #fa-spin-data-delete{
+#fa-spin, #fa-spin-data-delete, #fa-spin-edit{
   display: none;
 }
 #fa-spin-data-delete{
   color: #ff3333
 }
-#error-message{
+#error-message, #edit-message{
   font-size: 0.8em;
   color: #ff3333
+}
+#locationArea{
+  padding:8px;
+  color:#0b47b6;
+  border-bottom: 1px solid silver;
 }
