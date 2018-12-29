@@ -16,6 +16,7 @@ parser = reqparse.RequestParser(bundle_errors=True)
 parser_signin = reqparse.RequestParser(bundle_errors=True)
 parser_user = reqparse.RequestParser(bundle_errors=True)
 parser_promote = reqparse.RequestParser(bundle_errors=True)
+parser_password = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('firstname',
                     type=validate_characters,
@@ -167,7 +168,7 @@ class UserModel:
     def get_users(self):
         """method to get all users"""
         query = """SELECT firstname,lastname,othernames,email,phonenumber,\
-                    username,public_id from users"""
+                    username,public_id,isadmin from users"""
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cursor.execute(query)
@@ -201,4 +202,24 @@ class UserModel:
         cursor = conn.cursor()
         cursor.execute("""DELETE FROM users WHERE username='{0}'""".format(username))
         conn.commit() 
+        return True
+
+    def update_user_password(self, username):
+        """method to change a user's password"""
+        parser_password.add_argument('password',
+                    type=validate_password,
+                    required=True,
+                    nullable=False,
+                    help="Password must be at least 6 characters"
+                    )        
+        args = parser_password.parse_args()
+        password = self.set_password(request.json.get('password'))
+
+        query = """UPDATE users SET password=%s WHERE username=%s"""
+        values = password, username
+
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()        
         return True

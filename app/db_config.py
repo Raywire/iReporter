@@ -3,9 +3,21 @@ import psycopg2
 import os
 from instance.config import APP_CONFIG
 from werkzeug import generate_password_hash, check_password_hash
+import datetime
+import uuid
 
 configuration = os.getenv('FLASK_CONFIG')
 url = APP_CONFIG[configuration].DATABASE_URL
+
+password = generate_password_hash(os.getenv('SUPER_USER_PASSWORD'))
+email = os.getenv('SUPER_USER_EMAIL')
+username = os.getenv('SUPER_USER_USERNAME')
+firstname = os.getenv('SUPER_USER_FIRSTNAME')
+lastname = os.getenv('SUPER_USER_LASTNAME')
+othernames = os.getenv('SUPER_USER_OTHERNAMES')
+phonenumber = os.getenv('SUPER_USER_PHONENUMBER')
+public_id = str(uuid.uuid4())
+registered = datetime.datetime.utcnow()
 
 
 def connection(url):
@@ -70,18 +82,40 @@ def tables():
 
 
 def create_super_user():
-    password = generate_password_hash("1212121")
-    test_user = {
-        "email": "ryanwire@outlook.com",
-        "firstname": "Ryan",
+    super_user = {
+        "email": email,
+        "firstname": firstname,
         "isAdmin": True,
-        "lastname": "Wire",
-        "othernames": "Simiyu",
+        "lastname": lastname,
+        "othernames": othernames,
         "password": password,
-        "phoneNumber": "0727272727",
+        "phoneNumber": phonenumber,
+        "public_id": public_id,
+        "registered": registered,
+        "username": username
+    }
+    query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
+        super_user['firstname'], super_user['lastname'], super_user['othernames'], super_user['email'], super_user['phoneNumber'], super_user['username'], super_user['registered'], super_user['password'], super_user['isAdmin'], super_user['public_id'])
+    conn = connection(url)
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query)
+        conn.commit()
+    except:
+        return "already exists"
+
+def create_test_user():
+    test_user = {
+        "email": email,
+        "firstname": firstname,
+        "isAdmin": True,
+        "lastname": lastname,
+        "othernames": othernames,
+        "password": password,
+        "phoneNumber": phonenumber,
         "public_id": "f3b8a1c3-f775-49e1-991c-5bfb963eb419",
-        "registered": "Sat, 08 Dec 2018 08:34:45 GMT",
-        "username": "ray"
+        "registered": registered,
+        "username": username
     }
     query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
         test_user['firstname'], test_user['lastname'], test_user['othernames'], test_user['email'], test_user['phoneNumber'], test_user['username'], test_user['registered'], test_user['password'], test_user['isAdmin'], test_user['public_id'])
