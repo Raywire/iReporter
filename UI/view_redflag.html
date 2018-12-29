@@ -35,10 +35,11 @@
     <div class="container wrapper">
         <!-- Trigger/Open The Modal -->
         <div class="modal-container-buttons">
-            <button id="myBtn1" class="button-modal">Upload Image/Video</button>
-            <button id="btnGeolocate" class="button-normal"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
-            <button id="btnEdit" class="button-modal orange" data-modal="modal-window-edit"><i class="fa fa-pencil" aria-hidden="true"></i></button> 
-            <button id="myBtn" class="button-modal danger" data-modal="modal-window-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+            <button id="btnImage" class="button-modal" data-modal="modal-window-image-upload" title="Upload Image"><i class="fa fa-picture-o" aria-hidden="true"></i></button>
+            <button id="btnVideo" class="button-modal" data-modal="modal-window-video-upload" title="Upload Video"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
+            <button id="btnGeolocate" class="button-normal"  title="Geolocate"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
+            <button id="btnEdit" class="button-modal orange" data-modal="modal-window-edit" title="Edit Location & Comment"><i class="fa fa-pencil" aria-hidden="true"></i></button> 
+            <button id="myBtn" class="button-modal danger" data-modal="modal-window-delete" title="Delete Red Flag"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
             <span  id="modal-admin-buttons"></span>
             <script>
                 let adminStatus = isAdmin.split("=");
@@ -48,7 +49,7 @@
                 if(adminStatus == 'true'){
                   let result = '';
                   result +=`
-                  <button id="btnEditStatus" class="button-modal orange" data-modal="modal-window-edit-status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
+                  <button id="btnEditStatus" class="button-modal orange" data-modal="modal-window-edit-status" title="Edit Status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
                   <!-- The Modal -->
                   <div id="modal-window-edit-status" class="modal">
             
@@ -130,6 +131,40 @@
                         </div>   
                   </div>
               
+              </div>
+              <div id="modal-window-image-upload" class="modal">
+  
+                  <!--Upload Image Modal -->
+                  <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <div  class="modal-form">
+                        <form id="uploadImage" method="POST" enctype="multipart/form-data">
+                          <p class="contact"><label for="profilepic">Upload Image</label></p>
+                          <input type="file" id="name" name="incidentImage" accept="image/*" multiple>
+                          
+                          <br>
+                          <input class="button-modal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
+      
+                      </form>       
+                    </div>
+                  </div>
+              </div>
+              <div id="modal-window-video-upload" class="modal">
+
+                  <!--Upload Video Modal -->
+                  <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <div  class="modal-form">
+                        <form id="uploadVideo" method="POST" enctype="multipart/form-data">
+                          <p class="contact"><label for="profilepic">Upload Video</label></p>
+                          <input type="file" id="name" name="incidentVideo" accept="video/*" multiple>
+                          
+                          <br>
+                          <input class="button-modal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
+      
+                      </form>       
+                    </div>
+                  </div>
               </div>          
         </div>
         <div id='intervention-data' class="container">
@@ -372,6 +407,7 @@
                   document.getElementById('fa-spin-edit').style.display = "block";
                   document.getElementById('edit-message-2').innerHTML = '';
                   document.getElementById('edit-message-2').style.color = "red";
+                  document.getElementById('comment').style.borderBottomColor = "gray";
             
                   const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
                   let uri = root + 'redflags/' + redflagId + '/comment';
@@ -416,7 +452,7 @@
                           }
                           if(j['message'].hasOwnProperty('comment')){
                               document.getElementById('comment').style.borderBottomColor = "red";
-                              document.getElementById('edit-message-2').innerHTML = "Comment cannot be empty or start with special characters";
+                              document.getElementById('edit-message-2').innerHTML = "Comment cannot be empty or start with special characters and whitespace";
                           }    
                           if(j['message'] == 'Only the user who created this record can edit it'){
                             document.getElementById('edit-message-2').innerHTML = j['message'];

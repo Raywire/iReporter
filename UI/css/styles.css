@@ -8,7 +8,8 @@ html, body {
   margin: 0;
 }
  body{
-  font-family: 'Josefin Sans', 'sans-serif'
+  font-family: 'Josefin Sans', 'sans-serif';
+  background-color: #e6e6e6
 }
  .navbar {
   font-size: 18px;
@@ -23,6 +24,9 @@ html, body {
 a {
   text-decoration: none;
   outline: none;
+}
+.container2 a:visited{
+  color:#0b47b6;
 }
  .nav-links,
 .logo {
@@ -287,7 +291,8 @@ input[type="submit"]::-moz-focus-inner {
 }  
 .card {
   /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
   transition: 0.3s;
 }
 
@@ -300,7 +305,8 @@ color: black;
 
 /* On mouse-over, add a deeper shadow */
 .card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.6);
+  background-color: #f2f2f2;
 }
 
 /* Add some padding inside the card container */
@@ -578,4 +584,7 @@ padding:8px;
 }
 .font-small{
   font-size: 12px;
+}
+.footer ul li a {
+  padding: 5px;
 }
