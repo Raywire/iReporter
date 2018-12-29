@@ -20,9 +20,9 @@ You can add your username and password to app/db_config.py
 **Setting up the database with a user who has all privileges**
 ```
 sudo -u postgres psql
-postgres=# create database ireporter;
-postgres=# create user raywire with encrypted password 'password';
-postgres=# grant all privileges on database ireporter to raywire;
+postgres=# create database your-database;
+postgres=# create user your-username with encrypted password 'your-password';
+postgres=# grant all privileges on database your-database to your-username;
 ```
 Contents of .env file
 ```
@@ -30,11 +30,18 @@ source venv/bin/activate
 
 export FLASK_ENV="development"
 export FLASK_CONFIG="development"
-export DATABASE_URL="dbname='ireporter' host='localhost' port='5432' user='raywire' password='password'"
-export DATABASE_URL_TEST="dbname='test_ireporter' host='localhost' port='5432' user='raywire' password='password'"
+export DATABASE_URL="dbname='your-database' host='localhost' port='5432' user='your-username' password='your-password'"
+export DATABASE_URL_TEST="dbname='your-test-database' host='localhost' port='5432' user='your-username' password='your-password'"
 export SECRET_KEY="secret-key-goes-here"
 export MAIL_USERNAME="your-gmail-account"
 export MAIL_PASSWORD="your-password"
+export SUPER_USER_PASSWORD="your-password"
+export SUPER_USER_USERNAME="your-username"
+export SUPER_USER_EMAIL="your-email"
+export SUPER_USER_FIRSTNAME="your-name"
+export SUPER_USER_LASTNAME="your-name"
+export SUPER_USER_OTHERNAMES="your-name"
+export SUPER_USER_PHONENUMBER="your-phone-number"
 
 ```
 ## Running the app

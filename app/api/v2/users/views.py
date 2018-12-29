@@ -170,6 +170,38 @@ class User(Resource):
                 }
             })
 
+    @token_required
+    def patch(current_user, self, username):
+        """method to update a user's password"""
+        user = self.db.get_user(username)
+
+        if user is None:
+            return nonexistent_user()
+
+        if current_user['isadmin'] is True:
+            if self.db.update_user_password(username) is True:
+                return jsonify({
+                    "status": 200,
+                    "username": username,
+                    "message": "User password has been changed"
+                })
+
+        if current_user['username'] == username:
+            user_status_updated = self.db.update_user_password(username)
+            if user_status_updated is True:
+                success_message = {
+                    "username": username,
+                    "message": "User password has been changed"
+                }
+                return jsonify({
+                    "status": 200,
+                    "data": success_message
+                })
+        return jsonify({
+            "status": 403,
+            "message": "Only an admin or the user can update their own password"
+        })
+
 
 class UserStatus(Resource):
     """Class with method for updating a  specific user admin status"""
