@@ -5,7 +5,7 @@ test_user = {
     "isAdmin": True,
     "lastname": "Wire",
     "othernames": "Simiyu",
-    "password": "pbkdf2:sha256:50000$ziQztAJR$ea5d5a2cc01a0d919d60fe803ced2a8c8f0974f018607012f87802dc116f1ead",
+    "password": "123456",
     "phoneNumber": "0727272727",
     "public_id": "f3b8a1c3-f775-49e1-991c-5bfb963eb419",
     "registered": "Sat, 08 Dec 2018 08:34:45 GMT",
@@ -19,7 +19,7 @@ data = {
     "email" : "john@doe.com",
     "phoneNumber" : "0727272727",
     "username" : "jayd",
-    "password" : "1212121",
+    "password" : "123456",
     "isAdmin" : False
 }
 
@@ -30,7 +30,7 @@ data2 = {
     "email" : "john@doe.com",
     "phoneNumber" : "0727272727",
     "usernames" : "jayd",
-    "password" : "1212121",
+    "password" : "123456",
     "isAdmin" : False
 }
 
@@ -58,17 +58,17 @@ data4 = {
 
 data5 = {
     "username" : "jayd",
-    "password" : "1212121"
+    "password" : "123456"
 }
 
 data6 = {
     "username" : "jayd",
-    "password" : "12121213"
+    "password" : "1234567"
 }
 
 data7 = {
     "username" : "jayd3",
-    "password" : "1212121"
+    "password" : "123456"
 }
 
 redflag_data = {
