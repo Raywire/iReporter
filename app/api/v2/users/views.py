@@ -159,6 +159,12 @@ class User(Resource):
                 "message": "Only an admin can delete a user"
             })
 
+        if current_user['id'] == 1:
+            return jsonify({
+                "status": 403,
+                "message": "This user cannot be deleted"
+            })
+
         delete_status = self.db.delete_user(username)
         if delete_status is True:
 
@@ -221,6 +227,12 @@ class UserStatus(Resource):
             return jsonify({
                 "status": 403,
                 "message": "Only an admin can change the status of a user"
+            })
+
+        if current_user['id'] == 1:
+            return jsonify({
+              "status": 403,
+              "message": "Admin status of this user cannot be changed"  
             })
 
         user_status_updated = self.db.promote_user(username)

@@ -6,7 +6,7 @@ import datetime
 import os
 
 from ... import create_app
-from app.db_config import create_test_user, destroy_tables, create_tables
+from app.db_config import create_super_user, destroy_tables, create_tables
 from app.tests.data import test_user, redflag_data, redflag_data2, redflag_data3
 from app.api.v2.send_email import send
 
@@ -25,7 +25,7 @@ class IncidentTestCase(unittest.TestCase):
         APP.testing = True
         self.app = APP.test_client()
         create_tables()
-        create_test_user()
+        create_super_user()
         self.test_user = test_user
         token = jwt.encode({'public_id': self.test_user['public_id'], 'exp': datetime.datetime.utcnow(
         ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')

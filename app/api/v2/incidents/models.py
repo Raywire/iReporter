@@ -4,8 +4,15 @@ from flask import request
 from flask_restful import reqparse
 from app.db_config import connection, init_database
 from app.validators import validate_comment, validate_coordinates, validator
+from werkzeug.utils import secure_filename
 import psycopg2.extras
 import os
+
+
+UPLOAD_FOLDER_IMAGE = 'upload/images'
+UPLOAD_FOLDER_VIDEO = 'upload/videos'
+ALLOWED_EXTENSIONS_IMAGE = set(['png','jpg','jpeg','gif'])
+ALLOWED_EXTENSIONS_VIDEO = set(['mp4','avi', 'flv','wmv','mov'])
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
@@ -37,7 +44,9 @@ parser.add_argument('title',
 
 
 class IncidentModel:
-    """Class with methods to perform Create, Read, Update and Delete operations on database"""
+    """
+    Class with methods to perform Create, Read, Update, 
+    Upload and Delete operations on database"""
 
     def __init__(self):
         self.db = init_database()
@@ -49,6 +58,9 @@ class IncidentModel:
         conn.commit()
         cursor.close()
         conn.close()
+
+    def allowed_file(self, filename, filetype):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in filetype
 
     def save_incident(self, incident_type, user_id):
         """method to post one or multiple incidents"""
@@ -76,7 +88,7 @@ class IncidentModel:
 
     def get_incidents(self, incident_type):
         """method to get all incidents"""
-        query = """SELECT * from incidents WHERE type='{0}'""".format(
+        query = """SELECT * from incidents WHERE type='{0}' ORDER BY createdon DESC""".format(
             incident_type)
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -92,7 +104,7 @@ class IncidentModel:
         return incident_list
 
     def get_incident_by_id(self, incident_type, incident_id):
-        "Method to get an incident by id"
+        """Method to get an incident by id"""
         query = """SELECT * from incidents WHERE type='{0}' AND id={1}""".format(
             incident_type, incident_id)
         conn = self.db
@@ -106,7 +118,7 @@ class IncidentModel:
         return incident
 
     def edit_incident_status(self, incident_type, incident_id):
-        "Method to edit an incident's status"
+        """Method to edit an incident's status"""
         parser_status.add_argument('status',
                                    choices=['draft', 'under investigation',
                                             'rejected', 'resolved'],
@@ -129,7 +141,7 @@ class IncidentModel:
         return current_status
 
     def edit_incident_location(self, incident_type, incident_id, current_user_id):
-        "Method to edit an incident's location"
+        """Method to edit an incident's location"""
         parser_location.add_argument('location',
                                      type=validate_coordinates,
                                      required=True,
@@ -152,7 +164,7 @@ class IncidentModel:
         return True
 
     def edit_incident_comment(self, incident_type, incident_id, current_user_id):
-        "Method to edit an incident's comment"
+        """Method to edit an incident's comment"""
         parser_comment.add_argument('comment',
                                     type=validate_comment,
                                     required=True,
@@ -180,7 +192,7 @@ class IncidentModel:
         return True
 
     def delete_incident(self, incident_type, incident_id, current_user_id):
-        "Method to delete an incident record"
+        """Method to delete an incident record"""
         incident = self.get_incident_by_id(incident_type, incident_id)
         if incident is None:
             return None
@@ -194,3 +206,53 @@ class IncidentModel:
         query = """DELETE FROM incidents WHERE id={0}""".format(incident_id)
         self.execute_query(query)
         return True
+
+    def upload_incident_file(self, incident_type, incident_id, current_user_id, file_type):
+        """Method to upload files to folder and insert file name into database"""
+
+        incident = self.get_incident_by_id(incident_type, incident_id)
+        if incident is None:
+            return None
+
+        if current_user_id != incident['createdby']:
+            return False
+
+        if incident['status'] != 'draft':
+            return 'not draft'            
+
+        if 'uploadFile' not in request.files:
+            return "No uploadFile name"
+
+        uploads = request.files.getlist('uploadFile')
+
+        for upload in uploads:
+            if upload.filename == '':
+                return "No file selected"
+
+            if file_type == 'videos':
+                allowed_file_type = ALLOWED_EXTENSIONS_VIDEO
+                upload_file_folder = UPLOAD_FOLDER_VIDEO
+                query = """UPDATE incidents SET videos=%s WHERE id=%s"""
+            
+            if file_type == 'images':
+                allowed_file_type = ALLOWED_EXTENSIONS_IMAGE
+                upload_file_folder = UPLOAD_FOLDER_IMAGE
+                query = """UPDATE incidents SET images=%s WHERE id=%s"""
+
+            if upload and self.allowed_file(upload.filename, allowed_file_type):
+                filename = secure_filename(upload.filename)
+                extension = filename.rsplit('.', 1)[1].lower()
+                filename = datetime.datetime.utcnow().strftime('%s') + '.' + extension
+
+                APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+                target = os.path.join(APP_ROOT, upload_file_folder, filename)
+                upload.save(target)
+
+                values = filename, incident_id
+                conn = self.db
+                cursor = conn.cursor()
+                cursor.execute(query, values)
+                conn.commit()
+                return True
+
+            return "File type not supported"

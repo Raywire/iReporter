@@ -168,7 +168,8 @@ class UserModel:
     def get_users(self):
         """method to get all users"""
         query = """SELECT firstname,lastname,othernames,email,phonenumber,\
-                    username,public_id,isadmin from users"""
+                    username,public_id,isadmin,registered\
+                    from users ORDER BY registered ASC"""
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cursor.execute(query)

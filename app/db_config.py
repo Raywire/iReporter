@@ -80,45 +80,27 @@ def tables():
     queries = [table2, table1]
     return queries
 
+if configuration == 'testing':
+    public_id = "f3b8a1c3-f775-49e1-991c-5bfb963eb419"
+
+user = {
+    "email": email,
+    "firstname": firstname,
+    "isAdmin": True,
+    "lastname": lastname,
+    "othernames": othernames,
+    "password": password,
+    "phoneNumber": phonenumber,
+    "public_id": public_id,
+    "registered": registered,
+    "username": username
+}    
+
+query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
+    user['firstname'], user['lastname'], user['othernames'], user['email'], user['phoneNumber'], user['username'], user['registered'], user['password'], user['isAdmin'], user['public_id'])
 
 def create_super_user():
-    super_user = {
-        "email": email,
-        "firstname": firstname,
-        "isAdmin": True,
-        "lastname": lastname,
-        "othernames": othernames,
-        "password": password,
-        "phoneNumber": phonenumber,
-        "public_id": public_id,
-        "registered": registered,
-        "username": username
-    }
-    query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
-        super_user['firstname'], super_user['lastname'], super_user['othernames'], super_user['email'], super_user['phoneNumber'], super_user['username'], super_user['registered'], super_user['password'], super_user['isAdmin'], super_user['public_id'])
-    conn = connection(url)
-    cursor = conn.cursor()
-    try:
-        cursor.execute(query)
-        conn.commit()
-    except:
-        return "already exists"
 
-def create_test_user():
-    test_user = {
-        "email": email,
-        "firstname": firstname,
-        "isAdmin": True,
-        "lastname": lastname,
-        "othernames": othernames,
-        "password": password,
-        "phoneNumber": phonenumber,
-        "public_id": "f3b8a1c3-f775-49e1-991c-5bfb963eb419",
-        "registered": registered,
-        "username": username
-    }
-    query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
-        test_user['firstname'], test_user['lastname'], test_user['othernames'], test_user['email'], test_user['phoneNumber'], test_user['username'], test_user['registered'], test_user['password'], test_user['isAdmin'], test_user['public_id'])
     conn = connection(url)
     cursor = conn.cursor()
     try:

@@ -6,7 +6,7 @@ import datetime
 import os
 
 from ... import create_app
-from app.db_config import create_test_user, destroy_tables, create_tables
+from app.db_config import create_super_user, destroy_tables, create_tables
 from app.tests.data import test_user, data, data2, data3, data4, data5, data6, data7
 
 
@@ -23,7 +23,7 @@ class UserTestCase(unittest.TestCase):
         APP.testing = True
         self.app = APP.test_client()
         create_tables()
-        create_test_user()
+        create_super_user()
         self.test_user = test_user
         self.headers = {'Content-Type': 'application/json'}
 
