@@ -110,7 +110,12 @@ class IncidentModel:
 
     def get_incident_by_id(self, incident_type, incident_id):
         """Method to get an incident by id"""
-        query = """SELECT * from incidents WHERE type='{0}' AND id={1}""".format(
+        query = """SELECT incidents.comment,incidents.createdby,\
+        incidents.createdon, incidents.id,incidents.images,\
+        incidents.location,incidents.status,incidents.videos,\
+        incidents.title,incidents.type, users.username from incidents\
+        INNER JOIN users ON incidents.createdby=users.id\
+        WHERE type='{0}' AND incidents.id={1}""".format(
             incident_type, incident_id)
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
