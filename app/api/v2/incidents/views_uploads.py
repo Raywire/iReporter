@@ -12,13 +12,17 @@ UPLOAD_FOLDER_IMAGE = 'upload/images'
 UPLOAD_FOLDER_VIDEO = 'upload/videos'
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+
 class UploadInterventionImage(Resource):
     """Contains method for uploading an image to an intervention"""
+
+    def __init__(self):
+        self.intervention_upload_model = IncidentModel()
 
     @token_required
     def patch(current_user, self, intervention_id):
         """method to upload image to an intervention"""
-        upload_status = IncidentModel().upload_incident_file(
+        upload_status = self.intervention_upload_model.upload_incident_file(
             "intervention", intervention_id, current_user['id'], 'images')
 
         if upload_status is None:
@@ -27,22 +31,17 @@ class UploadInterventionImage(Resource):
                 "message": "Intervention does not exist"
             })
 
+        if upload_status == 'not draft':
+            return draft_is_editable()
+
         if upload_status is False:
             return owner_can_edit()
 
-        if upload_status == 'not draft':
-            return draft_is_editable()            
-
-        if upload_status == 'No uploadFile name' or upload_status == 'No file selected':
+        if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
             return jsonify({
-                "status" : 400,
-                "message": "No uploadFile name in form or no file selected"
+                "status": 400,
+                "message": upload_status
             })
-        if upload_status == 'File type not supported':
-            return jsonify({
-                "status" : 400,
-                "message": "File type not supported"
-            })    
 
         if upload_status is True:
             return jsonify({
@@ -52,6 +51,7 @@ class UploadInterventionImage(Resource):
                     "message": "Image added to intervention record",
                 }]
             })
+
 
 class UploadInterventionVideo(Resource):
     """Contains method for uploading an videos to an intervention"""
@@ -72,18 +72,13 @@ class UploadInterventionVideo(Resource):
             return owner_can_edit()
 
         if upload_status == 'not draft':
-            return draft_is_editable() 
+            return draft_is_editable()
 
-        if upload_status == 'No uploadFile name' or upload_status == 'No file selected':
+        if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
             return jsonify({
-                "status" : 400,
-                "message": "No uploadFile name in form or no file selected"
+                "status": 400,
+                "message": upload_status
             })
-        if upload_status == 'File type not supported':
-            return jsonify({
-                "status" : 400,
-                "message": "File type not supported"
-            })    
 
         if upload_status is True:
             return jsonify({
@@ -93,6 +88,7 @@ class UploadInterventionVideo(Resource):
                     "message": "Video added to intervention record",
                 }]
             })
+
 
 class UploadRedflagImage(Resource):
     """Contains method for uploading an image to a red flag"""
@@ -110,18 +106,13 @@ class UploadRedflagImage(Resource):
             return owner_can_edit()
 
         if upload_status == 'not draft':
-            return draft_is_editable() 
+            return draft_is_editable()
 
-        if upload_status == 'No uploadFile name' or upload_status == 'No file selected':
+        if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
             return jsonify({
-                "status" : 400,
-                "message": "No uploadFile name in form or no file selected"
+                "status": 400,
+                "message": upload_status
             })
-        if upload_status == 'File type not supported':
-            return jsonify({
-                "status" : 400,
-                "message": "File type not supported"
-            })    
 
         if upload_status is True:
             return jsonify({
@@ -132,13 +123,17 @@ class UploadRedflagImage(Resource):
                 }]
             })
 
+
 class UploadRedflagVideo(Resource):
     """Contains method for uploading an videos to a red flags"""
+
+    def __init__(self):
+        self.redflag_upload_model = IncidentModel()
 
     @token_required
     def patch(current_user, self, redflag_id):
         """method to upload videos to a redflag"""
-        upload_status = IncidentModel().upload_incident_file(
+        upload_status = self.redflag_upload_model.upload_incident_file(
             "redflag", redflag_id, current_user['id'], 'videos')
 
         if upload_status is None:
@@ -147,22 +142,17 @@ class UploadRedflagVideo(Resource):
                 "message": "Redflag does not exist"
             })
 
+        if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
+            return jsonify({
+                "status": 400,
+                "message": upload_status
+            })
+
         if upload_status is False:
             return owner_can_edit()
 
         if upload_status == 'not draft':
-            return draft_is_editable() 
-
-        if upload_status == 'No uploadFile name' or upload_status == 'No file selected':
-            return jsonify({
-                "status" : 400,
-                "message": "No uploadFile name in form or no file selected"
-            })
-        if upload_status == 'File type not supported':
-            return jsonify({
-                "status" : 400,
-                "message": "File type not supported"
-            })    
+            return draft_is_editable()
 
         if upload_status is True:
             return jsonify({
@@ -173,9 +163,12 @@ class UploadRedflagVideo(Resource):
                 }]
             })
 
+
 class Video(Resource):
+    """"Contains method to get a video"""
     @token_required
     def get(current_user, self, filename):
+        """Method to get a video"""
         try:
             target = os.path.join(APP_ROOT, UPLOAD_FOLDER_VIDEO)
             return send_from_directory(target, filename)
@@ -185,9 +178,12 @@ class Video(Resource):
                 "message": "Video does not exist"
             })
 
+
 class Image(Resource):
+    """"Contains method to get an image"""
     @token_required
     def get(current_user, self, filename):
+        """Method to get an image"""
         try:
             target = os.path.join(APP_ROOT, UPLOAD_FOLDER_IMAGE)
             return send_from_directory(target, filename)
