@@ -93,16 +93,101 @@
             document.getElementById('othernameForm').value = othername;
             document.getElementById('usernameForm').value = userUsername;
             
-          </script>                
+          </script>
+                    <script>
+                       
+                        function getData(incident_type){
+                    
+                          const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                          let uri = root + incident_type;
+      
+                          let cookie = document.cookie.split(";");
+                          let tokenKeyValue = cookie[0];
+                          let tokenSplit = tokenKeyValue.split("token=");
+                          let token = tokenSplit[1];
+                          // console.log(token);
+                    
+                          let options = {
+                              method: 'GET',
+                              mode: "cors",
+                              headers: new Headers({
+                                "Content-Type": "application/json; charset=utf-8",
+                                "x-access-token": token
+                              })
+                          }
+                          let req = new Request(uri, options);
+                    
+                          fetch(req)
+                              .then((response)=>{
+                                  if(response.ok){
+                                    return response.json();
+                                  }else{
+                                   
+                                    return response.json();
+                                  }
+                              })
+                              .then( (j) =>{
+                                // console.log(j);
+                                if(j.hasOwnProperty('message')){
+                                  if(j['message'] == 'Token is missing'){
+                                    logout();
+                                  }
+                                  if(j['message'] == 'Token is invalid'){
+                                    logout();
+                                  }
+                                  if(j['message'] == 'No interventions'){
+
+                                    }
+                                }
+                                if(j.hasOwnProperty('data')){
+                                  // console.log(j['data']);
+                                  let incidents = j['data'];
+                                  let myIncidents = incidents.filter(incident => {
+                                    return incident.username === userUsername;
+                                  })
+                                  let myDraftIncidents = incidents.filter(incident =>{
+                                    return incident.username === userUsername && incident.status === 'draft'
+                                  })
+                                  let myResolvedIncidents = incidents.filter(incident =>{
+                                    return incident.username === userUsername && incident.status === 'resolved'
+                                  })
+                                  let myUnderInvestigationIncidents = incidents.filter(incident =>{
+                                    return incident.username === userUsername && incident.status === 'under investigation'
+                                  })
+                                  let myRejectedIncidents = incidents.filter(incident =>{
+                                    return incident.username === userUsername && incident.status === 'rejected'
+                                  })
+                                  if (incident_type == 'redflags'){
+                                    document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
+                                    document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
+                                    document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents.length;
+                                    document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
+                                  }else if(incident_type == 'interventions'){
+                                    document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
+                                    document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
+                                    document.getElementById('my-underinvestigation-interventions').innerHTML = myUnderInvestigationIncidents.length;
+                                    document.getElementById('my-rejected-interventions').innerHTML = myRejectedIncidents.length;
+                                  }
+
+  
+                                }
+                                                            
+                              })
+                              .catch( (err) =>{
+
+                              });
+                      }
+                      getData('redflags');
+                      getData('interventions');
+                    </script>                         
       </div>      
       <div class="column">
           <div class="card">
               <div class="container2">
-                <a href="redflags.html">
                   <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
                   <h4 class="black"><b>Red Flags</b></h4>
-                  <p class="black"><i class="fa fa-external-link" aria-hidden="true"></i></p>
-                </a>
+                  <p class="black">Draft</p>
+                  <p id='my-draft-redflags'></p>
               </div>
             </div>        
         <div class="card">
@@ -110,7 +195,7 @@
               <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
               <h4 class="black"><b>Red Flags</b></h4>
               <p class="black">Resolved</p>
-              <p>15</p>
+              <p id='my-resolved-redflags'></p>
     
             </div>
           </div>
@@ -119,7 +204,7 @@
               <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
               <h4 class="black"><b>Red Flags</b></h4>
               <p class="black">Under Investigation</p>
-              <p>6</p>
+              <p id="my-underinvestigation-redflags"></p>
             </div>
           </div>
           <div class="card">
@@ -127,18 +212,17 @@
               <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
               <h4 class="black"><b>Red Flags</b></h4>
               <p class="black">Rejected</p>
-              <p>2</p>
+              <p id="my-rejected-redflags"></p>
             </div>
           </div>        
       </div>
       <div class="column">
           <div class="card">
               <div class="container2">
-                <a href="interventions.html">
                   <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
                   <h4 class="black"><b>Interventions</b></h4>
-                  <p class="black"><i class="fa fa-external-link" aria-hidden="true"></i></p>
-                </a>
+                  <p class="black">Draft</p>
+                  <p id='my-draft-interventions'></p>
               </div>
             </div>         
           <div class="card">
@@ -146,7 +230,7 @@
                 <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
                 <h4 class="black"><b>Interventions</b></h4>
                 <p class="black">Resolved</p>
-                <p>10</p>
+                <p id='my-resolved-interventions'></p>
               </div>
             </div>
             <div class="card">
@@ -154,7 +238,7 @@
                 <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
                 <h4 class="black"><b>Interventions</b></h4>
                 <p class="black">Under Investigation</p>
-                <p>7</p>
+                <p  id='my-underinvestigation-interventions'></p>
               </div>
             </div>
             <div class="card">
@@ -162,7 +246,7 @@
                 <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
                 <h4 class="black"><b>Interventions</b></h4>
                 <p class="black">Rejected</p>
-                <p class="black">4</p>
+                <p  id='my-rejected-interventions'></p>
               </div>
             </div>   
       </div>

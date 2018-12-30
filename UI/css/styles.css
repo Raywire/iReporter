@@ -147,6 +147,13 @@ a {
     width: 50%;
     padding: 5px;
   }
+  .column-100 {
+    width: 100%;
+    padding: 10px;
+  }
+  .column-100 p, .column-100 h4{
+    padding:5px;
+  }
   .login-box{
     width: 60%;
   }
@@ -581,6 +588,13 @@ padding:8px;
 }
 .theme-blue{
   color:#0b47b6;
+}
+p#comment-data{
+  color:#0b47b6;
+  padding:5px
+}
+p.img-details{
+  padding:10px 0 0 0;
 }
 .font-small{
   font-size: 12px;

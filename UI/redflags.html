@@ -51,9 +51,6 @@
                   <p class="contact"><label for="date">Location</label></p>
                   <div id="addMarker" style="width:100%;height:400px;"></div>
                   <input id="location" readonly name="location" placeholder="Location" required="" type="text">
-                  <p class="contact"><label for="file">Upload Image/Video Evidence</label></p>
-                  <input type="file" name="file" accept="image/*,video/*" multiple>
-                  
                   <br>
                   <input id='submit' name="submit" class="button-normal" tabindex="5" value="Add Red Flag" type="submit">
                   <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
@@ -208,11 +205,27 @@
                                     if(j['message'] == 'Token is invalid'){
                                       logout();
                                     }
+                                    if(j['message'] == 'No interventions'){
+                                        let result = '';
+                                        result += `
+                                          <div class="column-100">
+                                          <div class="card">
+                                              <div class="container">
+                                                
+                                                  <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                                                  <h4 class="theme-blue"><b>No Red Flags</b></h4>
+                                                
+                                              </div>
+                                            </div>               
+                                        </div> 
+                                          `;
+                                          document.getElementById('intervention-data').innerHTML = result;
+                                      }
                                   }
                                   if(j.hasOwnProperty('data')){
                                     let result = '';
                                       j['data'].forEach((redflag) => {
-                                        const { id, title, status, createdon } = redflag
+                                        const { id, title, status, createdon, username } = redflag
                                         result += `
                                         <div class="column">
                                           <div class="card">
@@ -220,6 +233,7 @@
                                                 <a href="view_redflag.html?redflag_id=${id}">
                                                   <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
                                                   <h4 class="black truncate"><b>${title}</b></h4>
+                                                  <p class='italic font-small'>By ${username}</p>
                                                   <p>${status}</p>
                                                   <p class='italic font-small'>${createdon}</p>
                                                   <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
