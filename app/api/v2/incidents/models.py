@@ -11,8 +11,8 @@ import os
 
 UPLOAD_FOLDER_IMAGE = 'upload/images'
 UPLOAD_FOLDER_VIDEO = 'upload/videos'
-ALLOWED_EXTENSIONS_IMAGE = set(['png','jpg','jpeg','gif'])
-ALLOWED_EXTENSIONS_VIDEO = set(['mp4','avi', 'flv','wmv','mov'])
+ALLOWED_EXTENSIONS_IMAGE = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS_VIDEO = set(['mp4', 'avi', 'flv', 'wmv', 'mov'])
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
@@ -44,9 +44,8 @@ parser.add_argument('title',
 
 
 class IncidentModel:
-    """
-    Class with methods to perform Create, Read, Update, 
-    Upload and Delete operations on database"""
+    """Class with methods to perform Create, Read, Update, 
+        Upload and Delete operations on database"""
 
     def __init__(self):
         self.db = init_database()
@@ -78,8 +77,9 @@ class IncidentModel:
         }
 
         query = """INSERT INTO incidents (createdon,createdby,type,location,status,images,videos,title,comment) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-        values = data['createdOn'], data['createdBy'], data['type'], data['location'], data['status'], data['images'], data['videos'], data['title'], data['comment']
-                
+        values = data['createdOn'], data['createdBy'], data['type'], data['location'], data[
+            'status'], data['images'], data['videos'], data['title'], data['comment']
+
         conn = self.db
         cursor = conn.cursor()
         cursor.execute(query, values)
@@ -88,7 +88,12 @@ class IncidentModel:
 
     def get_incidents(self, incident_type):
         """method to get all incidents"""
-        query = """SELECT * from incidents WHERE type='{0}' ORDER BY createdon DESC""".format(
+        query = """SELECT incidents.comment,incidents.createdby,\
+            incidents.createdon, incidents.id,incidents.images,\
+            incidents.location,incidents.status,incidents.videos,\
+            incidents.title,incidents.type, users.username from incidents \
+            INNER JOIN users ON incidents.createdby=users.id WHERE type='{0}'\
+            ORDER BY createdon DESC""".format(
             incident_type)
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -218,22 +223,20 @@ class IncidentModel:
             return False
 
         if incident['status'] != 'draft':
-            return 'not draft'            
+            return 'not draft'
 
         if 'uploadFile' not in request.files:
-            return "No uploadFile name"
+            return "No uploadFile name in form"
 
         uploads = request.files.getlist('uploadFile')
 
         for upload in uploads:
-            if upload.filename == '':
-                return "No file selected"
 
             if file_type == 'videos':
                 allowed_file_type = ALLOWED_EXTENSIONS_VIDEO
                 upload_file_folder = UPLOAD_FOLDER_VIDEO
                 query = """UPDATE incidents SET videos=%s WHERE id=%s"""
-            
+
             if file_type == 'images':
                 allowed_file_type = ALLOWED_EXTENSIONS_IMAGE
                 upload_file_folder = UPLOAD_FOLDER_IMAGE
