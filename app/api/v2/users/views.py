@@ -149,9 +149,16 @@ class User(Resource):
     @token_required
     def delete(current_user, self, username):
         """method to delete a user"""
+        user = self.db.get_user(username)
 
-        if self.db.get_user(username) is None:
+        if user is None:
             return nonexistent_user()
+
+        if user['id'] == 1:
+            return jsonify({
+                "status" : 403,
+                "message": "This user cannot be deleted"
+            })
 
         if current_user['isadmin'] is not True:
             return jsonify({
@@ -159,11 +166,11 @@ class User(Resource):
                 "message": "Only an admin can delete a user"
             })
 
-        if current_user['id'] == 1:
+        if current_user['username'] == username:
             return jsonify({
-                "status": 403,
-                "message": "This user cannot be deleted"
-            })
+              "status": 403,
+              "message": "You cannot delete yourself"  
+            }) 
 
         delete_status = self.db.delete_user(username)
         if delete_status is True:
@@ -179,10 +186,9 @@ class User(Resource):
     @token_required
     def patch(current_user, self, username):
         """method to update a user's password"""
-        user = self.db.get_user(username)
 
-        if user is None:
-            return nonexistent_user()
+        if self.db.get_user(username) is None:
+            return nonexistent_user()           
 
         if current_user['isadmin'] is True:
             if self.db.update_user_password(username) is True:
@@ -223,17 +229,23 @@ class UserStatus(Resource):
         if user is None:
             return nonexistent_user()
 
+        if user['id'] == 1:
+            return jsonify({
+                "status" : 403,
+                "message": "You cannot change the status of this user"
+            }) 
+
         if current_user['isadmin'] is not True:
             return jsonify({
                 "status": 403,
                 "message": "Only an admin can change the status of a user"
             })
 
-        if current_user['id'] == 1:
+        if current_user['username'] == username:
             return jsonify({
               "status": 403,
-              "message": "Admin status of this user cannot be changed"  
-            })
+              "message": "You cannot change your own admin status"  
+            })            
 
         user_status_updated = self.db.promote_user(username)
         if user_status_updated is True:

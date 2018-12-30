@@ -79,9 +79,6 @@ class UserModel:
     def set_password(self, password):
         return generate_password_hash(password)
 
-    def check_password(self, password):
-        return check_password_hash(self.pwdhash, password)
-
     def save_user(self):
         """method to add a user"""
         args = parser.parse_args()

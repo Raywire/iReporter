@@ -18,6 +18,7 @@ data = {
     "othernames" : "Simiyu",
     "email" : "john@doe.com",
     "phoneNumber" : "0727272727",
+    "public_id": "f3b8a1c3-f775-49e1-991c-5bfb963eb418",
     "username" : "jayd",
     "password" : "123456",
     "isAdmin" : False
@@ -68,6 +69,11 @@ data6 = {
 
 data7 = {
     "username" : "jayd3",
+    "password" : "123456"
+}
+
+data8 = {
+    "username" : "rayosim",
     "password" : "123456"
 }
 

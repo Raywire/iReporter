@@ -360,5 +360,17 @@ class IncidentTestCase(unittest.TestCase):
         response = send("simiyuwire@gmail.com", "redflag", 1, "resolved")
         self.assertTrue(response)
 
+    def test_nonexistent_image(self):
+        response = self.app.get("/api/v2/uploads/images/154614577211.jpg", headers=self.headers)
+        result = json.loads(response.data)
+        self.assertEqual(result['status'], 404)
+        self.assertEqual(result['message'], 'Image does not exist')
+        
+    def test_nonexistent_video(self):
+        response = self.app.get("/api/v2/uploads/videos/154614577211.mp4", headers=self.headers)
+        result = json.loads(response.data)
+        self.assertEqual(result['status'], 404)
+        self.assertEqual(result['message'], 'Video does not exist')         
+
     def tearDown(self):
         destroy_tables()
