@@ -29,7 +29,7 @@ class Interventions(Resource):
         if self.intervention_model.get_incidents("intervention") is None:
             return jsonify({
                 "status": 200,
-                "data": []
+                "data": [{"message" : "No interventions"}]
             })
         return jsonify({
             "status": 200,
@@ -188,7 +188,7 @@ class Redflags(Resource):
         if redflags is None:
             return jsonify({
                 "status": 200,
-                "data": []
+                "data": [{"message" : "No redflags"}]
             })
         return jsonify({
             "status": 200,

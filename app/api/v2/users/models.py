@@ -79,9 +79,6 @@ class UserModel:
     def set_password(self, password):
         return generate_password_hash(password)
 
-    def check_password(self, password):
-        return check_password_hash(self.pwdhash, password)
-
     def save_user(self):
         """method to add a user"""
         args = parser.parse_args()
@@ -168,7 +165,8 @@ class UserModel:
     def get_users(self):
         """method to get all users"""
         query = """SELECT firstname,lastname,othernames,email,phonenumber,\
-                    username,public_id,isadmin from users"""
+                    username,public_id,isadmin,registered\
+                    from users ORDER BY registered ASC"""
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cursor.execute(query)
