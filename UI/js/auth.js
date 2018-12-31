@@ -1,3 +1,4 @@
+const root = 'https://pure-wildwood-82378.herokuapp.com/api/v2/';
 let cookie = document.cookie.split(";");
 let token = cookie[0];
 let name = cookie[1];

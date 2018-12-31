@@ -155,7 +155,7 @@
         </div> 
           <div class="table-responsive">
                   <table>
-                    <tbody id="intervention-data">
+                    <tbody id="incident-data">
                       <tr>
                         <td>
                           <p id="message"></p>
@@ -164,97 +164,10 @@
                       </tr>
                     </tbody>
                   </table>
-                        <script>
-                         
-                            function getData(event){
-                        
-                              const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
-                              let uri = root + 'interventions';
-          
-                              let cookie = document.cookie.split(";");
-                              let tokenKeyValue = cookie[0];
-                              let tokenSplit = tokenKeyValue.split("token=");
-                              let token = tokenSplit[1];
-                              // console.log(token);
-                        
-                              let options = {
-                                  method: 'GET',
-                                  mode: "cors",
-                                  headers: new Headers({
-                                    "Content-Type": "application/json; charset=utf-8",
-                                    "x-access-token": token
-                                  })
-                              }
-                              let req = new Request(uri, options);
-                        
-                              fetch(req)
-                                  .then((response)=>{
-                                      if(response.ok){
-                                        document.getElementById('fa-spin-data').style.display = "none";
-                                        return response.json();
-                                      }else{
-                                        document.getElementById('fa-spin-data').style.display = "none";
-                                        return response.json();
-                                      }
-                                  })
-                                  .then( (j) =>{
-                                    
-                                    if(j.hasOwnProperty('message')){
-                                      if(j['message'] == 'Token is missing'){
-                                        logout();
-                                      }
-                                      if(j['message'] == 'Token is invalid'){
-                                        logout();
-                                      }
-                                      if(j['message'] == 'No interventions'){
-                                        let result = '';
-                                        result += `
-                                          <div class="column-100">
-                                          <div class="card">
-                                              <div class="container">
-                                                
-                                                  <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
-                                                  <h4 class="theme-blue"><b>No Interventions</b></h4>
-                                                
-                                              </div>
-                                            </div>               
-                                        </div> 
-                                          `;
-                                          document.getElementById('intervention-data').innerHTML = result;
-                                      }
-                                    }
-                                    if(j.hasOwnProperty('data')){
-                                      let result = '';
-                                        j['data'].forEach((redflag) => {
-                                          const { id, title, status, createdon, username } = redflag
-                                          result += `
-                                          <div class="column">
-                                          <div class="card">
-                                              <div class="container2">
-                                                <a href="view_intervention.html?intervention_id=${id}">
-                                                  <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
-                                                  <h4 class="black truncate"><b>${title}</b></h4>
-                                                  <p class='italic font-small'>By ${username}</p>
-                                                  <p>${status}</p>
-                                                  <p class='italic font-small'>${createdon}</p>
-                                                  <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
-                                                </a>
-                                              </div>
-                                            </div>               
-                                        </div> 
-                                          `;
-                                          document.getElementById('intervention-data').innerHTML = result;
-                                        });
-                                    }
-                                                                
-                                  })
-                                  .catch( (err) =>{
-                                      
-                                      document.getElementById('message').innerHTML = err;
-                                  });
-                          }
-                          getData();
-                        </script>                                  
+                  <script src="js/models_incidents.js"></script>
+                  <script>
+                    getData('interventions');
+                  </script>                                 
           </div>  
           <div class="push"></div>           
       </div>

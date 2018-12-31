@@ -335,13 +335,13 @@ color:black;
 .italic {
   font-style: italic;
 }
-#intervention-data h2,#user-data h2{
+#incident-data h2,#user-data h2{
   color:rgb(143, 143, 143);
 }
-#intervention-data h2,h3,h4{
+#incident-data h2,h3,h4{
   color:rgb(153, 153, 153);
 }
-#intervention-data p, #user-data p{
+#incident-data p, #user-data p{
   color:rgb(103, 103, 103);
 }
 /* Clear floats after image containers */
