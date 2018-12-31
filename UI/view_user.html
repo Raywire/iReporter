@@ -90,7 +90,7 @@
                           <p id="error-message"></p>
                       </div>
                       <div class="modal-footer">
-                        <button id="btnDelConfirm" type="button" class="button-modal danger" >Delete</button>
+                        <button id="btnDelConfirm" type="button" class="button-normal danger" >Delete</button>
                         <i id="fa-spin-data-delete" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
                       </div>    
                 </div>
@@ -246,6 +246,9 @@
                           if(j['message'] == 'Only an admin can delete a user'){
                             document.getElementById('error-message').innerHTML = j['message'];
                           }
+                          if(j['message'] == 'This user cannot be deleted' || j['message'] == 'You cannot delete yourself'){
+                                document.getElementById('error-message').innerHTML = j['message'];
+                          }
 
                         }
                         if(j.hasOwnProperty('data')){
@@ -327,6 +330,9 @@
                           }    
                           if(j['message'] == 'Only an admin can change the status of a user'){
                             document.getElementById('status-message').innerHTML = j['message'];
+                          }
+                          if(j['message'] == 'You cannot change the status of this user' || j['message'] == 'You cannot change your own admin status'){
+                                document.getElementById('status-message').innerHTML = j['message'];
                           }
 
                         }

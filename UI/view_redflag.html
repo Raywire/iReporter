@@ -143,7 +143,7 @@
                           <input type="file" id="name" name="incidentImage" accept="image/*" multiple>
                           
                           <br>
-                          <input class="button-modal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
+                          <input class="button-normal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
       
                       </form>       
                     </div>
@@ -160,167 +160,32 @@
                           <input type="file" id="name" name="incidentVideo" accept="video/*" multiple>
                           
                           <br>
-                          <input class="button-modal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
+                          <input class="button-normal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
       
                       </form>       
                     </div>
                   </div>
               </div>          
         </div>
-        <div id='intervention-data' class="container">
+        <div id='incident-data' class="container">
             <h2 class="black" id="message"></h2>
             <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i></center>
+            <script src="js/models_incidents.js"></script>
             <script>
-                let urlParams = new URLSearchParams(window.location.search);
-                let redflagId = urlParams.get('redflag_id');
-                document.getElementById("btnGeolocate").disabled = true;
+              let urlParams = new URLSearchParams(window.location.search);
+              let redflagId = urlParams.get('redflag_id');
+              document.getElementById("btnGeolocate").disabled = true;
 
-                function getData(event){
-            
-                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
-                  let uri = root + 'redflags/' + redflagId;
-
-                  let cookie = document.cookie.split(";");
-                  let tokenKeyValue = cookie[0];
-                  let tokenSplit = tokenKeyValue.split("token=");
-                  let token = tokenSplit[1];
-            
-                  let options = {
-                      method: 'GET',
-                      mode: "cors",
-                      headers: new Headers({
-                        "Content-Type": "application/json; charset=utf-8",
-                        "x-access-token": token
-                      })
-                  }
-                  let req = new Request(uri, options);
-            
-                  fetch(req)
-                      .then((response)=>{
-                          if(response.ok){
-                            document.getElementById('fa-spin-data').style.display = "none";
-                            document.getElementById("btnGeolocate").disabled = false;
-                            return response.json();
-                          }else{
-                            document.getElementById('fa-spin-data').style.display = "none";
-                            return response.json();
-                          }
-                      })
-                      .then( (j) =>{
-                        console.log(j);
-                        if(j.hasOwnProperty('message')){
-                          if(j['message'] == 'Token is missing'){
-                            logout();
-                          }
-                          if(j['message'] == 'Token is invalid'){
-                            logout();
-                          }
-                          if(j['message'] == 'Redflag does not exist'){
-                            document.getElementById('message').innerHTML = j['message'];
-                          }
-                        }
-                        if(j.hasOwnProperty('data')){
-                          let result = '';
-                            j['data'].map((redflag) => {
-                              const { title, comment, status, createdon, location, username } = redflag
-                              result += `
-                              <h2>${title}</h2>
-                              <h3><span class="black">Status:</span> <span id='status-data' class="italic">${status}</span></h3>
-                              <h4><span class="black">Created On:</span> <span class="italic">${createdon}</span></h4>
-                              <h4><span class="black">By:</span> <span class="theme-blue">${username}</span></h4>
-                              <div class="row  bg-color">
-                                <div class="column-50 bg-color">
-                                  
-                                  <p class='img-details'><img src="img/bad-road.jpeg" alt=""></p>
-                                  <p><img src="" alt=""></p>
-                                </div>
-                                <div class="column-50  bg-color align-justify">
-                                  <p id='comment-data'>${comment}</p>
-                                </div>
-                              </div>  
-                              `;
-                              localStorage.clear();
-                              localStorage.setItem('coordinates', location);
-                              document.getElementById('intervention-data').innerHTML = result;
-                              document.getElementById('title').value = title;
-                              document.getElementById('comment').value = comment;
-                              document.getElementById('location').value = location;
-                            });
-
-                        }
-                                                    
-                      })
-                      .catch( (err) =>{
-                          console.log(err);
-                          // document.getElementById('message').innerHTML = err;
-                      });
-              }
-              getData();
+              //Method call to get redflag by id
+              getDataById('redflags', redflagId);
 
               //Deleting a specific Red Flag
               var btnDelConfirm = document.getElementById('btnDelConfirm');
-              btnDelConfirm.addEventListener("click", deleteData);
+              btnDelConfirm.addEventListener("click", deleteRedflag);
 
-
-                function deleteData(event){
-                  document.getElementById('fa-spin-data-delete').style.display = "block";
-                  document.getElementById('error-message').innerHTML = '';
-            
-                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
-                  let uri = root + 'redflags/' + redflagId;
-
-                  let cookie = document.cookie.split(";");
-                  let tokenKeyValue = cookie[0];
-                  let tokenSplit = tokenKeyValue.split("token=");
-                  let token = tokenSplit[1];
-            
-                  let options = {
-                      method: 'DELETE',
-                      mode: "cors",
-                      headers: new Headers({
-                        "Content-Type": "application/json; charset=utf-8",
-                        "x-access-token": token
-                      })
-                  }
-                  let req = new Request(uri, options);
-            
-                  fetch(req)
-                      .then((response)=>{
-                          if(response.ok){
-                            return response.json();
-                          }else{
-                            return response.json();
-                          }
-                      })
-                      .then( (j) =>{
-                        console.log(j);
-                        if(j.hasOwnProperty('message')){
-                          if(j['message'] == 'Token is missing'){
-                            logout();
-                          }
-                          if(j['message'] == 'Token is invalid'){
-                            logout();
-                          }
-                          if(j['message'] == 'Redflag does not exist'){
-                            document.getElementById('error-message').innerHTML = j['message'];
-                          }
-                          if(j['message'] == 'Only the creator of this record can delete it'){
-                            document.getElementById('error-message').innerHTML = j['message'];
-                          }
-                        }
-                        if(j.hasOwnProperty('data')){
-                          if(j['data']['message'] == 'Redflag record has been deleted'){
-                            document.getElementById('error-message').innerHTML = j['data']['message'];
-                          }                          
-                        }                        
-                        document.getElementById('fa-spin-data-delete').style.display = "none";
-                                                    
-                      })
-                      .catch( (err) =>{
-                          console.log(err);
-                          document.getElementById('error-message').innerHTML = err;
-                          document.getElementById('fa-spin-data-delete').style.display = "none";
-                      });
+              //Method to delete an intervention
+              function deleteRedflag(){
+                deleteData('redflags', redflagId);
               }
               
 
@@ -333,7 +198,6 @@
                   document.getElementById('edit-message').innerHTML = '';
                   document.getElementById('edit-message').style.color = "red";
             
-                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
                   let uri = root + 'redflags/' + redflagId + '/location';
 
                   let location = document.getElementById('location').value;
@@ -409,7 +273,6 @@
                   document.getElementById('edit-message-2').style.color = "red";
                   document.getElementById('comment').style.borderBottomColor = "gray";
             
-                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
                   let uri = root + 'redflags/' + redflagId + '/comment';
 
                   let comment = document.getElementById('comment').value;
@@ -494,7 +357,6 @@
                   document.getElementById('status-message').innerHTML = '';
                   document.getElementById('status-message').style.color = "red";
             
-                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
                   let uri = root + 'redflags/' + redflagId + '/status';
 
                   let status = document.getElementById('status').value;
