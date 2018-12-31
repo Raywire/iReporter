@@ -1,5 +1,6 @@
 """App module init file"""
 from flask import Flask, Blueprint
+from flask_cors import CORS
 from instance.config import APP_CONFIG
 from flask import jsonify, make_response
 from .db_config import create_tables, create_super_user
@@ -17,6 +18,7 @@ def url_not_found(error):
 def create_app(config_name='development'):
     """Method that creates the app and initializes configurations"""
     app = Flask(__name__, instance_relative_config=True)
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
     create_tables()
     create_super_user()
     app.register_error_handler(404, url_not_found)

@@ -7,6 +7,7 @@ Click==7.0
 coverage==4.5.2
 enum34==1.1.6
 Flask==1.0.2
+Flask-Cors==3.0.7
 Flask-RESTful==0.3.6
 flask-restplus==0.12.1
 funcsigs==1.0.2
