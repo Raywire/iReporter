@@ -556,7 +556,7 @@ padding:8px;
 .fa-spin{
   color: #27ae60;
 }
-#fa-spin, #fa-spin-data-delete, #fa-spin-edit, #fa-spin-edit-status{
+#fa-spin, #fa-spin-data-delete, #fa-spin-edit, #fa-spin-edit-status, #fa-spin-upload{
   display: none;
 }
 #fa-spin-data-delete{
@@ -592,6 +592,9 @@ padding:8px;
 p#comment-data{
   color:#0b47b6;
   padding:5px
+}
+#main-image{
+  width:100%;
 }
 p.img-details{
   padding:10px 0 0 0;

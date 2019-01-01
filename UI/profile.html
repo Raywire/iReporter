@@ -67,6 +67,15 @@
             
             </div>            
         </div>
+        <div class="card">
+          <div class="container2">
+              <p></p>
+              <h4 class="black"><b><i class="fa fa-flag red" aria-hidden="true"></i> Red Flags</b></h4>
+              <p id='my-redflags'></p>
+              <h4 class="black"><b><i class="fa fa-flag" aria-hidden="true"></i> Interventions</b></h4>
+              <p id='my-interventions'></p>
+          </div>
+        </div>
         <script>
             let userName = name.split("=");
             let userEmail = email.split("=");
@@ -144,6 +153,12 @@
                                   let myIncidents = incidents.filter(incident => {
                                     return incident.username === userUsername;
                                   })
+                                  let myRedflags = incidents.filter(incident => {
+                                    return incident.username === userUsername && incident.type === 'redflag';
+                                  })
+                                  let myInterventions = incidents.filter(incident => {
+                                    return incident.username === userUsername && incident.type === 'intervention';
+                                  })
                                   let myDraftIncidents = incidents.filter(incident =>{
                                     return incident.username === userUsername && incident.status === 'draft'
                                   })
@@ -156,12 +171,16 @@
                                   let myRejectedIncidents = incidents.filter(incident =>{
                                     return incident.username === userUsername && incident.status === 'rejected'
                                   })
+                                  
+                                  
                                   if (incident_type == 'redflags'){
+                                    document.getElementById('my-redflags').innerHTML = myRedflags.length;
                                     document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
                                     document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
                                     document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents.length;
                                     document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
                                   }else if(incident_type == 'interventions'){
+                                    document.getElementById('my-interventions').innerHTML = myInterventions.length;
                                     document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
                                     document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
                                     document.getElementById('my-underinvestigation-interventions').innerHTML = myUnderInvestigationIncidents.length;
