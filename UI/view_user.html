@@ -107,7 +107,6 @@
 
                 function getData(event){
             
-                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
                   let uri = root + 'users/' + usernameId;
 
                   let cookie = document.cookie.split(";");
@@ -202,7 +201,6 @@
                   document.getElementById('fa-spin-data-delete').style.display = "block";
                   document.getElementById('error-message').innerHTML = '';
             
-                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
                   let uri = root + 'users/' + usernameId;
 
                   let cookie = document.cookie.split(";");
@@ -280,7 +278,6 @@
                   document.getElementById('status-message').innerHTML = '';
                   document.getElementById('status-message').style.color = "red";
             
-                  const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
                   let uri = root + 'users/' + usernameId + '/promote';
 
                   let status = document.getElementById('status').value;

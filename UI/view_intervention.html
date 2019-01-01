@@ -134,35 +134,32 @@
                 
                 </div>
                 <div id="modal-window-image-upload" class="modal">
-  
                     <!--Upload Image Modal -->
                     <div class="modal-content">
                       <span class="close">&times;</span>
                       <div  class="modal-form">
                           <form id="uploadImage" method="POST" enctype="multipart/form-data">
                             <p class="contact"><label for="profilepic">Upload Image</label></p>
-                            <input type="file" id="name" name="incidentImage" accept="image/*" multiple>
+                            <input class="black" type="file" id="fileImage" name="uploadFile" accept="image/*" multiple>
                             
                             <br>
                             <input class="button-normal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
-        
-                        </form>       
+                            <i id="fa-spin-upload" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                            <p id="upload-message"></p>
+                        </form>     
                       </div>
                     </div>
                 </div>
                 <div id="modal-window-video-upload" class="modal">
-  
                     <!--Upload Video Modal -->
                     <div class="modal-content">
                       <span class="close">&times;</span>
                       <div  class="modal-form">
                           <form id="uploadVideo" method="POST" enctype="multipart/form-data">
                             <p class="contact"><label for="profilepic">Upload Video</label></p>
-                            <input type="file" id="name" name="incidentVideo" accept="video/*" multiple>
-                            
+                            <input class="black" type="file" id="name" name="uploadFile" accept="video/*" multiple>                            
                             <br>
-                            <input class="button-normal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
-        
+                            <input class="button-normal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">        
                         </form>       
                       </div>
                     </div>
@@ -419,7 +416,95 @@
                           document.getElementById('status-message').innerHTML = err;
                           document.getElementById('fa-spin-edit-status').style.display = "none";
                       });
-              }           
+              }   
+              
+              //Upload an image
+              document.getElementById('uploadImage').addEventListener('submit', uploadImage);
+              
+              function uploadImage(event){
+                  event.preventDefault();
+                  document.getElementById('fa-spin-upload').style.display = "block";
+                  document.getElementById('upload-message').innerHTML = '';
+                  document.getElementById('upload-message').style.color = "red";
+            
+                  let uri = root + 'interventions/' + interventionId + '/addImage';
+
+                  var formData = new FormData();
+                  let fileData = document.getElementById('fileImage').files[0];
+                  
+                  console.log(fileData);
+                  
+                  formData.append('uploadFile', fileData, fileData.name);
+                  formData.append('name', 'uploadFile');
+
+
+                  let cookie = document.cookie.split(";");
+                  let tokenKeyValue = cookie[0];
+                  let tokenSplit = tokenKeyValue.split("token=");
+                  let token = tokenSplit[1];
+            
+                  let options = {
+                      method: 'PATCH',
+                      mode: "cors",
+                      headers: new Headers({
+                        "x-access-token": token,
+                      }),
+                      body: formData
+                  }
+                  let req = new Request(uri, options);
+            
+                  fetch(req)
+                      .then((response)=>{
+                          if(response.ok){
+                            return response.json();
+                          }else{
+                            return response.json();
+                          }
+                      })
+                      .then( (j) =>{
+                        console.log(j);
+                        if(j.hasOwnProperty('message')){
+                          if(j['message'] == 'Token is missing'){
+                            logout();
+                          }
+                          if(j['message'] == 'Token is invalid'){
+                            logout();
+                          }
+                          if(j['message'] == 'Intervention does not exist'){
+                            document.getElementById('upload-message').innerHTML = j['message'];
+                          }
+     
+                          if(j['message'] == 'Only the user who created this record can edit it'){
+                            document.getElementById('upload-message').innerHTML = j['message'];
+                          }
+                          if(j['message'] == 'Incident can only be edited when the status is draft'){
+                            document.getElementById('upload-message').innerHTML = j['message'];
+                          }
+                          
+
+                        }
+                        if(j.hasOwnProperty('data')){
+                          if(j['data'][0]['message'] == "Image added to intervention record"){
+                            document.getElementById('upload-message').style.color = "green";
+                            document.getElementById('upload-message').innerHTML = j['data'][0]['message'];
+                          }                          
+                        }                        
+                        document.getElementById('fa-spin-upload').style.display = "none";
+                                                    
+                      })
+                      .catch( (err) =>{
+                          console.log(err);
+                          document.getElementById('upload-message').innerHTML = err;
+                          document.getElementById('fa-spin-upload').style.display = "none";
+                      });                
+  
+              }
+              //Upload an Video
+              document.getElementById('uploadVideo').addEventListener('submit', uploadVideo);
+              function uploadVideo(event){
+                event.preventDefault();
+  
+              }
              
             </script>          
         </div>

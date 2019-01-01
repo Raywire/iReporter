@@ -1,19 +1,21 @@
+let cookieModels = document.cookie.split(";");
+let tokenKeyModels = cookieModels[0];
+let tokenSplitModels = tokenKeyModels.split("token=");
+let tokenModels = tokenSplitModels[1];
+
+let userUsername = username.split("=");
+userUsername = userUsername[1];
+
 function getData(incident_type){
                       
     let uri = root + incident_type;
-
-    let cookie = document.cookie.split(";");
-    let tokenKeyValue = cookie[0];
-    let tokenSplit = tokenKeyValue.split("token=");
-    let token = tokenSplit[1];
-    // console.log(token);
 
     let options = {
         method: 'GET',
         mode: "cors",
         headers: new Headers({
           "Content-Type": "application/json; charset=utf-8",
-          "x-access-token": token
+          "x-access-token": tokenModels
         })
     }
     let req = new Request(uri, options);
@@ -57,8 +59,14 @@ function getData(incident_type){
           if(j.hasOwnProperty('data')){
             let result = '';
             let link = '';
+            let creator = '';
               j['data'].forEach((incident) => {
                 const { id, title, status, createdon, username, type } = incident
+                if(username == userUsername){
+                  creator = 'Me';
+                }else{
+                  creator = username;
+                }
                 if(type == 'redflag'){
                     link = 'view_redflag.html?redflag_id';
                 }else if(type == 'intervention'){
@@ -71,7 +79,7 @@ function getData(incident_type){
                         <a href="${link}=${id}">
                           <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
                           <h4 class="black truncate"><b>${title}</b></h4>
-                          <p class='italic font-small'>By ${username}</p>
+                          <p class='italic font-small'>By ${creator}</p>
                           <p>${status}</p>
                           <p class='italic font-small'>${createdon}</p>
                           <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
@@ -95,17 +103,12 @@ function getDataById(incident_type, incidentId){
             
     let uri = root + incident_type +'/' + incidentId;
 
-    let cookie = document.cookie.split(";");
-    let tokenKeyValue = cookie[0];
-    let tokenSplit = tokenKeyValue.split("token=");
-    let token = tokenSplit[1];
-
     let options = {
         method: 'GET',
         mode: "cors",
         headers: new Headers({
           "Content-Type": "application/json; charset=utf-8",
-          "x-access-token": token
+          "x-access-token": tokenModels
         })
     }
     let req = new Request(uri, options);
@@ -136,18 +139,27 @@ function getDataById(incident_type, incidentId){
           }
           if(j.hasOwnProperty('data')){
             let result = '';
+            let imageUrl = '';
               j['data'].map((incident) => {
-                const { title, comment, status, createdon, location, username } = incident
+                const { title, comment, status, createdon, location, username, images } = incident
+                if(username == userUsername){
+                  creator = 'Me';
+                }else{
+                  creator = username;
+                }
+                if(images == null){
+                  imageUrl = 'img/bad-road.jpeg';
+                }else{
+                  getFileData('images', images)
+                }
                 result += `
                 <h2>${title}</h2>
                 <h3><span class="black">Status:</span> <span id='status-data' class="italic">${status}</span></h3>
                 <h4><span class="black">Created On:</span> <span class="italic">${createdon}</span></h4>
-                <h4><span class="black">By:</span> <span class="theme-blue">${username}</span></h4>
+                <h4><span class="black">By:</span> <span class="theme-blue">${creator}</span></h4>
                 <div class="row  bg-color">
                   <div class="column-50 bg-color">
-                    
-                    <p class='img-details'><img src="img/bad-road.jpeg" alt=""></p>
-                    <p><img src="" alt=""></p>
+                    <p class='img-details'><img id='main-image' src="${imageUrl}" alt="${title}"></p>
                   </div>
                   <div class="column-50  bg-color align-justify">
                     <p id='comment-data'>${comment}</p>
@@ -177,17 +189,12 @@ function deleteData(incident_type, incidentId){
 
     let uri = root + incident_type + '/' + incidentId;
 
-    let cookie = document.cookie.split(";");
-    let tokenKeyValue = cookie[0];
-    let tokenSplit = tokenKeyValue.split("token=");
-    let token = tokenSplit[1];
-
     let options = {
         method: 'DELETE',
         mode: "cors",
         headers: new Headers({
           "Content-Type": "application/json; charset=utf-8",
-          "x-access-token": token
+          "x-access-token": tokenModels
         })
     }
     let req = new Request(uri, options);
@@ -215,6 +222,9 @@ function deleteData(incident_type, incidentId){
             if(j['message'] == 'Only the creator of this record can delete it'){
               document.getElementById('error-message').innerHTML = j['message'];
             }
+            if(j['message'] == 'Incident can only be deleted when the status is draft'){
+              document.getElementById('error-message').innerHTML = j['message'];
+            }
 
           }
           if(j.hasOwnProperty('data')){
@@ -230,4 +240,42 @@ function deleteData(incident_type, incidentId){
             document.getElementById('error-message').innerHTML = err;
             document.getElementById('fa-spin-data-delete').style.display = "none";
         });
+}
+
+function uploadFile(){
+  
+}
+
+function getFileData(filetype, filename){
+
+  let uri = root + 'uploads/' + filetype + '/' + filename;
+
+  let options = {
+      method: 'GET',
+      mode: "cors",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=utf-8",
+        "x-access-token": tokenModels
+      })
+  }
+  let req = new Request(uri, options);
+
+  fetch(req)
+      .then((response)=>{
+          if(response.ok){
+            return response.blob();
+          }else{
+            return response.json();
+          }
+      })
+      .then( (j) =>{
+        console.log(j);
+        var imgElem = document.getElementById('main-image');
+        var imgUrl = URL.createObjectURL(j);
+        imgElem.src = imgUrl; 
+                                    
+      })
+      .catch( (err) =>{
+          console.log(err);
+      });
 }
