@@ -431,6 +431,12 @@
 
                   var formData = new FormData();
                   let fileData = document.getElementById('fileImage').files[0];
+
+                  if(fileData == null){
+                    document.getElementById('fa-spin-upload').style.display = "none";
+                    document.getElementById('upload-message').innerHTML = 'Please select a file';
+                    return false;
+                  }
                   
                   console.log(fileData);
                   
@@ -480,7 +486,9 @@
                           if(j['message'] == 'Incident can only be edited when the status is draft'){
                             document.getElementById('upload-message').innerHTML = j['message'];
                           }
-                          
+                          if(j['message'] == 'File type not supported'){
+                            document.getElementById('upload-message').innerHTML = j['message'];
+                          }
 
                         }
                         if(j.hasOwnProperty('data')){
