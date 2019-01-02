@@ -83,12 +83,12 @@ class UserModel:
         """method to add a user"""
         args = parser.parse_args()
         data = {
-            'firstname': request.json.get('firstname'),
-            'lastname': request.json.get('lastname'),
-            'othernames': request.json.get('othernames'),
-            'email': request.json.get('email'),
+            'firstname': request.json.get('firstname').title(),
+            'lastname': request.json.get('lastname').title(),
+            'othernames': request.json.get('othernames').title(),
+            'email': request.json.get('email').lower(),
             'phoneNumber': request.json.get('phoneNumber'),
-            'username': request.json.get('username'),
+            'username': request.json.get('username').lower(),
             'registered': datetime.datetime.utcnow(),
             'password': self.set_password(request.json.get('password')),
             'isAdmin': self.isAdmin,

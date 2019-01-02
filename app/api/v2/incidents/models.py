@@ -72,7 +72,7 @@ class IncidentModel:
             'status': "draft",
             'images': request.json.get('images'),
             'videos': request.json.get('videos'),
-            'title': request.json.get('title'),
+            'title': request.json.get('title').title(),
             'comment': request.json.get('comment')
         }
 
@@ -250,7 +250,7 @@ class IncidentModel:
             if upload and self.allowed_file(upload.filename, allowed_file_type):
                 filename = secure_filename(upload.filename)
                 extension = filename.rsplit('.', 1)[1].lower()
-                filename = datetime.datetime.utcnow().strftime('%s') + '.' + extension
+                filename = str(incident_id) + '.' + extension
 
                 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
                 target = os.path.join(APP_ROOT, upload_file_folder, filename)
