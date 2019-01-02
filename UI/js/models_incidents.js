@@ -6,9 +6,9 @@ let tokenModels = tokenSplitModels[1];
 let userUsername = username.split("=");
 userUsername = userUsername[1];
 
-function getData(incident_type){
+function getData(incident_type, incident_creator){
                       
-    let uri = root + incident_type;
+    let uri = root + incident_type + 's';
 
     let options = {
         method: 'GET',
@@ -60,7 +60,19 @@ function getData(incident_type){
             let result = '';
             let link = '';
             let creator = '';
-              j['data'].forEach((incident) => {
+            let usernameIncidents = [];
+            let incidents = j['data'];
+            if(incident_creator == 'all'){
+              usernameIncidents = incidents;
+            }else{
+              usernameIncidents = incidents.filter(incident => {
+                return incident.username === incident_creator;
+              })
+            }
+            // let usernameIncidents = incidents.filter(incident => {
+            //   return incident.username === incident_creator;
+            // })
+            usernameIncidents.forEach((incident) => {
                 const { id, title, status, createdon, username, type } = incident
                 if(username == userUsername){
                   creator = 'Me';
@@ -79,11 +91,12 @@ function getData(incident_type){
                         <a href="${link}=${id}">
                           <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
                           <h4 class="black truncate"><b>${title}</b></h4>
-                          <p class='italic font-small'>By ${creator}</p>
+                        </a>
+                          <a href="view_by_username.html?type=${type}&username=${username}"><p class='italic font-small'><span class="theme-blue">By ${creator}</span></p></a>
                           <p>${status}</p>
                           <p class='italic font-small'>${createdon}</p>
                           <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
-                        </a>
+                        
                       </div>
                     </div>               
                 </div> 
@@ -141,7 +154,7 @@ function getDataById(incident_type, incidentId){
             let result = '';
             let imageUrl = '';
               j['data'].map((incident) => {
-                const { title, comment, status, createdon, location, username, images } = incident
+                const { title, comment, status, createdon, location, username, images, type } = incident
                 if(username == userUsername){
                   creator = 'Me';
                 }else{
@@ -156,7 +169,7 @@ function getDataById(incident_type, incidentId){
                 <h2>${title}</h2>
                 <h3><span class="black">Status:</span> <span id='status-data' class="italic">${status}</span></h3>
                 <h4><span class="black">Created On:</span> <span class="italic">${createdon}</span></h4>
-                <h4><span class="black">By:</span> <span class="theme-blue">${creator}</span></h4>
+                <h4><span class="black">By:</span> <a href="view_by_username.html?type=${type}&username=${username}"><span class="theme-blue">${creator}</span></a></h4>
                 <div class="row  bg-color">
                   <div class="column-50 bg-color">
                     <p class='img-details'><img id='main-image' src="${imageUrl}" alt="${title}"></p>

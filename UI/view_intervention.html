@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <script src="js/notifications.js"></script>
   </head>
   <body>
     <nav class="navbar">
@@ -70,7 +72,6 @@
                               <br>
                               <input name="submit" class="button-normal" tabindex="5" value="Change Status" type="submit">
                               <i id="fa-spin-edit-status" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
-                              <p id="status-message"></p>
                           </form>       
                         </div>
                       </div>
@@ -125,8 +126,6 @@
                                 <br>
                                 <input id='submit' name="submit" class="button-normal" tabindex="5" value="Edit Intervention" type="submit">
                                 <i id="fa-spin-edit" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
-                                <p id="edit-message"></p>
-                                <p id="edit-message-2"></p>
                               </form>
                             </div>
                           </div>   
@@ -192,8 +191,6 @@
               function editLocation(event){
                 event.preventDefault();
                   document.getElementById('fa-spin-edit').style.display = "block";
-                  document.getElementById('edit-message').innerHTML = '';
-                  document.getElementById('edit-message').style.color = "red";
             
                   let uri = root + 'interventions/' + interventionId + '/location';
 
@@ -233,19 +230,30 @@
                             logout();
                           }
                           if(j['message'] == 'Intervention does not exist'){
-                            document.getElementById('edit-message').innerHTML = j['message'];
+                            warningNotification({ 
+                                  title: 'Warning',
+                                  message: j['message'], 
+                            });
                           }
                           if(j['message'] == 'Only the user who created this record can edit it'){
-                            document.getElementById('edit-message').innerHTML = j['message'];
+                            warningNotification({ 
+                                  title: 'Warning',
+                                  message: j['message'], 
+                            });
                           }
                           if(j['message'] == 'Incident can only be edited when the status is draft'){
-                            document.getElementById('edit-message').innerHTML = j['message'];
+                            warningNotification({ 
+                                  title: 'Warning',
+                                  message: j['message'], 
+                            });
                           }
                         }
                         if(j.hasOwnProperty('data')){
                           if(j['data'][0]['message'] == "Updated intervention record's location"){
-                            document.getElementById('edit-message').style.color = "green";
-                            document.getElementById('edit-message').innerHTML = j['data'][0]['message'];
+                            successNotification({ 
+                                  title: 'Success',
+                                  message: j['data'][0]['message'], 
+                            });
                             localStorage.clear();
                             localStorage.setItem('coordinates', location);
                           }                          
@@ -255,7 +263,6 @@
                       })
                       .catch( (err) =>{
                           console.log(err);
-                          document.getElementById('edit-message').innerHTML = err;
                           document.getElementById('fa-spin-edit').style.display = "none";
                       });
               }  
@@ -266,8 +273,6 @@
               function editComment(event){
                 event.preventDefault();
                   document.getElementById('fa-spin-edit').style.display = "block";
-                  document.getElementById('edit-message-2').innerHTML = '';
-                  document.getElementById('edit-message-2').style.color = "red";
                   document.getElementById('comment').style.borderBottomColor = "gray";
             
                   let uri = root + 'interventions/' + interventionId + '/comment';
@@ -308,23 +313,37 @@
                             logout();
                           }
                           if(j['message'] == 'Intervention does not exist'){
-                            document.getElementById('edit-message-2').innerHTML = j['message'];
+                            warningNotification({ 
+                                  title: 'Warning',
+                                  message: j['message'], 
+                            });
                           }
                           if(j['message'].hasOwnProperty('comment')){
                               document.getElementById('comment').style.borderBottomColor = "red";
-                              document.getElementById('edit-message-2').innerHTML = "Comment cannot be empty or start with special characters and whitespace";
+                              warningNotification({ 
+                                  title: 'Warning',
+                                  message: 'Comment cannot be empty or start with special characters and whitespace', 
+                              });
                           }    
                           if(j['message'] == 'Only the user who created this record can edit it'){
-                            document.getElementById('edit-message-2').innerHTML = j['message'];
+                            warningNotification({ 
+                                  title: 'Warning',
+                                  message: j['message'], 
+                            });
                           }
                           if(j['message'] == 'Incident can only be edited when the status is draft'){
-                            document.getElementById('edit-message-2').innerHTML = j['message'];
+                            warningNotification({ 
+                                  title: 'Warning',
+                                  message: j['message'], 
+                            });
                           }
                         }
                         if(j.hasOwnProperty('data')){
                           if(j['data'][0]['message'] == "Updated intervention record's comment"){
-                            document.getElementById('edit-message-2').style.color = "green";
-                            document.getElementById('edit-message-2').innerHTML = j['data'][0]['message'];
+                            successNotification({ 
+                                  title: 'Success',
+                                  message: j['data'][0]['message'], 
+                            });
                             document.getElementById('comment-data').innerHTML = comment;
                           }                          
                         }                        
@@ -333,7 +352,6 @@
                       })
                       .catch( (err) =>{
                           console.log(err);
-                          document.getElementById('edit-message-2').innerHTML = err;
                           document.getElementById('fa-spin-edit').style.display = "none";
                       });
               }   
@@ -348,8 +366,6 @@
               function editStatus(event){
                 event.preventDefault();
                   document.getElementById('fa-spin-edit-status').style.display = "block";
-                  document.getElementById('status-message').innerHTML = '';
-                  document.getElementById('status-message').style.color = "red";
             
                   let uri = root + 'interventions/' + interventionId + '/status';
 
@@ -389,21 +405,32 @@
                             logout();
                           }
                           if(j['message'] == 'Intervention does not exist'){
-                            document.getElementById('status-message').innerHTML = j['message'];
+                            warningNotification({ 
+                                  title: 'Warning',
+                                  message: j['message'], 
+                            });
                           }
                           if(j['message'].hasOwnProperty('status')){
                               document.getElementById('status').style.borderBottomColor = "red";
-                              document.getElementById('status-message').innerHTML = "Accepted values: draft, under investigation, rejected, resolved";
+                              warningNotification({ 
+                                  title: 'Warning',
+                                  message: "Accepted values: draft, under investigation, rejected, resolved", 
+                            });
                           }    
                           if(j['message'] == 'Only an admin can change the status of the record'){
-                            document.getElementById('status-message').innerHTML = j['message'];
+                            warningNotification({ 
+                                  title: 'Warning',
+                                  message: j['message'], 
+                            });
                           }
 
                         }
                         if(j.hasOwnProperty('data')){
                           if(j['data'][0]['message'] == "Updated intervention record's status"){
-                            document.getElementById('status-message').style.color = "green";
-                            document.getElementById('status-message').innerHTML = j['data'][0]['message'];
+                            successNotification({ 
+                                  title: 'Success',
+                                  message: j['data'][0]['message'], 
+                            });
                             document.getElementById('status').value = status;
                             document.getElementById('status-data').innerHTML = status;
                           }                          
@@ -413,7 +440,6 @@
                       })
                       .catch( (err) =>{
                           console.log(err);
-                          document.getElementById('status-message').innerHTML = err;
                           document.getElementById('fa-spin-edit-status').style.display = "none";
                       });
               }   

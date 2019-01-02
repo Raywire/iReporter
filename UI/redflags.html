@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <script src="js/notifications.js"></script>
   </head>
   <body>
     <nav class="navbar">
@@ -54,21 +56,18 @@
                   <br>
                   <input id='submit' name="submit" class="button-normal" tabindex="5" value="Add Red Flag" type="submit">
                   <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
-                  <p id="error-message"></p>
               </form>
               
               <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0"></script>
               <script src="js/mapper.js"></script>             
               <script>
-                document.getElementById('postData').addEventListener('submit', postData);
+
+                  document.getElementById('postData').addEventListener('submit', postData);
                   function postData(event){
-                    event.preventDefault();
-                    document.getElementById('error-message').innerHTML = "";
-    
+                    event.preventDefault();   
                     document.getElementById('title').style.borderBottomColor = "gray";
                     document.getElementById('comment').style.borderBottomColor = "gray";
                     document.getElementById('location').style.borderBottomColor = "gray";
-                    document.getElementById('error-message').style.color = "red";
                     document.getElementById('fa-spin').style.display = "block";
                     document.getElementById('submit').value = "Adding Redflag";
               
@@ -120,28 +119,38 @@
                             }
                             if(j['message'].hasOwnProperty('comment')){
                               document.getElementById('comment').style.borderBottomColor = "red";
-                              document.getElementById('error-message').innerHTML = "Comment cannot be empty or start with special characters";
+                              warningNotification({ 
+                                title: 'Warning',
+                                message: 'Comment cannot be empty or start with special characters', 
+                              });
                             }
                             if(j['message'].hasOwnProperty('title')){
                               document.getElementById('title').style.borderBottomColor = "red";
-                              document.getElementById('error-message').innerHTML = "Title cannot be empty or start with special characters";
+                              warningNotification({ 
+                                title: 'Warning',
+                                message: 'Title cannot be empty or start with special characters', 
+                              });
                             }
                             if(j['message'].hasOwnProperty('location')){
                               document.getElementById('location').style.borderBottomColor = "red";
-                              document.getElementById('error-message').innerHTML = "Location cannot be empty";
+                              warningNotification({ 
+                                title: 'Warning',
+                                message: 'Location cannot be empty', 
+                              });
                             }                           
                           }
                           if(j.hasOwnProperty('data')){
-                            document.getElementById('error-message').style.color = "green";
-                            document.getElementById('error-message').innerHTML = "Redflag has been created";
-                            getData();
+                            successNotification({ 
+                                title: 'Success',
+                                message: 'Redflag has been created', 
+                              });
+                            
                             window.location.reload(true);
                           }
                                                       
                         })
                         .catch( (err) =>{
-                            
-                            document.getElementById('error-message').innerHTML = err;
+                            console.log(err);                         
                         });
                 }
                 
@@ -164,7 +173,7 @@
                 </table>
                 <script src="js/models_incidents.js"></script>
                 <script>
-                  getData('redflags');
+                  getData('redflag', 'all');
                 </script>                                  
         </div>  
         <div class="push"></div>           
