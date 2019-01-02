@@ -254,7 +254,7 @@ function getFileData(filetype, filename){
       method: 'GET',
       mode: "cors",
       headers: new Headers({
-        "Content-Type": "application/json; charset=utf-8",
+        // "Content-Type": "application/json; charset=utf-8",
         "x-access-token": tokenModels
       })
   }
@@ -270,9 +270,16 @@ function getFileData(filetype, filename){
       })
       .then( (j) =>{
         console.log(j);
-        var imgElem = document.getElementById('main-image');
-        var imgUrl = URL.createObjectURL(j);
-        imgElem.src = imgUrl; 
+        let contentType = j['type'].split('/')[0];
+
+        if (contentType == 'application'){
+          return 'Image not found';
+        }else if(contentType == 'image'){
+          var imgElem = document.getElementById('main-image');
+          var imgUrl = URL.createObjectURL(j);
+          imgElem.src = imgUrl;
+        }
+         
                                     
       })
       .catch( (err) =>{
