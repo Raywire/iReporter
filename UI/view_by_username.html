@@ -1,0 +1,80 @@
+<noscript>
+    <h1>Your browser does not support Javascript</h1>
+</noscript>  
+  <script src="js/auth.js"></script>
+  <!DOCTYPE html>
+  <html lang="en" dir="ltr">
+    <head>
+      <meta charset="utf-8">
+      <title>iReporter Incident by Username</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <body>
+      <nav class="navbar">
+        <span class="navbar-toggle" id="js-navbar-toggle">
+          <i class="fa fa-bars"></i>
+        </span>
+        <a href="home.html" class="logo">iReporter</a>
+        <ul class="main-nav" id="js-menu">
+          <li>
+            <a href="redflags.html"  class="nav-links">red flags</a>
+          </li>
+          <li>
+            <a href="interventions.html"  class="nav-links">interventions</a>
+          </li>
+          <li>
+            <a href="profile.html" class="nav-links ">profile</a>
+          </li>
+          <li>
+            <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+          </li>        
+        </ul>
+      </nav>
+      <div class="container wrapper">
+          <div class="table-responsive">
+              <h2 id="by-username" class="theme-blue"></h2>
+                  <table>
+                    <tbody id="incident-data">
+                      <tr>
+                        <td>
+                          <p id="message"></p>
+                          <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i></center>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <script src="js/models_incidents.js"></script>
+                  <script>
+                    let urlParams2 = new URLSearchParams(window.location.search);
+                    let incident_creator = urlParams2.get('username');
+                    let incident_type = urlParams2.get('type');
+
+                    getData(incident_type, incident_creator);
+                    
+                    if(incident_creator == userUsername){
+                        incident_creator = 'Me';
+                    }
+                    document.getElementById('by-username').innerHTML = 'By' + ' ' +  incident_creator;
+                  </script>                                  
+          </div>  
+          <div class="push"></div>           
+      </div>
+      <div class="footer">
+        <ul>
+          <li>
+            <a href="contact.html"  class="nav-links">contact</a>
+          </li>
+          <li>
+            <a href="about.html"  class="nav-links">about</a>
+          </li>    
+          <li><a href="#" class="nav-links">privacy & terms</a></li>    
+        </ul>
+      </div>
+    </body>
+    <script src="js/main.js"></script>
+    <script src="js/modal.js"></script> 
+    <script src="js/logout.js"></script>
+  </html>
+  

@@ -174,13 +174,13 @@
                                   
                                   
                                   if (incident_type == 'redflags'){
-                                    document.getElementById('my-redflags').innerHTML = myRedflags.length;
+                                    document.getElementById('my-redflags').innerHTML = `<a href="view_by_username.html?type=redflag&username=${userUsername}">` + myRedflags.length + `</a>`;
                                     document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
                                     document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
                                     document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents.length;
                                     document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
                                   }else if(incident_type == 'interventions'){
-                                    document.getElementById('my-interventions').innerHTML = myInterventions.length;
+                                    document.getElementById('my-interventions').innerHTML = `<a href="view_by_username.html?type=intervention&username=${userUsername}">` + myInterventions.length + `</a>`;
                                     document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
                                     document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
                                     document.getElementById('my-underinvestigation-interventions').innerHTML = myUnderInvestigationIncidents.length;

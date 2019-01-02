@@ -60,7 +60,7 @@ a {
   border-radius: 5px
 }
 .active {
-  color: #2D49FF;
+  color:  dodgerblue;
   padding: 0 5px 0 5px;
   border-radius: 5px
 }
@@ -117,7 +117,7 @@ a {
   }
    .logo:hover,
   .nav-links:hover {
-    color: #2D49FF;
+    color: dodgerblue;
   }
 /* Centered text */
 .centered {
@@ -599,6 +599,9 @@ padding:8px;
 }
 .theme-blue{
   color:#0b47b6;
+}
+span.theme-blue:hover{
+  color:dodgerblue;
 }
 p#comment-data{
   color:#0b47b6;

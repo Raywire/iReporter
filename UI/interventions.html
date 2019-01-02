@@ -10,6 +10,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="css/styles.css">
+      <link rel="stylesheet" href="css/notifications.css">
+      <script src="js/notifications.js"></script>
     </head>
     <body>
       <nav class="navbar">
@@ -55,25 +57,21 @@
                   <br>
                   <input id='submit' name="submit" class="button-normal" tabindex="5" value="Add Intervention" type="submit">
                   <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
-                  <p id="error-message"></p>
                 </form>
                 
                 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0"></script>
-                <script src="js/mapper.js"></script>          
+                <script src="js/mapper.js"></script>
                 <script>
-                  document.getElementById('postData').addEventListener('submit', postData);
+
+                    document.getElementById('postData').addEventListener('submit', postData);
                     function postData(event){
-                      event.preventDefault();
-                      document.getElementById('error-message').innerHTML = "";
-      
+                      event.preventDefault();      
                       document.getElementById('title').style.borderBottomColor = "gray";
                       document.getElementById('comment').style.borderBottomColor = "gray";
                       document.getElementById('location').style.borderBottomColor = "gray";
-                      document.getElementById('error-message').style.color = "red";
                       document.getElementById('fa-spin').style.display = "block";
                       document.getElementById('submit').value = "Adding Intervention";
                 
-                      const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
                       let uri = root + 'interventions';
                 
       
@@ -122,30 +120,140 @@
                               }
                               if(j['message'].hasOwnProperty('comment')){
                                 document.getElementById('comment').style.borderBottomColor = "red";
-                                document.getElementById('error-message').innerHTML = "Comment cannot be empty or start with special characters";
+                                warningNotification({ 
+                                  title: 'Warning',
+                                  message: 'Comment cannot be empty or start with special characters', 
+                                });
                               }
                               if(j['message'].hasOwnProperty('title')){
                                 document.getElementById('title').style.borderBottomColor = "red";
-                                document.getElementById('error-message').innerHTML = "Title cannot be empty or start with special characters";
+                                warningNotification({ 
+                                  title: 'Warning',
+                                  message: 'Title cannot be empty or start with special characters', 
+                                });
                               }
                               if(j['message'].hasOwnProperty('location')){
                                 document.getElementById('location').style.borderBottomColor = "red";
-                                document.getElementById('error-message').innerHTML = "Location cannot be empty";
+                                warningNotification({ 
+                                  title: 'Warning',
+                                  message: 'Location cannot be empty', 
+                                });
                               }                           
                             }
                             if(j.hasOwnProperty('data')){
-                              document.getElementById('error-message').style.color = "green";
-                              document.getElementById('error-message').innerHTML = "Intervention has been created";
-                              getData();
+                              successNotification({ 
+                                  title: 'Success',
+                                  message: 'Intervention has been created', 
+                                });
+                              
                               window.location.reload(true);
                             }
                                                         
                           })
                           .catch( (err) =>{
-                              
-                              document.getElementById('error-message').innerHTML = err;
+                              console.log(err);                         
                           });
                   }
+                  
+                </script>           
+                <script>
+                  // document.getElementById('postData').addEventListener('submit', postData);
+                  //   function postData(event){
+                  //     event.preventDefault();
+                  //     document.getElementById('error-message').innerHTML = "";
+      
+                  //     document.getElementById('title').style.borderBottomColor = "gray";
+                  //     document.getElementById('comment').style.borderBottomColor = "gray";
+                  //     document.getElementById('location').style.borderBottomColor = "gray";
+                  //     document.getElementById('error-message').style.color = "red";
+                  //     document.getElementById('fa-spin').style.display = "block";
+                  //     document.getElementById('submit').value = "Adding Intervention";
+                
+                  //     const root = 'https://cors-anywhere.herokuapp.com/https://pure-wildwood-82378.herokuapp.com/api/v2/';
+                  //     let uri = root + 'interventions';
+                
+      
+                  //     let title = document.getElementById('title').value;
+                  //     let comment = document.getElementById('comment').value;
+                  //     let location = document.getElementById('location').value;
+  
+                  //     let cookie = document.cookie.split(";");
+                  //     let tokenKeyValue = cookie[0];
+                  //     let tokenSplit = tokenKeyValue.split("token=");
+                  //     let token = tokenSplit[1];
+                  //     // console.log(token);
+                
+                  //     let options = {
+                  //         method: 'POST',
+                  //         mode: "cors",
+                  //         headers: new Headers({
+                  //           "Content-Type": "application/json; charset=utf-8",
+                  //           "x-access-token": token
+                  //         }),
+                  //         body: JSON.stringify({title:title,comment:comment,location:location})
+                  //     }
+                  //     let req = new Request(uri, options);
+                
+                  //     fetch(req)
+                  //         .then((response)=>{
+                  //             if(response.ok){
+                  //               document.getElementById('fa-spin').style.display = "none";
+                  //               document.getElementById('submit').value = "Add Intervention";
+                
+                  //               return response.json();
+                  //             }else{
+                  //               document.getElementById('fa-spin').style.display = "none";
+                  //               document.getElementById('submit').value = "Add Intervention";
+                  //               return response.json();
+                  //             }
+                  //         })
+                  //         .then( (j) =>{
+                  //           // console.log(j);
+                  //           if(j.hasOwnProperty('message')){
+                  //             if(j['message'] == 'Token is missing'){
+                  //               logout();
+                  //             }
+                  //             if(j['message'] == 'Token is invalid'){
+                  //               logout();
+                  //             }
+                  //             if(j['message'].hasOwnProperty('comment')){
+                  //               document.getElementById('comment').style.borderBottomColor = "red";
+                  //               warningNotification({ 
+                  //               title: 'Warning',
+                  //               message: 'Comment cannot be empty or start with special characters', 
+                  //             });
+                  //             }
+                  //             if(j['message'].hasOwnProperty('title')){
+                  //               document.getElementById('title').style.borderBottomColor = "red";
+                  //               warningNotification({ 
+                  //               title: 'Warning',
+                  //               message: 'Title cannot be empty or start with special characters', 
+                  //             });
+                  //             }
+                  //             if(j['message'].hasOwnProperty('location')){
+                  //               document.getElementById('location').style.borderBottomColor = "red";
+                  //               warningNotification({ 
+                  //               title: 'Warning',
+                  //               message: 'Location cannot be empty', 
+                  //             });
+                  //             }                           
+                  //           }
+                  //           if(j.hasOwnProperty('data')){
+                  //             document.getElementById('error-message').style.color = "green";
+                  //             successNotification({ 
+                  //               title: 'Success',
+                  //               message: 'Intervention has been created', 
+                  //             });
+                              
+                  //             window.location.reload(true);
+                  //           }
+                                                        
+                  //         })
+                  //         .catch( (err) =>{
+                              
+                  //             document.getElementById('error-message').innerHTML = err;
+                  //         });
+                  // }
                   
                 </script>              
               </div>
@@ -166,7 +274,7 @@
                   </table>
                   <script src="js/models_incidents.js"></script>
                   <script>
-                    getData('interventions');
+                    getData('intervention', 'all');
                   </script>                                 
           </div>  
           <div class="push"></div>           
