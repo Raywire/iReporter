@@ -46,6 +46,7 @@
                   let result = '';
                   result +=`
                   <button id="btnEditStatus" class="button-modal orange" data-modal="modal-window-edit-status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
+                  <button id="btnResetPassword" class="button-modal" data-modal="modal-window-reset-password"><i class="fa fa-unlock" aria-hidden="true"></i></button>
                   <!-- The Modal -->
                   <div id="modal-window-edit-status" class="modal">
             
@@ -69,7 +70,26 @@
                         </div>
                       </div>
                     
-                    </div>           
+                    </div>
+                    <!-- The Modal -->
+                  <div id="modal-window-reset-password" class="modal">
+            
+                      <!-- Modal content -->
+                      <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div class="modal-body">
+                          <div  class="modal-form">
+                            <form id="resetPassword" method="POST">
+                              
+                              <br>
+                              <input id='submit' name="submit" class="button-normal" tabindex="5" value="Reset Password" type="submit">
+                              <i id="fa-spin-edit" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                            </form>
+                          </div>
+                        </div> 
+                      </div>
+                    
+                    </div>                              
                   `;
                   document.getElementById('modal-admin-buttons').innerHTML = result;
                 }
@@ -147,7 +167,7 @@
                           if(j['message'] == 'Only admin can access this route'){
                             logout();
                           }
-                          if(j['message'] == 'User does not exist'){
+                          if(j['message'] == 'user does not exist'){
                             document.getElementById('message').innerHTML = j['message'];
                           }
                         }
@@ -238,7 +258,7 @@
                           if(j['message'] == 'Only admin can access this route'){
                             logout();
                           }
-                          if(j['message'] == 'User does not exist'){
+                          if(j['message'] == 'user does not exist'){
                             document.getElementById('error-message').innerHTML = j['message'];
                           }
                           if(j['message'] == 'Only an admin can delete a user'){

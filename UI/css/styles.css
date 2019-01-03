@@ -67,7 +67,7 @@ a {
 .logout-button {
   background: none;
   border: none;
-  margin-left: 40px;
+  /* margin-left: 40px; */
   padding: 0 5px 0 5px;
   text-align: center;
   text-decoration: none;
@@ -84,6 +84,9 @@ a {
   padding:5px;
 }
  @media screen and (min-width: 768px) {
+  .logout-button {
+    margin-left: 40px;
+  }   
   .truncate {
     white-space: nowrap; 
     width: 200px; 
@@ -214,6 +217,12 @@ a {
     padding: 5px;
   }    
  }
+ @media screen and (max-width: 400px) {
+  .login-box{
+    width: 100%;
+    margin-top: 4.5em;
+  }  
+}
 .footer {
   position: relative;
   right: 0;
@@ -599,6 +608,12 @@ padding:8px;
 }
 .theme-blue{
   color:#0b47b6;
+}
+.silver{
+  color:silver;
+}
+.silver:hover{
+  color:gray;
 }
 span.theme-blue:hover{
   color:dodgerblue;

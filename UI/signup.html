@@ -87,10 +87,15 @@
       let password = document.getElementById('password').value;
       let confirm_password = document.getElementById('confirm_password').value;
 
+      let data = {firstname:firstname,lastname:lastname,username:username, password:password};
+
       if (password != confirm_password){
         document.getElementById('fa-spin').style.display = "none";
         document.getElementById('submit').value = "Sign Up";
         document.getElementById('error-message').innerHTML = "Passwords do not match";
+      }
+      if (email != ''){
+        data.email = email;
       }
 
       let options = {
@@ -99,7 +104,7 @@
           headers: new Headers({
             "Content-Type": "application/json; charset=utf-8",
           }),
-          body: JSON.stringify({firstname:firstname,lastname:lastname,username:username,email:email, password:password})
+          body: JSON.stringify(data)
       }
       let req = new Request(uri, options);
 
@@ -117,7 +122,7 @@
               }
           })
           .then( (j) =>{
-              
+              console.log(j);
               if(j.hasOwnProperty('message')){
                 if(j['message'].hasOwnProperty('password')){
                   document.getElementById('error-message').innerHTML = j['message']['password'];

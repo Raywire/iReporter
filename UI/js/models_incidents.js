@@ -6,6 +6,96 @@ let tokenModels = tokenSplitModels[1];
 let userUsername = username.split("=");
 userUsername = userUsername[1];
 
+function postData(event, incident_type){
+  event.preventDefault();   
+  document.getElementById('title').style.borderBottomColor = "gray";
+  document.getElementById('comment').style.borderBottomColor = "gray";
+  document.getElementById('location').style.borderBottomColor = "gray";
+  document.getElementById('fa-spin').style.display = "block";
+  document.getElementById('submit').value = "Creating";
+
+  let uri = root + incident_type;             
+
+  let title = document.getElementById('title').value;
+  let comment = document.getElementById('comment').value;
+  let location = document.getElementById('location').value;
+
+  let cookie = document.cookie.split(";");
+  let tokenKeyValue = cookie[0];
+  let tokenSplit = tokenKeyValue.split("token=");
+  let token = tokenSplit[1];
+  // console.log(token);
+
+  let options = {
+      method: 'POST',
+      mode: "cors",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=utf-8",
+        "x-access-token": token
+      }),
+      body: JSON.stringify({title:title,comment:comment,location:location})
+  }
+  let req = new Request(uri, options);
+
+  fetch(req)
+      .then((response)=>{
+          if(response.ok){
+            document.getElementById('fa-spin').style.display = "none";
+            // document.getElementById('submit').value = "Add Red Flag";
+
+            return response.json();
+          }else{
+            document.getElementById('fa-spin').style.display = "none";
+            // document.getElementById('submit').value = "Add Red Flag";
+            return response.json();
+          }
+      })
+      .then( (j) =>{
+        // console.log(j);
+        if(j.hasOwnProperty('message')){
+          if(j['message'] == 'Token is missing'){
+            logout();
+          }
+          if(j['message'] == 'Token is invalid'){
+            logout();
+          }
+          if(j['message'].hasOwnProperty('comment')){
+            document.getElementById('comment').style.borderBottomColor = "red";
+            warningNotification({ 
+              title: 'Warning',
+              message: 'Comment cannot be empty or start with special characters', 
+            });
+          }
+          if(j['message'].hasOwnProperty('title')){
+            document.getElementById('title').style.borderBottomColor = "red";
+            warningNotification({ 
+              title: 'Warning',
+              message: 'Title cannot be empty or start with special characters', 
+            });
+          }
+          if(j['message'].hasOwnProperty('location')){
+            document.getElementById('location').style.borderBottomColor = "red";
+            warningNotification({ 
+              title: 'Warning',
+              message: 'Location cannot be empty', 
+            });
+          }                           
+        }
+        if(j.hasOwnProperty('data')){
+          successNotification({ 
+              title: 'Success',
+              message: 'Incident has been created', 
+            });
+          
+          // window.location.reload(true);
+        }
+                                    
+      })
+      .catch( (err) =>{
+          console.log(err);                         
+      });
+}
+
 function getData(incident_type, incident_creator){
                       
     let uri = root + incident_type + 's';
@@ -347,12 +437,12 @@ function editLocation(event, intervention_type, intervention_id){
                     message: j['message'], 
               });
             }
-            if(j['message'] == 'Only the user who created this record can edit it'){
-              warningNotification({ 
-                    title: 'Warning',
-                    message: j['message'], 
-              });
-            }
+            // if(j['message'] == 'Only the user who created this record can edit it'){
+            //   warningNotification({ 
+            //         title: 'Warning',
+            //         message: j['message'], 
+            //   });
+            // }
             if(j['message'] == 'Incident can only be edited when the status is draft'){
               warningNotification({ 
                     title: 'Warning',
@@ -605,9 +695,9 @@ function uploadImage(event, intervention_type, intervention_id){
             document.getElementById('upload-message').innerHTML = j['message'];
           }
 
-          if(j['message'] == 'Only the user who created this record can edit it'){
-            document.getElementById('upload-message').innerHTML = j['message'];
-          }
+          // if(j['message'] == 'Only the user who created this record can edit it'){
+          //   document.getElementById('upload-message').innerHTML = j['message'];
+          // }
           if(j['message'] == 'Incident can only be edited when the status is draft'){
             document.getElementById('upload-message').innerHTML = j['message'];
           }
