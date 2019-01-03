@@ -299,3 +299,341 @@ function getFileData(filetype, filename){
           console.log(err);
       });
 }
+
+function editLocation(event, intervention_type, intervention_id){
+  event.preventDefault();
+    document.getElementById('fa-spin-edit').style.display = "block";
+
+    let uri = root + intervention_type + '/' + intervention_id + '/location';
+
+    let location = document.getElementById('location').value;
+
+    let cookie = document.cookie.split(";");
+    let tokenKeyValue = cookie[0];
+    let tokenSplit = tokenKeyValue.split("token=");
+    let token = tokenSplit[1];
+
+    let options = {
+        method: 'PATCH',
+        mode: "cors",
+        headers: new Headers({
+          "Content-Type": "application/json; charset=utf-8",
+          "x-access-token": token
+        }),
+        body: JSON.stringify({location:location})
+    }
+    let req = new Request(uri, options);
+
+    fetch(req)
+        .then((response)=>{
+            if(response.ok){
+              return response.json();
+            }else{
+              return response.json();
+            }
+        })
+        .then( (j) =>{
+          console.log(j);
+          if(j.hasOwnProperty('message')){
+            if(j['message'] == 'Token is missing'){
+              logout();
+            }
+            if(j['message'] == 'Token is invalid'){
+              logout();
+            }
+            if(j['message'] == 'Intervention does not exist' || 'Redflag does not exist'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+            if(j['message'] == 'Only the user who created this record can edit it'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+            if(j['message'] == 'Incident can only be edited when the status is draft'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+          }
+          if(j.hasOwnProperty('data')){
+            if(j['data'][0]['message'] == "Updated intervention record's location" || j['data'][0]['message'] == "Updated redflag record's location"){
+              successNotification({ 
+                    title: 'Success',
+                    message: j['data'][0]['message'], 
+              });
+              localStorage.clear();
+              localStorage.setItem('coordinates', location);
+            }                          
+          }                        
+          document.getElementById('fa-spin-edit').style.display = "none";
+                                      
+        })
+        .catch( (err) =>{
+            console.log(err);
+            document.getElementById('fa-spin-edit').style.display = "none";
+        });
+} 
+
+function editComment(event, intervention_type, intervention_id){
+  event.preventDefault();
+    document.getElementById('fa-spin-edit').style.display = "block";
+    document.getElementById('comment').style.borderBottomColor = "gray";
+
+    let uri = root + intervention_type + '/' + intervention_id + '/comment';
+
+    let comment = document.getElementById('comment').value;
+
+    let cookie = document.cookie.split(";");
+    let tokenKeyValue = cookie[0];
+    let tokenSplit = tokenKeyValue.split("token=");
+    let token = tokenSplit[1];
+
+    let options = {
+        method: 'PATCH',
+        mode: "cors",
+        headers: new Headers({
+          "Content-Type": "application/json; charset=utf-8",
+          "x-access-token": token
+        }),
+        body: JSON.stringify({comment:comment})
+    }
+    let req = new Request(uri, options);
+
+    fetch(req)
+        .then((response)=>{
+            if(response.ok){
+              return response.json();
+            }else{
+              return response.json();
+            }
+        })
+        .then( (j) =>{
+          console.log(j);
+          if(j.hasOwnProperty('message')){
+            if(j['message'] == 'Token is missing'){
+              logout();
+            }
+            if(j['message'] == 'Token is invalid'){
+              logout();
+            }
+            if(j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+            if(j['message'].hasOwnProperty('comment')){
+                document.getElementById('comment').style.borderBottomColor = "red";
+                warningNotification({ 
+                    title: 'Warning',
+                    message: 'Comment cannot be empty or start with special characters and whitespace', 
+                });
+            }    
+            if(j['message'] == 'Only the user who created this record can edit it'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+            if(j['message'] == 'Incident can only be edited when the status is draft'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+          }
+          if(j.hasOwnProperty('data')){
+            if(j['data'][0]['message'] == "Updated intervention record's comment" || j['data'][0]['message'] == "Updated redflag record's comment"){
+              successNotification({ 
+                    title: 'Success',
+                    message: j['data'][0]['message'], 
+              });
+              document.getElementById('comment-data').innerHTML = comment;
+            }                          
+          }                        
+          document.getElementById('fa-spin-edit').style.display = "none";
+                                      
+        })
+        .catch( (err) =>{
+            console.log(err);
+            document.getElementById('fa-spin-edit').style.display = "none";
+        });
+}
+
+function editStatus(event, intervention_type, intervention_id){
+  event.preventDefault();
+    document.getElementById('fa-spin-edit-status').style.display = "block";
+
+    let uri = root + intervention_type + '/' + intervention_id + '/status';
+
+    let status = document.getElementById('status').value;
+
+    let cookie = document.cookie.split(";");
+    let tokenKeyValue = cookie[0];
+    let tokenSplit = tokenKeyValue.split("token=");
+    let token = tokenSplit[1];
+
+    let options = {
+        method: 'PATCH',
+        mode: "cors",
+        headers: new Headers({
+          "Content-Type": "application/json; charset=utf-8",
+          "x-access-token": token
+        }),
+        body: JSON.stringify({status:status})
+    }
+    let req = new Request(uri, options);
+
+    fetch(req)
+        .then((response)=>{
+            if(response.ok){
+              return response.json();
+            }else{
+              return response.json();
+            }
+        })
+        .then( (j) =>{
+          console.log(j);
+          if(j.hasOwnProperty('message')){
+            if(j['message'] == 'Token is missing'){
+              logout();
+            }
+            if(j['message'] == 'Token is invalid'){
+              logout();
+            }
+            if(j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+            if(j['message'].hasOwnProperty('status')){
+                document.getElementById('status').style.borderBottomColor = "red";
+                warningNotification({ 
+                    title: 'Warning',
+                    message: "Accepted values: draft, under investigation, rejected, resolved", 
+              });
+            }    
+            if(j['message'] == 'Only an admin can change the status of the record'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+
+          }
+          if(j.hasOwnProperty('data')){
+            if(j['data'][0]['message'] == "Updated intervention record's status" || j['data'][0]['message'] == "Updated redflag record's status"){
+              successNotification({ 
+                    title: 'Success',
+                    message: j['data'][0]['message'], 
+              });
+              document.getElementById('status').value = status;
+              document.getElementById('status-data').innerHTML = status;
+            }                          
+          }                        
+          document.getElementById('fa-spin-edit-status').style.display = "none";
+                                      
+        })
+        .catch( (err) =>{
+            console.log(err);
+            document.getElementById('fa-spin-edit-status').style.display = "none";
+        });
+}
+
+function uploadImage(event, intervention_type, intervention_id){
+  event.preventDefault();
+  document.getElementById('fa-spin-upload').style.display = "block";
+  document.getElementById('upload-message').innerHTML = '';
+  document.getElementById('upload-message').style.color = "red";
+
+  let uri = root + intervention_type + '/' + intervention_id + '/addImage';
+
+  var formData = new FormData();
+  let fileData = document.getElementById('fileImage').files[0];
+
+  if(fileData == null){
+    document.getElementById('fa-spin-upload').style.display = "none";
+    document.getElementById('upload-message').innerHTML = 'Please select a file';
+    return false;
+  }
+  
+  console.log(fileData);
+  
+  formData.append('uploadFile', fileData, fileData.name);
+  formData.append('name', 'uploadFile');
+
+
+  let cookie = document.cookie.split(";");
+  let tokenKeyValue = cookie[0];
+  let tokenSplit = tokenKeyValue.split("token=");
+  let token = tokenSplit[1];
+
+  let options = {
+      method: 'PATCH',
+      mode: "cors",
+      headers: new Headers({
+        "x-access-token": token,
+      }),
+      body: formData
+  }
+  let req = new Request(uri, options);
+
+  fetch(req)
+      .then((response)=>{
+          if(response.ok){
+            return response.json();
+          }else{
+            return response.json();
+          }
+      })
+      .then( (j) =>{
+        console.log(j);
+        if(j.hasOwnProperty('message')){
+          if(j['message'] == 'Token is missing'){
+            logout();
+          }
+          if(j['message'] == 'Token is invalid'){
+            logout();
+          }
+          if(j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist'){
+            document.getElementById('upload-message').innerHTML = j['message'];
+          }
+
+          if(j['message'] == 'Only the user who created this record can edit it'){
+            document.getElementById('upload-message').innerHTML = j['message'];
+          }
+          if(j['message'] == 'Incident can only be edited when the status is draft'){
+            document.getElementById('upload-message').innerHTML = j['message'];
+          }
+          if(j['message'] == 'File type not supported'){
+            document.getElementById('upload-message').innerHTML = j['message'];
+          }
+
+        }
+        if(j.hasOwnProperty('data')){
+          if(j['data'][0]['message'] == "Image added to intervention record" || j['data'][0]['message'] == "Image added to red-flag record"){
+            document.getElementById('upload-message').style.color = "green";
+            document.getElementById('upload-message').innerHTML = j['data'][0]['message'];
+          }                          
+        }                        
+        document.getElementById('fa-spin-upload').style.display = "none";
+                                    
+      })
+      .catch( (err) =>{
+          console.log(err);
+          document.getElementById('upload-message').innerHTML = err;
+          document.getElementById('fa-spin-upload').style.display = "none";
+      });                
+
+}
+
+function uploadVideo(event, intervention_type, intervention_id){
+  event.preventDefault();
+
+}
