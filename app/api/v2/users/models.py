@@ -42,13 +42,13 @@ parser.add_argument('othernames',
 parser.add_argument('username',
                     type=validate_characters,
                     required=True,
-                    nullable=True,
+                    nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('email',
                     type=validate_email,
-                    required=False,
+                    required=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
@@ -86,7 +86,7 @@ class UserModel:
             'firstname': request.json.get('firstname').title(),
             'lastname': request.json.get('lastname').title(),
             'othernames': request.json.get('othernames','').title(),
-            'email': request.json.get('email','').lower(),
+            'email': request.json.get('email').lower(),
             'phoneNumber': request.json.get('phoneNumber'),
             'username': request.json.get('username').lower(),
             'registered': datetime.datetime.utcnow(),
