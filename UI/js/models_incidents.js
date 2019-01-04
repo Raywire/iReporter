@@ -727,3 +727,104 @@ function uploadVideo(event, intervention_type, intervention_id){
   event.preventDefault();
 
 }
+
+function resetPassword(event, usernameid){
+  event.preventDefault();
+    document.getElementById('fa-spin-reset').style.display = "block";
+
+    let uri = root + 'users/' + usernameid;
+
+    let password = document.getElementById('password').value;
+    let confirm_password = document.getElementById('confirm_password').value;
+
+    if (password != confirm_password){
+      document.getElementById('fa-spin-reset').style.display = "none";
+      document.getElementById('submit').value = "Reset Password";
+      document.getElementById('password').style.borderBottomColor = "red";
+      document.getElementById('confirm_password').style.borderBottomColor = "red";
+      return false;
+    }
+
+    let cookie = document.cookie.split(";");
+    let tokenKeyValue = cookie[0];
+    let tokenSplit = tokenKeyValue.split("token=");
+    let token = tokenSplit[1];
+
+    let options = {
+        method: 'PATCH',
+        mode: "cors",
+        headers: new Headers({
+          "Content-Type": "application/json; charset=utf-8",
+          "x-access-token": token
+        }),
+        body: JSON.stringify({password:password})
+    }
+    let req = new Request(uri, options);
+
+    fetch(req)
+        .then((response)=>{
+            if(response.ok){
+              return response.json();
+            }else{
+              return response.json();
+            }
+        })
+        .then( (j) =>{
+          console.log(j);
+          if(j.hasOwnProperty('message')){
+            if(j['message'] == 'Token is missing'){
+              logout();
+            }
+            if(j['message'] == 'Token is invalid'){
+              logout();
+            }
+            if(j['message'] == 'User does not exist'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+            if(j['message'].hasOwnProperty('password')){
+                document.getElementById('password').style.borderBottomColor = "red";
+                warningNotification({ 
+                    title: 'Warning',
+                    message: j['message']['password'], 
+                });
+            }    
+            if(j['message'] == 'Only an admin or the user can update their own password'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+
+            if(j['message'] == 'User password has been changed'){
+              successNotification({ 
+                    title: 'Success',
+                    message: j['message'] + ' for ' + j['username'], 
+              });
+            }
+
+          }
+      
+          document.getElementById('fa-spin-reset').style.display = "none";
+                                      
+        })
+        .catch( (err) =>{
+            console.log(err);
+            document.getElementById('fa-spin-reset').style.display = "none";
+        });
+}
+
+function checkPassword(){
+  let pass1= document.getElementById('password').value;
+  let confirm_pass1 = document.getElementById('confirm_password').value;
+
+  if (pass1 == confirm_pass1){
+    document.getElementById('password').style.borderBottomColor = "green";
+    document.getElementById('confirm_password').style.borderBottomColor = "green";
+  }else{
+    document.getElementById('password').style.borderBottomColor = "red";
+    document.getElementById('confirm_password').style.borderBottomColor = "red";
+  }
+}

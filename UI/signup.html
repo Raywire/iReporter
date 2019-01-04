@@ -74,6 +74,8 @@
       document.getElementById('lastname').style.borderBottomColor = "white";
       document.getElementById('username').style.borderBottomColor = "white";
       document.getElementById('email').style.borderBottomColor = "white";
+      document.getElementById('password').style.borderBottomColor = "white";
+      document.getElementById('confirm_password').style.borderBottomColor = "white";
       document.getElementById('error-message').style.color = "red";
       document.getElementById('fa-spin').style.display = "block";
       document.getElementById('submit').value = "Signing Up";
@@ -87,15 +89,15 @@
       let password = document.getElementById('password').value;
       let confirm_password = document.getElementById('confirm_password').value;
 
-      let data = {firstname:firstname,lastname:lastname,username:username, password:password};
+      let data = {firstname:firstname,lastname:lastname,username:username,email:email, password:password};
 
       if (password != confirm_password){
         document.getElementById('fa-spin').style.display = "none";
         document.getElementById('submit').value = "Sign Up";
         document.getElementById('error-message').innerHTML = "Passwords do not match";
-      }
-      if (email != ''){
-        data.email = email;
+        document.getElementById('password').style.borderBottomColor = "red";
+        document.getElementById('confirm_password').style.borderBottomColor = "red";
+        return false;
       }
 
       let options = {
@@ -122,10 +124,10 @@
               }
           })
           .then( (j) =>{
-              console.log(j);
               if(j.hasOwnProperty('message')){
                 if(j['message'].hasOwnProperty('password')){
                   document.getElementById('error-message').innerHTML = j['message']['password'];
+                  document.getElementById('password').style.borderBottomColor = "red";
                 }
                 if(j['message'].hasOwnProperty('firstname')){
                   document.getElementById('firstname').style.borderBottomColor = "red";
@@ -135,6 +137,9 @@
                 }
                 if(j['message'].hasOwnProperty('username')){
                   document.getElementById('username').style.borderBottomColor = "red";
+                }
+                if(j['message'].hasOwnProperty('email')){
+                  document.getElementById('email').style.borderBottomColor = "red";
                 }
                 if(j['message'] == 'email already exists'){
                   document.getElementById('email').style.borderBottomColor = "red";
@@ -158,9 +163,23 @@
               
           })
           .catch( (err) =>{
-              document.getElementById('error-message').innerHTML = err;
+              console.log(err);
           });
   }
+  document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
+  function checkPassword(){
+    let pass1= document.getElementById('password').value;
+    let confirm_pass1 = document.getElementById('confirm_password').value;
+
+    if (pass1 == confirm_pass1){
+      document.getElementById('password').style.borderBottomColor = "green";
+      document.getElementById('confirm_password').style.borderBottomColor = "green";
+    }else{
+      document.getElementById('password').style.borderBottomColor = "red";
+      document.getElementById('confirm_password').style.borderBottomColor = "red";
+    }
+  }  
+
 </script>      
       </div>
       <div class="push"></div>

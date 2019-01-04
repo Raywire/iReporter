@@ -55,7 +55,6 @@
                       let tokenKeyValue = cookie[0];
                       let tokenSplit = tokenKeyValue.split("token=");
                       let token = tokenSplit[1];
-                      // console.log(token);
                 
                       let options = {
                           method: 'GET',
@@ -90,7 +89,8 @@
                             if(j.hasOwnProperty('data')){
                               let result = '';
                                 j['data'].forEach((user) => {
-                                  const { firstname, lastname, othernames, username, email, phonenumber } = user
+                                  const { firstname, lastname, username, email, isadmin } = user
+
                                   result += `
                                   <div class="column">
                                           <div class="card">
@@ -100,7 +100,7 @@
                                                   <h4 class="black"><b>${firstname} ${lastname}</b></h4>
                                                   <p>${username}</p>
                                                   <p class='italic font-small'>${email}</p>
-                                                  <p class='italic font-small'>${phonenumber}</p>
+                                                  <p class='italic font-small'>Admin: ${isadmin}</p>
                                                   <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
                                                 </a>
                                               </div>
