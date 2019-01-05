@@ -1,10 +1,10 @@
-let cookieModels = document.cookie.split(";");
-let tokenKeyModels = cookieModels[0];
-let tokenSplitModels = tokenKeyModels.split("token=");
-let tokenModels = tokenSplitModels[1];
+// let cookieModels = document.cookie.split(";");
+// let tokenKeyModels = cookieModels[0];
+// let tokenSplitModels = tokenKeyModels.split("token=");
+let tokenModels = token;
 
-let userUsername = username.split("=");
-userUsername = userUsername[1];
+// let userUsername = username.split("=");
+userUsername = username;
 
 function convertToLocalTime(utcdatetime){
   let localDateTime = new Date(utcdatetime).toISOString();
@@ -20,9 +20,9 @@ function humanize(utcdatetime){
 
 function postData(event, incident_type){
   event.preventDefault();   
-  document.getElementById('title').style.borderBottomColor = "gray";
-  document.getElementById('comment').style.borderBottomColor = "gray";
-  document.getElementById('location').style.borderBottomColor = "gray";
+  document.getElementById('title').style.borderBottomColor = "#ccc";
+  document.getElementById('comment').style.borderBottomColor = "#ccc";
+  document.getElementById('location').style.borderBottomColor = "#ccc";
   document.getElementById('fa-spin').style.display = "block";
 
   let uri = root + incident_type;             
@@ -31,17 +31,12 @@ function postData(event, incident_type){
   let comment = document.getElementById('comment').value;
   let location = document.getElementById('location').value;
 
-  let cookie = document.cookie.split(";");
-  let tokenKeyValue = cookie[0];
-  let tokenSplit = tokenKeyValue.split("token=");
-  let token = tokenSplit[1];
-
   let options = {
       method: 'POST',
       mode: "cors",
       headers: new Headers({
         "Content-Type": "application/json; charset=utf-8",
-        "x-access-token": token
+        "x-access-token": tokenModels
       }),
       body: JSON.stringify({title:title,comment:comment,location:location})
   }
@@ -418,11 +413,6 @@ function editLocation(event, intervention_type, intervention_id){
 
     let location = document.getElementById('location').value;
 
-    let cookie = document.cookie.split(";");
-    let tokenKeyValue = cookie[0];
-    let tokenSplit = tokenKeyValue.split("token=");
-    let token = tokenSplit[1];
-
     let options = {
         method: 'PATCH',
         mode: "cors",
@@ -492,16 +482,11 @@ function editLocation(event, intervention_type, intervention_id){
 function editComment(event, intervention_type, intervention_id){
   event.preventDefault();
     document.getElementById('fa-spin-edit').style.display = "block";
-    document.getElementById('comment').style.borderBottomColor = "gray";
+    document.getElementById('comment').style.borderBottomColor = "#ccc";
 
     let uri = root + intervention_type + '/' + intervention_id + '/comment';
 
     let comment = document.getElementById('comment').value;
-
-    let cookie = document.cookie.split(";");
-    let tokenKeyValue = cookie[0];
-    let tokenSplit = tokenKeyValue.split("token=");
-    let token = tokenSplit[1];
 
     let options = {
         method: 'PATCH',
@@ -582,11 +567,6 @@ function editStatus(event, intervention_type, intervention_id){
     let uri = root + intervention_type + '/' + intervention_id + '/status';
 
     let status = document.getElementById('status').value;
-
-    let cookie = document.cookie.split(";");
-    let tokenKeyValue = cookie[0];
-    let tokenSplit = tokenKeyValue.split("token=");
-    let token = tokenSplit[1];
 
     let options = {
         method: 'PATCH',
@@ -682,11 +662,6 @@ function uploadImage(event, intervention_type, intervention_id){
   formData.append('uploadFile', fileData, fileData.name);
   // formData.append('name', 'uploadFile');
 
-  let cookie = document.cookie.split(";");
-  let tokenKeyValue = cookie[0];
-  let tokenSplit = tokenKeyValue.split("token=");
-  let token = tokenSplit[1];
-
   let options = {
       method: 'PATCH',
       mode: "cors",
@@ -768,15 +743,10 @@ function resetPassword(event, usernameid){
     if (password != confirm_password){
       document.getElementById('fa-spin-reset').style.display = "none";
       document.getElementById('submit').value = "Reset Password";
-      document.getElementById('password').style.borderBottomColor = "red";
-      document.getElementById('confirm_password').style.borderBottomColor = "red";
+      document.getElementById('password').style.borderColor = "red";
+      document.getElementById('confirm_password').style.borderColor = "red";
       return false;
     }
-
-    let cookie = document.cookie.split(";");
-    let tokenKeyValue = cookie[0];
-    let tokenSplit = tokenKeyValue.split("token=");
-    let token = tokenSplit[1];
 
     let options = {
         method: 'PATCH',
@@ -813,7 +783,7 @@ function resetPassword(event, usernameid){
               });
             }
             if(j['message'].hasOwnProperty('password')){
-                document.getElementById('password').style.borderBottomColor = "red";
+                document.getElementById('password').style.borderColor = "red";
                 warningNotification({ 
                     title: 'Warning',
                     message: j['message']['password'], 

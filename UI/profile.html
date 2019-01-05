@@ -101,11 +101,8 @@
         </div>
         <script src="js/models_incidents.js"></script>
         <script>
-            let userName = name.split("=");
-            let userEmail = email.split("=");
-            
-            userName = userName[1];
-            userEmail = userEmail[1];
+            let userName = name;
+            let userEmail = email;
 
             let userNameSplit = userName.split(" ");
             let firstname = userNameSplit[0];
@@ -130,11 +127,6 @@
               function getUserData(incident_type){
           
                 let uri = root + incident_type;
-
-                let cookie = document.cookie.split(";");
-                let tokenKeyValue = cookie[0];
-                let tokenSplit = tokenKeyValue.split("token=");
-                let token = tokenSplit[1];
           
                 let options = {
                     method: 'GET',

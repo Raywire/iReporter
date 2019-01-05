@@ -44,9 +44,7 @@
             <button id="btnDelete" class="button-modal danger btnOwner" data-modal="modal-window-delete" title="Delete Red Flag"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
             <span  id="modal-admin-buttons"></span>
             <script>
-                let adminStatus = isAdmin.split("=");
-      
-                adminStatus = adminStatus[1];
+                let adminStatus = isAdmin;
                 
                 if(adminStatus == 'true'){
                   let result = '';
