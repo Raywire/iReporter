@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/notifications.css">
     <script src="js/notifications.js"></script>
+    <script src="js/moment.min.js"></script>
   </head>
   <body>
     <nav class="navbar">
@@ -36,11 +37,11 @@
     <div class="container wrapper">
         <!-- Trigger/Open The Modal -->
         <div class="modal-container-buttons">
-            <button id="btnImage" class="button-modal" data-modal="modal-window-image-upload" title="Upload Image"><i class="fa fa-picture-o" aria-hidden="true"></i></button>
-            <button id="btnVideo" class="button-modal" data-modal="modal-window-video-upload" title="Upload Video"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
-            <button id="btnGeolocate" class="button-normal" title="Geolocate"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
-            <button id="btnEdit" class="button-modal orange" data-modal="modal-window-edit" title="Edit Location & Comment"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-            <button id="myBtn" class="button-modal danger" data-modal="modal-window-delete" title="Delete Intervention"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+            <button id="btnImage" class="button-modal btnOwner" data-modal="modal-window-image-upload" title="Upload Image"><i class="fa fa-picture-o" aria-hidden="true"></i></button>
+            <button id="btnVideo" class="button-modal btnOwner" data-modal="modal-window-video-upload" title="Upload Video"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
+            <button id="btnGeolocate" class="button-normal btnOwner" title="Geolocate"><i class="fa fa-map-marker" aria-hidden="true"></i></button>
+            <button id="btnEdit" class="button-modal orange btnOwner" data-modal="modal-window-edit" title="Edit Location & Comment"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+            <button id="btnDelete" class="button-modal danger btnOwner" data-modal="modal-window-delete" title="Delete Intervention"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
             <span  id="modal-admin-buttons"></span>
             <script>
                 let adminStatus = isAdmin.split("=");
@@ -50,7 +51,7 @@
                 if(adminStatus == 'true'){
                   let result = '';
                   result +=`
-                  <button id="btnEditStatus" class="button-modal orange" data-modal="modal-window-edit-status" title="Edit Status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
+                  <button id="btnEditStatus" class="button-modal orange btnOwner" data-modal="modal-window-edit-status" title="Edit Status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
                   <!-- The Modal -->
                   <div id="modal-window-edit-status" class="modal">
             
@@ -170,16 +171,13 @@
             <script>
               let urlParams = new URLSearchParams(window.location.search);
               let interventionId = urlParams.get('intervention_id');
-              document.getElementById("btnGeolocate").disabled = true;
 
               //Method call to get intervention by id
               getDataById('interventions', interventionId);
              
-
+              //Method to delete an intervention
               var btnDelConfirm = document.getElementById('btnDelConfirm');
               btnDelConfirm.addEventListener("click", deleteIntervention);
-
-              //Method to delete an intervention
               function deleteIntervention(){
                 deleteData('interventions', interventionId);
               }

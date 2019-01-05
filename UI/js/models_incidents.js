@@ -6,13 +6,24 @@ let tokenModels = tokenSplitModels[1];
 let userUsername = username.split("=");
 userUsername = userUsername[1];
 
+function convertToLocalTime(utcdatetime){
+  let localDateTime = new Date(utcdatetime).toISOString();
+
+  localDateTime = moment(localDateTime).format('ddd, MMM Do YYYY, h:mm:ss a Z'); //Fri, Jan 4th 2019, 7:18:05 pm +3:00;
+  return localDateTime;
+}
+function humanize(utcdatetime){
+  let datetimeiso = new Date(utcdatetime).toISOString();
+  let humanizedDate = moment(datetimeiso).fromNow();
+  return humanizedDate;  
+}
+
 function postData(event, incident_type){
   event.preventDefault();   
   document.getElementById('title').style.borderBottomColor = "gray";
   document.getElementById('comment').style.borderBottomColor = "gray";
   document.getElementById('location').style.borderBottomColor = "gray";
   document.getElementById('fa-spin').style.display = "block";
-  document.getElementById('submit').value = "Creating";
 
   let uri = root + incident_type;             
 
@@ -24,7 +35,6 @@ function postData(event, incident_type){
   let tokenKeyValue = cookie[0];
   let tokenSplit = tokenKeyValue.split("token=");
   let token = tokenSplit[1];
-  // console.log(token);
 
   let options = {
       method: 'POST',
@@ -41,17 +51,14 @@ function postData(event, incident_type){
       .then((response)=>{
           if(response.ok){
             document.getElementById('fa-spin').style.display = "none";
-            // document.getElementById('submit').value = "Add Red Flag";
 
             return response.json();
           }else{
             document.getElementById('fa-spin').style.display = "none";
-            // document.getElementById('submit').value = "Add Red Flag";
             return response.json();
           }
       })
       .then( (j) =>{
-        // console.log(j);
         if(j.hasOwnProperty('message')){
           if(j['message'] == 'Token is missing'){
             logout();
@@ -159,11 +166,11 @@ function getData(incident_type, incident_creator){
                 return incident.username === incident_creator;
               })
             }
-            // let usernameIncidents = incidents.filter(incident => {
-            //   return incident.username === incident_creator;
-            // })
+
             usernameIncidents.forEach((incident) => {
                 const { id, title, status, createdon, username, type } = incident
+                let humanizedTime = humanize(createdon);
+                
                 if(username == userUsername){
                   creator = 'Me';
                 }else{
@@ -184,7 +191,7 @@ function getData(incident_type, incident_creator){
                         </a>
                           <a href="view_by_username.html?type=${type}&username=${username}"><p class='italic font-small'><span class="theme-blue">By ${creator}</span></p></a>
                           <p>${status}</p>
-                          <p class='italic font-small'>${createdon}</p>
+                          <p class='italic font-small'>${humanizedTime}</p>
                           <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
                         
                       </div>
@@ -245,10 +252,21 @@ function getDataById(incident_type, incidentId){
             let imageUrl = '';
               j['data'].map((incident) => {
                 const { title, comment, status, createdon, location, username, images, type } = incident
+                let localDateTime = convertToLocalTime(createdon);
+
                 if(username == userUsername){
                   creator = 'Me';
+                  let ownerButtons = document.querySelectorAll('.btnOwner'), i;
+                  for(i = 0; i < ownerButtons.length; ++i){
+                    ownerButtons[i].style.display = 'inline';
+                  }
                 }else{
                   creator = username;
+                  document.getElementById('btnGeolocate').style.display = 'inline';
+                  try{
+                    document.getElementById('btnEditStatus').style.display = 'inline';
+                  }catch(error){}
+                  
                 }
                 if(images == null){
                   imageUrl = 'img/bad-road.jpeg';
@@ -258,7 +276,7 @@ function getDataById(incident_type, incidentId){
                 result += `
                 <h2>${title}</h2>
                 <h3><span class="black">Status:</span> <span id='status-data' class="italic">${status}</span></h3>
-                <h4><span class="black">Created On:</span> <span class="italic">${createdon}</span></h4>
+                <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
                 <h4><span class="black">By:</span> <a href="view_by_username.html?type=${type}&username=${username}"><span class="theme-blue">${creator}</span></a></h4>
                 <div class="row  bg-color">
                   <div class="column-50 bg-color">
@@ -282,7 +300,6 @@ function getDataById(incident_type, incidentId){
         })
         .catch( (err) =>{
             console.log(err);
-            // document.getElementById('message').innerHTML = err;
         });
 }
 
@@ -311,7 +328,6 @@ function deleteData(incident_type, incidentId){
             }
         })
         .then( (j) =>{
-          console.log(j);
           if(j.hasOwnProperty('message')){
             if(j['message'] == 'Token is missing'){
               logout();
@@ -333,6 +349,11 @@ function deleteData(incident_type, incidentId){
           if(j.hasOwnProperty('data')){
             if(j['data']['message'] == 'Intervention record has been deleted' || j['data']['message'] == 'Redflag record has been deleted'){
               document.getElementById('error-message').innerHTML = j['data']['message'];
+              if(incident_type == 'redflags'){
+                window.location.replace("redflags.html");
+              }else if(incident_type == 'interventions'){
+                window.location.replace("interventions.html");
+              }
             }                          
           }
           document.getElementById('fa-spin-data-delete').style.display = "none";
@@ -340,7 +361,6 @@ function deleteData(incident_type, incidentId){
         })
         .catch( (err) =>{
             console.log(err);
-            document.getElementById('error-message').innerHTML = err;
             document.getElementById('fa-spin-data-delete').style.display = "none";
         });
 }
@@ -654,10 +674,13 @@ function uploadImage(event, intervention_type, intervention_id){
   }
   
   console.log(fileData);
+  console.log(fileData.name);
+  let fileExtension = fileData.name.split('.')[1];
+  let uploadedFileName = intervention_id.toString() + '.' + fileExtension
+  console.log(uploadedFileName);
   
   formData.append('uploadFile', fileData, fileData.name);
-  formData.append('name', 'uploadFile');
-
+  // formData.append('name', 'uploadFile');
 
   let cookie = document.cookie.split(";");
   let tokenKeyValue = cookie[0];
@@ -694,14 +717,13 @@ function uploadImage(event, intervention_type, intervention_id){
           if(j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist'){
             document.getElementById('upload-message').innerHTML = j['message'];
           }
-
-          // if(j['message'] == 'Only the user who created this record can edit it'){
-          //   document.getElementById('upload-message').innerHTML = j['message'];
-          // }
+          if(j['message'] == 'Only the user who created this record can edit it'){
+            document.getElementById('upload-message').innerHTML = j['message'];
+          }
           if(j['message'] == 'Incident can only be edited when the status is draft'){
             document.getElementById('upload-message').innerHTML = j['message'];
           }
-          if(j['message'] == 'File type not supported'){
+          if(j['message'] == 'File type not supported' || j['message'] == 'No uploadFile name in form'){
             document.getElementById('upload-message').innerHTML = j['message'];
           }
 
@@ -710,6 +732,7 @@ function uploadImage(event, intervention_type, intervention_id){
           if(j['data'][0]['message'] == "Image added to intervention record" || j['data'][0]['message'] == "Image added to red-flag record"){
             document.getElementById('upload-message').style.color = "green";
             document.getElementById('upload-message').innerHTML = j['data'][0]['message'];
+            getFileData('images', uploadedFileName);
           }                          
         }                        
         document.getElementById('fa-spin-upload').style.display = "none";
@@ -724,6 +747,11 @@ function uploadImage(event, intervention_type, intervention_id){
 }
 
 function uploadVideo(event, intervention_type, intervention_id){
+  event.preventDefault();
+
+}
+
+function updateUserData(event, username_id){
   event.preventDefault();
 
 }
@@ -806,6 +834,14 @@ function resetPassword(event, usernameid){
             }
 
           }
+          if(j.hasOwnProperty('data')){
+            if(j['data']['message'] == 'User password has been changed'){
+              successNotification({ 
+                    title: 'Success',
+                    message: j['data']['message'] + ' for ' + j['data']['username'], 
+              });
+            }
+          }
       
           document.getElementById('fa-spin-reset').style.display = "none";
                                       
@@ -821,10 +857,10 @@ function checkPassword(){
   let confirm_pass1 = document.getElementById('confirm_password').value;
 
   if (pass1 == confirm_pass1){
-    document.getElementById('password').style.borderBottomColor = "green";
-    document.getElementById('confirm_password').style.borderBottomColor = "green";
+    document.getElementById('password').style.borderColor = "green";
+    document.getElementById('confirm_password').style.borderColor = "green";
   }else{
-    document.getElementById('password').style.borderBottomColor = "red";
-    document.getElementById('confirm_password').style.borderBottomColor = "red";
+    document.getElementById('password').style.borderColor = "red";
+    document.getElementById('confirm_password').style.borderColor = "red";
   }
 }

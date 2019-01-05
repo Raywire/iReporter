@@ -12,6 +12,7 @@
       <link rel="stylesheet" href="css/styles.css">
       <link rel="stylesheet" href="css/notifications.css">
       <script src="js/notifications.js"></script>
+      <script src="js/moment.min.js"></script>
     </head>
     <body>
       <nav class="navbar">
@@ -180,6 +181,7 @@
                           let fullname = '';
                             j['data'].map((user) => {
                               const { firstname, lastname, othernames, username, email, phoneNumber, isAdmin, registered, public_id } = user
+                              let localDateTime = convertToLocalTime(registered);
                               if(othernames==null){
                                   fullname = firstname + ' ' + lastname;
                               }
@@ -194,7 +196,7 @@
                               result += `
                               <h2>${fullname}</h2>
                               <h3><span class="black">Admin Status:</span> <span id='status-data' class="italic">${isAdmin}</span></h3>
-                              <h4><span class="black">Created On:</span> <span class="italic">${registered}</span></h4>
+                              <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
                               <h4 id='comment-data'><span class="black">Public Id: </span>${public_id}</h4>
                               <div class="row  bg-color">
                                 <div class="column-50 bg-color">                       

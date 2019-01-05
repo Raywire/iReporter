@@ -51,3 +51,5 @@ function addLocation() {
   var btnEdit = document.getElementById('btnEdit');
   google.maps.event.addDomListener(btnEdit, 'click', addLocation);  
   
+  // var btnAdd = document.getElementById('btnAdd');
+  // google.maps.event.addDomListener(btnAdd, 'click', addLocation); 
