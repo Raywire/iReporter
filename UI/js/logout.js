@@ -1,10 +1,11 @@
 function logout(){
-    document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    document.cookie = "name=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    document.cookie = "email=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    document.cookie = "username=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    document.cookie = "id=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    document.cookie = "isAdmin=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;";
+    document.cookie = "name=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;";
+    document.cookie = "email=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;";
+    document.cookie = "username=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;";
+    document.cookie = "id=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;";
+    document.cookie = "isAdmin=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;";
+    document.cookie ="isLoggedIn=False;path=/;";
     window.location.replace("signin.html");
   
 }

@@ -41,9 +41,7 @@
             <button id="myBtn" class="button-modal danger" data-modal="modal-window-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
             <span  id="modal-admin-buttons"></span>
             <script>
-                let adminStatus = isAdmin.split("=");
-      
-                adminStatus = adminStatus[1];
+                let adminStatus = isAdmin;
                 
                 if(adminStatus == 'true'){
                   let result = '';
@@ -133,11 +131,6 @@
                 function getData(event){
             
                   let uri = root + 'users/' + usernameId;
-
-                  let cookie = document.cookie.split(";");
-                  let tokenKeyValue = cookie[0];
-                  let tokenSplit = tokenKeyValue.split("token=");
-                  let token = tokenSplit[1];
             
                   let options = {
                       method: 'GET',
@@ -233,11 +226,6 @@
                   document.getElementById('error-message').innerHTML = '';
             
                   let uri = root + 'users/' + usernameId;
-
-                  let cookie = document.cookie.split(";");
-                  let tokenKeyValue = cookie[0];
-                  let tokenSplit = tokenKeyValue.split("token=");
-                  let token = tokenSplit[1];
             
                   let options = {
                       method: 'DELETE',
@@ -312,11 +300,6 @@
                   let uri = root + 'users/' + usernameId + '/promote';
 
                   let status = document.getElementById('status').value;
-
-                  let cookie = document.cookie.split(";");
-                  let tokenKeyValue = cookie[0];
-                  let tokenSplit = tokenKeyValue.split("token=");
-                  let token = tokenSplit[1];
             
                   let options = {
                       method: 'PATCH',

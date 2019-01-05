@@ -50,11 +50,6 @@
                     function getData(event){
                 
                       let uri = root + 'users';
-  
-                      let cookie = document.cookie.split(";");
-                      let tokenKeyValue = cookie[0];
-                      let tokenSplit = tokenKeyValue.split("token=");
-                      let token = tokenSplit[1];
                 
                       let options = {
                           method: 'GET',

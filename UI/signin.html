@@ -110,12 +110,16 @@
                             let username = j['data'][0]['user']['username'];
                             let id = j['data'][0]['user']['id'];
                             let isAdmin = j['data'][0]['user']['isAdmin']
-                            document.cookie = "token=" + access_token;
-                            document.cookie = "name=" + name;
-                            document.cookie = "email=" + email;
-                            document.cookie = "username=" + username;
-                            document.cookie = "id=" + id;
-                            document.cookie = "isAdmin=" + isAdmin;
+                            let date = new Date();
+                            date.setTime(date.getTime() + (59 * 60 * 1000));
+                            let expirationTime = "expires=" + date.toUTCString();
+                            document.cookie = "token=" + access_token + ';' + expirationTime + ";path=/";
+                            document.cookie = "name=" + name + ';' + expirationTime + ";path=/";
+                            document.cookie = "email=" + email + ';' + expirationTime + ";path=/";
+                            document.cookie = "username=" + username + ';' + expirationTime + ";path=/";
+                            document.cookie = "id=" + id + ';' + expirationTime + ";path=/";
+                            document.cookie = "isAdmin=" + isAdmin + ';' + expirationTime + ";path=/";
+                            document.cookie = "isLoggedIn=True" + ';' + expirationTime + ";path=/";
                             window.location.replace("home.html");
                         }
                        
