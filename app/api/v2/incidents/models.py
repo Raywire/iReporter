@@ -35,7 +35,7 @@ parser.add_argument('comment',
                     )
 
 parser.add_argument('title',
-                    type=validate_comment,
+                    type=validator,
                     required=True,
                     trim=True,
                     nullable=False,
@@ -55,8 +55,6 @@ class IncidentModel:
         cursor = conn.cursor()
         cursor.execute(query)
         conn.commit()
-        cursor.close()
-        conn.close()
 
     def allowed_file(self, filename, filetype):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in filetype
@@ -72,8 +70,8 @@ class IncidentModel:
             'status': "draft",
             'images': request.json.get('images'),
             'videos': request.json.get('videos'),
-            'title': request.json.get('title').title(),
-            'comment': request.json.get('comment')
+            'title': request.json.get('title').title().strip(),
+            'comment': request.json.get('comment').strip()
         }
 
         query = """INSERT INTO incidents (createdon,createdby,type,location,status,images,videos,title,comment) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
@@ -113,7 +111,8 @@ class IncidentModel:
         query = """SELECT incidents.comment,incidents.createdby,\
         incidents.createdon, incidents.id,incidents.images,\
         incidents.location,incidents.status,incidents.videos,\
-        incidents.title,incidents.type, users.username from incidents\
+        incidents.title,incidents.type, users.username, users.email,\
+        users.phonenumber from incidents\
         INNER JOIN users ON incidents.createdby=users.id\
         WHERE type='{0}' AND incidents.id={1}""".format(
             incident_type, incident_id)
@@ -224,11 +223,8 @@ class IncidentModel:
         if incident is None:
             return None
 
-        if current_user_id != incident['createdby']:
+        if current_user_id != incident['createdby'] or incident['status'] != 'draft':
             return False
-
-        if incident['status'] != 'draft':
-            return 'not draft'
 
         if 'uploadFile' not in request.files:
             return "No uploadFile name in form"

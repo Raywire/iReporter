@@ -53,14 +53,14 @@ def tables():
     table1 = """CREATE TABLE IF NOT EXISTS incidents(
         id SERIAL PRIMARY KEY NOT NULL,
         createdOn TIMESTAMP,
-        createdBy INT NOT NULL REFERENCES users(id),
+        createdBy INT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
         type VARCHAR(20) NOT NULL,
         location VARCHAR(50),
         status VARCHAR(20) NOT NULL,
         Images VARCHAR(500) NULL,
         Videos VARCHAR(500) NULL,
         title VARCHAR(100),
-        comment VARCHAR(1000) NOT NULL
+        comment VARCHAR(2000) NOT NULL
         );"""
 
     table2 = """CREATE TABLE IF NOT EXISTS users(

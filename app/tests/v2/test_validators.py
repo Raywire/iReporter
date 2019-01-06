@@ -2,7 +2,8 @@
 import unittest
 from app.validators import (validate_characters, validate_comment,
                             validate_coordinates, validate_integers,
-                            validate_email, validator, validate_password)
+                            validate_email, validator, validate_password,
+                            validate_username)
 
 
 class ValidatorTestCase(unittest.TestCase):
@@ -13,7 +14,7 @@ class ValidatorTestCase(unittest.TestCase):
 
     def test_for_characters(self):
         with self.assertRaises(ValueError):
-            validate_characters("Ray'")
+            validate_characters("Ray' ")
 
     def test_for_email(self):
         with self.assertRaises(ValueError):
@@ -34,5 +35,9 @@ class ValidatorTestCase(unittest.TestCase):
     def test_validator(self):
         with self.assertRaises(ValueError):
             validator("@##$$Hello")
+
+    def test_for_username(self):
+        with self.assertRaises(ValueError):
+            validate_username("ryan'")
       
           

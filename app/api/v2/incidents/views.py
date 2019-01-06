@@ -104,11 +104,11 @@ class UpdateInterventionStatus(Resource):
         if edit_status is None:
             return nonexistent_incident("Intervention")
 
-        if edit_status is True:
-            if current_user['email']:
-                status = self.intervention_model.get_incident_status()
-                send(current_user['email'], 'intervention',
-                     intervention_id, status)
+        if edit_status is True:          
+            status = self.intervention_model.get_incident_status()
+            user_email = self.intervention_model.get_incident_by_id('intervention', intervention_id)['email']
+            send(user_email, 'intervention',
+                intervention_id, status)
             return updated_incident(intervention_id, "intervention", "status")
 
 
@@ -258,9 +258,9 @@ class UpdateRedflagStatus(Resource):
             return nonexistent_incident("Redflag")
 
         if edit_status is True:
-            if current_user['email']:
-                status = IncidentModel().get_incident_status()
-                send(current_user['email'], 'redflag', redflag_id, status)
+            email = IncidentModel().get_incident_by_id('redflag', redflag_id)['email']
+            status = IncidentModel().get_incident_status()
+            send(email, 'redflag', redflag_id, status)
             return updated_incident(redflag_id, "redflag", "status")
 
 
