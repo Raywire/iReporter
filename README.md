@@ -24,10 +24,13 @@ postgres=# create database your-database;
 postgres=# create user your-username with encrypted password 'your-password';
 postgres=# grant all privileges on database your-database to your-username;
 ```
-Contents of .env file
+### Contents of .env file
+
+***Note***: EXPIRATION_TIME is in minutes
 ```
 source venv/bin/activate
 
+export EXPIRATION_TIME=59
 export FLASK_ENV="development"
 export FLASK_CONFIG="development"
 export DATABASE_URL="dbname='your-database' host='localhost' port='5432' user='your-username' password='your-password'"
@@ -98,8 +101,6 @@ versioning for the endpoints
 /api/v2/
 
 ## API Documentation
-[Postman Documentation Link](https://web.postman.co/collections/5905120-3d945622-5406-4eb7-97a0-d4b439dd7f4a?workspace=17077477-b7d0-4571-89d7-427b4b5a1bd8)
-
 [Apiary API Documentation](https://ireporter14.docs.apiary.io/#)
 
 

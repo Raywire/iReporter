@@ -4,7 +4,8 @@ from flask import jsonify, send_from_directory
 from app.api.v2.incidents.models import IncidentModel
 from app.api.v2.send_email import send
 from app.api.v2.decorator import (
-    token_required, nonexistent_incident, owner_can_edit, draft_is_deletable, draft_is_editable, updated_incident)
+    token_required, nonexistent_incident, owner_can_edit,
+    draft_is_deletable, draft_is_editable, updated_incident)
 
 import os
 
@@ -31,11 +32,11 @@ class UploadInterventionImage(Resource):
                 "message": "Intervention does not exist"
             })
 
-        if upload_status == 'not draft':
-            return draft_is_editable()
-
         if upload_status is False:
-            return owner_can_edit()
+            return jsonify({
+                "status" : 401,
+                "message": "You cannot upload a photo for this incident"
+            })
 
         if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
             return jsonify({
@@ -69,10 +70,10 @@ class UploadInterventionVideo(Resource):
             })
 
         if upload_status is False:
-            return owner_can_edit()
-
-        if upload_status == 'not draft':
-            return draft_is_editable()
+            return jsonify({
+                "status" : 401,
+                "message": "You cannot upload a video for this incident"
+            })
 
         if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
             return jsonify({
@@ -103,10 +104,10 @@ class UploadRedflagImage(Resource):
             return nonexistent_incident("Redflag")
 
         if upload_status is False:
-            return owner_can_edit()
-
-        if upload_status == 'not draft':
-            return draft_is_editable()
+            return jsonify({
+                "status" : 401,
+                "message": "You cannot upload a photo for this incident"
+            })
 
         if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
             return jsonify({
@@ -149,10 +150,10 @@ class UploadRedflagVideo(Resource):
             })
 
         if upload_status is False:
-            return owner_can_edit()
-
-        if upload_status == 'not draft':
-            return draft_is_editable()
+            return jsonify({
+                "status" : 401,
+                "message": "You cannot upload a video for this incident"
+            })
 
         if upload_status is True:
             return jsonify({

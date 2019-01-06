@@ -3,7 +3,7 @@ from werkzeug import generate_password_hash, check_password_hash
 from app.db_config import connection, init_database
 from flask import request
 from flask_restful import reqparse
-from app.validators import (
+from app.validators import (validate_username,
     validate_characters, validate_email, validate_integers,validate_password)
 import psycopg2.extras
 
@@ -40,7 +40,7 @@ parser.add_argument('othernames',
                     )
 
 parser.add_argument('username',
-                    type=validate_characters,
+                    type=validate_username,
                     required=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
@@ -195,12 +195,14 @@ class UserModel:
 
     def delete_user(self, username):
         """method to delete a user"""
-
-        conn = self.db
-        cursor = conn.cursor()
-        cursor.execute("""DELETE FROM users WHERE username='{0}'""".format(username))
-        conn.commit() 
-        return True
+        try:
+            conn = self.db
+            cursor = conn.cursor()
+            cursor.execute("""DELETE FROM users WHERE username='{0}'""".format(username))
+            conn.commit() 
+            return True
+        except:
+            return False
 
     def update_user_password(self, username):
         """method to change a user's password"""

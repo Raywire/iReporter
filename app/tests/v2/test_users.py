@@ -7,7 +7,7 @@ import os
 
 from ... import create_app
 from app.db_config import create_super_user, destroy_tables, create_tables
-from app.tests.data import test_user, data, data2, data3, data4, data5, data6, data7, data8
+from app.tests.data import test_user, data, data2, data3, data4, data5, data6, data7, data8, redflag_data
 
 
 expiration_time = 10
@@ -83,7 +83,7 @@ class UserTestCase(unittest.TestCase):
         self.app.post("/api/v2/auth/signup", headers=self.headers_secured, data=json.dumps(self.test_user))
         response = self.app.delete(url, headers=self.headers_secured)
         result = json.loads(response.data)
-        self.assertEqual(result['message'], 'This user cannot be deleted') 
+        self.assertEqual(result['message'], 'You cannot delete this user') 
         self.assertEqual(result['status'], 403)
 
     def test_delete_nonexistent_user(self):
@@ -108,7 +108,7 @@ class UserTestCase(unittest.TestCase):
         response2 = self.app.delete("/api/v2/users/jayd", headers={'Content-Type': 'application/json','x-access-token': result['data'][0]['token']})
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 403)
-        self.assertEqual(result2['message'], 'Only an admin can delete a user')          
+        self.assertEqual(result2['message'], 'You cannot delete this user')          
 
     def test_delete_yourself(self):
         """Test for an admin user trying to delete themself"""      
@@ -120,7 +120,21 @@ class UserTestCase(unittest.TestCase):
         response2 = self.app.delete("/api/v2/users/jayd", headers={'Content-Type': 'application/json','x-access-token': token})
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 403)
-        self.assertEqual(result2['message'], 'You cannot delete yourself')
+        self.assertEqual(result2['message'], 'You cannot delete this user')
+
+    def test_delete_user_with_incident(self):
+        """Test for an admin user trying to delete a user who has incidents"""      
+        self.app.post("/api/v2/auth/signup", headers=self.headers, data=json.dumps(self.data))
+        self.app.patch("/api/v2/users/jayd/promote", headers=self.headers_secured, data=json.dumps({"isadmin":"True"}))
+        response = self.app.post("/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))
+        result = json.loads(response.data)
+        token = result['data'][0]['token']
+        self.app.post(
+            "/api/v2/redflags", headers={'Content-Type': 'application/json','x-access-token': token}, data=json.dumps(redflag_data))
+        response2 = self.app.delete("/api/v2/users/jayd", headers=self.headers_secured)
+        result2 = json.loads(response2.data)
+        self.assertEqual(result2['status'], 400)
+        self.assertEqual(result2['message'], 'A user who has posted incidents cannot be deleted')    
 
     def test_update_user_status(self):
         """Test to update user admin status"""
@@ -199,7 +213,7 @@ class UserTestCase(unittest.TestCase):
         response2 = self.app.patch("/api/v2/users/jayd", headers={'Content-Type': 'application/json','x-access-token': token}, data=json.dumps({"password":"123457"}))
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 200)
-        self.assertEqual(result2['data']['message'], 'User password has been changed')      
+        self.assertEqual(result2['message'], 'User password has been changed')      
 
     def test_none_admin_update_another_user_password(self):
         """Test for a none admin user trying to update another user's password"""

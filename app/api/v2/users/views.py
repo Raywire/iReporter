@@ -9,7 +9,11 @@ import datetime
 import os
 
 secret_key = os.getenv('SECRET_KEY')
-expiration_time = 59
+
+try:
+    expiration_time = int(os.getenv('EXPIRATION_TIME'))
+except:
+    expiration_time = 59
 
 
 def nonexistent_user():
@@ -74,7 +78,8 @@ class UserSignUp(Resource):
             "name" : user['firstname']+' '+user['lastname'],
             "usename" : user['username'],
             "email" : user['email'],
-            "public_id" : user['public_id']
+            "public_id" : user['public_id'],
+            "isAdmin" : False
         }
         return jsonify({
             "status": 201,
@@ -154,23 +159,11 @@ class User(Resource):
         if user is None:
             return nonexistent_user()
 
-        if user['id'] == 1:
-            return jsonify({
-                "status" : 403,
-                "message": "This user cannot be deleted"
-            })
-
-        if current_user['isadmin'] is not True:
+        if current_user['isadmin'] is not True or user['id'] == 1 or current_user['username'] == username:
             return jsonify({
                 "status": 403,
-                "message": "Only an admin can delete a user"
+                "message": "You cannot delete this user"
             })
-
-        if current_user['username'] == username:
-            return jsonify({
-              "status": 403,
-              "message": "You cannot delete yourself"  
-            }) 
 
         delete_status = self.db.delete_user(username)
         if delete_status is True:
@@ -182,6 +175,10 @@ class User(Resource):
                     "message": "user record has been deleted"
                 }
             })
+        return jsonify({
+            "status" : 400,
+            "message": "A user who has posted incidents cannot be deleted"
+        })
 
     @token_required
     def patch(current_user, self, username):
@@ -190,7 +187,7 @@ class User(Resource):
         if self.db.get_user(username) is None:
             return nonexistent_user()           
 
-        if current_user['isadmin'] is True:
+        if current_user['isadmin'] is True or current_user['username'] == username:
             if self.db.update_user_password(username) is True:
                 return jsonify({
                     "status": 200,
@@ -198,17 +195,6 @@ class User(Resource):
                     "message": "User password has been changed"
                 })
 
-        if current_user['username'] == username:
-            user_status_updated = self.db.update_user_password(username)
-            if user_status_updated is True:
-                success_message = {
-                    "username": username,
-                    "message": "User password has been changed"
-                }
-                return jsonify({
-                    "status": 200,
-                    "data": success_message
-                })
         return jsonify({
             "status": 403,
             "message": "Only an admin or the user can update their own password"
@@ -229,16 +215,10 @@ class UserStatus(Resource):
         if user is None:
             return nonexistent_user()
 
-        if user['id'] == 1:
-            return jsonify({
-                "status" : 403,
-                "message": "You cannot change the status of this user"
-            }) 
-
-        if current_user['isadmin'] is not True:
+        if current_user['isadmin'] is not True or user['id'] == 1:
             return jsonify({
                 "status": 403,
-                "message": "Only an admin can change the status of a user"
+                "message": "You cannot change the status of this user"
             })
 
         if current_user['username'] == username:
