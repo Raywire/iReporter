@@ -1,16 +1,18 @@
-<noscript>
-    <h1>Your browser does not support Javascript</h1>
-  </noscript>  
-<script src="js/auth.js"></script>
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html lang="en" dir="ltr">
     <head>
       <meta charset="utf-8">
       <title>iReporter Interventions</title>
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <meta name="robots" content="noindex,nofollow"/>
+      <link rel="icon" type="image/png" href="img/favicon.ico">
+      <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="css/styles.css">
       <link rel="stylesheet" href="css/notifications.css">
+      <noscript>
+        <h1>Your browser does not support Javascript</h1>
+      </noscript>  
+      <script src="js/auth.js"></script>
       <script src="js/notifications.js"></script>
       <script src="js/moment.min.js"></script>
     </head>
@@ -38,7 +40,7 @@
       <div class="container wrapper">
         <div>
           <!-- Trigger/Open The Modal -->
-          <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Intervention">Add Intervention</button>
+          <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Intervention"><i class="fa fa-plus" aria-hidden="true"></i> intervention</button>
         <!-- The Modal -->
         <div id="modal-window-create" class="modal">
   
@@ -50,7 +52,7 @@
                   <p class="contact"><label for="title">Title</label></p>
                   <input id="title" name="title" placeholder="Title" maxlength="100" tabindex="1" type="text">
                   <p class="contact"><label for="comment">Comment</label></p>
-                  <textarea name="comment" id="comment" maxlength="1000" cols="30" rows="10"></textarea>          
+                  <textarea name="comment" id="comment" maxlength="2000" cols="30" rows="10"></textarea>          
                   <p class="contact"><label for="date">Location</label></p>
                   <div id="addMarker" style="width:100%;height:400px;"></div>
                   <input id="location" readonly name="location" placeholder="Location" required="" type="text">
@@ -99,9 +101,9 @@
           <li><a href="#" class="nav-links">privacy & terms</a></li>    
         </ul>
       </div>
+      <script src="js/main.js"></script>
+      <script src="js/modal.js"></script> 
+      <script src="js/logout.js"></script>
     </body>
-    <script src="js/main.js"></script>
-    <script src="js/modal.js"></script> 
-    <script src="js/logout.js"></script>
   </html>
   

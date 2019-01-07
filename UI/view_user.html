@@ -1,16 +1,18 @@
-<noscript>
-    <h1>Your browser does not support Javascript</h1>
-  </noscript>  
-  <script src="js/auth.js"></script>
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html lang="en" dir="ltr">
     <head>
       <meta charset="utf-8">
       <title>iReporter Admin</title>
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <meta name="robots" content="noindex,nofollow"/>
+      <link rel="icon" type="image/png" href="img/favicon.ico">
+      <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="css/styles.css">
       <link rel="stylesheet" href="css/notifications.css">
+      <noscript>
+        <h1>Your browser does not support Javascript</h1>
+      </noscript>  
+      <script src="js/auth.js"></script>
       <script src="js/notifications.js"></script>
       <script src="js/moment.min.js"></script>
     </head>
@@ -105,7 +107,6 @@
                       <div class="modal-header">
                           <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
                             <span aria-hidden="true">&times;</span>
-                          </button>
                       </div>
                       <div class="modal-body">
                           <p>Are you sure you want to delete this user?</p>
@@ -254,16 +255,13 @@
                           if(j['message'] == 'Token is invalid'){
                             logout();
                           }
-                          if(j['message'] == 'Only admin can access this route'){
-                            logout();
-                          }
                           if(j['message'] == 'user does not exist'){
                             document.getElementById('error-message').innerHTML = j['message'];
                           }
-                          if(j['message'] == 'Only an admin can delete a user'){
-                            document.getElementById('error-message').innerHTML = j['message'];
+                          if(j['message'] == 'You cannot delete this user'){
+                                document.getElementById('error-message').innerHTML = j['message'];
                           }
-                          if(j['message'] == 'This user cannot be deleted' || j['message'] == 'You cannot delete yourself'){
+                          if(j['message'] == 'A user who has posted incidents cannot be deleted'){
                                 document.getElementById('error-message').innerHTML = j['message'];
                           }
 
@@ -339,9 +337,6 @@
                               document.getElementById('isadmin').style.borderBottomColor = "red";
                               document.getElementById('status-message').innerHTML = "(Accepted values: True, False)";
                           }    
-                          if(j['message'] == 'Only an admin can change the status of a user'){
-                            document.getElementById('status-message').innerHTML = j['message'];
-                          }
                           if(j['message'] == 'You cannot change the status of this user' || j['message'] == 'You cannot change your own admin status'){
                                 document.getElementById('status-message').innerHTML = j['message'];
                           }
@@ -388,9 +383,9 @@
           <li><a href="#" class="nav-links">privacy & terms</a></li>    
         </ul>
       </div>
+      <script src="js/main.js"></script>
+      <script src="js/modal.js"></script> 
+      <script src="js/logout.js"></script>
     </body>
-    <script src="js/main.js"></script>
-    <script src="js/modal.js"></script> 
-    <script src="js/logout.js"></script>
   </html>
   

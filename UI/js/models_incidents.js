@@ -1,10 +1,6 @@
-// let cookieModels = document.cookie.split(";");
-// let tokenKeyModels = cookieModels[0];
-// let tokenSplitModels = tokenKeyModels.split("token=");
 let tokenModels = token;
 
-// let userUsername = username.split("=");
-userUsername = username;
+let profileUserName = username;
 
 function convertToLocalTime(utcdatetime){
   let localDateTime = new Date(utcdatetime).toISOString();
@@ -158,7 +154,26 @@ function getData(incident_type, incident_creator){
               usernameIncidents = incidents;
             }else{
               usernameIncidents = incidents.filter(incident => {
-                return incident.username === incident_creator;
+                filteredIncidents = incident.username === incident_creator;
+                if (filteredIncidents){
+                  return filteredIncidents;
+                }else{
+                  let result = '';
+                  result += `
+                    <div class="column-100">
+                    <div class="card">
+                        <div class="container">
+                          
+                            <p><i class="fa fa-star-half-o fa-3x" aria-hidden="true"></i></p>
+                            <h4 class="theme-blue"><b>You have not posted any incidents</b></h4>
+                          
+                        </div>
+                      </div>               
+                  </div> 
+                    `;
+                    document.getElementById('incident-data').innerHTML = result;                  
+                }
+                
               })
             }
 
@@ -166,22 +181,24 @@ function getData(incident_type, incident_creator){
                 const { id, title, status, createdon, username, type } = incident
                 let humanizedTime = humanize(createdon);
                 
-                if(username == userUsername){
+                if(username == profileUserName){
                   creator = 'Me';
                 }else{
                   creator = username;
                 }
                 if(type == 'redflag'){
                     link = 'view_redflag.html?redflag_id';
+                    icon = 'fa fa-flag red';
                 }else if(type == 'intervention'){
                     link = 'view_intervention.html?intervention_id'
+                    icon = 'fa fa-handshake-o theme-blue';
                 }
                 result += `
                 <div class="column">
                   <div class="card">
-                      <div class="container2">
+                      <div class="container2 justify">
                         <a href="${link}=${id}">
-                          <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+                          <p><i class="${icon} fa-2x" aria-hidden="true"></i></p>
                           <h4 class="black truncate"><b>${title}</b></h4>
                         </a>
                           <a href="view_by_username.html?type=${type}&username=${username}"><p class='italic font-small'><span class="theme-blue">By ${creator}</span></p></a>
@@ -249,7 +266,7 @@ function getDataById(incident_type, incidentId){
                 const { title, comment, status, createdon, location, username, images, type } = incident
                 let localDateTime = convertToLocalTime(createdon);
 
-                if(username == userUsername){
+                if(username == profileUserName){
                   creator = 'Me';
                   let ownerButtons = document.querySelectorAll('.btnOwner'), i;
                   for(i = 0; i < ownerButtons.length; ++i){
@@ -447,12 +464,6 @@ function editLocation(event, intervention_type, intervention_id){
                     message: j['message'], 
               });
             }
-            // if(j['message'] == 'Only the user who created this record can edit it'){
-            //   warningNotification({ 
-            //         title: 'Warning',
-            //         message: j['message'], 
-            //   });
-            // }
             if(j['message'] == 'Incident can only be edited when the status is draft'){
               warningNotification({ 
                     title: 'Warning',
@@ -768,7 +779,6 @@ function resetPassword(event, usernameid){
             }
         })
         .then( (j) =>{
-          console.log(j);
           if(j.hasOwnProperty('message')){
             if(j['message'] == 'Token is missing'){
               logout();
@@ -803,14 +813,6 @@ function resetPassword(event, usernameid){
               });
             }
 
-          }
-          if(j.hasOwnProperty('data')){
-            if(j['data']['message'] == 'User password has been changed'){
-              successNotification({ 
-                    title: 'Success',
-                    message: j['data']['message'] + ' for ' + j['data']['username'], 
-              });
-            }
           }
       
           document.getElementById('fa-spin-reset').style.display = "none";
