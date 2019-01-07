@@ -8,6 +8,10 @@ let id = getCookie('id');
 let isAdmin = getCookie('isAdmin');
 let isLoggedIn = getCookie('isLoggedIn');
 
+const user = {
+  token : token, name : name, email : email, username : username, id : id, isAdmin : isAdmin, isLoggedIn : isLoggedIn
+};
+
 if (isLoggedIn == 'False' || isLoggedIn == "logged out" || token == "logged out"){
   window.location.replace("signin.html");
 }

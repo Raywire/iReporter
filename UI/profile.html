@@ -1,16 +1,18 @@
-<noscript>
-  <h1>Your browser does not support Javascript</h1>
-</noscript>  
-<script src="js/auth.js"></script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
     <title>iReporter Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="robots" content="noindex,nofollow"/>
+    <link rel="icon" type="image/png" href="img/favicon.ico">
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/notifications.css">
+    <noscript>
+      <h1>Your browser does not support Javascript</h1>
+    </noscript>  
+    <script src="js/auth.js"></script>
     <script src="js/notifications.js"></script>
   </head>
   <body>
@@ -95,32 +97,32 @@
               <p></p>
               <h4 class="black"><b><i class="fa fa-flag red" aria-hidden="true"></i> Red Flags</b></h4>
               <p id='my-redflags'></p>
-              <h4 class="black"><b><i class="fa fa-flag" aria-hidden="true"></i> Interventions</b></h4>
+              <h4 class="black"><b><i class="fa fa-handshake-o theme-blue" aria-hidden="true"></i> Interventions</b></h4>
               <p id='my-interventions'></p>
           </div>
         </div>
         <script src="js/models_incidents.js"></script>
         <script>
-            let userName = name;
+            let profileName = name;
             let userEmail = email;
 
-            let userNameSplit = userName.split(" ");
-            let firstname = userNameSplit[0];
-            let lastname = userNameSplit[1];
-            let othername = userNameSplit[2];
+            let profileNameSplit = profileName.split(" ");
+            let firstname = profileNameSplit[0];
+            let lastname = profileNameSplit[1];
+            let othername = profileNameSplit[2];
 
             if(othername == null){
               othername = '';
             }
 
-            document.getElementById('name').innerHTML = userName;
+            document.getElementById('name').innerHTML = profileName;
             document.getElementById('email').innerHTML = userEmail;
-            document.getElementById('username').innerHTML = userUsername;
+            document.getElementById('username').innerHTML = profileUserName;
 
             document.getElementById('firstnameForm').value = firstname;
             document.getElementById('lastnameForm').value = lastname;
             document.getElementById('othernameForm').value = othername;
-            document.getElementById('usernameForm').value = userUsername;
+            document.getElementById('usernameForm').value = profileUserName;
             
           </script>
           <script>
@@ -148,7 +150,6 @@
                         }
                     })
                     .then( (j) =>{
-                      // console.log(j);
                       if(j.hasOwnProperty('message')){
                         if(j['message'] == 'Token is missing'){
                           logout();
@@ -161,39 +162,39 @@
                           }
                       }
                       if(j.hasOwnProperty('data')){
-                        // console.log(j['data']);
                         let incidents = j['data'];
                         let myIncidents = incidents.filter(incident => {
-                          return incident.username === userUsername;
+                          return incident.username === profileUserName;
                         })
-                        let myRedflags = incidents.filter(incident => {
-                          return incident.username === userUsername && incident.type === 'redflag';
+                       
+                        let myRedflags = myIncidents.filter(incident => {
+                          return incident.type === 'redflag';
                         })
-                        let myInterventions = incidents.filter(incident => {
-                          return incident.username === userUsername && incident.type === 'intervention';
+                        let myInterventions = myIncidents.filter(incident => {
+                          return incident.type === 'intervention';
                         })
-                        let myDraftIncidents = incidents.filter(incident =>{
-                          return incident.username === userUsername && incident.status === 'draft'
+                        let myDraftIncidents = myIncidents.filter(incident =>{
+                          return incident.status === 'draft'
                         })
-                        let myResolvedIncidents = incidents.filter(incident =>{
-                          return incident.username === userUsername && incident.status === 'resolved'
+                        let myResolvedIncidents = myIncidents.filter(incident =>{
+                          return incident.status === 'resolved'
                         })
-                        let myUnderInvestigationIncidents = incidents.filter(incident =>{
-                          return incident.username === userUsername && incident.status === 'under investigation'
+                        let myUnderInvestigationIncidents = myIncidents.filter(incident =>{
+                          return incident.status === 'under investigation'
                         })
-                        let myRejectedIncidents = incidents.filter(incident =>{
-                          return incident.username === userUsername && incident.status === 'rejected'
+                        let myRejectedIncidents = myIncidents.filter(incident =>{
+                          return incident.status === 'rejected'
                         })
                         
                         
                         if (incident_type == 'redflags'){
-                          document.getElementById('my-redflags').innerHTML = `<a href="view_by_username.html?type=redflag&username=${userUsername}">` + myRedflags.length + `</a>`;
+                          document.getElementById('my-redflags').innerHTML = `<a href="view_by_username.html?type=redflag&username=${profileUserName}">` + myRedflags.length + `</a>`;
                           document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
                           document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
                           document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents.length;
                           document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
                         }else if(incident_type == 'interventions'){
-                          document.getElementById('my-interventions').innerHTML = `<a href="view_by_username.html?type=intervention&username=${userUsername}">` + myInterventions.length + `</a>`;
+                          document.getElementById('my-interventions').innerHTML = `<a href="view_by_username.html?type=intervention&username=${profileUserName}">` + myInterventions.length + `</a>`;
                           document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
                           document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
                           document.getElementById('my-underinvestigation-interventions').innerHTML = myUnderInvestigationIncidents.length;
@@ -211,41 +212,41 @@
             getUserData('redflags');
             getUserData('interventions');
             document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
-            document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event, userUsername));
-            document.getElementById('updateUserData').addEventListener('submit', (event) => updateUserData(event, userUsername));
+            document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event, profileUserName));
+            document.getElementById('updateUserData').addEventListener('submit', (event) => updateUserData(event, profileUserName));
           </script>                         
       </div>      
       <div class="column">
           <div class="card">
               <div class="container2">
-                  <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+                  <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
                   <h4 class="black"><b>Red Flags</b></h4>
-                  <p class="black">Draft</p>
+                  <p class="italic font-small">Draft</p>
                   <p id='my-draft-redflags'></p>
               </div>
             </div>        
         <div class="card">
             <div class="container2">
-              <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+              <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
               <h4 class="black"><b>Red Flags</b></h4>
-              <p class="black">Resolved</p>
+              <p class="italic font-small">Resolved</p>
               <p id='my-resolved-redflags'></p>
     
             </div>
           </div>
           <div class="card">
             <div class="container2">
-              <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+              <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
               <h4 class="black"><b>Red Flags</b></h4>
-              <p class="black">Under Investigation</p>
+              <p class="italic font-small">Under Investigation</p>
               <p id="my-underinvestigation-redflags"></p>
             </div>
           </div>
           <div class="card">
             <div class="container2">
-              <p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>
+              <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
               <h4 class="black"><b>Red Flags</b></h4>
-              <p class="black">Rejected</p>
+              <p class="italic font-small">Rejected</p>
               <p id="my-rejected-redflags"></p>
             </div>
           </div>        
@@ -253,33 +254,33 @@
       <div class="column">
           <div class="card">
               <div class="container2">
-                  <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                  <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
                   <h4 class="black"><b>Interventions</b></h4>
-                  <p class="black">Draft</p>
+                  <p class="italic font-small">Draft</p>
                   <p id='my-draft-interventions'></p>
               </div>
             </div>         
           <div class="card">
               <div class="container2">
-                <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
                 <h4 class="black"><b>Interventions</b></h4>
-                <p class="black">Resolved</p>
+                <p class="italic font-small">Resolved</p>
                 <p id='my-resolved-interventions'></p>
               </div>
             </div>
             <div class="card">
               <div class="container2">
-                <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
                 <h4 class="black"><b>Interventions</b></h4>
-                <p class="black">Under Investigation</p>
+                <p class="italic font-small">Under Investigation</p>
                 <p  id='my-underinvestigation-interventions'></p>
               </div>
             </div>
             <div class="card">
               <div class="container2">
-                <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
+                <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
                 <h4 class="black"><b>Interventions</b></h4>
-                <p class="black">Rejected</p>
+                <p class="italic font-small">Rejected</p>
                 <p  id='my-rejected-interventions'></p>
               </div>
             </div>   
@@ -298,8 +299,8 @@
         <li><a href="#" class="nav-links">privacy & terms</a></li>    
       </ul>
     </div>
+    <script src="js/main.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/logout.js"></script>    
   </body>
-  <script src="js/main.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/logout.js"></script>
 </html>

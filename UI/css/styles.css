@@ -1,3 +1,7 @@
+@font-face {
+  font-family: "Raleway";
+  src: url("fonts/Raleway/Raleway-Medium.ttf");
+  }
 * {
   box-sizing: border-box;
   padding: 0;
@@ -8,7 +12,7 @@ html, body {
   margin: 0;
 }
  body{
-  font-family: 'Josefin Sans', 'sans-serif';
+  font-family: 'Raleway', sans-serif;
   background-color: #e6e6e6
 }
  .navbar {
@@ -575,6 +579,9 @@ background-color: #fff;
 .container2{
 padding: 12px;
 }
+.justify{
+  text-align: justify;
+}
 .about{
 text-align: justify;
 }
@@ -623,12 +630,25 @@ padding:8px;
 .silver:hover{
   color:gray;
 }
+.gray{
+  color:#404040;
+}
+.gray:hover{
+  color:dodgerblue
+}
 span.theme-blue:hover{
   color:dodgerblue;
 }
 p#comment-data{
   color:#0b47b6;
   padding:5px
+}
+.module-link{
+  color:#595959;
+  text-transform: lowercase;
+}
+.module-link:hover{
+  color:dodgerblue;
 }
 #main-image{
   width:100%;

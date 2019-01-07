@@ -1,15 +1,17 @@
-<noscript>
-    <h1>Your browser does not support Javascript</h1>
-</noscript>  
-<script src="js/auth.js"></script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
     <title>iReporter Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/styles.css">  
+    <meta name="robots" content="noindex,nofollow"/>
+    <link rel="icon" type="image/png" href="img/favicon.ico">
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <noscript>
+      <h1>Your browser does not support Javascript</h1>
+  </noscript>  
+  <script src="js/auth.js"></script>
   </head>
   <body>
     <nav class="navbar">
@@ -36,32 +38,61 @@
       <div class="column-50">
           <div class="card">
               <div class="container2">  
-                <a href="redflags.html"><p><i class="fa fa-flag red fa-3x" aria-hidden="true"></i></p>Red Flags</a>
+                <a href="redflags.html"><p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p><span class='module-link'> Red Flags</span> 
+                  <p class="black align-center"><i class="fa fa-external-link module-link" aria-hidden="true"></i></p>
+                </a>
               </div>
             </div>
             <div class="card">
               <div class="container2"> 
-                <a href="interventions.html"><p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>Interventions</a>
+                <a href="interventions.html"><p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p><span class='module-link'> Interventions</span>
+                  <p class="black align-center"><i class="fa fa-external-link module-link" aria-hidden="true"></i></p>
+                </a>
               </div>
             </div>        
       </div> 
+      <div id="my-incidents" class="column-50">
+        <script>
+          let result = `
+          <div class="card">
+                <div class="container2">  
+                  <a href="view_by_username.html?type=redflag&username=${user.username}"><p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p><span class='module-link'> My Red Flags</span>
+                    <p class="black align-center"><i class="fa fa-external-link module-link" aria-hidden="true"></i></p>
+                  </a>
+                </div>
+              </div>
+              <div class="card">
+                <div class="container2"> 
+                  <a href="view_by_username.html?type=intervention&username=${user.username}"><p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p><span class='module-link'> My Interventions</span>
+                    <p class="black align-center"><i class="fa fa-external-link module-link" aria-hidden="true"></i></p>
+                  </a>
+                </div>
+              </div>        
+          `;
+          document.getElementById('my-incidents').innerHTML = result;
+          </script>      
+      </div>       
       <div class="column-50">
           <div class="card">
               <div class="container2">
-                <a href="profile.html"><p> <i class="fa fa-user theme-blue fa-3x" aria-hidden="true"></i></p>Profile</a>
+                <a href="profile.html"><p> <i class="fa fa-user-o gray fa-2x" aria-hidden="true"></i></p><span class='module-link'>Profile</span>
+                  <p class="black align-center"><i class="fa fa-external-link module-link" aria-hidden="true"></i></p>
+                </a>
               </div>
           </div>
           <div  id="data"></div>
       </div>
       <script>
-          let adminStatus = isAdmin
+          let adminStatus = user.isAdmin;
           
           if(adminStatus == 'true'){
             let result = '';
             result +=`
             <div class="card">
               <div class="container2"> 
-                <a href="admin.html"><p><i class="fa fa-lock theme-blue fa-3x" aria-hidden="true"></i></p>Admin</a>
+                <a href="admin.html"><p><i class="fa fa-unlock-alt gray fa-2x" aria-hidden="true"></i></p><span class='module-link'>Admin</span>
+                  <p class="black align-center"><i class="fa fa-external-link module-link" aria-hidden="true"></i></p>
+                </a>
               </div>
             </div>            
             `;
@@ -83,7 +114,7 @@
         <li><a href="#" class="nav-links">privacy & terms</a></li>    
       </ul>
     </div>
+    <script src="js/main.js"></script>
+    <script src="js/logout.js"></script>
   </body>
-  <script src="js/main.js"></script>
-  <script src="js/logout.js"></script>
 </html>
