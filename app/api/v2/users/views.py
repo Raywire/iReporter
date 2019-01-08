@@ -2,6 +2,7 @@
 from flask_restful import Resource
 from flask import jsonify, request
 from app.api.v2.users.models import UserModel
+from app.api.v2.send_email import send
 from app.api.v2.decorator import token_required
 
 import jwt
@@ -29,10 +30,11 @@ def admin_user():
         "message": "Only admin can access this route"
     })
 
-def get_token(public_id):
+
+def get_token(public_id, expiration):
     token = jwt.encode({'public_id': public_id, 'exp': datetime.datetime.utcnow(
-    ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')
-    return token    
+    ) + datetime.timedelta(minutes=expiration)}, secret_key, algorithm='HS256')
+    return token
 
 
 class Users(Resource):
@@ -75,18 +77,18 @@ class UserSignUp(Resource):
             })
 
         user_data = {
-            "name" : user['firstname']+' '+user['lastname'],
-            "usename" : user['username'],
-            "email" : user['email'],
-            "public_id" : user['public_id'],
-            "isAdmin" : False
+            "name": user['firstname']+' '+user['lastname'],
+            "usename": user['username'],
+            "email": user['email'],
+            "public_id": user['public_id'],
+            "isAdmin": False
         }
         return jsonify({
             "status": 201,
-            "message" : "You have been registered successfully",
+            "message": "You have been registered successfully",
             "data": [
                 {
-                    "token": get_token(user['public_id']).decode('UTF-8'),
+                    "token": get_token(user['public_id'], expiration_time).decode('UTF-8'),
                     "user": user_data
                 }
             ]
@@ -102,7 +104,7 @@ class UserSignIn(Resource):
     def post(self):
         """method to get a specific user"""
         user = self.db.sign_in()
-                        
+
         if user is None:
             return jsonify({
                 "status": 401,
@@ -118,7 +120,7 @@ class UserSignIn(Resource):
             "status": 200,
             "data": [
                 {
-                    "token": get_token(user['public_id']).decode('UTF-8'),
+                    "token": get_token(user['public_id'], expiration_time).decode('UTF-8'),
                     "user": user
                 }
             ]
@@ -141,11 +143,11 @@ class User(Resource):
             return nonexistent_user()
         user_data = {
             'id': user['id'], 'public_id': user['public_id'],
-            'registered':user['registered'],'firstname': user['firstname'],
-            'othernames': user['othernames'],'lastname': user['lastname'],
-            'phoneNumber': user['phonenumber'],'email': user['email'],
-            'username': user['username'],'isAdmin': user['isadmin']
-            }            
+            'registered': user['registered'], 'firstname': user['firstname'],
+            'othernames': user['othernames'], 'lastname': user['lastname'],
+            'phoneNumber': user['phonenumber'], 'email': user['email'],
+            'username': user['username'], 'isAdmin': user['isadmin']
+        }
         return jsonify({
             "status": 200,
             "data": [user_data]
@@ -176,7 +178,7 @@ class User(Resource):
                 }
             })
         return jsonify({
-            "status" : 400,
+            "status": 400,
             "message": "A user who has posted incidents cannot be deleted"
         })
 
@@ -185,10 +187,15 @@ class User(Resource):
         """method to update a user's password"""
 
         if self.db.get_user(username) is None:
-            return nonexistent_user()           
+            return nonexistent_user()
 
         if current_user['isadmin'] is True or current_user['username'] == username:
             if self.db.update_user_password(username) is True:
+                mail = self.db.get_user(username)['email']
+                subject = "Password Updated"
+                body = "Password for the account with username: {0} has been updated by {1}".format(
+                    username, current_user['username'])
+                send(mail, subject, body)
                 return jsonify({
                     "status": 200,
                     "username": username,
@@ -223,9 +230,9 @@ class UserStatus(Resource):
 
         if current_user['username'] == username:
             return jsonify({
-              "status": 403,
-              "message": "You cannot change your own admin status"  
-            })            
+                "status": 403,
+                "message": "You cannot change your own admin status"
+            })
 
         user_status_updated = self.db.promote_user(username)
         if user_status_updated is True:
@@ -237,3 +244,32 @@ class UserStatus(Resource):
                 "status": 200,
                 "data": success_message
             })
+
+
+class UserResetPassword(Resource):
+    """Class with method for sending reset password link to a user"""
+
+    def post(self, email):
+        """Method to request a password reset for a user email that exists"""
+        user = UserModel().get_user(email)
+        if user is None:
+            return nonexistent_user()
+
+        public_id = user['public_id']
+        username = user['username']
+        useremail = user['email']
+        reset_token = get_token(public_id, 30).decode('UTF-8')
+        reset_link = request.json.get('resetlink') + '?username=' + username + '&token=' + reset_token
+        reset_message = "If you did not make this request then simply ignore this email and no change will be made."
+        subject = "Password Reset Request"
+        body = "To reset your password visit the following link within half an hour: {0}\n{1}".format(
+            reset_link, reset_message)
+        if send(useremail, subject, body) is True:
+            return jsonify({
+                "status": 200,
+                "message": "Reset link has been sent to your email"
+            })
+        return jsonify({
+            "status": 400,
+            "message": "Password reset failed please try again"
+        })

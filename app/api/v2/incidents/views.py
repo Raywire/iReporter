@@ -107,8 +107,9 @@ class UpdateInterventionStatus(Resource):
         if edit_status is True:          
             status = self.intervention_model.get_incident_status()
             user_email = self.intervention_model.get_incident_by_id('intervention', intervention_id)['email']
-            send(user_email, 'intervention',
-                intervention_id, status)
+            subject = "Status Change For Intervention"
+            body = "The status of the intervention with id: {0} has changed to {1}".format(intervention_id, status)
+            send(user_email, subject, body)
             return updated_incident(intervention_id, "intervention", "status")
 
 
@@ -190,7 +191,7 @@ class Redflags(Resource):
             return jsonify({
                 "status": 200,
                 "data": [],
-                "message" : "No interventions"
+                "message" : "No red-flags"
             })
         return jsonify({
             "status": 200,
@@ -259,8 +260,10 @@ class UpdateRedflagStatus(Resource):
 
         if edit_status is True:
             email = IncidentModel().get_incident_by_id('redflag', redflag_id)['email']
+            subject = "Status Change For Red-Flag"
             status = IncidentModel().get_incident_status()
-            send(email, 'redflag', redflag_id, status)
+            body = "The status of the red-flag with id: {0} has changed to {1}".format(redflag_id, status)
+            send(email, subject, body)
             return updated_incident(redflag_id, "redflag", "status")
 
 

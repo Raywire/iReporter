@@ -3,8 +3,9 @@ from werkzeug import generate_password_hash, check_password_hash
 from app.db_config import connection, init_database
 from flask import request
 from flask_restful import reqparse
-from app.validators import (validate_username,
-    validate_characters, validate_email, validate_integers,validate_password)
+from app.validators import (validate_username,validate_characters,
+                            validate_email, validate_integers,
+                            validate_password)
 import psycopg2.extras
 
 import datetime
@@ -67,6 +68,7 @@ parser.add_argument('password',
                     help="Password must be at least 6 characters"
                     )
 
+
 class UserModel:
     """User Model class with methods for manipulation user data"""
 
@@ -85,7 +87,7 @@ class UserModel:
         data = {
             'firstname': request.json.get('firstname').title(),
             'lastname': request.json.get('lastname').title(),
-            'othernames': request.json.get('othernames','').title(),
+            'othernames': request.json.get('othernames', '').title(),
             'email': request.json.get('email').lower(),
             'phoneNumber': request.json.get('phoneNumber'),
             'username': request.json.get('username').lower(),
@@ -102,7 +104,8 @@ class UserModel:
             return 'username exists'
 
         query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-        values = data['firstname'], data['lastname'], data['othernames'], data['email'], data['phoneNumber'], data['username'], data['registered'], data['password'], data['isAdmin'], data['public_id']
+        values = data['firstname'], data['lastname'], data['othernames'], data['email'], data['phoneNumber'], data[
+            'username'], data['registered'], data['password'], data['isAdmin'], data['public_id']
 
         conn = self.db
         cursor = conn.cursor()
@@ -121,21 +124,18 @@ class UserModel:
 
         if cursor.rowcount == 0:
             return None
-        return row        
+        return row
 
     def sign_in(self):
         parser_signin.add_argument('username',
-                                type=validate_characters,
-                                required=True,
-                                nullable=True,
-                                help="This key is required and should not be empty or formatted wrongly"
-                                )
+                                   required=True,
+                                   help="This key is required and should not be empty or formatted wrongly"
+                                   )
 
         parser_signin.add_argument('password',
-                                required=True,
-                                nullable=False,
-                                help="This key is required and should not be empty or formatted wrongly"
-                                )
+                                   required=True,
+                                   help="This key is required and should not be empty or formatted wrongly"
+                                   )
 
         args = parser_signin.parse_args()
         data = {
@@ -180,7 +180,7 @@ class UserModel:
                                     required=True,
                                     nullable=False,
                                     help="(Accepted values: True, False)"
-                                    )        
+                                    )
         args = parser_promote.parse_args()
         isAdmin = request.json.get('isadmin')
 
@@ -190,7 +190,7 @@ class UserModel:
         conn = self.db
         cursor = conn.cursor()
         cursor.execute(query)
-        conn.commit()        
+        conn.commit()
         return True
 
     def delete_user(self, username):
@@ -198,8 +198,9 @@ class UserModel:
         try:
             conn = self.db
             cursor = conn.cursor()
-            cursor.execute("""DELETE FROM users WHERE username='{0}'""".format(username))
-            conn.commit() 
+            cursor.execute(
+                """DELETE FROM users WHERE username='{0}'""".format(username))
+            conn.commit()
             return True
         except:
             return False
@@ -207,11 +208,11 @@ class UserModel:
     def update_user_password(self, username):
         """method to change a user's password"""
         parser_password.add_argument('password',
-                    type=validate_password,
-                    required=True,
-                    nullable=False,
-                    help="Password must be at least 6 characters"
-                    )        
+                                     type=validate_password,
+                                     required=True,
+                                     nullable=False,
+                                     help="Password must be at least 6 characters"
+                                     )
         args = parser_password.parse_args()
         password = self.set_password(request.json.get('password'))
 
@@ -221,5 +222,5 @@ class UserModel:
         conn = self.db
         cursor = conn.cursor()
         cursor.execute(query, values)
-        conn.commit()        
+        conn.commit()
         return True

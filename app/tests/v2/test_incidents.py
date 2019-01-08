@@ -357,8 +357,13 @@ class IncidentTestCase(unittest.TestCase):
 
     def test_send_email(self):
         """Tests if email has been sent"""
-        response = send("simiyuwire@gmail.com", "redflag", 1, "resolved")
+        response = send("simiyuwire@gmail.com", "iReporter Test Mail", "If you are reading this this test has passed")
         self.assertTrue(response)
+
+    def test_send_email_failed(self):
+        """Tests if email has not been sent"""
+        response = send("123456", "Failure", "Not a valid email")
+        self.assertFalse(response)    
 
     def test_nonexistent_image(self):
         response = self.app.get("/api/v2/uploads/images/154614577211.jpg", headers=self.headers)

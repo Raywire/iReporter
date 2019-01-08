@@ -2,7 +2,6 @@
 from flask_restful import Resource
 from flask import jsonify, send_from_directory
 from app.api.v2.incidents.models import IncidentModel
-from app.api.v2.send_email import send
 from app.api.v2.decorator import (
     token_required, nonexistent_incident, owner_can_edit,
     draft_is_deletable, draft_is_editable, updated_incident)
@@ -26,16 +25,16 @@ class UploadInterventionImage(Resource):
         upload_status = self.intervention_upload_model.upload_incident_file(
             "intervention", intervention_id, current_user['id'], 'images')
 
-        if upload_status is None:
-            return jsonify({
-                "status": 404,
-                "message": "Intervention does not exist"
-            })
-
         if upload_status is False:
             return jsonify({
                 "status" : 401,
                 "message": "You cannot upload a photo for this incident"
+            })    
+
+        if upload_status is None:
+            return jsonify({
+                "status": 404,
+                "message": "Intervention does not exist"
             })
 
         if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
@@ -75,7 +74,7 @@ class UploadInterventionVideo(Resource):
                 "message": "You cannot upload a video for this incident"
             })
 
-        if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
+        if upload_status == 'File type not supported' or upload_status == 'No uploadFile name in form':
             return jsonify({
                 "status": 400,
                 "message": upload_status
@@ -134,28 +133,28 @@ class UploadRedflagVideo(Resource):
     @token_required
     def patch(current_user, self, redflag_id):
         """method to upload videos to a redflag"""
-        upload_status = self.redflag_upload_model.upload_incident_file(
+        status = self.redflag_upload_model.upload_incident_file(
             "redflag", redflag_id, current_user['id'], 'videos')
 
-        if upload_status is None:
+        if status is None:
             return jsonify({
                 "status": 404,
                 "message": "Redflag does not exist"
             })
 
-        if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
+        if status == 'No uploadFile name in form' or status == 'File type not supported':
             return jsonify({
                 "status": 400,
-                "message": upload_status
+                "message": status
             })
 
-        if upload_status is False:
+        if status is False:
             return jsonify({
                 "status" : 401,
                 "message": "You cannot upload a video for this incident"
             })
 
-        if upload_status is True:
+        if status is True:
             return jsonify({
                 "status": 200,
                 "data": [{

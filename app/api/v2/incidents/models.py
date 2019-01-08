@@ -13,6 +13,7 @@ UPLOAD_FOLDER_IMAGE = 'upload/images'
 UPLOAD_FOLDER_VIDEO = 'upload/videos'
 ALLOWED_EXTENSIONS_IMAGE = set(['png', 'jpg', 'jpeg', 'gif'])
 ALLOWED_EXTENSIONS_VIDEO = set(['mp4', 'avi', 'flv', 'wmv', 'mov'])
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
@@ -214,6 +215,19 @@ class IncidentModel:
 
         query = """DELETE FROM incidents WHERE id={0}""".format(incident_id)
         self.execute_query(query)
+        image = incident['images']
+        video = incident['videos']
+        if image is not None:
+            try:
+                os.remove(os.path.join(APP_ROOT, UPLOAD_FOLDER_IMAGE, image))
+            except:
+                pass
+        if video is not None:
+            try:
+                os.remove(os.path.join(APP_ROOT, UPLOAD_FOLDER_VIDEO, video))
+            except:
+                pass
+        
         return True
 
     def upload_incident_file(self, incident_type, incident_id, current_user_id, file_type):
@@ -248,7 +262,6 @@ class IncidentModel:
                 extension = filename.rsplit('.', 1)[1].lower()
                 filename = str(incident_id) + '.' + extension
 
-                APP_ROOT = os.path.dirname(os.path.abspath(__file__))
                 target = os.path.join(APP_ROOT, upload_file_folder, filename)
                 upload.save(target)
 
