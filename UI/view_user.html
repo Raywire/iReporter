@@ -65,7 +65,7 @@
                               </select>      
                               <br>
                               <input name="submit" class="button-normal" tabindex="5" value="Change Status" type="submit">
-                              <i id="fa-spin-edit-status" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                              <i id="fa-spin-edit-status" class="fa fa-circle-o-notch fa-spin" ></i>
                               <p id="status-message"></p>
                           </form>       
                         </div>
@@ -87,7 +87,7 @@
                               <input id="confirm_password" name="confirm_password" placeholder="Confirm Password" tabindex="1" type="password">
                               <br>
                               <input id='submit' name="submit" class="button-normal" tabindex="5" value="Reset Password" type="submit">
-                              <i id="fa-spin-reset" class="fa fa-circle-o-notch fa-spin hide" style="font-size:24px"></i>
+                              <i id="fa-spin-reset" class="fa fa-circle-o-notch fa-spin hide" ></i>
                             </form>
                           </div>
                         </div> 
@@ -114,7 +114,7 @@
                       </div>
                       <div class="modal-footer">
                         <button id="btnDelConfirm" type="button" class="button-normal danger" >Delete</button>
-                        <i id="fa-spin-data-delete" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                        <i id="fa-spin-data-delete" class="fa fa-circle-o-notch fa-spin" ></i>
                       </div>    
                 </div>
               
@@ -123,7 +123,7 @@
         </div>
         <div id='user-data' class="container">
             <h2 class="black" id="message"></h2>
-            <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i></center>
+            <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" ></i></center>
             <script src="js/models_incidents.js"></script>
             <script>
                 let urlParams = new URLSearchParams(window.location.search);
@@ -155,7 +155,7 @@
                           }
                       })
                       .then( (j) =>{
-                        console.log(j);
+                       
                         if(j.hasOwnProperty('message')){
                           if(j['message'] == 'Token is missing'){
                             logout();
@@ -212,7 +212,6 @@
                       })
                       .catch( (err) =>{
                           console.log(err);
-                          // document.getElementById('message').innerHTML = err;
                       });
               }
               getData();
@@ -247,7 +246,7 @@
                           }
                       })
                       .then( (j) =>{
-                        console.log(j);
+                      
                         if(j.hasOwnProperty('message')){
                           if(j['message'] == 'Token is missing'){
                             logout();
@@ -319,7 +318,7 @@
                           }
                       })
                       .then( (j) =>{
-                        console.log(j);
+                      
                         if(j.hasOwnProperty('message')){
                           if(j['message'] == 'Token is missing'){
                             logout();
@@ -355,7 +354,6 @@
                       })
                       .catch( (err) =>{
                           console.log(err);
-                          document.getElementById('status-message').innerHTML = err;
                           document.getElementById('fa-spin-edit-status').style.display = "none";
                       });
               }

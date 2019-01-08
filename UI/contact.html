@@ -30,17 +30,26 @@
       </ul>
     </nav>
     <div class="container row wrapper">
+        <div class="contact-form">
             <div  class="modal-form">
-                    <form action="" method="POST" enctype="multipart/form-data">
-                      <p class="contact"><label for="name">Full Name</label></p>
-                      <input name="name" placeholder="Full Name" required="" tabindex="1" type="text">           
-                      <p class="contact"><label for="comment">Message</label></p>
-                      <textarea name="comment" id="comment" maxlength="1000" cols="30" rows="10"></textarea>                       
-                      <br>
-                      <input name="submit" class="button-modal" tabindex="5" value="Contact Us" type="submit">
+              <form id="postMessage" method="POST">
+                <p class="contact"><label for="name">Full Name</label></p>
+                <input name="name" placeholder="Full Name" required="" tabindex="1" type="text">           
+                <p class="contact"><label for="comment">Message</label></p>
+                <textarea name="comment" id="comment" maxlength="1000" cols="30" required rows="10"></textarea>                       
+                <br>
+                <input name="submit" class="button-modal" tabindex="5" value="Contact Us" type="submit">
           
-                  </form>       
-                </div>
+              </form> 
+              <script>
+                document.getElementById('postMessage').addEventListener('submit', postMessage);
+
+                function postMessage(event){
+                    event.preventDefault();
+                }
+              </script>      
+            </div>
+        </div>
 
       <div class="push"></div>
     </div>
