@@ -111,16 +111,15 @@
                             let username = j['data'][0]['user']['username'];
                             let id = j['data'][0]['user']['id'];
                             let isAdmin = j['data'][0]['user']['isAdmin']
-                            let date = new Date();
-                            date.setTime(date.getTime() + (59 * 60 * 1000));
-                            let expirationTime = "expires=" + date.toUTCString();
-                            document.cookie = "token=" + access_token + ';' + expirationTime + ";path=/";
-                            document.cookie = "name=" + name + ';' + expirationTime + ";path=/";
-                            document.cookie = "email=" + email + ';' + expirationTime + ";path=/";
-                            document.cookie = "username=" + username + ';' + expirationTime + ";path=/";
-                            document.cookie = "id=" + id + ';' + expirationTime + ";path=/";
-                            document.cookie = "isAdmin=" + isAdmin + ';' + expirationTime + ";path=/";
-                            document.cookie = "isLoggedIn=True" + ';' + expirationTime + ";path=/";
+
+                            let expirationTime = 59;
+                            setCookie("token", access_token, expirationTime);
+                            setCookie("name", name, expirationTime);
+                            setCookie("email", email, expirationTime);
+                            setCookie("username", username,expirationTime);
+                            setCookie("isAdmin", isAdmin, expirationTime);
+                            setCookie("isLoggedIn","True", expirationTime);
+
                             window.location.replace("home.html");
                         }
                        
@@ -131,10 +130,17 @@
                         document.getElementById('error-message').innerHTML = err;
                     });
             }
+            function setCookie(cname, cvalue, expirationtime) {
+              let date = new Date();
+              date.setTime(date.getTime() + (expirationtime * 60 * 1000));
+              let expires = "expires=" + date.toUTCString();
+              document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;" + "sameSite=Strict";
+            }
             
           </script>          
         <div class="container">
-            <a class="silver" href="signup.html">Don't have an account? Sign Up here</a>
+            <p><a class="silver" href="reset_request.html">Forgot password?</a></p>
+            <a class="silver" href="signup.html">Don't have an account? Sign Up here</a>    
         </div>        
       </div>
       <div class="push"></div>

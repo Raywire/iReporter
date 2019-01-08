@@ -101,6 +101,7 @@ function getData(incident_type, incident_creator){
     let options = {
         method: 'GET',
         mode: "cors",
+        cache: "default",
         headers: new Headers({
           "Content-Type": "application/json; charset=utf-8",
           "x-access-token": tokenModels
@@ -228,6 +229,7 @@ function getDataById(incident_type, incidentId){
     let options = {
         method: 'GET',
         mode: "cors",
+        cache: "default",
         headers: new Headers({
           "Content-Type": "application/json; charset=utf-8",
           "x-access-token": tokenModels
@@ -458,7 +460,13 @@ function editLocation(event, intervention_type, intervention_id){
             if(j['message'] == 'Token is invalid'){
               logout();
             }
-            if(j['message'] == 'Intervention does not exist' || 'Redflag does not exist'){
+            if(j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist'){
+              warningNotification({ 
+                    title: 'Warning',
+                    message: j['message'], 
+              });
+            }
+            if(j['message'] == 'Only the user who created this record can edit it'){
               warningNotification({ 
                     title: 'Warning',
                     message: j['message'], 
@@ -467,7 +475,7 @@ function editLocation(event, intervention_type, intervention_id){
             if(j['message'] == 'Incident can only be edited when the status is draft'){
               warningNotification({ 
                     title: 'Warning',
-                    message: j['message'], 
+                    message: 'Location can only be edited when the status is draft', 
               });
             }
           }
@@ -549,7 +557,7 @@ function editComment(event, intervention_type, intervention_id){
             if(j['message'] == 'Incident can only be edited when the status is draft'){
               warningNotification({ 
                     title: 'Warning',
-                    message: j['message'], 
+                    message: 'Comment can only be edited when the status is draft', 
               });
             }
           }
