@@ -8,15 +8,14 @@ email_address = os.getenv('MAIL_USERNAME')
 email_password = os.getenv('MAIL_PASSWORD')
 
 
-def send(receiver, incident_type, incident_id, incident_status):
+def send(receiver, subject, body):
     sender = email_address
     msg = MIMEMultipart()
     msg['From'] = sender
     msg['To'] = receiver
-    msg['Subject'] = "Status Change for {0}".format(incident_type)
+    msg['Subject'] = subject
 
-    body = "The status of the {0} with id: {1} has changed to {2}".format(
-        incident_type, incident_id, incident_status)
+    body = body
     msg.attach(MIMEText(body, 'plain'))
 
     try:
@@ -28,4 +27,4 @@ def send(receiver, incident_type, incident_id, incident_status):
         server.quit()
         return True
     except:
-        return True
+        return False
