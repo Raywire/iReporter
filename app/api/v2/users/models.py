@@ -1,7 +1,7 @@
 """User models"""
 from werkzeug import generate_password_hash, check_password_hash
 from app.db_config import connection, init_database
-from flask import request
+from flask import request, current_app
 from flask_restful import reqparse
 from app.validators import (validate_username,validate_characters,
                             validate_email, validate_integers,
@@ -76,7 +76,8 @@ class UserModel:
         self.registered = datetime.datetime.utcnow()
         self.isAdmin = False
         self.public_id = str(uuid.uuid4())
-        self.db = init_database()
+        url = current_app.config.get('DATABASE_URL')
+        self.db = connection(url)
 
     def set_password(self, password):
         return generate_password_hash(password)

@@ -1,6 +1,6 @@
 """Views for users"""
 from flask_restful import Resource
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 from app.api.v2.users.models import UserModel
 from app.api.v2.send_email import send
 from app.api.v2.decorator import token_required
@@ -8,8 +8,6 @@ from app.api.v2.decorator import token_required
 import jwt
 import datetime
 import os
-
-secret_key = os.getenv('SECRET_KEY')
 
 try:
     expiration_time = int(os.getenv('EXPIRATION_TIME'))
@@ -33,7 +31,7 @@ def admin_user():
 
 def get_token(public_id, expiration):
     token = jwt.encode({'public_id': public_id, 'exp': datetime.datetime.utcnow(
-    ) + datetime.timedelta(minutes=expiration)}, secret_key, algorithm='HS256')
+    ) + datetime.timedelta(minutes=expiration)}, current_app.config['SECRET_KEY'], algorithm='HS256')
     return token
 
 
@@ -142,7 +140,7 @@ class User(Resource):
         if user is None:
             return nonexistent_user()
         user_data = {
-            'id': user['id'], 'public_id': user['public_id'],
+            'public_id': user['public_id'],
             'registered': user['registered'], 'firstname': user['firstname'],
             'othernames': user['othernames'], 'lastname': user['lastname'],
             'phoneNumber': user['phonenumber'], 'email': user['email'],
@@ -259,7 +257,17 @@ class UserResetPassword(Resource):
         username = user['username']
         useremail = user['email']
         reset_token = get_token(public_id, 30).decode('UTF-8')
-        reset_link = request.json.get('resetlink') + '?username=' + username + '&token=' + reset_token
+        json_reset_link = request.json.get('resetlink',None)
+
+        if json_reset_link is None:
+            return {
+                "status": 400,
+                "message":{
+                    "resetlink": "This key is required"
+                }
+            }, 400
+
+        reset_link = json_reset_link + '?username=' + username + '&token=' + reset_token
         reset_message = "If you did not make this request then simply ignore this email and no change will be made."
         subject = "Password Reset Request"
         body = "To reset your password visit the following link within half an hour: {0}\n{1}".format(
@@ -269,7 +277,7 @@ class UserResetPassword(Resource):
                 "status": 200,
                 "message": "Reset link has been sent to your email"
             })
-        return jsonify({
+        return {
             "status": 400,
             "message": "Password reset failed please try again"
-        })
+        }, 400

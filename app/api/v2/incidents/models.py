@@ -1,6 +1,6 @@
 """Incidents Models"""
 import datetime
-from flask import request
+from flask import request, current_app
 from flask_restful import reqparse
 from app.db_config import connection, init_database
 from app.validators import validate_comment, validate_coordinates, validator
@@ -49,7 +49,8 @@ class IncidentModel:
         Upload and Delete operations on database"""
 
     def __init__(self):
-        self.db = init_database()
+        url = current_app.config.get('DATABASE_URL')
+        self.db = init_database(url)
 
     def execute_query(self, query):
         conn = self.db
