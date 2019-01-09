@@ -14,8 +14,7 @@ git clone https://github.com/Raywire/iReporter
 
 ### Prerequisites
 
-A postgres database is required
-You can add your username and password to app/db_config.py
+Two postgres databases are required one for testing the other for development
 
 **Setting up the database with a user who has all privileges**
 ```
@@ -26,13 +25,11 @@ postgres=# grant all privileges on database your-database to your-username;
 ```
 ### Contents of .env file
 
-***Note***: EXPIRATION_TIME is in minutes
+***Note***: Token EXPIRATION_TIME is in minutes
 ```
 source venv/bin/activate
 
 export EXPIRATION_TIME=59
-export FLASK_ENV="development"
-export FLASK_CONFIG="development"
 export DATABASE_URL="dbname='your-database' host='localhost' port='5432' user='your-username' password='your-password'"
 export DATABASE_URL_TEST="dbname='your-test-database' host='localhost' port='5432' user='your-username' password='your-password'"
 export SECRET_KEY="secret-key-goes-here"
@@ -72,18 +69,15 @@ flask run
 
 ## Running the tests
 
-Tests are to be run with pytest or py.test on the root of iReporter folder
-Set FLASK_CONFIG to testing on your .env file before running tests
-
-### Break down into end to end tests
-
-Tests check all interventions, user sign up and login endpoints
-Note a super user is created by default in case none is present upon running the app
-
+Tests with coverage are run with pytest or py.test on the root of iReporter folder
 ```
-source .env
+source .env 
 pytest --cov=app/
 ```
+### Break down into end to end tests
+
+Tests check all incidents(red-flags and interventions), user sign up and login endpoints
+Note a super user is created by default in case none is present upon running the app
 
 
 ## Deployment on Heroku

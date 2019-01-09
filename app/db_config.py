@@ -1,13 +1,8 @@
 """Database configuration"""
 import psycopg2
 import os
-from instance.config import APP_CONFIG
-from werkzeug import generate_password_hash, check_password_hash
+from werkzeug import generate_password_hash
 import datetime
-import uuid
-
-configuration = os.getenv('FLASK_CONFIG')
-url = APP_CONFIG[configuration].DATABASE_URL
 
 password = generate_password_hash(os.getenv('SUPER_USER_PASSWORD'))
 email = os.getenv('SUPER_USER_EMAIL')
@@ -16,7 +11,6 @@ firstname = os.getenv('SUPER_USER_FIRSTNAME')
 lastname = os.getenv('SUPER_USER_LASTNAME')
 othernames = os.getenv('SUPER_USER_OTHERNAMES')
 phonenumber = os.getenv('SUPER_USER_PHONENUMBER')
-public_id = str(uuid.uuid4())
 registered = datetime.datetime.utcnow()
 
 
@@ -25,12 +19,12 @@ def connection(url):
     return con
 
 
-def init_database():
+def init_database(url):
     con = connection(url)
     return con
 
 
-def create_tables():
+def create_tables(url):
     conn = connection(url)
     cursor = conn.cursor()
     queries = tables()
@@ -40,10 +34,10 @@ def create_tables():
     conn.commit()
 
 
-def destroy_tables():
+def destroy_tables(url):
     query = """DROP TABLE IF EXISTS users, incidents;"""
     test_url = os.getenv('DATABASE_URL_TEST')
-    conn = connection(test_url)
+    conn = connection(url)
     cursor = conn.cursor()
     cursor.execute(query)
     conn.commit()
@@ -80,27 +74,24 @@ def tables():
     queries = [table2, table1]
     return queries
 
-if configuration == 'testing':
-    public_id = "f3b8a1c3-f775-49e1-991c-5bfb963eb419"
+def create_super_user(url, public_id):  
 
-user = {
-    "email": email,
-    "firstname": firstname,
-    "isAdmin": True,
-    "lastname": lastname,
-    "othernames": othernames,
-    "password": password,
-    "phoneNumber": phonenumber,
-    "public_id": public_id,
-    "registered": registered,
-    "username": username
-}    
+    user = {
+        "email": email,
+        "firstname": firstname,
+        "isAdmin": True,
+        "lastname": lastname,
+        "othernames": othernames,
+        "password": password,
+        "phoneNumber": phonenumber,
+        "public_id": public_id,
+        "registered": registered,
+        "username": username
+    }
 
-query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
-    user['firstname'], user['lastname'], user['othernames'], user['email'], user['phoneNumber'], user['username'], user['registered'], user['password'], user['isAdmin'], user['public_id'])
-
-def create_super_user():
-
+    query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
+        user['firstname'], user['lastname'], user['othernames'], user['email'], user['phoneNumber'], user['username'], user['registered'], user['password'], user['isAdmin'], user['public_id'])
+    
     conn = connection(url)
     cursor = conn.cursor()
     try:

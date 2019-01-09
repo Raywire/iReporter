@@ -3,31 +3,29 @@ import unittest
 import json
 import jwt
 import datetime
-import os
 
 from ... import create_app
+from flask import current_app
 from app.db_config import create_super_user, destroy_tables, create_tables
 from app.tests.data import test_user, redflag_data, redflag_data2, redflag_data3
 from app.api.v2.send_email import send
 
-APP = create_app(config_name="testing")
-
 expiration_time = 10
-
-secret_key = os.getenv('SECRET_KEY')
 
 class IncidentUploadTestCase(unittest.TestCase):
     """Class for testing incident uploads"""
 
     def setUp(self):
         """set up method initialising resused variables"""
-        APP.testing = True
-        self.app = APP.test_client()
-        create_tables()
-        create_super_user()
+        self.APP = create_app(config_name="testing")
+        self.app_context = self.APP.app_context()
+        self.app_context.push()
+        self.APP.testing = True
+        self.app = self.APP.test_client()
+
         self.test_user = test_user
         token = jwt.encode({'public_id': self.test_user['public_id'], 'exp': datetime.datetime.utcnow(
-        ) + datetime.timedelta(minutes=expiration_time)}, secret_key, algorithm='HS256')
+        ) + datetime.timedelta(minutes=expiration_time)}, current_app.config['SECRET_KEY'], algorithm='HS256')
         self.headers = {'Content-Type': 'application/json',
                         'x-access-token': token}
         self.headers_invalid = {
@@ -56,4 +54,5 @@ class IncidentUploadTestCase(unittest.TestCase):
     #     self.assertEqual(result, 404)
 
     def tearDown(self):
-        destroy_tables()        
+        url = self.APP.config.get('DATABASE_URL')
+        destroy_tables(url)        

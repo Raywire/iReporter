@@ -20,6 +20,7 @@ more-itertools==4.3.0
 pathlib2==2.3.2
 pluggy==0.8.0
 psycopg2==2.7.6.1
+psycopg2-binary==2.7.6.1
 py==1.7.0
 pycodestyle==2.4.0
 PyJWT==1.7.1

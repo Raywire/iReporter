@@ -3,7 +3,6 @@ Api configurations
 """
 import os
 
-
 class Config:
     """
     Base configuration class.
@@ -12,6 +11,7 @@ class Config:
     CSRF_ENABLED = True
     TESTING = False
     DATABASE_URL = os.getenv('DATABASE_URL')
+    SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 class DevelopmentConfig(Config):
