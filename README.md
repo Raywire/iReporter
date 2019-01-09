@@ -14,7 +14,7 @@ git clone https://github.com/Raywire/iReporter
 
 ### Prerequisites
 
-Two postgres databases are required one for testing the other for developments
+Two postgres databases are required one for testing the other for development
 
 **Setting up the database with a user who has all privileges**
 ```
