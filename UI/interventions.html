@@ -39,12 +39,17 @@
       </nav>
       <div class="container wrapper">
         <div>
-          <!-- Trigger/Open The Modal -->
-          <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Intervention"><i class="fa fa-plus" aria-hidden="true"></i> intervention</button>
+          <div class="top-buttons">
+              <div class="button-left">
+                  <!-- Trigger/Open The Modal -->
+                  <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Intervention"><i class="fa fa-plus" aria-hidden="true"></i> <span class="mobile-hidden"> intervention</span></button>
+              </div>
+              <div class="button-right">
+                  <input type="text" id="searchIncidents" class="search-data" placeholder="Search for interventions...">
+              </div>           
+            </div>
         <!-- The Modal -->
         <div id="modal-window-create" class="modal">
-  
-            <!-- Modal content -->
             <div class="modal-content">
               <span class="close">&times;</span>
               <div  class="modal-form">
@@ -73,21 +78,22 @@
           </div>        
         </div> 
           <div class="table-responsive">
-                  <table>
-                    <tbody id="incident-data">
-                      <tr>
-                        <td>
-                          <p id="message"></p>
-                          <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" ></i></center>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <script src="js/models_incidents.js"></script>
-                  <script>
-                    getData('intervention', 'all');
-                  </script>                                 
-          </div>  
+            <table>
+              <tbody id="incident-data">
+                <tr>
+                  <td>
+                    <p id="message"></p>
+                    <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" ></i></center>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <script src="js/models_incidents.js"></script>
+            <script>
+              getData('intervention', 'all');
+              document.getElementById('searchIncidents').addEventListener('keyup', searchIncidents);
+            </script>                                 
+          </div>           
           <div class="push"></div>           
       </div>
       <div class="footer">

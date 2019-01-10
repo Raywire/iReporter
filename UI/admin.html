@@ -36,9 +36,10 @@
     </nav>
     <div class="container wrapper">
         <h2 class="page-title theme-blue">Users</h2>
+        <input type="text" id="searchUsers" class="search-data" placeholder="Search for users...">
         <div class="table-responsive">
           <table>
-            <tbody id="redflag-data">
+            <tbody id="user-data">
               <tr>
                 <td>
                   <p id="message"></p>
@@ -47,78 +48,213 @@
               </tr>
             </tbody>
           </table>
-                <script>
-                 
-                    function getData(event){
-                
-                      let uri = root + 'users';
-                
-                      let options = {
-                          method: 'GET',
-                          mode: "cors",
-                          headers: new Headers({
-                            "Content-Type": "application/json; charset=utf-8",
-                            "x-access-token": token
-                          })
+          <script>
+              function getData(event){
+          
+                let uri = root + 'users';
+          
+                let options = {
+                    method: 'GET',
+                    mode: "cors",
+                    headers: new Headers({
+                      "Content-Type": "application/json; charset=utf-8",
+                      "x-access-token": token
+                    })
+                }
+                let req = new Request(uri, options);
+          
+                fetch(req)
+                    .then((response)=>{
+                        if(response.ok){
+                          document.getElementById('fa-spin-data').style.display = "none";
+                          return response.json();
+                        }else{
+                          document.getElementById('fa-spin-data').style.display = "none";
+                          return response.json();
+                        }
+                    })
+                    .then( (j) =>{
+                      
+                      if(j.hasOwnProperty('message')){
+                        if(j['message'] == 'Token is missing'){
+                          logout();
+                        }
+                        if(j['message'] == 'Token is invalid'){
+                          logout();
+                        }
                       }
-                      let req = new Request(uri, options);
-                
-                      fetch(req)
-                          .then((response)=>{
-                              if(response.ok){
-                                document.getElementById('fa-spin-data').style.display = "none";
-                                return response.json();
-                              }else{
-                                document.getElementById('fa-spin-data').style.display = "none";
-                                return response.json();
-                              }
-                          })
-                          .then( (j) =>{
-                            
-                            if(j.hasOwnProperty('message')){
-                              if(j['message'] == 'Token is missing'){
-                                logout();
-                              }
-                              if(j['message'] == 'Token is invalid'){
-                                logout();
-                              }
-                            }
-                            if(j.hasOwnProperty('data')){
-                              let result = '';
-                                j['data'].forEach((user) => {
-                                  const { firstname, lastname, username, email, isadmin } = user
-
-                                  result += `
-                                  <div class="column">
-                                          <div class="card">
-                                              <div class="container2 align-center">
-                                                <a href="view_user.html?username=${username}">
-                                                  <p><i class="fa fa-user-o fa-3x theme-blue" aria-hidden="true"></i></p>
-                                                  <h4 class="black"><b>${firstname} ${lastname}</b></h4>
-                                                  <p>${username}</p>
-                                                  <p class='italic font-small'>${email}</p>
-                                                  <p class='italic font-small'>Admin: ${isadmin}</p>
-                                                  <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
-                                                </a>
-                                              </div>
-                                            </div>               
-                                        </div>
-                                  `;
-                                  document.getElementById('redflag-data').innerHTML = result;
-                                });
-                            }
-                                                        
-                          })
-                          .catch( (err) =>{
-                              
-                              document.getElementById('message').innerHTML = err;
+                      if(j.hasOwnProperty('data')){
+                        let result = '';
+                        let users = [];
+                        
+                          j['data'].forEach((user) => {
+                            users.push(user);
                           });
-                  }
-                  getData();
-                </script>                                  
-  </div>  
-      
 
+                          (function() {
+                            "use strict";
+                            function Pagination() {
+                              const user = users;
+
+                              const prevButton = document.getElementById('button_prev');
+                              const nextButton = document.getElementById('button_next');
+                              const clickPageNumber = document.querySelectorAll('.clickPageNumber');
+                              
+                              let current_page = 1;
+                              let records_per_page = 50;                          
+                              
+                              this.init = function() {
+                                  changePage(1);
+                                  pageNumbers();
+                                  selectedPage();
+                                  clickPage();
+                                  addEventListeners();
+                              }
+                              
+                              let addEventListeners = function() {
+                                  nextButton.addEventListener('click', nextPage); 
+                                  prevButton.addEventListener('click', prevPage); 
+                              }
+                                    
+                              let selectedPage = function() {
+                                  let page_number = document.getElementById('page_number').getElementsByClassName('clickPageNumber'); 
+                                  for (let i = 0; i < page_number.length; i++) {
+                                      if (i == current_page - 1) {
+                                          page_number[i].style.opacity = "1.0";
+                                      } 
+                                      else {
+                                          page_number[i].style.opacity = "0.5";
+                                      }
+                                  }   
+                              }  
+                              
+                              let checkButtonOpacity = function() {
+                                current_page == 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
+                                current_page == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
+                              }
+
+                              let changePage = function(page) {
+                                  const result = document.getElementById('user-data');
+
+                                  if (page < 1) {
+                                      page = 1;
+                                  } 
+                                  if (page > (numPages() -1)) {
+                                      page = numPages();
+                                  }
+                              
+                                  result.innerHTML = "";
+
+                                  for(let i = (page -1) * records_per_page; i < (page * records_per_page) && i < user.length; i++) {
+
+                                      result.innerHTML += `
+                                            <div class="column">
+                                              <div class="card">
+                                                  <div class="container2 align-center">
+                                                    <a href="view_user.html?username=${user[i].username}">
+                                                      <p><i class="fa fa-user-o fa-3x theme-blue" aria-hidden="true"></i></p>
+                                                      <h4 class="black"><b>${user[i].firstname} ${user[i].lastname}</b></h4>
+                                                      <p>${user[i].username}</p>
+                                                      <p class='italic font-small'>${user[i].email}</p>
+                                                      <p class='italic font-small'>Admin: ${user[i].isadmin}</p>
+                                                      <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+                                                    </a>
+                                                  </div>
+                                                </div>               
+                                            </div>
+                                      `;
+                                  }
+                                  checkButtonOpacity();
+                                  selectedPage();
+                              }
+
+                              let prevPage = function() {
+                                  if(current_page > 1) {
+                                      current_page--;
+                                      changePage(current_page);
+                                      document.getElementById('current_page').innerHTML = current_page;
+                                  }
+                              }
+
+                              let nextPage = function() {
+                                  if(current_page < numPages()) {
+                                      current_page++;
+                                      changePage(current_page);
+                                      document.getElementById('current_page').innerHTML = current_page;
+                                  } 
+                              }
+
+                              let clickPage = function() {
+                                  document.addEventListener('click', function(e) {
+                                      if(e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")) {
+                                          current_page = e.target.textContent;
+                                          changePage(current_page);
+                                      }
+                                  });
+                              }
+
+                              let pageNumbers = function() {
+                                  let pageNumber = document.getElementById('page_number');
+                                      pageNumber.innerHTML = "";
+
+                                  pageNumber.innerHTML = `<span class=''><span id='current_page'>${current_page}</span> of ${numPages()}</span>`;
+                              }
+
+                              let numPages = function() {
+                                return Math.ceil(user.length / records_per_page);  
+                              }
+                            } 
+                            
+                            let pagination = new Pagination();
+                            pagination.init();
+                          })();
+                      }
+                                                  
+                    })
+                    .catch( (err) =>{
+                        console.log(err);
+                        document.getElementById('message').innerHTML = err;
+                    });
+            }
+            getData();
+
+            document.getElementById('searchUsers').addEventListener('keyup', searchUsers);
+
+            function searchUsers() {
+              
+              let input, filter, table, column, card, i, txtValue;
+              input = document.getElementById("searchUsers");
+              filter = input.value.toUpperCase();
+              table = document.getElementById("user-data");
+              column = table.getElementsByClassName("column");
+
+              // Loop through all cards, and hide those who don't match the search query
+              for (i = 0; i < column.length; i++) {
+                card = column[i].getElementsByClassName("card")[0];
+                if (card) {
+                  txtValue = card.textContent || card.innerText;
+                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    column[i].style.display = "";
+                  } else {
+                    column[i].style.display = "none";
+                  }
+                }
+              }
+            }
+          </script>                                
+        </div>  
+        <div class="pagination">
+          <div class="pagination-block">
+            <!-- <select id='perPage'>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="250">250</option>
+            </select> -->
+            <span id="page_number" class="outline-none page-number"></span>
+            <span class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
+            <span class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+          </div>
+        </div>     
     
  
         <div class="push"></div>           
