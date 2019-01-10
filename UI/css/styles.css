@@ -217,8 +217,24 @@ a {
     position: relative;
     text-align: center;
     color: white;
+    max-width: 1650px;
+    margin: 0 auto;
 }
-
+.top-buttons{
+  width: 100%;
+  overflow: hidden;
+}
+.button-left{
+  width:25%;
+  float: left;
+  text-align: left;
+}
+.button-right{
+  width:75%;
+  float: left;
+  padding-top: 15px;
+  padding-right:4px;
+}
  @media screen and (max-width: 767px) {
   .top-left h2, .bottom-right h3{
     color: #296de8
@@ -241,12 +257,42 @@ a {
     width: 100%;
     padding: 5px;
   } 
-  
+  .top-buttons{
+    width: 100%;
+    overflow: hidden;
+  }
+  .button-left{
+    width:20%;
+    float: left;
+    text-align: left;
+  }
+  .button-right{
+    width:80%;
+    float: left;
+    padding-top: 15px;
+    padding-right:4px;
+  }  
+  .mobile-hidden{
+    display: none;
+  }
  }
  @media screen and (max-width: 400px) {
   .login-box{
     width: 100%;
     margin-top: 4.5em;
+  }    
+}
+@media screen and (max-width: 307px) {
+  .button-left{
+    width:30%;
+    float: left;
+    text-align: left;
+  }
+  .button-right{
+    width:50%;
+    float: left;
+    padding-top: 15px;
+    padding-right:4px;
   }  
 }
 .footer {
@@ -692,7 +738,74 @@ p.img-details{
 .footer ul li a {
   padding: 5px;
 }
-/* #btnImage, #btnVideo, #btnDelete,  */
 .btnOwner{
   display: none;
+}
+
+.search-data{
+  background-image: url('../img/searchicon.png'); /* Add a search icon to input */
+  background-position: 10px 12px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
+/* Pagination */
+.pagination {
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  background-color: white;
+  padding: 10px;
+}
+.pagination .tableList {
+    /* min-height: 250px; */
+    text-indent: 20px;
+}
+.tableList .objectBlock {
+    position: relative;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.pageButton {
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+}
+span.pageButton:hover{
+  color: #595959;
+  border: 1px solid #b3b3b3;
+}
+.page-number{
+  color: dodgerblue;
+}
+.clickPageNumber {
+    background-color: lightgrey;
+    padding: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.pagination-block {
+  text-align: center;
+  width: 100%;
+}
+.pagination-block span {
+  display: inline-block;
+}
+.pagination-block .pageButton {
+  color: #808080;
+}
+.pagination-block span:hover {
+  cursor: pointer;
+}
+.opacity {
+  opacity: 0.5;
+}
+.outline-none {
+  outline: none;
+  user-select: none; 
 }

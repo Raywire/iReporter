@@ -36,30 +36,32 @@
         </ul>
       </nav>
       <div class="container wrapper">
-          <div class="table-responsive">
-              <h2 id="by-username" class="theme-blue"></h2>
-                  <table>
-                    <tbody id="incident-data">
-                      <tr>
-                        <td>
-                          <p id="message"></p>
-                          <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" ></i></center>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <script src="js/models_incidents.js"></script>
-                  <script>
-                    let urlParams2 = new URLSearchParams(window.location.search);
-                    let incident_creator = urlParams2.get('username');
-                    let incident_type = urlParams2.get('type');
+        <div class="table-responsive">
+          <h2 id="by-username" class="theme-blue"></h2>
+          <input type="text" id="searchIncidents" class="search-data" placeholder="Search for incidents...">
+          <table>
+            <tbody id="incident-data">
+              <tr>
+                <td>
+                  <p id="message"></p>
+                  <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" ></i></center>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <script src="js/models_incidents.js"></script>
+          <script>
+            let urlParams2 = new URLSearchParams(window.location.search);
+            let incident_creator = urlParams2.get('username');
+            let incident_type = urlParams2.get('type');
 
-                    getData(incident_type, incident_creator);
-                    
-                    document.getElementById('by-username').innerHTML = 'By' + ' ' +  incident_creator;
-                  </script>                                  
-          </div>  
-          <div class="push"></div>           
+            getData(incident_type, incident_creator);
+            document.getElementById('searchIncidents').addEventListener('keyup', searchIncidents);
+            
+            document.getElementById('by-username').innerHTML = 'By' + ' ' +  incident_creator;
+          </script>                                  
+        </div>  
+        <div class="push"></div>           
       </div>
       <div class="footer">
         <ul>

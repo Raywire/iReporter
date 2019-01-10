@@ -214,11 +214,10 @@ function getData(incident_type, incident_creator){
                 document.getElementById('incident-data').innerHTML = result;
               });
           }
-                                      
-        })
+                                     
+})
         .catch( (err) =>{
-            
-            document.getElementById('message').innerHTML = err;
+            console.log(err)
         });
 }
 
@@ -679,7 +678,6 @@ function uploadImage(event, intervention_type, intervention_id){
   console.log(uploadedFileName);
   
   formData.append('uploadFile', fileData, fileData.name);
-  // formData.append('name', 'uploadFile');
 
   let options = {
       method: 'PATCH',
@@ -711,10 +709,7 @@ function uploadImage(event, intervention_type, intervention_id){
           if(j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist'){
             document.getElementById('upload-message').innerHTML = j['message'];
           }
-          if(j['message'] == 'Only the user who created this record can edit it'){
-            document.getElementById('upload-message').innerHTML = j['message'];
-          }
-          if(j['message'] == 'Incident can only be edited when the status is draft'){
+          if(j['message'] == 'You cannot upload a photo for this incident'){
             document.getElementById('upload-message').innerHTML = j['message'];
           }
           if(j['message'] == 'File type not supported' || j['message'] == 'No uploadFile name in form'){
@@ -734,7 +729,7 @@ function uploadImage(event, intervention_type, intervention_id){
       })
       .catch( (err) =>{
           console.log(err);
-          document.getElementById('upload-message').innerHTML = err;
+          document.getElementById('upload-message').innerHTML = "An error occured check if status is draft and try again";
           document.getElementById('fa-spin-upload').style.display = "none";
       });                
 
@@ -842,5 +837,27 @@ function checkPassword(){
   }else{
     document.getElementById('password').style.borderColor = "red";
     document.getElementById('confirm_password').style.borderColor = "red";
+  }
+}
+
+function searchIncidents() {
+  
+  let input, filter, table, column, card, i, txtValue;
+  input = document.getElementById("searchIncidents");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("incident-data");
+  column = table.getElementsByClassName("column");
+
+  // Loop through all cards, and hide those who don't match the search query
+  for (i = 0; i < column.length; i++) {
+    card = column[i].getElementsByClassName("card")[0];
+    if (card) {
+      txtValue = card.textContent || card.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        column[i].style.display = "";
+      } else {
+        column[i].style.display = "none";
+      }
+    }
   }
 }
