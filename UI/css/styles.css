@@ -759,7 +759,9 @@ p.img-details{
   margin: 0 auto;
   position: relative;
   background-color: white;
-  padding: 10px;
+  padding: 8px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
+  transition: 0.3s;
 }
 .pagination .tableList {
     /* min-height: 250px; */
@@ -808,4 +810,36 @@ span.pageButton:hover{
 .outline-none {
   outline: none;
   user-select: none; 
+}
+.per-page{
+  color:#737373;
+  /* font-size: 0.9em; */
+}
+.pagination span{
+  font-size: 0.95em;
+}
+select#perPage{
+  -webkit-appearance: none; 
+  -moz-appearance: none;
+  appearance: none; 
+  background-position: 97% center;
+  background-repeat: no-repeat;
+  border: none;
+  outline: none;
+  /* color: #555; */
+  font-size: inherit;
+  margin:0 20px 0 0;
+  padding: 5px 10px;
+}
+select#perPage {
+  outline: none;
+}
+
+select#perPage:focus {
+  outline: none;
+}
+
+select#perPage:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
 }

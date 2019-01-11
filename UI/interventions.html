@@ -92,7 +92,21 @@
             <script>
               getData('intervention', 'all');
               document.getElementById('searchIncidents').addEventListener('keyup', searchIncidents);
-            </script>                                 
+            </script> 
+            <div class="pagination">
+              <div class="pagination-block">
+                  <span class="per-page">per page:</span>
+                <select id='perPage' onchange="perPageSelection('intervention', 'all')">
+                  <option value="60" selected="selected">60</option>
+                  <option value="120">120</option>
+                  <option value="300">300</option>
+                </select>
+                <span id="pageNumber" class="outline-none page-number"></span>
+                <span class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
+                <span class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                <span id="incident_number" class="outline-none page-number"></span>
+              </div>
+            </div>                                            
           </div>           
           <div class="push"></div>           
       </div>
