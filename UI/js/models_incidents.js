@@ -86,6 +86,10 @@ function postData(event, incident_type){
             });
           
           // window.location.reload(true);
+          if(incident_type == 'interventions'){
+            getData('intervention', 'all');
+          }else if (incident_type == 'redflags')
+            getData('redflag', 'all');
         }
                                     
       })
@@ -112,10 +116,15 @@ function getData(incident_type, incident_creator){
     fetch(req)
         .then((response)=>{
             if(response.ok){
-              document.getElementById('fa-spin-data').style.display = "none";
+              try{
+                document.getElementById('fa-spin-data').style.display = 'none';
+              }catch{}
+              
               return response.json();
             }else{
-              document.getElementById('fa-spin-data').style.display = "none";
+              try{
+                document.getElementById('fa-spin-data').style.display = 'none';
+              }catch{}
               return response.json();
             }
         })
@@ -178,41 +187,194 @@ function getData(incident_type, incident_creator){
               })
             }
 
+            let paginatedIncidents = [];
             usernameIncidents.forEach((incident) => {
-                const { id, title, status, createdon, username, type } = incident
-                let humanizedTime = humanize(createdon);
-                
-                if(username == profileUserName){
-                  creator = 'Me';
-                }else{
-                  creator = username;
-                }
-                if(type == 'redflag'){
-                    link = 'view_redflag.html?redflag_id';
-                    icon = 'fa fa-flag red';
-                }else if(type == 'intervention'){
-                    link = 'view_intervention.html?intervention_id'
-                    icon = 'fa fa-handshake-o theme-blue';
-                }
-                result += `
-                <div class="column">
-                  <div class="card">
-                      <div class="container2 justify">
-                        <a href="${link}=${id}">
-                          <p><i class="${icon} fa-2x" aria-hidden="true"></i></p>
-                          <h4 class="black truncate"><b>${title}</b></h4>
-                        </a>
-                          <a href="view_by_username.html?type=${type}&username=${username}"><p class='italic font-small'><span class="theme-blue">By ${creator}</span></p></a>
-                          <p>${status}</p>
-                          <p class='italic font-small'>${humanizedTime}</p>
-                          <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+              paginatedIncidents.push(incident);
+            });
+
+              (function() {
+                "use strict";
+                function Pagination() {
+                  const prevButton = document.getElementById('button_prev');
+                  const nextButton = document.getElementById('button_next');
+                  const clickPageNumber = document.querySelectorAll('.clickPageNumber');
+                  let perPage = document.getElementById('perPage').value;
+                  
+                  let currentPage = 1;
+                  let recordsPerPage = parseInt(perPage);
+                  let startNumber = 1;
+                  let totalNumber = paginatedIncidents.length;
+
+                  if(recordsPerPage > totalNumber){
+                    recordsPerPage = totalNumber;
+                  }
+                  let endNumber = recordsPerPage;
+                  let virtualEndNumber = recordsPerPage;
+                  
+                  this.init = function() {
+                      changePage(1);
+                      pageNumbers();
+                      selectedPage();
+                      clickPage();
+                      addEventListeners();
+                  }
+                  
+                  let addEventListeners = function() {
+                      nextButton.addEventListener('click', nextPage); 
+                      prevButton.addEventListener('click', prevPage); 
+                  }
                         
-                      </div>
-                    </div>               
-                </div> 
-                `;
-                document.getElementById('incident-data').innerHTML = result;
-              });
+                  let selectedPage = function() {
+                      let pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber'); 
+                      for (let i = 0; i < pageNumber.length; i++) {
+                          if (i == currentPage - 1) {
+                              pageNumber[i].style.opacity = "1.0";
+                          } 
+                          else {
+                              pageNumber[i].style.opacity = "0.5";
+                          }
+                      }   
+                  }  
+                  
+                  let checkButtonOpacity = function() {
+                    currentPage == 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
+                    currentPage == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
+                  }
+
+                  let changePage = function(page) {
+                      const result = document.getElementById('incident-data');
+
+                      if (page < 1) {
+                          page = 1;
+                      } 
+                      if (page > (numPages() -1)) {
+                          page = numPages();
+                      }
+                  
+                      result.innerHTML = "";
+                      
+                      if (paginatedIncidents.length == 0){
+                        let result = '';
+                        result += `
+                          <div class="column-100">
+                          <div class="card">
+                              <div class="container">
+                                
+                                  <p><i class="fa fa-star-half-o fa-3x" aria-hidden="true"></i></p>
+                                  <h4 class="theme-blue"><b>You have not posted any incidents</b></h4>
+                                
+                              </div>
+                            </div>               
+                        </div> 
+                          `;
+                          currentPage = 0;
+                          document.getElementById('startNumber').innerHTML = 0;
+                          document.getElementById('endNumber').innerHTML = 0;
+                          return document.getElementById('incident-data').innerHTML = result; 
+                      }
+
+                      for(let i = (page -1) * recordsPerPage; i < (page * recordsPerPage) && i < paginatedIncidents.length; i++) {
+                        let humanizedTime = humanize(paginatedIncidents[i].createdon);
+                        let link = '';
+                        let icon = '';
+                
+                        if(paginatedIncidents[i].username == profileUserName){
+                          creator = 'Me';
+                        }else{
+                          creator = paginatedIncidents[i].username;
+                        }
+                        if(paginatedIncidents[i].type == 'redflag'){
+                            link = 'view_redflag.html?redflag_id';
+                            icon = 'fa fa-flag red';
+                        }else if(paginatedIncidents[i].type == 'intervention'){
+                            link = 'view_intervention.html?intervention_id'
+                            icon = 'fa fa-handshake-o theme-blue';
+                        }
+
+                          result.innerHTML += `
+                              <div class="column">
+                                <div class="card">
+                                    <div class="container2 justify">
+                                      <a href="${link}=${paginatedIncidents[i].id}">
+                                        <p><i class="${icon} fa-2x" aria-hidden="true"></i></p>
+                                        <h4 class="black truncate"><b>${paginatedIncidents[i].title}</b></h4>
+                                      </a>
+                                        <a href="view_by_username.html?type=${paginatedIncidents[i].type}&username=${paginatedIncidents[i].username}"><p class='italic font-small'><span class="theme-blue">By ${creator}</span></p></a>
+                                        <p>${paginatedIncidents[i].status}</p>
+                                        <p class='italic font-small'>${humanizedTime}</p>
+                                        <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+                                      
+                                    </div>
+                                  </div>               
+                              </div>
+                          `;
+                      }
+                      checkButtonOpacity();
+                      selectedPage();
+                  }
+
+                  let prevPage = function() {
+                      if(currentPage > 1) {
+                          currentPage--;
+                          changePage(currentPage);
+                          document.getElementById('currentPage').innerHTML = currentPage;
+                          startNumber -= recordsPerPage;
+                          virtualEndNumber -= recordsPerPage;
+                          document.getElementById('startNumber').innerHTML = startNumber;
+                          document.getElementById('endNumber').innerHTML = virtualEndNumber;
+                      }
+                  }
+
+                  let nextPage = function() {
+                      if(currentPage < numPages()) {
+                          currentPage++;
+                          changePage(currentPage);
+                          document.getElementById('currentPage').innerHTML = currentPage;
+                          startNumber += recordsPerPage;
+                          endNumber += recordsPerPage;
+                          virtualEndNumber += recordsPerPage;
+                          if(endNumber > totalNumber){
+                            endNumber = totalNumber;
+                          }
+                          if(endNumber == startNumber){
+                            
+                          }
+                          document.getElementById('startNumber').innerHTML = startNumber;
+                          document.getElementById('endNumber').innerHTML = endNumber;
+                      } 
+                  }
+
+                  let clickPage = function() {
+                      document.addEventListener('click', function(e) {
+                          if(e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")) {
+                              currentPage = e.target.textContent;
+                              changePage(currentPage);
+                          }
+                      });
+                  }
+
+                  let pageNumbers = function() {
+                      let pageNumber = document.getElementById('pageNumber');
+                          pageNumber.innerHTML = "";
+                      let numberOfPages = numPages();
+                          if(currentPage == 0 ){
+                            currentPage = numberOfPages = 1;
+                          }
+
+                      pageNumber.innerHTML = `<span class=''><span id='currentPage'>${currentPage}</span> / ${numberOfPages}</span>`;
+                  }
+
+                  let numPages = function() {
+                    return Math.ceil(paginatedIncidents.length / recordsPerPage);  
+                  }
+
+                  let incidentNumber = document.getElementById('incident_number');
+                  incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span> of ${totalNumber}`;
+                } 
+                
+                let pagination = new Pagination();
+                pagination.init();
+              })();            
           }
                                      
 })
@@ -848,7 +1010,7 @@ function searchIncidents() {
   table = document.getElementById("incident-data");
   column = table.getElementsByClassName("column");
 
-  // Loop through all cards, and hide those who don't match the search query
+  // Loop through all cards, and hide those that don't match the search query
   for (i = 0; i < column.length; i++) {
     card = column[i].getElementsByClassName("card")[0];
     if (card) {
@@ -860,4 +1022,8 @@ function searchIncidents() {
       }
     }
   }
+}
+
+function perPageSelection(incident_type, incident_creator){
+  getData(incident_type, incident_creator);
 }

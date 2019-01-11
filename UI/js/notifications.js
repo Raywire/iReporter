@@ -176,14 +176,14 @@ const successNotification = window.createNotification({
     closeOnClick: true,
     showDuration: 3500,
     theme: 'success'
-    });
-    const errorNotification = window.createNotification({
+});
+const errorNotification = window.createNotification({
     closeOnClick: true,
     showDuration: 5000,
     theme: 'error'
-    });
-    const warningNotification = window.createNotification({
+});
+const warningNotification = window.createNotification({
     closeOnClick: true,
     showDuration: 5000,
     theme: 'warning'
-    });
+});

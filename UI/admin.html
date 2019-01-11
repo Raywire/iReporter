@@ -66,10 +66,15 @@
                 fetch(req)
                     .then((response)=>{
                         if(response.ok){
-                          document.getElementById('fa-spin-data').style.display = "none";
+                          try{
+                            document.getElementById('fa-spin-data').style.display = "none";
+                          }catch{}
+                          
                           return response.json();
                         }else{
-                          document.getElementById('fa-spin-data').style.display = "none";
+                          try{
+                            document.getElementById('fa-spin-data').style.display = "none";
+                          }catch{}
                           return response.json();
                         }
                     })
@@ -99,9 +104,19 @@
                               const prevButton = document.getElementById('button_prev');
                               const nextButton = document.getElementById('button_next');
                               const clickPageNumber = document.querySelectorAll('.clickPageNumber');
+                              let perPage = document.getElementById('perPage').value;
                               
                               let current_page = 1;
-                              let records_per_page = 50;                          
+                              let recordsPerPage = parseInt(perPage);
+                              let startNumber = 1;
+                              let totalNumber = users.length;
+
+                              if(recordsPerPage > totalNumber){
+                                recordsPerPage = totalNumber;
+                              }
+                              let endNumber = recordsPerPage;
+                              let virtualEndNumber = recordsPerPage;
+                                                       
                               
                               this.init = function() {
                                   changePage(1);
@@ -145,7 +160,7 @@
                               
                                   result.innerHTML = "";
 
-                                  for(let i = (page -1) * records_per_page; i < (page * records_per_page) && i < user.length; i++) {
+                                  for(let i = (page -1) * recordsPerPage; i < (page * recordsPerPage) && i < user.length; i++) {
 
                                       result.innerHTML += `
                                             <div class="column">
@@ -173,6 +188,10 @@
                                       current_page--;
                                       changePage(current_page);
                                       document.getElementById('current_page').innerHTML = current_page;
+                                      startNumber -= recordsPerPage;
+                                      virtualEndNumber -= recordsPerPage;
+                                      document.getElementById('startNumber').innerHTML = startNumber;
+                                      document.getElementById('endNumber').innerHTML = virtualEndNumber;
                                   }
                               }
 
@@ -181,6 +200,17 @@
                                       current_page++;
                                       changePage(current_page);
                                       document.getElementById('current_page').innerHTML = current_page;
+                                      startNumber += recordsPerPage;
+                                      endNumber += recordsPerPage;
+                                      virtualEndNumber += recordsPerPage;
+                                      if(endNumber > totalNumber){
+                                        endNumber = totalNumber;
+                                      }
+                                      if(endNumber == startNumber){
+                                        
+                                      }
+                                      document.getElementById('startNumber').innerHTML = startNumber;
+                                      document.getElementById('endNumber').innerHTML = endNumber;
                                   } 
                               }
 
@@ -201,8 +231,10 @@
                               }
 
                               let numPages = function() {
-                                return Math.ceil(user.length / records_per_page);  
+                                return Math.ceil(user.length / recordsPerPage);  
                               }
+                              let userNumber = document.getElementById('user_number');
+                              userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span> of ${totalNumber}`;
                             } 
                             
                             let pagination = new Pagination();
@@ -241,18 +273,24 @@
                 }
               }
             }
+
+          function perPageSelection(){
+            getData();
+          }
           </script>                                
         </div>  
         <div class="pagination">
           <div class="pagination-block">
-            <!-- <select id='perPage'>
-              <option value="50">50</option>
-              <option value="100">100</option>
-              <option value="250">250</option>
-            </select> -->
+              <span class="per-page">per page:</span>
+            <select id='perPage' onchange="perPageSelection()">
+              <option value="60">60</option>
+              <option value="120">120</option>
+              <option value="300">300</option>
+            </select>
             <span id="page_number" class="outline-none page-number"></span>
             <span class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
             <span class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+            <span id="user_number" class="outline-none page-number"></span>
           </div>
         </div>     
     
