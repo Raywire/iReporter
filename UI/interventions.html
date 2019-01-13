@@ -43,9 +43,12 @@
               <div class="button-left">
                   <!-- Trigger/Open The Modal -->
                   <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Intervention"><i class="fa fa-plus" aria-hidden="true"></i> <span class="mobile-hidden"> intervention</span></button>
+                  <button class="button-normal" onclick="perPageSelection('intervention', 'all')"><i class="fa fa-refresh" aria-hidden="true"></i></button>
               </div>
               <div class="button-right">
-                  <input type="text" id="searchIncidents" class="search-data" placeholder="Search for interventions...">
+                  <form id='searchUsersForm' >
+                      <input type="text" id="searchIncidents" class="search-data" placeholder="Search...">
+                  </form>
               </div>           
             </div>
         <!-- The Modal -->
@@ -90,8 +93,8 @@
             </table>
             <script src="js/models_incidents.js"></script>
             <script>
-              getData('intervention', 'all');
-              document.getElementById('searchIncidents').addEventListener('keyup', searchIncidents);
+              getData('intervention', 'all', 'all');
+              document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event, 'intervention', 'all'));
             </script> 
             <div class="pagination">
               <div class="pagination-block">
@@ -106,7 +109,8 @@
                 <span class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
                 <span id="incident_number" class="outline-none page-number"></span>
               </div>
-            </div>                                            
+            </div> 
+            <div class="hide" id="loader"></div>                                            
           </div>           
           <div class="push"></div>           
       </div>

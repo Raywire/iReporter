@@ -220,17 +220,35 @@ a {
     max-width: 1650px;
     margin: 0 auto;
 }
-.top-buttons{
+.info-header{
   width: 100%;
   overflow: hidden;
+  display: block;
+  padding:8px; 
+  background-color: white;
+}
+.info-header h2{
+  text-align: center;
+  font-size: 1.2em;
+}
+.top-buttons,.search-bar{
+  width: 100%;
+  overflow: hidden;
+  display: block;
+  margin: 4px auto;
+  /* position: relative; */
+  background-color: white;
+  /* padding: 8px; */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
+  transition: 0.3s;
 }
 .button-left{
-  width:25%;
+  width:30%;
   float: left;
   text-align: left;
 }
 .button-right{
-  width:75%;
+  width:70%;
   float: left;
   padding-top: 15px;
   padding-right:4px;
@@ -262,12 +280,12 @@ a {
     overflow: hidden;
   }
   .button-left{
-    width:20%;
+    width:25%;
     float: left;
     text-align: left;
   }
   .button-right{
-    width:80%;
+    width:75%;
     float: left;
     padding-top: 15px;
     padding-right:4px;
@@ -276,20 +294,33 @@ a {
     display: none;
   }
  }
- @media screen and (max-width: 400px) {
-  .login-box{
-    width: 100%;
-    margin-top: 4.5em;
-  }    
-}
-@media screen and (max-width: 307px) {
+ @media screen and (max-width: 539px) {
   .button-left{
-    width:30%;
+    width:50%;
     float: left;
     text-align: left;
   }
   .button-right{
     width:50%;
+    float: left;
+    padding-top: 15px;
+    padding-right:4px;
+  }    
+}
+ @media screen and (max-width: 400px) {
+  .login-box{
+    width: 100%;
+    margin-top: 4.5em;
+  }     
+}
+@media screen and (max-width: 307px) {
+  .button-left{
+    width:55%;
+    float: left;
+    text-align: left;
+  }
+  .button-right{
+    width:45%;
     float: left;
     padding-top: 15px;
     padding-right:4px;
@@ -662,7 +693,7 @@ padding:8px;
 .fa-circle-o-notch{
   font-size: 24px;
 }
-#fa-spin, #fa-spin-data-delete, #fa-spin-edit, #fa-spin-edit-status, #fa-spin-upload, .hide{
+#fa-spin, #fa-spin-data-delete, #fa-spin-edit, #fa-spin-edit-status, #fa-spin-upload,#fa-spin-search, .hide{
   display: none;
 }
 #fa-spin-data-delete{
@@ -744,12 +775,13 @@ p.img-details{
 
 .search-data{
   background-image: url('../img/searchicon.png'); /* Add a search icon to input */
-  background-position: 10px 12px; /* Position the search icon */
+  background-position: 10px 10px; /* Position the search icon */
   background-repeat: no-repeat; /* Do not repeat the icon image */
   width: 100%; /* Full-width */
   font-size: 16px; /* Increase font-size */
   padding: 12px 20px 12px 40px; /* Add some padding */
-  border: 1px solid #ddd; /* Add a grey border */
+  border:none;
+  border-bottom: 1px solid #ddd; /* Add a grey border */
   margin-bottom: 12px; /* Add some space below the input */
 }
 /* Pagination */
@@ -842,4 +874,48 @@ select#perPage:focus {
 select#perPage:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;
+}
+.search-bar{
+  overflow: hidden;
+}
+.search-bar-left{
+  float: left;
+  width: 75%;
+  margin-top:12px;
+  margin-left:5px;
+}
+.search-bar-right{
+  float: right;
+  width: 15%;
+  max-width: 50px;
+}
+
+#loader {
+  position: fixed;
+  left: 58%;
+  top: 50%;
+  z-index: 1;
+  margin: -75px 0 0 -75px;
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid dodgerblue;
+  border-bottom: 8px solid dodgerblue;
+  width: 60px;
+  height: 60px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.top-buttons{
+
 }
