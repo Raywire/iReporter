@@ -1,105 +1,110 @@
 <noscript>
-    <h1>Your browser does not support Javascript</h1>
-</noscript>  
-  <script src="js/auth.js"></script>
-  <!DOCTYPE html>
-  <html lang="en" dir="ltr">
-    <head>
-      <meta charset="utf-8">
-      <title>iReporter Incident by Username</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="robots" content="noindex,nofollow"/>
-      <link rel="icon" type="image/png" href="img/favicon.ico">
-      <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-      <link rel="stylesheet" href="css/styles.css">
-      <script src="js/moment.min.js"></script>
-    </head>
-    <body>
-      <nav class="navbar">
-        <span class="navbar-toggle" id="js-navbar-toggle">
-          <i class="fa fa-bars"></i>
-        </span>
-        <a href="home.html" class="logo">iReporter</a>
-        <ul class="main-nav" id="js-menu">
-          <li>
-            <a href="redflags.html"  class="nav-links">red flags</a>
-          </li>
-          <li>
-            <a href="interventions.html"  class="nav-links">interventions</a>
-          </li>
-          <li>
-            <a href="profile.html" class="nav-links ">profile</a>
-          </li>
-          <li>
-            <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
-          </li>        
-        </ul>
-      </nav>
-      <div class="container wrapper">
-        <div class="table-responsive">
-          <div class="info-header">
-              <h2 id="by-username" class="theme-blue"></h2>
-          </div>
-          <div class="search-bar">
-              <i id="fa-spin-search" class="fa fa-circle-o-notch fa-spin"></i>
-            <form id='searchUsersForm' class="search-bar-left">
-                <input type="text" id="searchIncidents" class="search-data" placeholder="Search...">
-            </form>
-            <button class="button-normal search-bar-right" onclick="perPageSelection(incident_type, incident_creator)"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-          </div>
-          <table>
-            <tbody id="incident-data">
-              <tr>
-                <td>
-                  <p id="message"></p>
-                  <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" ></i></center>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <script src="js/models_incidents.js"></script>
-          <script>
-            let urlParams2 = new URLSearchParams(window.location.search);
-            let incident_creator = urlParams2.get('username');
-            let incident_type = urlParams2.get('type');
+  <h1>Your browser does not support Javascript</h1>
+</noscript>
+<script src="js/auth.js"></script>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 
-            getData(incident_type, incident_creator, 'all');
-            document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event, incident_type, incident_creator));
-            
-            document.getElementById('by-username').innerHTML = 'By' + ' ' +  (incident_creator == user.username ? 'Me' : incident_creator);
-          </script>
-          <div class="pagination">
-            <div class="pagination-block">
-                <span class="per-page">per page:</span>
-              <select id='perPage' onchange="perPageSelection(incident_type, incident_creator)">
-                <option value="60" selected="selected">60</option>
-                <option value="120">120</option>
-                <option value="300">300</option>
-              </select>
-              <span id="pageNumber" class="outline-none page-number"></span>
-              <span class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
-              <span class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
-              <span id="incident_number" class="outline-none page-number"></span>
-            </div>
-          </div>
-          <div class="hide" id="loader"></div>                                       
-        </div> 
-        <div class="push"></div>           
+<head>
+  <meta charset="utf-8">
+  <title>iReporter Incident by Username</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/png" href="img/favicon.ico">
+  <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/moment.min.js"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <span class="navbar-toggle" id="js-navbar-toggle">
+      <i class="fa fa-bars"></i>
+    </span>
+    <a href="home.html" class="logo">iReporter</a>
+    <ul class="main-nav" id="js-menu">
+      <li>
+        <a href="redflags.html" class="nav-links">red flags</a>
+      </li>
+      <li>
+        <a href="interventions.html" class="nav-links">interventions</a>
+      </li>
+      <li>
+        <a href="profile.html" class="nav-links ">profile</a>
+      </li>
+      <li>
+        <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+      </li>
+    </ul>
+  </nav>
+  <div class="container wrapper">
+    <div class="table-responsive">
+      <div class="info-header">
+        <h2 id="by-username" class="theme-blue"></h2>
       </div>
-      <div class="footer">
-        <ul>
-          <li>
-            <a href="contact.html"  class="nav-links">contact</a>
-          </li>
-          <li>
-            <a href="about.html"  class="nav-links">about</a>
-          </li>    
-          <li><a href="#" class="nav-links">privacy & terms</a></li>    
-        </ul>
+      <div class="search-bar">
+        <i id="fa-spin-search" class="fa fa-circle-o-notch fa-spin"></i>
+        <form id='searchUsersForm' class="search-bar-left">
+          <input type="text" id="searchIncidents" class="search-data" placeholder="Search...">
+        </form>
+        <button class="button-normal search-bar-right" onclick="perPageSelection(incident_type, incident_creator)"><i
+            class="fa fa-refresh" aria-hidden="true"></i></button>
       </div>
-    </body>
-    <script src="js/main.js"></script>
-    <script src="js/modal.js"></script> 
-    <script src="js/logout.js"></script>
-  </html>
-  
+      <table>
+        <tbody id="incident-data">
+          <tr>
+            <td>
+              <p id="message"></p>
+              <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin"></i></center>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <script src="js/models_incidents.js"></script>
+      <script>
+        let urlParams2 = new URLSearchParams(window.location.search);
+        let incident_creator = urlParams2.get('username');
+        let incident_type = urlParams2.get('type');
+
+        getData(incident_type, incident_creator, 'all');
+        document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event,
+          incident_type, incident_creator));
+
+        document.getElementById('by-username').innerHTML = 'By' + ' ' + (incident_creator == user.username ? 'Me' :
+          incident_creator);
+      </script>
+      <div class="pagination">
+        <div class="pagination-block">
+          <span class="per-page">per page:</span>
+          <select id='perPage' onchange="perPageSelection(incident_type, incident_creator)">
+            <option value="60" selected="selected">60</option>
+            <option value="120">120</option>
+            <option value="300">300</option>
+          </select>
+          <span id="pageNumber" class="outline-none page-number"></span>
+          <button class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+          <button class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+          <span id="incident_number" class="outline-none page-number"></span>
+        </div>
+      </div>
+      <div class="hide" id="loader"></div>
+    </div>
+    <div class="push"></div>
+  </div>
+  <div class="footer">
+    <ul>
+      <li>
+        <a href="contact.html" class="nav-links">contact</a>
+      </li>
+      <li>
+        <a href="about.html" class="nav-links">about</a>
+      </li>
+      <li><a href="#" class="nav-links">privacy & terms</a></li>
+    </ul>
+  </div>
+</body>
+<script src="js/main.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/logout.js"></script>
+
+</html>

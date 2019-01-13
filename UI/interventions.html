@@ -1,133 +1,138 @@
 <!DOCTYPE html>
-  <html lang="en" dir="ltr">
-    <head>
-      <meta charset="utf-8">
-      <title>iReporter Interventions</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="robots" content="noindex,nofollow"/>
-      <link rel="icon" type="image/png" href="img/favicon.ico">
-      <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-      <link rel="stylesheet" href="css/styles.css">
-      <link rel="stylesheet" href="css/notifications.css">
-      <noscript>
-        <h1>Your browser does not support Javascript</h1>
-      </noscript>  
-      <script src="js/auth.js"></script>
-      <script src="js/notifications.js"></script>
-      <script src="js/moment.min.js"></script>
-    </head>
-    <body>
-      <nav class="navbar">
-        <span class="navbar-toggle" id="js-navbar-toggle">
-          <i class="fa fa-bars"></i>
-        </span>
-        <a href="home.html" class="logo">iReporter</a>
-        <ul class="main-nav" id="js-menu">
-          <li>
-            <a href="redflags.html"  class="nav-links">red flags</a>
-          </li>
-          <li>
-            <a href="interventions.html"  class="nav-links active">interventions</a>
-          </li>
-          <li>
-            <a href="profile.html" class="nav-links ">profile</a>
-          </li>
-          <li>
-            <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
-          </li>        
-        </ul>
-      </nav>
-      <div class="container wrapper">
-        <div>
-          <div class="top-buttons">
-              <div class="button-left">
-                  <!-- Trigger/Open The Modal -->
-                  <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Intervention"><i class="fa fa-plus" aria-hidden="true"></i> <span class="mobile-hidden"> intervention</span></button>
-                  <button class="button-normal" onclick="perPageSelection('intervention', 'all')"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-              </div>
-              <div class="button-right">
-                  <form id='searchUsersForm' >
-                      <input type="text" id="searchIncidents" class="search-data" placeholder="Search...">
-                  </form>
-              </div>           
-            </div>
-        <!-- The Modal -->
-        <div id="modal-window-create" class="modal">
-            <div class="modal-content">
-              <span class="close">&times;</span>
-              <div  class="modal-form">
-                <form id="postData" method="POST" enctype="multipart/form-data">
-                  <p class="contact"><label for="title">Title</label></p>
-                  <input id="title" name="title" placeholder="Title" maxlength="100" tabindex="1" type="text">
-                  <p class="contact"><label for="comment">Comment</label></p>
-                  <textarea name="comment" id="comment" maxlength="2000" cols="30" rows="10"></textarea>          
-                  <p class="contact"><label for="date">Location</label></p>
-                  <div id="addMarker" style="width:100%;height:400px;"></div>
-                  <input id="location" readonly name="location" placeholder="Location" required="" type="text">
-                    
-                  <br>
-                  <input id='submit' name="submit" class="button-normal" tabindex="5" value="Add Intervention" type="submit">
-                  <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" ></i>
-                </form>
-                
-                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0"></script>
-                <script src="js/mapper.js"></script>
-                <script>
-                  document.getElementById('postData').addEventListener('submit', (event) => postData(event, 'interventions'));                  
-                </script>             
-              </div>
-            </div>
-          
-          </div>        
-        </div> 
-          <div class="table-responsive">
-            <table>
-              <tbody id="incident-data">
-                <tr>
-                  <td>
-                    <p id="message"></p>
-                    <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" ></i></center>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <script src="js/models_incidents.js"></script>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>iReporter Interventions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/png" href="img/favicon.ico">
+  <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/notifications.css">
+  <noscript>
+    <h1>Your browser does not support Javascript</h1>
+  </noscript>
+  <script src="js/auth.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/moment.min.js"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <span class="navbar-toggle" id="js-navbar-toggle">
+      <i class="fa fa-bars"></i>
+    </span>
+    <a href="home.html" class="logo">iReporter</a>
+    <ul class="main-nav" id="js-menu">
+      <li>
+        <a href="redflags.html" class="nav-links">red flags</a>
+      </li>
+      <li>
+        <a href="interventions.html" class="nav-links active">interventions</a>
+      </li>
+      <li>
+        <a href="profile.html" class="nav-links ">profile</a>
+      </li>
+      <li>
+        <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+      </li>
+    </ul>
+  </nav>
+  <div class="container wrapper">
+    <div>
+      <div class="top-buttons">
+        <div class="button-left">
+          <!-- Trigger/Open The Modal -->
+          <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Intervention"><i class="fa fa-plus"
+              aria-hidden="true"></i> <span class="mobile-hidden"> intervention</span></button>
+          <button class="button-normal" onclick="perPageSelection('intervention', 'all')"><i class="fa fa-refresh"
+              aria-hidden="true"></i></button>
+        </div>
+        <div class="button-right">
+          <form id='searchUsersForm'>
+            <input type="text" id="searchIncidents" class="search-data" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+      <!-- The Modal -->
+      <div id="modal-window-create" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <div class="modal-form">
+            <form id="postData" method="POST" enctype="multipart/form-data">
+              <p class="contact"><label for="title">Title</label></p>
+              <input id="title" name="title" placeholder="Title" maxlength="100" tabindex="1" type="text">
+              <p class="contact"><label for="comment">Comment</label></p>
+              <textarea name="comment" id="comment" maxlength="2000" cols="30" rows="10"></textarea>
+              <p class="contact"><label for="date">Location</label></p>
+              <div id="addMarker" style="width:100%;height:400px;"></div>
+              <input id="location" readonly name="location" placeholder="Location" required="" type="text">
+
+              <br>
+              <input id='submit' name="submit" class="button-normal" tabindex="5" value="Add Intervention" type="submit">
+              <i id="fa-spin" class="fa fa-circle-o-notch fa-spin"></i>
+            </form>
+
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwWJfWNiu6zGJCAZ0p6sO-IVR9iRj5I-0"></script>
+            <script src="js/mapper.js"></script>
             <script>
-              getData('intervention', 'all', 'all');
-              document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event, 'intervention', 'all'));
-            </script> 
-            <div class="pagination">
-              <div class="pagination-block">
-                  <span class="per-page">per page:</span>
-                <select id='perPage' onchange="perPageSelection('intervention', 'all')">
-                  <option value="60" selected="selected">60</option>
-                  <option value="120">120</option>
-                  <option value="300">300</option>
-                </select>
-                <span id="pageNumber" class="outline-none page-number"></span>
-                <span class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
-                <span class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
-                <span id="incident_number" class="outline-none page-number"></span>
-              </div>
-            </div> 
-            <div class="hide" id="loader"></div>                                            
-          </div>           
-          <div class="push"></div>           
+              document.getElementById('postData').addEventListener('submit', (event) => postData(event, 'interventions'));
+            </script>
+          </div>
+        </div>
+
       </div>
-      <div class="footer">
-        <ul>
-          <li>
-            <a href="contact.html"  class="nav-links">contact</a>
-          </li>
-          <li>
-            <a href="about.html"  class="nav-links">about</a>
-          </li>    
-          <li><a href="#" class="nav-links">privacy & terms</a></li>    
-        </ul>
+    </div>
+    <div class="table-responsive">
+      <table>
+        <tbody id="incident-data">
+          <tr>
+            <td>
+              <p id="message"></p>
+              <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin"></i></center>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <script src="js/models_incidents.js"></script>
+      <script>
+        getData('intervention', 'all', 'all');
+        document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event,
+          'intervention', 'all'));
+      </script>
+      <div class="pagination">
+        <div class="pagination-block">
+          <span class="per-page">per page:</span>
+          <select id='perPage' onchange="perPageSelection('intervention', 'all')">
+            <option value="60" selected="selected">60</option>
+            <option value="120">120</option>
+            <option value="300">300</option>
+          </select>
+          <span id="pageNumber" class="outline-none page-number"></span>
+          <button class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+          <button class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+          <span id="incident_number" class="outline-none page-number"></span>
+        </div>
       </div>
-      <script src="js/main.js"></script>
-      <script src="js/modal.js"></script> 
-      <script src="js/logout.js"></script>
-    </body>
-  </html>
-  
+      <div class="hide" id="loader"></div>
+    </div>
+    <div class="push"></div>
+  </div>
+  <div class="footer">
+    <ul>
+      <li>
+        <a href="contact.html" class="nav-links">contact</a>
+      </li>
+      <li>
+        <a href="about.html" class="nav-links">about</a>
+      </li>
+      <li><a href="#" class="nav-links">privacy & terms</a></li>
+    </ul>
+  </div>
+  <script src="js/main.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/logout.js"></script>
+</body>
+
+</html>

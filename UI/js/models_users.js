@@ -17,13 +17,13 @@ function getData(user_data) {
             if (response.ok) {
                 try {
                     document.getElementById('fa-spin-data').style.display = "none";
-                } catch {}
+                } catch (error) {}
 
                 return response.json();
             } else {
                 try {
                     document.getElementById('fa-spin-data').style.display = "none";
-                } catch {}
+                } catch (error) {}
                 return response.json();
             }
         })
@@ -44,14 +44,17 @@ function getData(user_data) {
                     users = j['data'];
                 } else {
                     let allUsers = j['data'];
-                    
+
                     users = allUsers.filter(user => {
                         if (user_data == 'true') {
                             user_data = true;
                         } else if (user_data == 'false') {
                             user_data = false
                         }
-                        return user.username === user_data.toLowerCase() || user.firstname === user_data || user.email === user_data.toLowerCase() || user.lastname === user_data || user.isadmin === user_data.toLowerCase() || user.phonenumber === user_data;
+                        if (user_data == true || user_data == false) {
+                            return user.isadmin === user_data
+                        }
+                        return user.username === user_data.toLowerCase() || user.firstname === user_data || user.email === user_data.toLowerCase() || user.lastname === user_data || user.phonenumber === user_data;
                     })
                 }
 
@@ -107,6 +110,9 @@ function getData(user_data) {
                                 'opacity');
                             current_page == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove(
                                 'opacity');
+
+                            document.getElementById("button_next").disabled = current_page == numPages() ? true : false;
+                            document.getElementById("button_prev").disabled = current_page == 1 ? true : false;
                         }
 
                         let changePage = function (page) {
@@ -233,7 +239,6 @@ function getData(user_data) {
         })
         .catch((error) => {
             console.log(error);
-            document.getElementById('message').innerHTML = error;
         });
 }
 
@@ -305,10 +310,13 @@ function getUserData() {
                         phone = phoneNumber;
                     }
                     result += `
-                <h2>${fullname}</h2>
-                <h3><span class="black">Admin Status:</span> <span id='status-data' class="italic">${isAdmin}</span></h3>
-                <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
-                <h4 id='comment-data'><span class="black">Public Id: </span>${public_id}</h4>
+                <div class='incident-header'>
+                    <h2>${fullname}</h2>
+                    <h3><span class="black">Admin Status:</span> <span id='status-data' class="italic">${isAdmin}</span></h3>
+                    <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
+                    <h4 id='comment-data'><span class="black">Public Id: </span>${public_id}</h4>
+                    <hr class='incident-line'>
+                </div>
                 <div class="row  bg-color">
                   <div class="column-50 bg-color">                       
                     <p><img src="img/img_avatar3.jpeg" alt=""></p>
