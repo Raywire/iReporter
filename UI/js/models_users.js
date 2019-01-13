@@ -51,7 +51,7 @@ function getData(user_data) {
                         } else if (user_data == 'false') {
                             user_data = false
                         }
-                        return user.username === user_data || user.firstname === user_data || user.email === user_data || user.lastname === user_data || user.isadmin === user_data || user.phonenumber === user_data;
+                        return user.username === user_data.toLowerCase() || user.firstname === user_data || user.email === user_data.toLowerCase() || user.lastname === user_data || user.isadmin === user_data.toLowerCase() || user.phonenumber === user_data;
                     })
                 }
 

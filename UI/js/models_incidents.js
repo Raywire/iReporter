@@ -168,7 +168,7 @@ function getData(incident_type, incident_creator, search_data) {
           usernameIncidents = searchedIncidents = incidents;
         } else {
           usernameIncidents = searchedIncidents = incidents.filter(incident => {
-            return incident.title === search_data || incident.id === parseInt(search_data) || incident.username === search_data || incident.status === search_data;
+            return incident.title === search_data || incident.id === parseInt(search_data) || incident.username === search_data.toLowerCase() || incident.status === search_data.toLowerCase();
           })
         }
 
