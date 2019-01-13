@@ -1,315 +1,109 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>iReporter Admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex,nofollow"/>
-    <link rel="icon" type="image/png" href="img/favicon.ico">
-    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <noscript>
-      <h1>Your browser does not support Javascript</h1>
-    </noscript>  
-    <script src="js/auth.js"></script>
-  </head>
-  <body>
-    <nav class="navbar">
-      <span class="navbar-toggle" id="js-navbar-toggle">
-        <i class="fa fa-bars"></i>
-      </span>
-      <a href="home.html" class="logo">iReporter</a>
-      <ul class="main-nav" id="js-menu">
-        <li>
-          <a href="redflags.html"  class="nav-links">red flags</a>
-        </li>
-        <li>
-          <a href="interventions.html"  class="nav-links">interventions</a>
-        </li>
-        <li>
-          <a href="profile.html" class="nav-links ">profile</a>
-        </li>
-        <li>
-          <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
-        </li>        
-      </ul>
-    </nav>
-    <div class="container wrapper">
+
+<head>
+  <meta charset="utf-8">
+  <title>iReporter Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/png" href="img/favicon.ico">
+  <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <noscript>
+    <h1>Your browser does not support Javascript</h1>
+  </noscript>
+  <script src="js/auth.js"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <span class="navbar-toggle" id="js-navbar-toggle">
+      <i class="fa fa-bars"></i>
+    </span>
+    <a href="home.html" class="logo">iReporter</a>
+    <ul class="main-nav" id="js-menu">
+      <li>
+        <a href="redflags.html" class="nav-links">red flags</a>
+      </li>
+      <li>
+        <a href="interventions.html" class="nav-links">interventions</a>
+      </li>
+      <li>
+        <a href="profile.html" class="nav-links ">profile</a>
+      </li>
+      <li>
+        <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+      </li>
+    </ul>
+  </nav>
+  <div class="container wrapper">
+    <div class="info-header">
         <h2 class="page-title theme-blue">Users</h2>
-        <input type="text" id="searchUsers" class="search-data" placeholder="Search for users...">
-        <div class="table-responsive">
-          <table>
-            <tbody id="user-data">
-              <tr>
-                <td>
-                  <p id="message"></p>
-                  <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin" ></i></center>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <script>
-              function getData(event){
-          
-                let uri = root + 'users';
-          
-                let options = {
-                    method: 'GET',
-                    mode: "cors",
-                    headers: new Headers({
-                      "Content-Type": "application/json; charset=utf-8",
-                      "x-access-token": token
-                    })
-                }
-                let req = new Request(uri, options);
-          
-                fetch(req)
-                    .then((response)=>{
-                        if(response.ok){
-                          try{
-                            document.getElementById('fa-spin-data').style.display = "none";
-                          }catch{}
-                          
-                          return response.json();
-                        }else{
-                          try{
-                            document.getElementById('fa-spin-data').style.display = "none";
-                          }catch{}
-                          return response.json();
-                        }
-                    })
-                    .then( (j) =>{
-                      
-                      if(j.hasOwnProperty('message')){
-                        if(j['message'] == 'Token is missing'){
-                          logout();
-                        }
-                        if(j['message'] == 'Token is invalid'){
-                          logout();
-                        }
-                      }
-                      if(j.hasOwnProperty('data')){
-                        let result = '';
-                        let users = [];
-                        
-                          j['data'].forEach((user) => {
-                            users.push(user);
-                          });
-
-                          (function() {
-                            "use strict";
-                            function Pagination() {
-                              const user = users;
-
-                              const prevButton = document.getElementById('button_prev');
-                              const nextButton = document.getElementById('button_next');
-                              const clickPageNumber = document.querySelectorAll('.clickPageNumber');
-                              let perPage = document.getElementById('perPage').value;
-                              
-                              let current_page = 1;
-                              let recordsPerPage = parseInt(perPage);
-                              let startNumber = 1;
-                              let totalNumber = users.length;
-
-                              if(recordsPerPage > totalNumber){
-                                recordsPerPage = totalNumber;
-                              }
-                              let endNumber = recordsPerPage;
-                              let virtualEndNumber = recordsPerPage;
-                                                       
-                              
-                              this.init = function() {
-                                  changePage(1);
-                                  pageNumbers();
-                                  selectedPage();
-                                  clickPage();
-                                  addEventListeners();
-                              }
-                              
-                              let addEventListeners = function() {
-                                  nextButton.addEventListener('click', nextPage); 
-                                  prevButton.addEventListener('click', prevPage); 
-                              }
-                                    
-                              let selectedPage = function() {
-                                  let page_number = document.getElementById('page_number').getElementsByClassName('clickPageNumber'); 
-                                  for (let i = 0; i < page_number.length; i++) {
-                                      if (i == current_page - 1) {
-                                          page_number[i].style.opacity = "1.0";
-                                      } 
-                                      else {
-                                          page_number[i].style.opacity = "0.5";
-                                      }
-                                  }   
-                              }  
-                              
-                              let checkButtonOpacity = function() {
-                                current_page == 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
-                                current_page == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
-                              }
-
-                              let changePage = function(page) {
-                                  const result = document.getElementById('user-data');
-
-                                  if (page < 1) {
-                                      page = 1;
-                                  } 
-                                  if (page > (numPages() -1)) {
-                                      page = numPages();
-                                  }
-                              
-                                  result.innerHTML = "";
-
-                                  for(let i = (page -1) * recordsPerPage; i < (page * recordsPerPage) && i < user.length; i++) {
-
-                                      result.innerHTML += `
-                                            <div class="column">
-                                              <div class="card">
-                                                  <div class="container2 align-center">
-                                                    <a href="view_user.html?username=${user[i].username}">
-                                                      <p><i class="fa fa-user-o fa-3x theme-blue" aria-hidden="true"></i></p>
-                                                      <h4 class="black"><b>${user[i].firstname} ${user[i].lastname}</b></h4>
-                                                      <p>${user[i].username}</p>
-                                                      <p class='italic font-small'>${user[i].email}</p>
-                                                      <p class='italic font-small'>Admin: ${user[i].isadmin}</p>
-                                                      <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
-                                                    </a>
-                                                  </div>
-                                                </div>               
-                                            </div>
-                                      `;
-                                  }
-                                  checkButtonOpacity();
-                                  selectedPage();
-                              }
-
-                              let prevPage = function() {
-                                  if(current_page > 1) {
-                                      current_page--;
-                                      changePage(current_page);
-                                      document.getElementById('current_page').innerHTML = current_page;
-                                      startNumber -= recordsPerPage;
-                                      virtualEndNumber -= recordsPerPage;
-                                      document.getElementById('startNumber').innerHTML = startNumber;
-                                      document.getElementById('endNumber').innerHTML = virtualEndNumber;
-                                  }
-                              }
-
-                              let nextPage = function() {
-                                  if(current_page < numPages()) {
-                                      current_page++;
-                                      changePage(current_page);
-                                      document.getElementById('current_page').innerHTML = current_page;
-                                      startNumber += recordsPerPage;
-                                      endNumber += recordsPerPage;
-                                      virtualEndNumber += recordsPerPage;
-                                      if(endNumber > totalNumber){
-                                        endNumber = totalNumber;
-                                      }
-                                      if(endNumber == startNumber){
-                                        
-                                      }
-                                      document.getElementById('startNumber').innerHTML = startNumber;
-                                      document.getElementById('endNumber').innerHTML = endNumber;
-                                  } 
-                              }
-
-                              let clickPage = function() {
-                                  document.addEventListener('click', function(e) {
-                                      if(e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")) {
-                                          current_page = e.target.textContent;
-                                          changePage(current_page);
-                                      }
-                                  });
-                              }
-
-                              let pageNumbers = function() {
-                                  let pageNumber = document.getElementById('page_number');
-                                      pageNumber.innerHTML = "";
-
-                                  pageNumber.innerHTML = `<span class=''><span id='current_page'>${current_page}</span> of ${numPages()}</span>`;
-                              }
-
-                              let numPages = function() {
-                                return Math.ceil(user.length / recordsPerPage);  
-                              }
-                              let userNumber = document.getElementById('user_number');
-                              userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span> of ${totalNumber}`;
-                            } 
-                            
-                            let pagination = new Pagination();
-                            pagination.init();
-                          })();
-                      }
-                                                  
-                    })
-                    .catch( (err) =>{
-                        console.log(err);
-                        document.getElementById('message').innerHTML = err;
-                    });
-            }
-            getData();
-
-            document.getElementById('searchUsers').addEventListener('keyup', searchUsers);
-
-            function searchUsers() {
-              
-              let input, filter, table, column, card, i, txtValue;
-              input = document.getElementById("searchUsers");
-              filter = input.value.toUpperCase();
-              table = document.getElementById("user-data");
-              column = table.getElementsByClassName("column");
-
-              // Loop through all cards, and hide those who don't match the search query
-              for (i = 0; i < column.length; i++) {
-                card = column[i].getElementsByClassName("card")[0];
-                if (card) {
-                  txtValue = card.textContent || card.innerText;
-                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    column[i].style.display = "";
-                  } else {
-                    column[i].style.display = "none";
-                  }
-                }
-              }
-            }
-
-          function perPageSelection(){
-            getData();
-          }
-          </script>                                
-        </div>  
-        <div class="pagination">
-          <div class="pagination-block">
-              <span class="per-page">per page:</span>
-            <select id='perPage' onchange="perPageSelection()">
-              <option value="60">60</option>
-              <option value="120">120</option>
-              <option value="300">300</option>
-            </select>
-            <span id="page_number" class="outline-none page-number"></span>
-            <span class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
-            <span class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
-            <span id="user_number" class="outline-none page-number"></span>
-          </div>
-        </div>     
-    
- 
-        <div class="push"></div>           
     </div>
-    <div class="footer">
-      <ul>
-        <li>
-          <a href="contact.html"  class="nav-links">contact</a>
-        </li>
-        <li>
-          <a href="about.html"  class="nav-links">about</a>
-        </li>    
-        <li><a href="#" class="nav-links">privacy & terms</a></li>    
-      </ul>
+    <div class="search-bar">
+        <i id="fa-spin-search" class="fa fa-circle-o-notch fa-spin"></i>
+      <form id='searchUsersForm' class="search-bar-left">
+        <input type="text" id="searchUsers" autocomplete="off" class="search-data" placeholder="Search...">
+      </form>
+      <button class="button-normal search-bar-right" onclick="perPageSelection()"><i class="fa fa-refresh" aria-hidden="true"></i></button>
     </div>
-    <script src="js/main.js"></script>
-    <script src="js/modal.js"></script> 
-    <script src="js/logout.js"></script>    
-  </body>
+    <div class="table-responsive">
+      <table>
+        <tbody id="user-data">
+          <tr>
+            <td>
+              <p id="message"></p>
+              <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin"></i></center>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <script src="js/models_users.js"></script>
+      <script>
+        getData('all');
+
+        document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event));
+
+        function perPageSelection() {
+          showLoader();
+          getData('all');
+          hideLoader(1500);
+        }
+      </script>
+      <div class="hide" id="loader"></div>
+    </div>
+    <div class="pagination">
+      <div class="pagination-block">
+        <span class="per-page">per page:</span>
+        <select id='perPage' onchange="perPageSelection()">
+          <option value="60">60</option>
+          <option value="120">120</option>
+          <option value="300">300</option>
+        </select>
+        <span id="page_number" class="outline-none page-number"></span>
+        <span class="pageButton outline-none" id="button_prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
+        <span class="pageButton outline-none" id="button_next"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+        <span id="user_number" class="outline-none page-number"></span>
+      </div>
+    </div>
+
+
+    <div class="push"></div>
+  </div>
+  <div class="footer">
+    <ul>
+      <li>
+        <a href="contact.html" class="nav-links">contact</a>
+      </li>
+      <li>
+        <a href="about.html" class="nav-links">about</a>
+      </li>
+      <li><a href="#" class="nav-links">privacy & terms</a></li>
+    </ul>
+  </div>
+  <script src="js/main.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/logout.js"></script>
+</body>
+
 </html>
