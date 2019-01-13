@@ -220,6 +220,21 @@ a {
     max-width: 1650px;
     margin: 0 auto;
 }
+.incident-header{
+  width: 100%;
+  overflow: hidden;
+  display: block;
+  background-color: white;
+}
+#incident-data,#user-data{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
+  background:white;
+}
+.incident-line{
+  width:95%;
+  margin:4px auto;
+  color:#e6e6e6;
+}
 .info-header{
   width: 100%;
   overflow: hidden;
@@ -914,8 +929,4 @@ select#perPage:-moz-focusring {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-.top-buttons{
-
 }

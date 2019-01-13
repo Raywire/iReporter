@@ -122,13 +122,13 @@ function getData(incident_type, incident_creator, search_data) {
       if (response.ok) {
         try {
           document.getElementById('fa-spin-data').style.display = 'none';
-        } catch {}
+        } catch(error) {}
 
         return response.json();
       } else {
         try {
           document.getElementById('fa-spin-data').style.display = 'none';
-        } catch {}
+        } catch(error) {}
         return response.json();
       }
     })
@@ -246,6 +246,8 @@ function getData(incident_type, incident_creator, search_data) {
             let checkButtonOpacity = function () {
               currentPage == 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
               currentPage == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
+              document.getElementById("button_next").disabled = currentPage == numPages() ? true : false;
+              document.getElementById("button_prev").disabled = currentPage == 1 ? true : false; 
             }
 
             let changePage = function (page) {
@@ -417,7 +419,6 @@ function getDataById(incident_type, incidentId) {
       }
     })
     .then((j) => {
-      console.log(j);
       if (j.hasOwnProperty('message')) {
         if (j['message'] == 'Token is missing') {
           logout();
@@ -466,10 +467,13 @@ function getDataById(incident_type, incidentId) {
             getFileData('images', images)
           }
           result += `
-                <h2>${title}</h2>
-                <h3><span class="black">Status:</span> <span id='status-data' class="italic">${status}</span></h3>
-                <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
-                <h4><span class="black">By:</span> <a href="view_by_username.html?type=${type}&username=${username}"><span class="theme-blue">${creator}</span></a></h4>
+                <div class='incident-header'>
+                  <h2>${title}</h2>
+                  <h3><span class="black">Status:</span> <span id='status-data' class="italic">${status}</span></h3>
+                  <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
+                  <h4><span class="black">By:</span> <a href="view_by_username.html?type=${type}&username=${username}"><span class="theme-blue">${creator}</span></a></h4>
+                  <hr class='incident-line'>
+                </div>
                 <div class="row  bg-color">
                   <div class="column-50 bg-color">
                     <p class='img-details'><img id='main-image' src="${imageUrl}" alt="${title}"></p>
@@ -569,7 +573,6 @@ function getFileData(filetype, filename) {
     method: 'GET',
     mode: "cors",
     headers: new Headers({
-      // "Content-Type": "application/json; charset=utf-8",
       "x-access-token": tokenModels
     })
   }

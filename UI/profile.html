@@ -1,306 +1,317 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>iReporter Profile</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex,nofollow"/>
-    <link rel="icon" type="image/png" href="img/favicon.ico">
-    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/notifications.css">
-    <noscript>
-      <h1>Your browser does not support Javascript</h1>
-    </noscript>  
-    <script src="js/auth.js"></script>
-    <script src="js/notifications.js"></script>
-  </head>
-  <body>
-    <nav class="navbar">
-      <span class="navbar-toggle" id="js-navbar-toggle">
-        <i class="fa fa-bars"></i>
-      </span>
-      <a href="home.html" class="logo">iReporter</a>
-      <ul class="main-nav" id="js-menu">
-        <li>
-          <a href="redflags.html"  class="nav-links">red flags</a>
-        </li>
-        <li>
-          <a href="interventions.html"  class="nav-links">interventions</a>
-        </li>
-        <li>
-          <a href="profile.html" class="nav-links active">profile</a>
-        </li>
-        <li>
-            <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
-        </li>        
-      </ul>
-    </nav>
-    <div class="container row wrapper">
-      <div class="column">
-        <div class="card">
-          <img src="img/img_avatar3.jpeg" alt="Profile Picture">
-          <p id="name"></p>
-          <p id="email" class="title"></p>
-          <p id="username"></p>
-          <p><button class="button-modal" id="myBtn" data-modal="modal-window-profile">Update Profile</button></p>
-          <p><button id="btnResetPassword" class="button-modal" data-modal="modal-window-reset-password"><i class="fa fa-unlock" aria-hidden="true"></i></button></p>
-          <div id="modal-window-profile" class="modal">
 
-              <!-- Modal content -->
-              <div class="modal-content">
-                <span class="close">&times;</span>
-                <div  class="modal-form">
-                    <form id="updateUserData" method="POST" enctype="multipart/form-data">
-                      <p class="contact"><label for="name">First Name</label></p>
-                      <input id="firstnameForm" name="firstname" placeholder="First Name" tabindex="1" type="text">
-                      <p class="contact"><label for="firstname">Last Name</label></p>
-                      <input id="lastnameForm"  name="lastname" placeholder="Last Name" tabindex="1" type="text">
-                      <p class="contact"><label for="othername">Other Name</label></p>
-                      <input id="othernameForm"  name="othername" placeholder="Other Name" tabindex="1" type="text">
-                      <p class="contact"><label for="username">Username</label></p>
-                      <input id="usernameForm" name="username" placeholder="username" tabindex="1" type="text">
-                      <p class="contact"><label for="profilepic">Upload Profile Photo</label></p>
-                      <input type="file" id="name" name="profilepic" accept="image/*" multiple>
-                      
-                      <br>
-                      <input class="button-normal" name="submit" id="submit" tabindex="5" value="Update Profile" type="submit">
-  
-                  </form>       
-                </div>
-              </div>
-            
-            </div> 
-            <!-- The Modal -->
-            <div id="modal-window-reset-password" class="modal"> 
-                <!-- Modal content -->
-                <div class="modal-content">
-                  <span class="close">&times;</span>
-                  <div class="modal-body">
-                    <div  class="modal-form">
-                      <form id="resetPassword" method="POST">
-                        <p class="contact"><label for="title">Password</label></p>
-                        <input id="password" name="password" placeholder="Password" tabindex="1" type="password">
-                        <p class="contact"><label for="title">Confirm Password</label></p>
-                        <input id="confirm_password" name="confirm_password" placeholder="Confirm Password" tabindex="1" type="password">
-                        <br>
-                        <input id='submit' name="submit" class="button-normal" tabindex="5" value="Reset Password" type="submit">
-                        <i id="fa-spin-reset" class="fa fa-circle-o-notch fa-spin hide" ></i>
-                      </form>
-                    </div>
-                  </div> 
-                </div>    
-            </div>             
+<head>
+  <meta charset="utf-8">
+  <title>iReporter Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/png" href="img/favicon.ico">
+  <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/notifications.css">
+  <noscript>
+    <h1>Your browser does not support Javascript</h1>
+  </noscript>
+  <script src="js/auth.js"></script>
+  <script src="js/notifications.js"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <span class="navbar-toggle" id="js-navbar-toggle">
+      <i class="fa fa-bars"></i>
+    </span>
+    <a href="home.html" class="logo">iReporter</a>
+    <ul class="main-nav" id="js-menu">
+      <li>
+        <a href="redflags.html" class="nav-links">red flags</a>
+      </li>
+      <li>
+        <a href="interventions.html" class="nav-links">interventions</a>
+      </li>
+      <li>
+        <a href="profile.html" class="nav-links active">profile</a>
+      </li>
+      <li>
+        <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+      </li>
+    </ul>
+  </nav>
+  <div class="container row wrapper">
+    <div class="column">
+      <div class="card">
+        <img src="img/img_avatar3.jpeg" alt="Profile Picture">
+        <p id="name"></p>
+        <p id="email" class="title"></p>
+        <p id="username"></p>
+        <p><button class="button-modal" id="myBtn" data-modal="modal-window-profile">Update Profile</button></p>
+        <p><button id="btnResetPassword" class="button-modal" data-modal="modal-window-reset-password"><i class="fa fa-unlock"
+              aria-hidden="true"></i></button></p>
+        <div id="modal-window-profile" class="modal">
+
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-form">
+              <form id="updateUserData" method="POST" enctype="multipart/form-data">
+                <p class="contact"><label for="name">First Name</label></p>
+                <input id="firstnameForm" name="firstname" placeholder="First Name" tabindex="1" type="text">
+                <p class="contact"><label for="firstname">Last Name</label></p>
+                <input id="lastnameForm" name="lastname" placeholder="Last Name" tabindex="1" type="text">
+                <p class="contact"><label for="othername">Other Name</label></p>
+                <input id="othernameForm" name="othername" placeholder="Other Name" tabindex="1" type="text">
+                <p class="contact"><label for="username">Username</label></p>
+                <input id="usernameForm" name="username" placeholder="username" tabindex="1" type="text">
+                <p class="contact"><label for="profilepic">Upload Profile Photo</label></p>
+                <input type="file" id="name" name="profilepic" accept="image/*" multiple>
+
+                <br>
+                <input class="button-normal" name="submit" id="updateProfile" tabindex="5" value="Update Profile" type="submit">
+
+              </form>
+            </div>
+          </div>
+
         </div>
-        <div class="card">
-          <div class="container2">
-              <p></p>
-              <h4 class="black"><b><i class="fa fa-flag red" aria-hidden="true"></i> Red Flags</b></h4>
-              <p id='my-redflags'></p>
-              <h4 class="black"><b><i class="fa fa-handshake-o theme-blue" aria-hidden="true"></i> Interventions</b></h4>
-              <p id='my-interventions'></p>
+        <!-- The Modal -->
+        <div id="modal-window-reset-password" class="modal">
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-body">
+              <div class="modal-form">
+                <form id="resetPassword" method="POST">
+                  <p class="contact"><label for="title">Password</label></p>
+                  <input id="password" name="password" placeholder="Password" tabindex="1" type="password">
+                  <p class="contact"><label for="title">Confirm Password</label></p>
+                  <input id="confirm_password" name="confirm_password" placeholder="Confirm Password" tabindex="1" type="password">
+                  <br>
+                  <input id='submit' name="submit" class="button-normal" tabindex="5" value="Reset Password" type="submit">
+                  <i id="fa-spin-reset" class="fa fa-circle-o-notch fa-spin hide"></i>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
-        <script src="js/models_incidents.js"></script>
-        <script>
-            let profileName = name;
-            let userEmail = email;
+      </div>
+      <div class="card">
+        <div class="container2">
+          <p></p>
+          <h4 class="black"><b><i class="fa fa-flag red" aria-hidden="true"></i> Red Flags</b></h4>
+          <p id='my-redflags'></p>
+          <h4 class="black"><b><i class="fa fa-handshake-o theme-blue" aria-hidden="true"></i> Interventions</b></h4>
+          <p id='my-interventions'></p>
+        </div>
+      </div>
+      <script src="js/models_incidents.js"></script>
+      <script>
+        let profileName = name;
+        let userEmail = email;
 
-            let profileNameSplit = profileName.split(" ");
-            let firstname = profileNameSplit[0];
-            let lastname = profileNameSplit[1];
-            let othername = profileNameSplit[2];
+        let profileNameSplit = profileName.split(" ");
+        let firstname = profileNameSplit[0];
+        let lastname = profileNameSplit[1];
+        let othername = profileNameSplit[2];
 
-            if(othername == null){
-              othername = '';
-            }
+        if (othername == null) {
+          othername = '';
+        }
 
-            document.getElementById('name').innerHTML = profileName;
-            document.getElementById('email').innerHTML = userEmail;
-            document.getElementById('username').innerHTML = profileUserName;
+        document.getElementById('name').innerHTML = profileName;
+        document.getElementById('email').innerHTML = userEmail;
+        document.getElementById('username').innerHTML = profileUserName;
 
-            document.getElementById('firstnameForm').value = firstname;
-            document.getElementById('lastnameForm').value = lastname;
-            document.getElementById('othernameForm').value = othername;
-            document.getElementById('usernameForm').value = profileUserName;
-            
-          </script>
-          <script>
-              function getUserData(incident_type){
-          
-                let uri = root + incident_type;
-          
-                let options = {
-                    method: 'GET',
-                    mode: "cors",
-                    headers: new Headers({
-                      "Content-Type": "application/json; charset=utf-8",
-                      "x-access-token": token
-                    })
+        document.getElementById('firstnameForm').value = firstname;
+        document.getElementById('lastnameForm').value = lastname;
+        document.getElementById('othernameForm').value = othername;
+        document.getElementById('usernameForm').value = profileUserName;
+      </script>
+      <script>
+        function getUserData(incident_type) {
+
+          let uri = root + incident_type;
+
+          let options = {
+            method: 'GET',
+            mode: "cors",
+            headers: new Headers({
+              "Content-Type": "application/json; charset=utf-8",
+              "x-access-token": token
+            })
+          }
+          let req = new Request(uri, options);
+
+          fetch(req)
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              } else {
+
+                return response.json();
+              }
+            })
+            .then((j) => {
+              if (j.hasOwnProperty('message')) {
+                if (j['message'] == 'Token is missing') {
+                  logout();
                 }
-                let req = new Request(uri, options);
-          
-                fetch(req)
-                    .then((response)=>{
-                        if(response.ok){
-                          return response.json();
-                        }else{
-                          
-                          return response.json();
-                        }
-                    })
-                    .then( (j) =>{
-                      if(j.hasOwnProperty('message')){
-                        if(j['message'] == 'Token is missing'){
-                          logout();
-                        }
-                        if(j['message'] == 'Token is invalid'){
-                          logout();
-                        }
-                        if(j['message'] == 'No interventions'){
+                if (j['message'] == 'Token is invalid') {
+                  logout();
+                }
+                if (j['message'] == 'No interventions') {
 
-                          }
-                      }
-                      if(j.hasOwnProperty('data')){
-                        let incidents = j['data'];
-                        let myIncidents = incidents.filter(incident => {
-                          return incident.username === profileUserName;
-                        })
-                       
-                        let myRedflags = myIncidents.filter(incident => {
-                          return incident.type === 'redflag';
-                        })
-                        let myInterventions = myIncidents.filter(incident => {
-                          return incident.type === 'intervention';
-                        })
-                        let myDraftIncidents = myIncidents.filter(incident =>{
-                          return incident.status === 'draft'
-                        })
-                        let myResolvedIncidents = myIncidents.filter(incident =>{
-                          return incident.status === 'resolved'
-                        })
-                        let myUnderInvestigationIncidents = myIncidents.filter(incident =>{
-                          return incident.status === 'under investigation'
-                        })
-                        let myRejectedIncidents = myIncidents.filter(incident =>{
-                          return incident.status === 'rejected'
-                        })
-                        
-                        
-                        if (incident_type == 'redflags'){
-                          document.getElementById('my-redflags').innerHTML = `<a href="view_by_username.html?type=redflag&username=${profileUserName}">` + myRedflags.length + `</a>`;
-                          document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
-                          document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
-                          document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents.length;
-                          document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
-                        }else if(incident_type == 'interventions'){
-                          document.getElementById('my-interventions').innerHTML = `<a href="view_by_username.html?type=intervention&username=${profileUserName}">` + myInterventions.length + `</a>`;
-                          document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
-                          document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
-                          document.getElementById('my-underinvestigation-interventions').innerHTML = myUnderInvestigationIncidents.length;
-                          document.getElementById('my-rejected-interventions').innerHTML = myRejectedIncidents.length;
-                        }
+                }
+              }
+              if (j.hasOwnProperty('data')) {
+                let incidents = j['data'];
+                let myIncidents = incidents.filter(incident => {
+                  return incident.username === profileUserName;
+                })
+
+                let myRedflags = myIncidents.filter(incident => {
+                  return incident.type === 'redflag';
+                })
+                let myInterventions = myIncidents.filter(incident => {
+                  return incident.type === 'intervention';
+                })
+                let myDraftIncidents = myIncidents.filter(incident => {
+                  return incident.status === 'draft'
+                })
+                let myResolvedIncidents = myIncidents.filter(incident => {
+                  return incident.status === 'resolved'
+                })
+                let myUnderInvestigationIncidents = myIncidents.filter(incident => {
+                  return incident.status === 'under investigation'
+                })
+                let myRejectedIncidents = myIncidents.filter(incident => {
+                  return incident.status === 'rejected'
+                })
 
 
-                      }
-                                                  
-                    })
-                    .catch( (err) =>{
+                if (incident_type == 'redflags') {
+                  document.getElementById('my-redflags').innerHTML =
+                    `<a href="view_by_username.html?type=redflag&username=${profileUserName}">` + myRedflags.length +
+                    `</a>`;
+                  document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
+                  document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
+                  document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents
+                    .length;
+                  document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
+                } else if (incident_type == 'interventions') {
+                  document.getElementById('my-interventions').innerHTML =
+                    `<a href="view_by_username.html?type=intervention&username=${profileUserName}">` +
+                    myInterventions.length + `</a>`;
+                  document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
+                  document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
+                  document.getElementById('my-underinvestigation-interventions').innerHTML =
+                    myUnderInvestigationIncidents.length;
+                  document.getElementById('my-rejected-interventions').innerHTML = myRejectedIncidents.length;
+                }
 
-                    });
-            }
-            getUserData('redflags');
-            getUserData('interventions');
-            document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
-            document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event, profileUserName));
-            document.getElementById('updateUserData').addEventListener('submit', (event) => updateUserData(event, profileUserName));
-          </script>                         
-      </div>      
-      <div class="column">
-          <div class="card">
-              <div class="container2">
-                  <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
-                  <h4 class="black"><b>Red Flags</b></h4>
-                  <p class="italic font-small">Draft</p>
-                  <p id='my-draft-redflags'></p>
-              </div>
-            </div>        
-        <div class="card">
-            <div class="container2">
-              <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
-              <h4 class="black"><b>Red Flags</b></h4>
-              <p class="italic font-small">Resolved</p>
-              <p id='my-resolved-redflags'></p>
-    
-            </div>
-          </div>
-          <div class="card">
-            <div class="container2">
-              <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
-              <h4 class="black"><b>Red Flags</b></h4>
-              <p class="italic font-small">Under Investigation</p>
-              <p id="my-underinvestigation-redflags"></p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="container2">
-              <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
-              <h4 class="black"><b>Red Flags</b></h4>
-              <p class="italic font-small">Rejected</p>
-              <p id="my-rejected-redflags"></p>
-            </div>
-          </div>        
-      </div>
-      <div class="column">
-          <div class="card">
-              <div class="container2">
-                  <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
-                  <h4 class="black"><b>Interventions</b></h4>
-                  <p class="italic font-small">Draft</p>
-                  <p id='my-draft-interventions'></p>
-              </div>
-            </div>         
-          <div class="card">
-              <div class="container2">
-                <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
-                <h4 class="black"><b>Interventions</b></h4>
-                <p class="italic font-small">Resolved</p>
-                <p id='my-resolved-interventions'></p>
-              </div>
-            </div>
-            <div class="card">
-              <div class="container2">
-                <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
-                <h4 class="black"><b>Interventions</b></h4>
-                <p class="italic font-small">Under Investigation</p>
-                <p  id='my-underinvestigation-interventions'></p>
-              </div>
-            </div>
-            <div class="card">
-              <div class="container2">
-                <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
-                <h4 class="black"><b>Interventions</b></h4>
-                <p class="italic font-small">Rejected</p>
-                <p  id='my-rejected-interventions'></p>
-              </div>
-            </div>   
-      </div>
-      <div class="clearfix"></div>
-      <div class="push"></div>                             
+
+              }
+
+            })
+            .catch((error) => {
+
+            });
+        }
+        getUserData('redflags');
+        getUserData('interventions');
+        document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
+        document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event,
+          profileUserName));
+        document.getElementById('updateUserData').addEventListener('submit', (event) => updateUserData(event,
+          profileUserName));
+      </script>
     </div>
-    <div class="footer">
-      <ul>
-        <li>
-          <a href="contact.html"  class="nav-links">contact</a>
-        </li>
-        <li>
-          <a href="about.html"  class="nav-links">about</a>
-        </li>    
-        <li><a href="#" class="nav-links">privacy & terms</a></li>    
-      </ul>
+    <div class="column">
+      <div class="card">
+        <div class="container2">
+          <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
+          <h4 class="black"><b>Red Flags</b></h4>
+          <p class="italic font-small">Draft</p>
+          <p id='my-draft-redflags'></p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="container2">
+          <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
+          <h4 class="black"><b>Red Flags</b></h4>
+          <p class="italic font-small">Resolved</p>
+          <p id='my-resolved-redflags'></p>
+
+        </div>
+      </div>
+      <div class="card">
+        <div class="container2">
+          <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
+          <h4 class="black"><b>Red Flags</b></h4>
+          <p class="italic font-small">Under Investigation</p>
+          <p id="my-underinvestigation-redflags"></p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="container2">
+          <p><i class="fa fa-flag red fa-2x" aria-hidden="true"></i></p>
+          <h4 class="black"><b>Red Flags</b></h4>
+          <p class="italic font-small">Rejected</p>
+          <p id="my-rejected-redflags"></p>
+        </div>
+      </div>
     </div>
-    <script src="js/main.js"></script>
-    <script src="js/modal.js"></script>
-    <script src="js/logout.js"></script>    
-  </body>
+    <div class="column">
+      <div class="card">
+        <div class="container2">
+          <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
+          <h4 class="black"><b>Interventions</b></h4>
+          <p class="italic font-small">Draft</p>
+          <p id='my-draft-interventions'></p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="container2">
+          <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
+          <h4 class="black"><b>Interventions</b></h4>
+          <p class="italic font-small">Resolved</p>
+          <p id='my-resolved-interventions'></p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="container2">
+          <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
+          <h4 class="black"><b>Interventions</b></h4>
+          <p class="italic font-small">Under Investigation</p>
+          <p id='my-underinvestigation-interventions'></p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="container2">
+          <p><i class="fa fa-handshake-o theme-blue fa-2x" aria-hidden="true"></i></p>
+          <h4 class="black"><b>Interventions</b></h4>
+          <p class="italic font-small">Rejected</p>
+          <p id='my-rejected-interventions'></p>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="push"></div>
+  </div>
+  <div class="footer">
+    <ul>
+      <li>
+        <a href="contact.html" class="nav-links">contact</a>
+      </li>
+      <li>
+        <a href="about.html" class="nav-links">about</a>
+      </li>
+      <li><a href="#" class="nav-links">privacy & terms</a></li>
+    </ul>
+  </div>
+  <script src="js/main.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/logout.js"></script>
+</body>
+
 </html>
