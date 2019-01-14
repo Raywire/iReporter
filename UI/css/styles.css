@@ -220,7 +220,7 @@ a {
     max-width: 1650px;
     margin: 0 auto;
 }
-.incident-header{
+.incident-header, .user-console{
   width: 100%;
   overflow: hidden;
   display: block;

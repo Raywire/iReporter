@@ -8,6 +8,15 @@
     <link rel="icon" type="image/png" href="img/favicon.ico">
     <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <noscript>
+      <div class="column-100">
+        <div class="card">
+            <div class="container">
+              <h1>Your browser does not support Javascript</h1> 
+            </div>
+          </div>               
+      </div> 
+    </noscript>    
     <script src="js/loggedIn.js"></script>
   </head>
   <body>
@@ -53,7 +62,7 @@
                   let useremail = document.getElementById('useremail').value;
                   let resetlink = 'https://raywire.github.io/iReporter/UI/reset_password.html';
 
-                  let uri = root + 'users/' + useremail + '/resetPassword';             
+                  let uri = config.root + 'users/' + useremail + '/resetPassword';             
 
                   let options = {
                       method: 'POST',
@@ -79,13 +88,9 @@
                       .then( (j) =>{
                           if(j.hasOwnProperty('message')){
 
-                            // if(j['message'].hasOwnProperty('comment')){
-                            //     document.getElementById('comment').style.borderBottomColor = "red";
-                            //     warningNotification({ 
-                            //     title: 'Warning',
-                            //     message: 'Comment cannot be empty or start with special characters', 
-                            //     });
-                            // }
+                            if(j['message'].hasOwnProperty('resetlink')){
+                              document.getElementById('error-message').innerHTML = 'resetlink key is missing';
+                            }
                             if(j['message'] == 'user does not exist'){
                               document.getElementById('error-message').innerHTML = j['message']; 
                             }

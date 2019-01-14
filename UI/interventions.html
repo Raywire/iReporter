@@ -11,7 +11,13 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/notifications.css">
   <noscript>
-    <h1>Your browser does not support Javascript</h1>
+    <div class="column-100">
+      <div class="card">
+          <div class="container">
+            <h1>Your browser does not support Javascript</h1> 
+          </div>
+        </div>               
+    </div>     
   </noscript>
   <script src="js/auth.js"></script>
   <script src="js/notifications.js"></script>
@@ -50,8 +56,8 @@
               aria-hidden="true"></i></button>
         </div>
         <div class="button-right">
-          <form id='searchUsersForm'>
-            <input type="text" id="searchIncidents" class="search-data" placeholder="Search...">
+          <form id='searchIncidentsForm'>
+            <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status or title">
           </form>
         </div>
       </div>
@@ -98,7 +104,7 @@
       <script src="js/models_incidents.js"></script>
       <script>
         getData('intervention', 'all', 'all');
-        document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event,
+        document.getElementById('searchIncidentsForm').addEventListener('submit', (event) => searchIncidents(event,
           'intervention', 'all'));
       </script>
       <div class="pagination">

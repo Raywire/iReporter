@@ -1,4 +1,6 @@
-const root = 'https://pure-wildwood-82378.herokuapp.com/api/v2/';
+const config = {
+  root : 'https://pure-wildwood-82378.herokuapp.com/api/v2/'
+}
 
 let token = getCookie('token');
 let name = getCookie('name');
@@ -11,7 +13,7 @@ const user = {
   token : token, name : name, email : email, username : username, isAdmin : isAdmin, isLoggedIn : isLoggedIn
 };
 
-if (isLoggedIn == 'False' || isLoggedIn == "logged out" || token == "logged out"){
+if (isLoggedIn === 'False' || isLoggedIn === "logged out" || token === "logged out"){
   window.location.replace("signin.html");
 }
 

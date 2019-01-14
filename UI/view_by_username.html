@@ -1,7 +1,3 @@
-<noscript>
-  <h1>Your browser does not support Javascript</h1>
-</noscript>
-<script src="js/auth.js"></script>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
@@ -13,6 +9,16 @@
   <link rel="icon" type="image/png" href="img/favicon.ico">
   <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <noscript>
+    <div class="column-100">
+      <div class="card">
+          <div class="container">
+            <h1>Your browser does not support Javascript</h1> 
+          </div>
+        </div>               
+    </div>  
+  </noscript>  
+  <script src="js/auth.js"></script>
   <script src="js/moment.min.js"></script>
 </head>
 
@@ -44,8 +50,8 @@
       </div>
       <div class="search-bar">
         <i id="fa-spin-search" class="fa fa-circle-o-notch fa-spin"></i>
-        <form id='searchUsersForm' class="search-bar-left">
-          <input type="text" id="searchIncidents" class="search-data" placeholder="Search...">
+        <form id='searchIncidentsForm' class="search-bar-left">
+          <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status or title">
         </form>
         <button class="button-normal search-bar-right" onclick="perPageSelection(incident_type, incident_creator)"><i
             class="fa fa-refresh" aria-hidden="true"></i></button>
@@ -67,7 +73,7 @@
         let incident_type = urlParams2.get('type');
 
         getData(incident_type, incident_creator, 'all');
-        document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event,
+        document.getElementById('searchIncidentsForm').addEventListener('submit', (event) => searchIncidents(event,
           incident_type, incident_creator));
 
         document.getElementById('by-username').innerHTML = 'By' + ' ' + (incident_creator == user.username ? 'Me' :
