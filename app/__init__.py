@@ -22,7 +22,7 @@ def create_app(config_name='development'):
     app.config.from_object(APP_CONFIG[config_name])
 
     url = app.config.get('DATABASE_URL')
-    CORS(app, resources={r"/api/*": {"origins": "*"}}, headers="Content-Type")
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     create_tables(url)
 

@@ -54,7 +54,7 @@ def tables():
         Images VARCHAR(500) NULL,
         Videos VARCHAR(500) NULL,
         title VARCHAR(100),
-        comment VARCHAR(2000) NOT NULL
+        comment VARCHAR(5000) NOT NULL
         );"""
 
     table2 = """CREATE TABLE IF NOT EXISTS users(
