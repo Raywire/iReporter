@@ -56,9 +56,9 @@
           document.getElementById('fa-spin').style.display = "block";
           document.getElementById('submit').value = "Logging In";
 
-          let uri = root + 'auth/login';
+          let uri = config.root + 'auth/login';
 
-          let username = document.getElementById('username').value;
+          let username = document.getElementById('username').value.toLowerCase();
           let password = document.getElementById('password').value;
 
           let options = {

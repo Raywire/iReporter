@@ -1,28 +1,29 @@
-let tokenModels = token;
+const tokenModels = user.token;
+const profileUserName = user.username;
 
-let profileUserName = username;
-
-function convertToLocalTime(utcdatetime) {
+let convertToLocalTime = (utcdatetime) => {
   let localDateTime = new Date(utcdatetime).toISOString();
 
   localDateTime = moment(localDateTime).format('ddd, MMM Do YYYY, h:mm:ss a Z'); //Fri, Jan 4th 2019, 7:18:05 pm +3:00;
-  return localDateTime;
+  return localDateTime;  
 }
 
-function humanize(utcdatetime) {
+let humanize = (utcdatetime) => {
   let datetimeiso = new Date(utcdatetime).toISOString();
   let humanizedDate = moment(datetimeiso).fromNow();
-  return humanizedDate;
+  return humanizedDate;  
 }
 
-function postData(event, incident_type) {
+//Function to post an incident by type
+
+let postData = (event, incident_type) => {
   event.preventDefault();
   document.getElementById('title').style.borderBottomColor = "#ccc";
   document.getElementById('comment').style.borderBottomColor = "#ccc";
   document.getElementById('location').style.borderBottomColor = "#ccc";
   document.getElementById('fa-spin').style.display = "block";
 
-  let uri = root + incident_type;
+  let uri = config.root + incident_type;
 
   let title = document.getElementById('title').value;
   let comment = document.getElementById('comment').value;
@@ -91,9 +92,9 @@ function postData(event, incident_type) {
         });
 
         if (incident_type == 'interventions') {
-          getData('intervention', 'all');
+          getData('intervention', 'all', 'all');
         } else if (incident_type == 'redflags')
-          getData('redflag', 'all');
+          getData('redflag', 'all', 'all');
       }
 
     })
@@ -102,9 +103,11 @@ function postData(event, incident_type) {
     });
 }
 
-function getData(incident_type, incident_creator, search_data) {
+//Function to get all incidents by type, createdBy and search parameter
 
-  let uri = root + incident_type + 's';
+let getData = (incident_type, incident_creator, search_data) => {
+
+  let uri = config.root + incident_type + 's';
 
   let options = {
     method: 'GET',
@@ -145,15 +148,13 @@ function getData(incident_type, incident_creator, search_data) {
           let result = '';
           result += `
                   <div class="column-100">
-                  <div class="card">
+                    <div class="card">
                       <div class="container">
-                        
                           <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
-                          <h4 class="theme-blue"><b>No Incidents</b></h4>
-                        
+                          <h4 class="theme-blue"><b>No Incidents</b></h4> 
                       </div>
                     </div>               
-                </div> 
+                  </div> 
                   `;
           document.getElementById('incident-data').innerHTML = result;
         }
@@ -279,6 +280,10 @@ function getData(incident_type, incident_creator, search_data) {
                 currentPage = 0;
                 document.getElementById('startNumber').innerHTML = 0;
                 document.getElementById('endNumber').innerHTML = 0;
+                document.getElementById("button_next").disabled = true;
+                document.getElementById("button_prev").disabled = true;
+                nextButton.classList.add('opacity');
+                prevButton.classList.add('opacity');
                 return document.getElementById('incident-data').innerHTML = result;
               }
 
@@ -323,6 +328,7 @@ function getData(incident_type, incident_creator, search_data) {
             }
 
             let prevPage = function () {
+              showLoader();
               if (currentPage > 1) {
                 currentPage--;
                 changePage(currentPage);
@@ -332,9 +338,11 @@ function getData(incident_type, incident_creator, search_data) {
                 document.getElementById('startNumber').innerHTML = startNumber;
                 document.getElementById('endNumber').innerHTML = virtualEndNumber;
               }
+              hideLoader(1000);
             }
 
             let nextPage = function () {
+              showLoader();
               if (currentPage < numPages()) {
                 currentPage++;
                 changePage(currentPage);
@@ -351,6 +359,7 @@ function getData(incident_type, incident_creator, search_data) {
                 document.getElementById('startNumber').innerHTML = startNumber;
                 document.getElementById('endNumber').innerHTML = endNumber;
               }
+              hideLoader(1000);
             }
 
             let clickPage = function () {
@@ -392,9 +401,11 @@ function getData(incident_type, incident_creator, search_data) {
     });
 }
 
-function getDataById(incident_type, incidentId) {
+//Function to get an incident by Id
 
-  let uri = root + incident_type + '/' + incidentId;
+let getDataById = (incident_type, incidentId) => {
+
+  let uri = config.root + incident_type + '/' + incidentId;
 
   let options = {
     method: 'GET',
@@ -499,11 +510,13 @@ function getDataById(incident_type, incidentId) {
     });
 }
 
-function deleteData(incident_type, incidentId) {
+//Function to delete an incident  by id
+
+let deleteData = (incident_type, incidentId) => {
   document.getElementById('fa-spin-data-delete').style.display = "block";
   document.getElementById('error-message').innerHTML = '';
 
-  let uri = root + incident_type + '/' + incidentId;
+  let uri = config.root + incident_type + '/' + incidentId;
 
   let options = {
     method: 'DELETE',
@@ -565,9 +578,10 @@ function uploadFile() {
 
 }
 
-function getFileData(filetype, filename) {
+//Function to get files by file name
+let getFileData = (filetype, filename) => {
 
-  let uri = root + 'uploads/' + filetype + '/' + filename;
+  let uri = config.root + 'uploads/' + filetype + '/' + filename;
 
   let options = {
     method: 'GET',
@@ -605,11 +619,12 @@ function getFileData(filetype, filename) {
     });
 }
 
-function editLocation(event, intervention_type, intervention_id) {
+//Function to edit the location
+let editLocation = (event, intervention_type, intervention_id) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit').style.display = "block";
 
-  let uri = root + intervention_type + '/' + intervention_id + '/location';
+  let uri = config.root + intervention_type + '/' + intervention_id + '/location';
 
   let location = document.getElementById('location').value;
 
@@ -680,12 +695,13 @@ function editLocation(event, intervention_type, intervention_id) {
     });
 }
 
-function editComment(event, intervention_type, intervention_id) {
+//Function to edit comment
+let editComment = (event, intervention_type, intervention_id) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit').style.display = "block";
   document.getElementById('comment').style.borderBottomColor = "#ccc";
 
-  let uri = root + intervention_type + '/' + intervention_id + '/comment';
+  let uri = config.root + intervention_type + '/' + intervention_id + '/comment';
 
   let comment = document.getElementById('comment').value;
 
@@ -762,11 +778,12 @@ function editComment(event, intervention_type, intervention_id) {
     });
 }
 
-function editStatus(event, intervention_type, intervention_id) {
+//Function to edit status
+let editStatus = (event, intervention_type, intervention_id) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit-status').style.display = "block";
 
-  let uri = root + intervention_type + '/' + intervention_id + '/status';
+  let uri = config.root + intervention_type + '/' + intervention_id + '/status';
 
   let status = document.getElementById('status').value;
 
@@ -839,13 +856,14 @@ function editStatus(event, intervention_type, intervention_id) {
     });
 }
 
-function uploadImage(event, intervention_type, intervention_id) {
+//Function to upload image
+let uploadImage = (event, intervention_type, intervention_id) => {
   event.preventDefault();
   document.getElementById('fa-spin-upload').style.display = "block";
   document.getElementById('upload-message').innerHTML = '';
   document.getElementById('upload-message').style.color = "red";
 
-  let uri = root + intervention_type + '/' + intervention_id + '/addImage';
+  let uri = config.root + intervention_type + '/' + intervention_id + '/addImage';
 
   var formData = new FormData();
   let fileData = document.getElementById('fileImage').files[0];
@@ -920,21 +938,21 @@ function uploadImage(event, intervention_type, intervention_id) {
 
 }
 
-function uploadVideo(event, intervention_type, intervention_id) {
+let uploadVideo = (event, intervention_type, intervention_id) => {
   event.preventDefault();
 
 }
 
-function updateUserData(event, username_id) {
+let updateUserData = (event, username_id) => {
   event.preventDefault();
 
 }
 
-function resetPassword(event, usernameid) {
+let resetPassword = (event, usernameid) => {
   event.preventDefault();
   document.getElementById('fa-spin-reset').style.display = "block";
 
-  let uri = root + 'users/' + usernameid;
+  let uri = config.root + 'users/' + usernameid;
 
   let password = document.getElementById('password').value;
   let confirm_password = document.getElementById('confirm_password').value;
@@ -1014,7 +1032,7 @@ function resetPassword(event, usernameid) {
     });
 }
 
-function checkPassword() {
+let checkPassword = () => {
   let pass1 = document.getElementById('password').value;
   let confirm_pass1 = document.getElementById('confirm_password').value;
 
@@ -1027,7 +1045,7 @@ function checkPassword() {
   }
 }
 
-function searchIncidents() {
+let filterIncidents = () => {
 
   let input, filter, table, column, card, i, txtValue;
   input = document.getElementById("searchIncidents");
@@ -1049,13 +1067,13 @@ function searchIncidents() {
   }
 }
 
-function perPageSelection(incident_type, incident_creator) {
+let perPageSelection = (incident_type, incident_creator) => {
   showLoader()
   getData(incident_type, incident_creator, 'all');
   hideLoader(1000);
 }
 
-function searchUsers(event, incident_type, incident_creator) {
+let searchIncidents = (event, incident_type, incident_creator)=> {
   event.preventDefault();
   showLoader();
   searchParameter = document.getElementById('searchIncidents').value;
@@ -1064,7 +1082,7 @@ function searchUsers(event, incident_type, incident_creator) {
   hideLoader(1000);
 }
 
-function hideLoader(timer) {
+let hideLoader = (timer) => {
   setTimeout(hide, timer);
 
   function hide() {
@@ -1072,6 +1090,6 @@ function hideLoader(timer) {
   }
 }
 
-function showLoader() {
+let showLoader = () => {
   document.getElementById("loader").style.display = "block";
 }

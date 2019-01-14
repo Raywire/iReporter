@@ -1,13 +1,13 @@
-function getData(user_data) {
+let getUsers = (user_data) => {
 
-    let uri = root + 'users';
+    let uri = config.root + 'users';
 
     let options = {
         method: 'GET',
         mode: "cors",
         headers: new Headers({
             "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": token
+            "x-access-token": user.token
         })
     }
     let request = new Request(uri, options);
@@ -145,6 +145,9 @@ function getData(user_data) {
                                 current_page = 0;
                                 document.getElementById('startNumber').innerHTML = 0;
                                 document.getElementById('endNumber').innerHTML = 0;
+                                document.getElementById("button_next").disabled = true;
+                                document.getElementById("button_prev").disabled = true;
+                                nextButton.classList.add('opacity');
                                 return document.getElementById('user-data').innerHTML = result;
                             }
 
@@ -173,6 +176,7 @@ function getData(user_data) {
                         }
 
                         let prevPage = function () {
+                            showUserLoader();
                             if (current_page > 1) {
                                 current_page--;
                                 changePage(current_page);
@@ -182,9 +186,11 @@ function getData(user_data) {
                                 document.getElementById('startNumber').innerHTML = startNumber;
                                 document.getElementById('endNumber').innerHTML = virtualEndNumber;
                             }
+                            hideUserLoader();
                         }
 
                         let nextPage = function () {
+                            showUserLoader();
                             if (current_page < numPages()) {
                                 current_page++;
                                 changePage(current_page);
@@ -201,6 +207,7 @@ function getData(user_data) {
                                 document.getElementById('startNumber').innerHTML = startNumber;
                                 document.getElementById('endNumber').innerHTML = endNumber;
                             }
+                            hideUserLoader();
                         }
 
                         let clickPage = function () {
@@ -242,16 +249,16 @@ function getData(user_data) {
         });
 }
 
-function getUserData() {
+let getUserData = () => {
 
-    let uri = root + 'users/' + usernameId;
+    let uri = config.root + 'users/' + usernameId;
 
     let options = {
         method: 'GET',
         mode: "cors",
         headers: new Headers({
             "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": token
+            "x-access-token": user.token
         })
     }
     let request = new Request(uri, options);
@@ -340,13 +347,13 @@ function getUserData() {
         });
 }
 
-function editUserData(event) {
+let editUserData = (event) => {
     event.preventDefault();
     document.getElementById('fa-spin-edit-status').style.display = "block";
     document.getElementById('status-message').innerHTML = '';
     document.getElementById('status-message').style.color = "red";
 
-    let uri = root + 'users/' + usernameId + '/promote';
+    let uri = config.root + 'users/' + usernameId + '/promote';
 
     let status = document.getElementById('status').value;
 
@@ -355,7 +362,7 @@ function editUserData(event) {
         mode: "cors",
         headers: new Headers({
             "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": token
+            "x-access-token": user.token
         }),
         body: JSON.stringify({
             isadmin: status
@@ -412,18 +419,18 @@ function editUserData(event) {
         });
 }
 
-function deleteUserData() {
+let deleteUserData = () => {
     document.getElementById('fa-spin-data-delete').style.display = "block";
     document.getElementById('error-message').innerHTML = '';
 
-    let uri = root + 'users/' + usernameId;
+    let uri = config.root + 'users/' + usernameId;
 
     let options = {
         method: 'DELETE',
         mode: "cors",
         headers: new Headers({
             "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": token
+            "x-access-token": user.token
         })
     }
     let request = new Request(uri, options);
@@ -471,15 +478,15 @@ function deleteUserData() {
         });
 }
 
-function searchUsers(event) {
+let searchUsers = (event) => {
     event.preventDefault();
-    showLoader();
+    showUserLoader();
     searchParameter = document.getElementById('searchUsers').value;
-    getData(searchParameter);
-    hideLoader(1000);
+    getUsers(searchParameter);
+    hideUserLoader(1000);
 }
 
-function hideLoader(timer) {
+let hideUserLoader = (timer) => {
     setTimeout(hide, timer);
 
     function hide() {
@@ -487,6 +494,6 @@ function hideLoader(timer) {
     }
 }
 
-function showLoader() {
+let showUserLoader = () => {
     document.getElementById("loader").style.display = "block";
 }
