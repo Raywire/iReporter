@@ -15,7 +15,7 @@ def validate_coordinates(value):
 
 def validate_comment(value):
     """method to check comment only starts with A-Z"""
-    if not re.match(r"[A-Za-z0-9\']", value) or len(value) > 2000:
+    if not re.match(r"[A-Za-z0-9\']", value) or len(value) > 5000:
         raise ValueError("Pattern not matched")
 
 

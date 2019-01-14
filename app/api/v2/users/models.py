@@ -140,7 +140,7 @@ class UserModel:
 
         args = parser_signin.parse_args()
         data = {
-            'username': request.json.get('username'),
+            'username': request.json.get('username').lower(),
             'password': request.json.get('password')
         }
         user = self.get_user(data['username'])
