@@ -220,6 +220,11 @@ a {
     max-width: 1650px;
     margin: 0 auto;
 }
+.container-authenticate{
+  position: relative;
+  text-align: center;
+  color: white;
+}
 .incident-header, .user-console{
   width: 100%;
   overflow: hidden;

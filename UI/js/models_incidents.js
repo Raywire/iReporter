@@ -169,12 +169,12 @@ let getData = (incident_type, incident_creator, search_data) => {
           usernameIncidents = searchedIncidents = incidents;
         } else {
           usernameIncidents = searchedIncidents = incidents.filter(incident => {
-            return incident.title === search_data || incident.id === parseInt(search_data) || incident.username === search_data.toLowerCase() || incident.status === search_data.toLowerCase();
+            return incident.title.toLowerCase() === search_data.toLowerCase() || incident.id === parseInt(search_data) || incident.username === search_data.toLowerCase() || incident.status === search_data.toLowerCase();
           })
         }
 
         if (incident_creator == 'all') {
-          // usernameIncidents = incidents;
+          
         } else {
           usernameIncidents = searchedIncidents.filter(incident => {
             filteredIncidents = incident.username === incident_creator;
