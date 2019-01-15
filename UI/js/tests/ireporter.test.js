@@ -8,16 +8,16 @@ describe('Testing the functionality, convert utc to local time', () => {
 
 describe('Testing the functionality, to get a cookie', () => {
   it('should check if a cookie exists', () => {
-    document.cookie = "username=John Doe";
+    document.cookie = "testusername=John Doe";
 
-    expect(getCookie("username")).toBe("John Doe");
+    expect(getCookie("testusername")).toBe("John Doe");
   })
 })
 
 describe('Testing the functionality, to check if cookies are reset on logout', () => {
   it('should check if cookies are cleared on logout', () => {
-    document.cookie = "username=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie = "testusername=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 
-    expect(getCookie("username")).toBe("");
+    expect(getCookie("testusername")).toBe("");
   })
 })
