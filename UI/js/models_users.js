@@ -144,7 +144,6 @@ let getUsers = (user_data) => {
                                           `;
                                 current_page = 0;
                                 document.getElementById('startNumber').innerHTML = 0;
-                                document.getElementById('endNumber').innerHTML = 0;
                                 document.getElementById("button_next").disabled = true;
                                 document.getElementById("button_prev").disabled = true;
                                 nextButton.classList.add('opacity');
@@ -183,9 +182,11 @@ let getUsers = (user_data) => {
                                 document.getElementById('current_page').innerHTML = current_page;
                                 startNumber -= recordsPerPage;
                                 virtualEndNumber -= recordsPerPage;
-                                document.getElementById('startNumber').innerHTML = startNumber;
-                                document.getElementById('endNumber').innerHTML = virtualEndNumber;
+                                userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
                             }
+                            if(current_page == 1){
+                                endNumber = virtualEndNumber;
+                              }
                             hideUserLoader();
                         }
 
@@ -222,20 +223,24 @@ let getUsers = (user_data) => {
                         let pageNumbers = function () {
                             let pageNumber = document.getElementById('page_number');
                             pageNumber.innerHTML = "";
+                            let numberOfPages = numPages();
                             if (current_page == 0) {
-                                current_page = 1;
+                                current_page = numberOfPages = 1;
                             }
 
                             pageNumber.innerHTML =
-                                `<span class=''><span id='current_page'>${current_page}</span> of ${numPages()}</span>`;
+                                `<span class=''><span id='current_page'>${current_page}</span> / ${numberOfPages}</span>`;
                         }
 
                         let numPages = function () {
                             return Math.ceil(users.length / recordsPerPage);
                         }
                         let userNumber = document.getElementById('user_number');
-                        userNumber.innerHTML =
-                            `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span> of ${totalNumber}`;
+                        if(startNumber === endNumber || endNumber == 0){
+                            userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
+                        }else{
+                            userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
+                        }                            
                     }
 
                     let pagination = new Pagination();

@@ -13,7 +13,7 @@ html, body {
 }
  body{
   font-family: 'Raleway', sans-serif;
-  background-color: #e6e6e6
+  background-color: #e6e6e6;
 }
  .navbar {
   font-size: 18px;
@@ -176,7 +176,7 @@ a {
     width: 60%;
   }
   .container-name{
-    width: 100%
+    width: 100%;
   }
   .container-name-right, .container-name-left{
     width: 50%;
@@ -224,6 +224,7 @@ a {
   position: relative;
   text-align: center;
   color: white;
+  margin: 0;
 }
 .incident-header, .user-console{
   width: 100%;
@@ -313,6 +314,9 @@ a {
   .mobile-hidden{
     display: none;
   }
+  .wrapper-index {
+    min-height: 100%;
+    }
  }
  @media screen and (max-width: 539px) {
   .button-left{
@@ -385,7 +389,7 @@ a {
     position: absolute;
     transform: translate(-50%, -50%);
     box-sizing: border-box;
-    padding: 70px 30px;
+    padding: 50px 30px;
 
 }
 .avatar {
@@ -397,20 +401,22 @@ a {
     left: calc(50% - 50px);
 }
 .login-box h1{
+  color:#737373;
   margin:0;
-  padding: 0 0 20px;
+  padding: 0 0 10px;
   text-align: center;
-  font-size: 22px;
+  font-size: 18px;
 }
 .login-box p {
   margin: 0;
   padding: 0;
   font-weight: bold;
   color: white;
+  font-size: 1.0em;
 }
 .login-box input{
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   padding: 4px;
 }
 .login-box input[type=text], .login-box input[type=password], .login-box input[type=email] {
@@ -666,14 +672,16 @@ border-top: none;
 
 .wrapper {
 min-height: 100%;
-
 /* Equal to height of footer */
 /* But also accounting for potential margin-bottom of last child */
-margin-bottom: -50px;
+/* margin-bottom: -50px; */
 }
 .footer,
 .push {
 height: 50px;
+}
+.push-color{
+  background-color: #404040;
 }
 .align-justify{
 text-align: justify;

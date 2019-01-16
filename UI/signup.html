@@ -1,191 +1,212 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>iReporter Sign Up</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex,nofollow"/>
-    <link rel="icon" type="image/png" href="img/favicon.ico">
-    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <script src="js/loggedIn.js"></script>
-  </head>
-  <body>
-    <nav class="navbar">
-      <span class="navbar-toggle" id="js-navbar-toggle">
-        <i class="fa fa-bars"></i>
-      </span>
-      <a href="index.html" class="logo">iReporter</a>
-      <ul class="main-nav" id="js-menu">
-        <li>
-          <a href="contact.html"  class="nav-links">contact</a>
-        </li>
-        <li>
-          <a href="about.html"  class="nav-links">about</a>
-        </li>
-        <li>
-          <a href="signin.html" class="nav-links">sign in</a>
-        </li>
-      </ul>
-    </nav>
-    <div class="container-authenticate wrapper container-login">
-      <div class="login-box">
-        <img src="img/avatar.jpg" class="avatar" alt="Login Image">
-        <h1>Sign Up</h1>
-        <form id="postData" method="POST">
-          <div class="container-name">
-            <div class="container-name-left">
-                <p>First Name</p>
-                <input type="text" id="firstname" name="firstname" maxlength="50" placeholder="Enter First Name">
-            </div>
-            <div class="container-name-right">
-                <p>Last Name</p>
-                <input type="text" id="lastname" name="lastname" maxlength="50" placeholder="Enter Last Name">
-            </div>
+
+<head>
+  <meta charset="utf-8">
+  <title>iReporter Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/png" href="img/favicon.ico">
+  <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/loggedIn.js"></script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <span class="navbar-toggle" id="js-navbar-toggle">
+      <i class="fa fa-bars"></i>
+    </span>
+    <a href="index.html" class="logo">iReporter</a>
+    <ul class="main-nav" id="js-menu">
+      <li>
+        <a href="contact.html" class="nav-links">contact</a>
+      </li>
+      <li>
+        <a href="about.html" class="nav-links">about</a>
+      </li>
+      <li>
+        <a href="signin.html" class="nav-links">sign in</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="container-authenticate wrapper container-login">
+    <div class="login-box">
+      <img src="img/avatar.jpg" class="avatar" alt="Login Image">
+      <h1>Sign Up</h1>
+      <form id="postData" method="POST">
+        <div class="container-name">
+          <div class="container-name-left">
+            <p>First Name</p>
+            <input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Enter First Name">
           </div>
-          <div class="container-name">
-            <div class="container-name-left">
-                <p>User Name</p>
-                <input type="text" id="username" name="username" maxlength="50" placeholder="Enter Username">
-            </div>
-            <div class="container-name-right">
-                <p>Email</p>
-                <input type="email" id="email" name="email" maxlength="100" placeholder="Enter Email">
-            </div>
-          </div>                             
-          <div class="container-name">
-            <div class="container-name-left">
-                <p>Password</p>
-                <input type="password" id="password" maxlength="50" name="password" placeholder="Enter Password">
-            </div>
-            <div class="container-name-right">
-                <p>Confirm Password</p>
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
-            </div>
-          </div>          
-          <input id='submit' type="submit" name="submit" value="Sign Up"> 
-          <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" ></i>
-          <p id="error-message"></p>         
-        </form>
-<script>
-  document.getElementById('postData').addEventListener('submit', postData);
-    function postData(event){
-      event.preventDefault();
-      document.getElementById('error-message').innerHTML = "";
-      document.getElementById('firstname').style.borderBottomColor = "white";
-      document.getElementById('lastname').style.borderBottomColor = "white";
-      document.getElementById('username').style.borderBottomColor = "white";
-      document.getElementById('email').style.borderBottomColor = "white";
-      document.getElementById('password').style.borderBottomColor = "white";
-      document.getElementById('confirm_password').style.borderBottomColor = "white";
-      document.getElementById('error-message').style.color = "red";
-      document.getElementById('fa-spin').style.display = "block";
-      document.getElementById('submit').value = "Signing Up";
+          <div class="container-name-right">
+            <p>Last Name</p>
+            <input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Enter Last Name">
+          </div>
+        </div>
+        <div class="container-name">
+          <div class="container-name-left">
+            <p>User Name</p>
+            <input type="text" id="username" name="username" maxlength="20" placeholder="Enter Username">
+          </div>
+          <div class="container-name-right">
+            <p>Email</p>
+            <input type="email" id="email" name="email" maxlength="100" placeholder="Enter Email">
+          </div>
+        </div>
+        <div class="container-name">
+          <div class="container-name-left">
+            <p>Password</p>
+            <input type="password" id="password" maxlength="120" name="password" placeholder="Enter Password">
+          </div>
+          <div class="container-name-right">
+            <p>Confirm Password</p>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
+          </div>
+        </div>
+        <input id='submit' type="submit" name="submit" value="Sign Up">
+        <i id="fa-spin" class="fa fa-circle-o-notch fa-spin"></i>
+        <p id="error-message"></p>
+      </form>
+      <script>
+        document.getElementById('postData').addEventListener('submit', postData);
 
-      let uri = config.root + 'auth/signup';
+        function postData(event) {
+          event.preventDefault();
+          document.getElementById('error-message').innerHTML = "";
+          document.getElementById('firstname').style.borderBottomColor = "white";
+          document.getElementById('lastname').style.borderBottomColor = "white";
+          document.getElementById('username').style.borderBottomColor = "white";
+          document.getElementById('email').style.borderBottomColor = "white";
+          document.getElementById('password').style.borderBottomColor = "white";
+          document.getElementById('confirm_password').style.borderBottomColor = "white";
+          document.getElementById('error-message').style.color = "red";
+          document.getElementById('fa-spin').style.display = "block";
+          document.getElementById('submit').value = "Signing Up";
 
-      let firstname = document.getElementById('firstname').value;
-      let lastname = document.getElementById('lastname').value;
-      let username = document.getElementById('username').value;
-      let email = document.getElementById('email').value;
-      let password = document.getElementById('password').value;
-      let confirm_password = document.getElementById('confirm_password').value;
+          let uri = config.root + 'auth/signup';
 
-      let data = {firstname:firstname,lastname:lastname,username:username,email:email, password:password};
+          let firstname = document.getElementById('firstname').value;
+          let lastname = document.getElementById('lastname').value;
+          let username = document.getElementById('username').value;
+          let email = document.getElementById('email').value;
+          let password = document.getElementById('password').value;
+          let confirm_password = document.getElementById('confirm_password').value;
 
-      if (password != confirm_password){
-        document.getElementById('fa-spin').style.display = "none";
-        document.getElementById('submit').value = "Sign Up";
-        document.getElementById('error-message').innerHTML = "Passwords do not match";
-        document.getElementById('password').style.borderBottomColor = "red";
-        document.getElementById('confirm_password').style.borderBottomColor = "red";
-        return false;
-      }
+          let data = {
+            firstname: firstname,
+            lastname: lastname,
+            username: username,
+            email: email,
+            password: password
+          };
 
-      let options = {
-          method: 'POST',
-          mode: "cors",
-          headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-          }),
-          body: JSON.stringify(data)
-      }
-      let req = new Request(uri, options);
+          if (password != confirm_password) {
+            document.getElementById('fa-spin').style.display = "none";
+            document.getElementById('submit').value = "Sign Up";
+            document.getElementById('error-message').innerHTML = "Passwords do not match";
+            document.getElementById('password').style.borderBottomColor = "red";
+            document.getElementById('confirm_password').style.borderBottomColor = "red";
+            return false;
+          }
 
-      fetch(req)
-          .then((response)=>{
-              if(response.ok){
+          let options = {
+            method: 'POST',
+            mode: "cors",
+            headers: new Headers({
+              "Content-Type": "application/json; charset=utf-8",
+            }),
+            body: JSON.stringify(data)
+          }
+          let req = new Request(uri, options);
+
+          fetch(req)
+            .then((response) => {
+              if (response.ok) {
                 document.getElementById('fa-spin').style.display = "none";
                 document.getElementById('submit').value = "Sign Up";
 
                 return response.json();
-              }else{
+              } else {
                 document.getElementById('fa-spin').style.display = "none";
                 document.getElementById('submit').value = "Sign Up";
                 return response.json();
               }
-          })
-          .then( (j) =>{
-              if(j.hasOwnProperty('message')){
-                if(j['message'].hasOwnProperty('password')){
+            })
+            .then((j) => {
+              if (j.hasOwnProperty('message')) {
+                if (j['message'].hasOwnProperty('password')) {
                   document.getElementById('error-message').innerHTML = j['message']['password'];
                   document.getElementById('password').style.borderBottomColor = "red";
                 }
-                if(j['message'].hasOwnProperty('firstname')){
+                if (j['message'].hasOwnProperty('firstname')) {
                   document.getElementById('firstname').style.borderBottomColor = "red";
                 }
-                if(j['message'].hasOwnProperty('lastname')){
+                if (j['message'].hasOwnProperty('lastname')) {
                   document.getElementById('lastname').style.borderBottomColor = "red";
                 }
-                if(j['message'].hasOwnProperty('username')){
+                if (j['message'].hasOwnProperty('username')) {
                   document.getElementById('username').style.borderBottomColor = "red";
                 }
-                if(j['message'].hasOwnProperty('email')){
+                if (j['message'].hasOwnProperty('email')) {
                   document.getElementById('email').style.borderBottomColor = "red";
                 }
-                if(j['message'] == 'email already exists'){
+                if (j['message'] == 'email already exists') {
                   document.getElementById('email').style.borderBottomColor = "red";
                   document.getElementById('error-message').innerHTML = j['message'];
                 }
-                if(j['message'] == 'username already exists'){
+                if (j['message'] == 'username already exists') {
                   document.getElementById('username').style.borderBottomColor = "red";
                   document.getElementById('error-message').innerHTML = j['message'];
                 }
-                if(j['message'] == 'You have been registered successfully'){
+                if (j['message'] == 'You have been registered successfully') {
                   document.getElementById('error-message').style.color = "green";
                   document.getElementById('error-message').innerHTML = j['message'];
                   window.location.replace("signin.html");
                 }
-                
+
               }
 
-              if(j.hasOwnProperty('data')){
+              if (j.hasOwnProperty('data')) {
                 window.location.replace("signin.html");
-                }
-              
-          })
-          .catch( (err) =>{
+              }
+
+            })
+            .catch((err) => {
               console.log(err);
-          });
-  }
-  document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
-  function checkPassword(){
-    let pass1= document.getElementById('password').value;
-    let confirm_pass1 = document.getElementById('confirm_password').value;
+            });
+        }
+        document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
 
-    if (pass1 == confirm_pass1){
-      document.getElementById('password').style.borderBottomColor = "green";
-      document.getElementById('confirm_password').style.borderBottomColor = "green";
-    }else{
-      document.getElementById('password').style.borderBottomColor = "red";
-      document.getElementById('confirm_password').style.borderBottomColor = "red";
-    }
-  }  
+        function checkPassword() {
+          let pass1 = document.getElementById('password').value;
+          let confirm_pass1 = document.getElementById('confirm_password').value;
 
-</script>      
-      </div>
-      <div class="push"></div>
+          if (pass1 == confirm_pass1) {
+            document.getElementById('password').style.borderBottomColor = "green";
+            document.getElementById('confirm_password').style.borderBottomColor = "green";
+          } else {
+            document.getElementById('password').style.borderBottomColor = "red";
+            document.getElementById('confirm_password').style.borderBottomColor = "red";
+          }
+        }
+      </script>
     </div>
-    <script src="js/main.js"></script>
-  </body>
+  </div>
+  <div class="push push-color"></div>
+  <div class="footer">
+    <ul>
+      <li>
+        <a href="contact.html" class="nav-links">contact</a>
+      </li>
+      <li>
+        <a href="about.html" class="nav-links">about</a>
+      </li>
+      <li><a href="#" class="nav-links">privacy & terms</a></li>
+    </ul>
+  </div>
+  <script src="js/main.js"></script>
+</body>
+
 </html>
