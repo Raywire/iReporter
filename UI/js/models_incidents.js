@@ -279,7 +279,6 @@ let getData = (incident_type, incident_creator, search_data) => {
                           `;
                 currentPage = 0;
                 document.getElementById('startNumber').innerHTML = 0;
-                document.getElementById('endNumber').innerHTML = 0;
                 document.getElementById("button_next").disabled = true;
                 document.getElementById("button_prev").disabled = true;
                 nextButton.classList.add('opacity');
@@ -335,8 +334,10 @@ let getData = (incident_type, incident_creator, search_data) => {
                 document.getElementById('currentPage').innerHTML = currentPage;
                 startNumber -= recordsPerPage;
                 virtualEndNumber -= recordsPerPage;
-                document.getElementById('startNumber').innerHTML = startNumber;
-                document.getElementById('endNumber').innerHTML = virtualEndNumber;
+                incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
+              }
+              if(currentPage == 1){
+                endNumber = virtualEndNumber;
               }
               hideLoader(1000);
             }
@@ -354,10 +355,12 @@ let getData = (incident_type, incident_creator, search_data) => {
                   endNumber = totalNumber;
                 }
                 if (endNumber == startNumber) {
-
+                  incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
+                }else{
+                  document.getElementById('startNumber').innerHTML = startNumber;
+                  document.getElementById('endNumber').innerHTML = endNumber;
                 }
-                document.getElementById('startNumber').innerHTML = startNumber;
-                document.getElementById('endNumber').innerHTML = endNumber;
+                
               }
               hideLoader(1000);
             }
@@ -387,7 +390,12 @@ let getData = (incident_type, incident_creator, search_data) => {
             }
 
             let incidentNumber = document.getElementById('incident_number');
-            incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span> of ${totalNumber}`;
+
+            if(startNumber === endNumber || endNumber == 0){
+              incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
+            }else{
+               incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
+            }
           }
 
           let pagination = new Pagination();
