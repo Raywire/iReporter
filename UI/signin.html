@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" href="img/favicon.ico">
   <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/commons.js"></script>
   <script src="js/loggedIn.js"></script>
 </head>
 
@@ -34,19 +35,19 @@
     <div class="login-box">
       <img src="img/avatar.jpg" class="avatar" alt="Login Image">
       <h1>Sign In</h1>
-      <form id="postData" method="POST">
+      <form id="signIn" method="POST">
         <p>Username</p>
-        <input type="text" id="username" name="username" placeholder="Enter Username or Email">
+        <input type="text" id="username" maxlength="36" name="username" placeholder="Enter Username or Email">
         <p>Password</p>
-        <input type="password" id="password" name="username" placeholder="Enter Password">
+        <input type="password" id="password" maxlength="120" name="username" placeholder="Enter Password">
         <input id='submit' type="submit" name="submit" value="Login">
         <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
         <p id="error-message"></p>
       </form>
       <script>
-        document.getElementById('postData').addEventListener('submit', postData);
+        document.getElementById('signIn').addEventListener('submit', signIn);
 
-        function postData(event) {
+        function signIn(event) {
           event.preventDefault();
           document.getElementById('error-message').innerHTML = "";
 
@@ -136,12 +137,12 @@
             });
         }
 
-        function setCookie(cname, cvalue, expirationtime) {
-          let date = new Date();
-          date.setTime(date.getTime() + (expirationtime * 60 * 1000));
-          let expires = "expires=" + date.toUTCString();
-          document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;" + "sameSite=Strict";
-        }
+        // function setCookie(cname, cvalue, expirationtime) {
+        //   let date = new Date();
+        //   date.setTime(date.getTime() + (expirationtime * 60 * 1000));
+        //   let expires = "expires=" + date.toUTCString();
+        //   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;" + "sameSite=Strict";
+        // }
       </script>
       <div class="container">
         <p><a class="silver" href="reset_request.html">Forgot password?</a></p>

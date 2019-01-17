@@ -93,8 +93,11 @@ let postData = (event, incident_type) => {
 
         if (incident_type == 'interventions') {
           getData('intervention', 'all', 'all');
-        } else if (incident_type == 'redflags')
+        } else if (incident_type == 'redflags'){
           getData('redflag', 'all', 'all');
+        }
+        document.getElementById('postData').reset();
+        document.getElementById('modal-window-create').style.display = 'none';   
       }
 
     })
@@ -1040,19 +1043,6 @@ let resetPassword = (event, usernameid) => {
     });
 }
 
-let checkPassword = () => {
-  let pass1 = document.getElementById('password').value;
-  let confirm_pass1 = document.getElementById('confirm_password').value;
-
-  if (pass1 == confirm_pass1) {
-    document.getElementById('password').style.borderColor = "green";
-    document.getElementById('confirm_password').style.borderColor = "green";
-  } else {
-    document.getElementById('password').style.borderColor = "red";
-    document.getElementById('confirm_password').style.borderColor = "red";
-  }
-}
-
 let filterIncidents = () => {
 
   let input, filter, table, column, card, i, txtValue;
@@ -1088,16 +1078,4 @@ let searchIncidents = (event, incident_type, incident_creator)=> {
 
   getData(incident_type, incident_creator, searchParameter);
   hideLoader(1000);
-}
-
-let hideLoader = (timer) => {
-  setTimeout(hide, timer);
-
-  function hide() {
-    document.getElementById("loader").style.display = "none";
-  }
-}
-
-let showLoader = () => {
-  document.getElementById("loader").style.display = "block";
 }

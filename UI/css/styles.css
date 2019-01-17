@@ -29,6 +29,14 @@ a {
   text-decoration: none;
   outline: none;
 }
+
+button::-moz-focus-inner,input::-moz-focus-inner {
+  border: 0;
+}
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
 .container2 a:visited{
   color:#0b47b6;
 }
@@ -403,7 +411,7 @@ a {
 .login-box h1{
   color:#737373;
   margin:0;
-  padding: 0 0 10px;
+  padding: 5px 0 10px;
   text-align: center;
   font-size: 18px;
 }
@@ -703,6 +711,14 @@ background-color: #fff;
 .orange:hover, .orange:focus {
   background-color: #d35400;
 }
+.btn-clear {
+  background-color: #f2f2f2;
+  color: #595959;
+}
+
+.btn-clear:hover, .btn-clear:focus {
+  background-color: #bfbfbf;
+}
 .container2{
 padding: 12px;
 }
@@ -942,4 +958,29 @@ select#perPage:-moz-focusring {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+/* div{
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent;
+} */
+#toTop {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 999;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: #296de8;
+  opacity: 0.8;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+#toTop:hover {
+  background-color: #0b47b6;
+  opacity: 1.0;
 }

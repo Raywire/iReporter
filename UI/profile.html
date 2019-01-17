@@ -19,6 +19,7 @@
         </div>               
     </div> 
   </noscript>
+  <script src="js/commons.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/notifications.js"></script>
 </head>
@@ -89,9 +90,9 @@
               <div class="modal-form">
                 <form id="resetPassword" method="POST">
                   <p class="contact"><label for="title">Password</label></p>
-                  <input id="password" name="password" placeholder="Password" tabindex="1" type="password">
+                  <input id="password" name="password" placeholder="Password" maxlength="30" tabindex="1" type="password">
                   <p class="contact"><label for="title">Confirm Password</label></p>
-                  <input id="confirm_password" name="confirm_password" placeholder="Confirm Password" tabindex="1" type="password">
+                  <input id="confirm_password" name="confirm_password" placeholder="Confirm Password" maxlength="30" tabindex="1" type="password">
                   <br>
                   <input id='submit' name="submit" class="button-normal" tabindex="5" value="Reset Password" type="submit">
                   <i id="fa-spin-reset" class="fa fa-circle-o-notch fa-spin hide"></i>
@@ -112,8 +113,8 @@
       </div>
       <script src="js/models_incidents.js"></script>
       <script>
-        let profileName = name;
-        let userEmail = email;
+        let profileName = user.name;
+        let userEmail = user.email;
 
         let profileNameSplit = profileName.split(" ");
         let firstname = profileNameSplit[0];
@@ -134,7 +135,7 @@
         document.getElementById('usernameForm').value = profileUserName;
       </script>
       <script>
-        function getUserData(incident_type) {
+        function getProfileData(incident_type) {
 
           let uri = config.root + incident_type;
 
@@ -143,7 +144,7 @@
             mode: "cors",
             headers: new Headers({
               "Content-Type": "application/json; charset=utf-8",
-              "x-access-token": token
+              "x-access-token": user.token
             })
           }
           let req = new Request(uri, options);
@@ -223,8 +224,8 @@
 
             });
         }
-        getUserData('redflags');
-        getUserData('interventions');
+        getProfileData('redflags');
+        getProfileData('interventions');
         document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
         document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event,
           profileUserName));
