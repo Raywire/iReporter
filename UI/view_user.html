@@ -19,6 +19,7 @@
         </div>               
     </div> 
   </noscript>
+  <script src="js/commons.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/notifications.js"></script>
   <script src="js/moment.min.js"></script>
@@ -91,9 +92,9 @@
                           <div  class="modal-form">
                             <form id="resetPassword" method="POST">
                               <p class="contact"><label for="title">Password</label></p>
-                              <input id="password" name="password" placeholder="Password" tabindex="1" type="password">
+                              <input id="password" maxlength="30" name="password" placeholder="Password" tabindex="1" type="password">
                               <p class="contact"><label for="title">Confirm Password</label></p>
-                              <input id="confirm_password" name="confirm_password" placeholder="Confirm Password" tabindex="1" type="password">
+                              <input id="confirm_password" maxlength="30" name="confirm_password" placeholder="Confirm Password" tabindex="1" type="password">
                               <br>
                               <input id='submit' name="submit" class="button-normal" tabindex="5" value="Reset Password" type="submit">
                               <i id="fa-spin-reset" class="fa fa-circle-o-notch fa-spin hide" ></i>

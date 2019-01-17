@@ -19,6 +19,7 @@
         </div>               
     </div>  
   </noscript>
+  <script src="js/commons.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/notifications.js"></script>
   <script src="js/moment.min.js"></script>
@@ -74,6 +75,7 @@
             <input id="location" readonly name="location" placeholder="Location" required="" type="text">
             <br>
             <input id='submit' name="submit" class="button-normal" tabindex="5" value="Add Red Flag" type="submit">
+            <input name="clear" class="button-normal btn-clear" tabindex="5" value="Clear" type="reset">
             <i id="fa-spin" class="fa fa-circle-o-notch fa-spin"></i>
           </form>
 
@@ -118,6 +120,12 @@
         </div>
       </div>
       <div class="hide" id="loader"></div>
+      <button id="toTop" title="Go to top"><i class="fa fa-angle-up" aria-hidden="true"></i></button> 
+      <script>
+        document.getElementById('toTop').addEventListener('click', topFunction);
+        
+        window.onscroll = function() {scrollFunction()};        
+      </script>      
     </div>
 
     <div class="push"></div>

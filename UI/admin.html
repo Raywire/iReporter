@@ -18,6 +18,7 @@
         </div>               
     </div> 
   </noscript>
+  <script src="js/commons.js"></script>
   <script src="js/auth.js"></script>
 </head>
 
@@ -71,12 +72,18 @@
         document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event));
 
         function perPageSelection() {
-          showUserLoader();
+          showLoader();
           getUsers('all');
-          hideUserLoader(1500);
+          hideLoader(1500);
         }
       </script>
       <div class="hide" id="loader"></div>
+      <button id="toTop" title="Go to top"><i class="fa fa-angle-up" aria-hidden="true"></i></button> 
+      <script>
+        document.getElementById('toTop').addEventListener('click', topFunction);
+        
+        window.onscroll = function() {scrollFunction()};        
+      </script>       
     </div>
     <div class="pagination">
       <div class="pagination-block">

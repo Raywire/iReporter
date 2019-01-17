@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" href="img/favicon.ico">
   <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/commons.js"></script>
   <script src="js/loggedIn.js"></script>
 </head>
 
@@ -34,7 +35,7 @@
     <div class="login-box">
       <img src="img/avatar.jpg" class="avatar" alt="Login Image">
       <h1>Sign Up</h1>
-      <form id="postData" method="POST">
+      <form id="signUp" method="POST">
         <div class="container-name">
           <div class="container-name-left">
             <p>First Name</p>
@@ -58,11 +59,11 @@
         <div class="container-name">
           <div class="container-name-left">
             <p>Password</p>
-            <input type="password" id="password" maxlength="120" name="password" placeholder="Enter Password">
+            <input type="password" id="password" maxlength="30" name="password" placeholder="Enter Password">
           </div>
           <div class="container-name-right">
             <p>Confirm Password</p>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
+            <input type="password" id="confirm_password" maxlength="30" name="confirm_password" placeholder="Confirm Password">
           </div>
         </div>
         <input id='submit' type="submit" name="submit" value="Sign Up">
@@ -70,9 +71,9 @@
         <p id="error-message"></p>
       </form>
       <script>
-        document.getElementById('postData').addEventListener('submit', postData);
+        document.getElementById('signUp').addEventListener('submit', signUp);
 
-        function postData(event) {
+        function signUp(event) {
           event.preventDefault();
           document.getElementById('error-message').innerHTML = "";
           document.getElementById('firstname').style.borderBottomColor = "white";
@@ -173,24 +174,12 @@
               }
 
             })
-            .catch((err) => {
-              console.log(err);
+            .catch((error) => {
+              console.log(error);
             });
         }
         document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
 
-        function checkPassword() {
-          let pass1 = document.getElementById('password').value;
-          let confirm_pass1 = document.getElementById('confirm_password').value;
-
-          if (pass1 == confirm_pass1) {
-            document.getElementById('password').style.borderBottomColor = "green";
-            document.getElementById('confirm_password').style.borderBottomColor = "green";
-          } else {
-            document.getElementById('password').style.borderBottomColor = "red";
-            document.getElementById('confirm_password').style.borderBottomColor = "red";
-          }
-        }
       </script>
     </div>
   </div>

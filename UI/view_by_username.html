@@ -18,6 +18,7 @@
         </div>               
     </div>  
   </noscript>  
+  <script src="js/commons.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/moment.min.js"></script>
 </head>
@@ -94,6 +95,12 @@
         </div>
       </div>
       <div class="hide" id="loader"></div>
+      <button id="toTop" title="Go to top"><i class="fa fa-angle-up" aria-hidden="true"></i></button> 
+      <script>
+        document.getElementById('toTop').addEventListener('click', topFunction);
+        
+        window.onscroll = function() {scrollFunction()};        
+      </script> 
     </div>
     <div class="push"></div>
   </div>

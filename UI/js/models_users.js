@@ -175,7 +175,7 @@ let getUsers = (user_data) => {
                         }
 
                         let prevPage = function () {
-                            showUserLoader();
+                            showLoader();
                             if (current_page > 1) {
                                 current_page--;
                                 changePage(current_page);
@@ -187,11 +187,11 @@ let getUsers = (user_data) => {
                             if(current_page == 1){
                                 endNumber = virtualEndNumber;
                               }
-                            hideUserLoader();
+                            hideLoader(1000);
                         }
 
                         let nextPage = function () {
-                            showUserLoader();
+                            showLoader();
                             if (current_page < numPages()) {
                                 current_page++;
                                 changePage(current_page);
@@ -203,12 +203,13 @@ let getUsers = (user_data) => {
                                     endNumber = totalNumber;
                                 }
                                 if (endNumber == startNumber) {
-
-                                }
-                                document.getElementById('startNumber').innerHTML = startNumber;
-                                document.getElementById('endNumber').innerHTML = endNumber;
+                                    userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
+                                }else{
+                                    document.getElementById('startNumber').innerHTML = startNumber;
+                                    document.getElementById('endNumber').innerHTML = endNumber;
+                                }           
                             }
-                            hideUserLoader();
+                            hideLoader(1000);
                         }
 
                         let clickPage = function () {
@@ -485,20 +486,8 @@ let deleteUserData = () => {
 
 let searchUsers = (event) => {
     event.preventDefault();
-    showUserLoader();
+    showLoader();
     searchParameter = document.getElementById('searchUsers').value;
     getUsers(searchParameter);
-    hideUserLoader(1000);
-}
-
-let hideUserLoader = (timer) => {
-    setTimeout(hide, timer);
-
-    function hide() {
-        document.getElementById("loader").style.display = "none";
-    }
-}
-
-let showUserLoader = () => {
-    document.getElementById("loader").style.display = "block";
+    hideLoader(1000);
 }
