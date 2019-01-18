@@ -264,16 +264,16 @@ class UserActivity(Resource):
         if user is None:
             return nonexistent_user()
 
-        if current_user['username'] == username:
-            return jsonify({
-                "status": 403,
-                "message": "You cannot change your own active status"
-            })            
-
         if current_user['isadmin'] is not True or user['id'] == 1:
             return jsonify({
                 "status": 403,
                 "message": "You cannot change this user's active status"
+            })
+
+        if current_user['username'] == username:
+            return jsonify({
+                "status": 403,
+                "message": "You cannot change your own active status"
             })
 
         user_activity_updated = self.db.activate_user(username)
