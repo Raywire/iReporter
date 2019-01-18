@@ -49,7 +49,7 @@
   <div class="container wrapper">
     <!-- Trigger/Open The Modal -->
     <div class="modal-container-buttons">
-      <button id="myBtn" class="button-modal danger" data-modal="modal-window-delete"><i class="fa fa-trash-o"
+      <button id="myBtn" class="button-modal danger" title="Delete User" data-modal="modal-window-delete"><i class="fa fa-trash-o"
           aria-hidden="true"></i></button>
       <span id="modal-admin-buttons"></span>
       <script>
@@ -58,8 +58,9 @@
                 if(adminStatus == 'true'){
                   let result = '';
                   result +=`
-                  <button id="btnEditStatus" class="button-modal orange" data-modal="modal-window-edit-status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
-                  <button id="btnResetPassword" class="button-modal" data-modal="modal-window-reset-password"><i class="fa fa-unlock" aria-hidden="true"></i></button>
+                  <button id="btnEditStatus" title='Change Admin Status' class="button-modal orange" data-modal="modal-window-edit-status"><i class="fa fa-pencil" aria-hidden="true"> Status</i></button> 
+                  <button id="btnResetPassword" title='Change Password' class="button-modal" data-modal="modal-window-reset-password"><i class="fa fa-unlock" aria-hidden="true"></i></button>
+                  <button id="btnDisable" title='Block/Unblock User' class="button-modal danger" data-modal="modal-window-disable"><i class="fa fa-ban" aria-hidden="true"></i></button>
                   <!-- The Modal -->
                   <div id="modal-window-edit-status" class="modal">
             
@@ -68,7 +69,7 @@
                         <span class="close">&times;</span>
                         <div  class="modal-form">
                             <form id="patchUserData" method="POST" >
-                              <p><label for="status">Edit Admin Status</label></p>
+                              <p><label for="status"Set Admin Status</label></p>
                               <select name="status" id="status">
                                   <option value="False">False</option>
                                   <option value="True">True</option>
@@ -103,7 +104,29 @@
                         </div> 
                       </div>
                     
-                    </div>                              
+                    </div>   
+                    <!-- The Modal -->
+                  <div id="modal-window-disable" class="modal">
+            
+                      <!-- Modal content -->
+                      <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div  class="modal-form">
+                            <form id="disableUser" method="POST" >
+                              <p><label for="activity">Set User to Active</label></p>
+                              <select name="activity" id="activity">
+                                <option value="True" selected>True</option>
+                                <option value="False">False</option> 
+                              </select>      
+                              <br>
+                              <input name="submit" class="button-normal" tabindex="5" value="Change Status" type="submit">
+                              <i id='fa-spin-activity' class="fa fa-circle-o-notch fa-spin hide" ></i>
+                              <p id="activity-message"></p>
+                          </form>       
+                        </div>
+                      </div>
+                    
+                    </div>                                               
                   `;
                   document.getElementById('modal-admin-buttons').innerHTML = result;
                 }
@@ -156,9 +179,14 @@
           document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
           document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event,
             usernameId));
+        } catch (error) {}
+
+        //Function for an Admin to Disable or Enable a user
+        try {
+          document.getElementById('disableUser').addEventListener('submit', changeActiveStatus);
         } catch (error) {
 
-        }
+        }        
       </script>
     </div>
 

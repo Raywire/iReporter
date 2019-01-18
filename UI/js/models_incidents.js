@@ -954,9 +954,215 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
 
 }
 
-let updateUserData = (event, username_id) => {
+let updateUserData = (event, usernameid) => {
   event.preventDefault();
+  document.getElementById('fa-spin-updateProfile').style.display = "block";
 
+  let uri = config.root + 'users/' + usernameid;
+
+  let firstname = document.getElementById('firstnameProfile').value;
+  let lastname = document.getElementById('lastnameProfile').value;
+  let othernames = document.getElementById('othernameProfile').value;
+  let phonenumber = document.getElementById('phonenumberProfile').value;
+  let email = document.getElementById('emailProfile').value;
+
+
+  let options = {
+    method: 'PUT',
+    mode: "cors",
+    headers: new Headers({
+      "Content-Type": "application/json; charset=utf-8",
+      "x-access-token": token
+    }),
+    body: JSON.stringify({
+      firstname:firstname, lastname:lastname, othernames:othernames, phoneNumber:phonenumber, email:email
+    })
+  }
+  let request = new Request(uri, options);
+
+  fetch(request)
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return response.json();
+      }
+    })
+    .then((j) => {
+      if (j.hasOwnProperty('message')) {
+        if (j['message'] == 'Token is missing') {
+          logout();
+        }
+        if (j['message'] == 'Token is invalid') {
+          logout();
+        }
+        if (j['message'] == 'User does not exist') {
+          warningNotification({
+            title: 'Warning',
+            message: j['message'],
+          });
+        }
+        if (j['message'].hasOwnProperty('firstname')) {
+          document.getElementById('firstnameProfile').style.borderColor = "red";
+        }
+        if (j['message'].hasOwnProperty('lastname')) {
+          document.getElementById('lastnameProfile').style.borderColor = "red";
+        }
+        if (j['message'].hasOwnProperty('othernames')) {
+          document.getElementById('othernameProfile').style.borderColor = "red";
+        }
+        if (j['message'].hasOwnProperty('email')) {
+          document.getElementById('emailProfile').style.borderColor = "red";
+        }
+        if (j['message'].hasOwnProperty('phoneNumber')) {
+          document.getElementById('phonenumberProfile').style.borderColor = "red";
+        }
+        if (j['message'] == 'email already exists'){
+          warningNotification({
+            title: 'Warning',
+            message: j['message'],
+          });          
+        }
+
+        if (j['message'] == 'Your profile has been updated') {
+          localStorage.setItem('profilePhoneNumber', phonenumber);
+          localStorage.setItem('profileFirstName', firstname);
+          localStorage.setItem('profileLastName', lastname);
+          localStorage.setItem('profileOtherName', othernames);
+          localStorage.setItem('profileEmail', email);
+          loadProfileData();
+          successNotification({
+            title: 'Success',
+            message: j['message'] + ' for ' + usernameid,
+          });
+        }
+
+      }
+
+      document.getElementById('fa-spin-updateProfile').style.display = "none";
+
+    })
+    .catch((error) => {
+      console.log(error);
+      document.getElementById('fa-spin-updateProfile').style.display = "none";
+    });
+}
+
+let loadProfileData = () => {
+
+  let profilePhoneNumber = localStorage.getItem('profilePhoneNumber');
+  let firstname = localStorage.getItem('profileFirstName');
+  let lastname = localStorage.getItem('profileLastName');
+  let othername = localStorage.getItem('profileOtherName');
+  let profileEmail = localStorage.getItem('profileEmail');
+
+  if (othername == null) {
+    othername = '';
+  }
+  if (profilePhoneNumber == null){
+    profilePhoneNumber = '';
+  }
+  let profileName = firstname + ' ' + lastname + ' ' + othername;
+
+  document.getElementById('name').innerHTML = profileName;
+  document.getElementById('email').innerHTML = profileEmail;
+  document.getElementById('username').innerHTML = user.username;
+
+  document.getElementById('firstnameProfile').value = firstname;
+  document.getElementById('lastnameProfile').value = lastname;
+  document.getElementById('othernameProfile').value = othername;
+  document.getElementById('emailProfile').value = profileEmail;
+  document.getElementById('phonenumberProfile').value = profilePhoneNumber;
+}
+
+let getIncidentNumber = (incident_type) => {
+
+  let uri = config.root + incident_type;
+
+  let options = {
+    method: 'GET',
+    mode: "cors",
+    headers: new Headers({
+      "Content-Type": "application/json; charset=utf-8",
+      "x-access-token": user.token
+    })
+  }
+  let req = new Request(uri, options);
+
+  fetch(req)
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+
+        return response.json();
+      }
+    })
+    .then((j) => {
+      if (j.hasOwnProperty('message')) {
+        if (j['message'] == 'Token is missing') {
+          logout();
+        }
+        if (j['message'] == 'Token is invalid') {
+          logout();
+        }
+        if (j['message'] == 'No interventions') {
+
+        }
+      }
+      if (j.hasOwnProperty('data')) {
+        let incidents = j['data'];
+        let myIncidents = incidents.filter(incident => {
+          return incident.username === profileUserName;
+        })
+
+        let myRedflags = myIncidents.filter(incident => {
+          return incident.type === 'redflag';
+        })
+        let myInterventions = myIncidents.filter(incident => {
+          return incident.type === 'intervention';
+        })
+        let myDraftIncidents = myIncidents.filter(incident => {
+          return incident.status === 'draft'
+        })
+        let myResolvedIncidents = myIncidents.filter(incident => {
+          return incident.status === 'resolved'
+        })
+        let myUnderInvestigationIncidents = myIncidents.filter(incident => {
+          return incident.status === 'under investigation'
+        })
+        let myRejectedIncidents = myIncidents.filter(incident => {
+          return incident.status === 'rejected'
+        })
+
+
+        if (incident_type == 'redflags') {
+          document.getElementById('my-redflags').innerHTML =
+            `<a href="view_by_username.html?type=redflag&username=${profileUserName}">` + myRedflags.length +
+            `</a>`;
+          document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
+          document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
+          document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents
+            .length;
+          document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
+        } else if (incident_type == 'interventions') {
+          document.getElementById('my-interventions').innerHTML =
+            `<a href="view_by_username.html?type=intervention&username=${profileUserName}">` +
+            myInterventions.length + `</a>`;
+          document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
+          document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
+          document.getElementById('my-underinvestigation-interventions').innerHTML =
+            myUnderInvestigationIncidents.length;
+          document.getElementById('my-rejected-interventions').innerHTML = myRejectedIncidents.length;
+        }
+
+
+      }
+
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 let resetPassword = (event, usernameid) => {

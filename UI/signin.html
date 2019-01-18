@@ -102,22 +102,31 @@
                   document.getElementById('password').style.borderBottomColor = "red";
                   document.getElementById('error-message').innerHTML = j['message'];
                 }
+                if (j['message'] == 'account has been disabled') {
+                  document.getElementById('error-message').innerHTML = j['message'];
+                }
 
               }
               if (j.hasOwnProperty('data')) {
                 document.getElementById('error-message').style.color = "green";
                 document.getElementById('error-message').innerHTML = "Login successful";
+                
+                let userData = j['data'][0]['user'];
                 let access_token = j['data'][0]['token'];
-                if (j['data'][0]['user']['othernames'] != null) {
-                  othernames = ' ' + j['data'][0]['user']['othernames'];
+                if (userData['othernames'] != null) {
+                  othernames = ' ' + userData['othernames'];
                 } else {
                   othernames = '';
                 }
-                let name = j['data'][0]['user']['firstname'] + ' ' + j['data'][0]['user']['lastname'] + othernames;
-                let email = j['data'][0]['user']['email'];
-                let username = j['data'][0]['user']['username'];
-                let id = j['data'][0]['user']['id'];
-                let isAdmin = j['data'][0]['user']['isAdmin']
+                let name = userData['firstname'] + ' ' + userData['lastname'] + othernames;
+                let email = userData['email'];
+                let username = userData['username'];
+                let isAdmin = userData['isAdmin'];
+                localStorage.setItem('profilePhoneNumber', userData['phoneNumber']);
+                localStorage.setItem('profileFirstName', userData['firstname']);
+                localStorage.setItem('profileLastName', userData['lastname']);
+                localStorage.setItem('profileOtherName', userData['othernames']);
+                localStorage.setItem('profileEmail', userData['email']);
 
                 let expirationTime = 59;
                 setCookie("token", access_token, expirationTime);
@@ -136,13 +145,6 @@
               console.log(err);
             });
         }
-
-        // function setCookie(cname, cvalue, expirationtime) {
-        //   let date = new Date();
-        //   date.setTime(date.getTime() + (expirationtime * 60 * 1000));
-        //   let expires = "expires=" + date.toUTCString();
-        //   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;" + "sameSite=Strict";
-        // }
       </script>
       <div class="container">
         <p><a class="silver" href="reset_request.html">Forgot password?</a></p>

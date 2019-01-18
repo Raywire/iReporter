@@ -63,19 +63,21 @@
             <div class="modal-form">
               <form id="updateUserData" method="POST" enctype="multipart/form-data">
                 <p class="contact"><label for="name">First Name</label></p>
-                <input id="firstnameForm" name="firstname" placeholder="First Name" tabindex="1" type="text">
+                <input id="firstnameProfile" name="firstname" placeholder="First Name" tabindex="1" type="text">
                 <p class="contact"><label for="firstname">Last Name</label></p>
-                <input id="lastnameForm" name="lastname" placeholder="Last Name" tabindex="1" type="text">
+                <input id="lastnameProfile" name="lastname" placeholder="Last Name" tabindex="1" type="text">
                 <p class="contact"><label for="othername">Other Name</label></p>
-                <input id="othernameForm" name="othername" placeholder="Other Name" tabindex="1" type="text">
-                <p class="contact"><label for="username">Username</label></p>
-                <input id="usernameForm" name="username" placeholder="username" tabindex="1" type="text">
+                <input id="othernameProfile" name="othername" placeholder="Other Name" tabindex="1" type="text">
+                <p class="contact"><label for="email">Email</label></p>
+                <input id="emailProfile" name="email" placeholder="email" tabindex="1" type="text">
+                <p class="contact"><label for="phonenumber">Phone Number</label></p>
+                <input id="phonenumberProfile" name="phonenumber" placeholder="phonenumber" tabindex="1" type="text">
                 <p class="contact"><label for="profilepic">Upload Profile Photo</label></p>
-                <input type="file" id="name" name="profilepic" accept="image/*" multiple>
+                <input type="file" id="profilePic" name="profilepic" accept="image/*" multiple>
 
                 <br>
                 <input class="button-normal" name="submit" id="updateProfile" tabindex="5" value="Update Profile" type="submit">
-
+                <i id="fa-spin-updateProfile" class="fa fa-circle-o-notch fa-spin hide"></i>
               </form>
             </div>
           </div>
@@ -113,122 +115,15 @@
       </div>
       <script src="js/models_incidents.js"></script>
       <script>
-        let profileName = user.name;
-        let userEmail = user.email;
+        loadProfileData();
 
-        let profileNameSplit = profileName.split(" ");
-        let firstname = profileNameSplit[0];
-        let lastname = profileNameSplit[1];
-        let othername = profileNameSplit[2];
+        getIncidentNumber('redflags');
+        getIncidentNumber('interventions');
 
-        if (othername == null) {
-          othername = '';
-        }
-
-        document.getElementById('name').innerHTML = profileName;
-        document.getElementById('email').innerHTML = userEmail;
-        document.getElementById('username').innerHTML = profileUserName;
-
-        document.getElementById('firstnameForm').value = firstname;
-        document.getElementById('lastnameForm').value = lastname;
-        document.getElementById('othernameForm').value = othername;
-        document.getElementById('usernameForm').value = profileUserName;
-      </script>
-      <script>
-        function getProfileData(incident_type) {
-
-          let uri = config.root + incident_type;
-
-          let options = {
-            method: 'GET',
-            mode: "cors",
-            headers: new Headers({
-              "Content-Type": "application/json; charset=utf-8",
-              "x-access-token": user.token
-            })
-          }
-          let req = new Request(uri, options);
-
-          fetch(req)
-            .then((response) => {
-              if (response.ok) {
-                return response.json();
-              } else {
-
-                return response.json();
-              }
-            })
-            .then((j) => {
-              if (j.hasOwnProperty('message')) {
-                if (j['message'] == 'Token is missing') {
-                  logout();
-                }
-                if (j['message'] == 'Token is invalid') {
-                  logout();
-                }
-                if (j['message'] == 'No interventions') {
-
-                }
-              }
-              if (j.hasOwnProperty('data')) {
-                let incidents = j['data'];
-                let myIncidents = incidents.filter(incident => {
-                  return incident.username === profileUserName;
-                })
-
-                let myRedflags = myIncidents.filter(incident => {
-                  return incident.type === 'redflag';
-                })
-                let myInterventions = myIncidents.filter(incident => {
-                  return incident.type === 'intervention';
-                })
-                let myDraftIncidents = myIncidents.filter(incident => {
-                  return incident.status === 'draft'
-                })
-                let myResolvedIncidents = myIncidents.filter(incident => {
-                  return incident.status === 'resolved'
-                })
-                let myUnderInvestigationIncidents = myIncidents.filter(incident => {
-                  return incident.status === 'under investigation'
-                })
-                let myRejectedIncidents = myIncidents.filter(incident => {
-                  return incident.status === 'rejected'
-                })
-
-
-                if (incident_type == 'redflags') {
-                  document.getElementById('my-redflags').innerHTML =
-                    `<a href="view_by_username.html?type=redflag&username=${profileUserName}">` + myRedflags.length +
-                    `</a>`;
-                  document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
-                  document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
-                  document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents
-                    .length;
-                  document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
-                } else if (incident_type == 'interventions') {
-                  document.getElementById('my-interventions').innerHTML =
-                    `<a href="view_by_username.html?type=intervention&username=${profileUserName}">` +
-                    myInterventions.length + `</a>`;
-                  document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
-                  document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
-                  document.getElementById('my-underinvestigation-interventions').innerHTML =
-                    myUnderInvestigationIncidents.length;
-                  document.getElementById('my-rejected-interventions').innerHTML = myRejectedIncidents.length;
-                }
-
-
-              }
-
-            })
-            .catch((error) => {
-
-            });
-        }
-        getProfileData('redflags');
-        getProfileData('interventions');
         document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
         document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event,
           profileUserName));
+          
         document.getElementById('updateUserData').addEventListener('submit', (event) => updateUserData(event,
           profileUserName));
       </script>
