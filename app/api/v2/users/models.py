@@ -17,6 +17,7 @@ parser = reqparse.RequestParser(bundle_errors=True)
 parser_signin = reqparse.RequestParser(bundle_errors=True)
 parser_user = reqparse.RequestParser(bundle_errors=True)
 parser_promote = reqparse.RequestParser(bundle_errors=True)
+parser_activate = reqparse.RequestParser(bundle_errors=True)
 parser_password = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('firstname',
@@ -68,6 +69,12 @@ parser.add_argument('password',
                     help="Password must be at least 6 characters"
                     )
 
+parser_activate.add_argument('isactive',
+                            choices=["True", "False"],
+                            required=True,
+                            nullable=False,
+                            help="(Accepted values: True, False)"
+                            )
 
 class UserModel:
     """User Model class with methods for manipulation user data"""
@@ -154,11 +161,14 @@ class UserModel:
                 'phoneNumber': user['phonenumber'],
                 'username': user['username'],
                 'public_id': user['public_id'],
-                'isAdmin': user['isadmin']
+                'isAdmin': user['isadmin'],
+                'isActive': user['isactive']
             }
 
         if user is None:
             return None
+        if user['isactive'] is False:
+            return 'disabled' 
         if check_password_hash(user['password'], data['password']) is False:
             return False
         return user_data
@@ -166,7 +176,7 @@ class UserModel:
     def get_users(self):
         """method to get all users"""
         query = """SELECT firstname,lastname,othernames,email,phonenumber,\
-                    username,public_id,isadmin,registered\
+                    username,public_id,isadmin,isactive,registered\
                     from users ORDER BY registered ASC"""
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -193,6 +203,20 @@ class UserModel:
         cursor.execute(query)
         conn.commit()
         return True
+
+    def activate_user(self, username):
+        """method to disable or enable user activity"""
+        args = parser_activate.parse_args()
+        isActive = request.json.get('isactive')
+
+        query = """UPDATE users SET isactive='{0}' WHERE username='{1}'""".format(
+            isActive, username)
+
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        return True        
 
     def delete_user(self, username):
         """method to delete a user"""

@@ -67,6 +67,7 @@ def tables():
         phoneNumber VARCHAR(20),
         registered TIMESTAMP,
         isAdmin boolean,
+        isActive boolean DEFAULT TRUE,
         password VARCHAR(120) NOT NULL,
         public_id VARCHAR(120) NOT NULL UNIQUE
         );"""
@@ -80,6 +81,7 @@ def create_super_user(url, public_id):
         "email": email,
         "firstname": firstname,
         "isAdmin": True,
+        "isActive": True,
         "lastname": lastname,
         "othernames": othernames,
         "password": password,
@@ -89,8 +91,8 @@ def create_super_user(url, public_id):
         "username": username
     }
 
-    query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}');""".format(
-        user['firstname'], user['lastname'], user['othernames'], user['email'], user['phoneNumber'], user['username'], user['registered'], user['password'], user['isAdmin'], user['public_id'])
+    query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id,isActive) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}','{10}');""".format(
+        user['firstname'], user['lastname'], user['othernames'], user['email'], user['phoneNumber'], user['username'], user['registered'], user['password'], user['isAdmin'], user['public_id'], user['isActive'])
     
     conn = connection(url)
     cursor = conn.cursor()
