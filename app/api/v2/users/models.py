@@ -17,6 +17,7 @@ parser = reqparse.RequestParser(bundle_errors=True)
 parser_signin = reqparse.RequestParser(bundle_errors=True)
 parser_user = reqparse.RequestParser(bundle_errors=True)
 parser_promote = reqparse.RequestParser(bundle_errors=True)
+parser_activate = reqparse.RequestParser(bundle_errors=True)
 parser_password = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('firstname',
@@ -68,6 +69,12 @@ parser.add_argument('password',
                     help="Password must be at least 6 characters"
                     )
 
+parser_activate.add_argument('isactive',
+                            choices=["True", "False"],
+                            required=True,
+                            nullable=False,
+                            help="(Accepted values: True, False)"
+                            )
 
 class UserModel:
     """User Model class with methods for manipulation user data"""
@@ -130,6 +137,7 @@ class UserModel:
     def sign_in(self):
         parser_signin.add_argument('username',
                                    required=True,
+                                   type=validate_username,
                                    help="This key is required and should not be empty or formatted wrongly"
                                    )
 
@@ -143,30 +151,32 @@ class UserModel:
             'username': request.json.get('username').lower(),
             'password': request.json.get('password')
         }
-        user = self.get_user(data['username'])
-        if user is not None:
-            user_data = {
-                'id': user['id'],
-                'firstname': user['firstname'],
-                'lastname': user['lastname'],
-                'othernames': user['othernames'],
-                'email': user['email'],
-                'phoneNumber': user['phonenumber'],
-                'username': user['username'],
-                'public_id': user['public_id'],
-                'isAdmin': user['isadmin']
+        current_user = self.get_user(data['username'])
+        if current_user is not None:
+            current_user_data = {
+                'email': current_user['email'],
+                'firstname': current_user['firstname'],
+                'isActive': current_user['isactive'],
+                'isAdmin': current_user['isadmin'],
+                'lastname': current_user['lastname'],
+                'othernames': current_user['othernames'], 
+                'phoneNumber': current_user['phonenumber'],
+                'public_id': current_user['public_id'],
+                'username': current_user['username']               
             }
 
-        if user is None:
+        if current_user is None:
             return None
-        if check_password_hash(user['password'], data['password']) is False:
+        if current_user['isactive'] is False:
+            return 'disabled' 
+        if check_password_hash(current_user['password'], data['password']) is False:
             return False
-        return user_data
+        return current_user_data
 
     def get_users(self):
         """method to get all users"""
         query = """SELECT firstname,lastname,othernames,email,phonenumber,\
-                    username,public_id,isadmin,registered\
+                    username,public_id,isadmin,isactive,registered\
                     from users ORDER BY registered ASC"""
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -193,6 +203,20 @@ class UserModel:
         cursor.execute(query)
         conn.commit()
         return True
+
+    def activate_user(self, username):
+        """method to disable or enable user activity"""
+        args = parser_activate.parse_args()
+        isActive = request.json.get('isactive')
+
+        query = """UPDATE users SET isactive='{0}' WHERE username='{1}'""".format(
+            isActive, username)
+
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        return True        
 
     def delete_user(self, username):
         """method to delete a user"""

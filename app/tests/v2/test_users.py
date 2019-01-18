@@ -204,6 +204,18 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result['message'], 'password or username is invalid')
 
+    def test_disabled_account_signin(self):
+        """Tests a disable account sign in"""
+        self.app.post("/api/v2/auth/signup",
+                      headers=self.headers_secured, data=json.dumps(self.data))
+        self.app.patch(
+            "/api/v2/users/jayd/activate", headers=self.headers_secured, data=json.dumps({"isactive": "False"}))
+        response = self.app.post(
+            "/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))            
+        result = json.loads(response.data)
+        self.assertEqual(result['status'], 403)
+        self.assertEqual(result['message'], "account has been disabled")        
+
     def test_duplicate_user_email(self):
         """Test post a user with existing email"""
         self.app.post("/api/v2/auth/signup", headers=self.headers,
@@ -295,6 +307,62 @@ class UserTestCase(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(result['message'],
                          'Reset link has been sent to your email')
+
+    def test_disable_user_account(self):
+        """Tests a disable account"""
+        self.app.post("/api/v2/auth/signup",
+                      headers=self.headers_secured, data=json.dumps(self.data))
+        response = self.app.patch(
+            "/api/v2/users/jayd/activate", headers=self.headers_secured, data=json.dumps({"isactive": "False"}))       
+        result = json.loads(response.data)
+        self.assertEqual(result['status'], 200)
+        self.assertEqual(result['data']['message'], "User active status has been updated")
+
+    def test_disable_superuser_account(self):
+        """Tests a disable superuser account"""
+        self.app.post("/api/v2/auth/signup",
+                      headers=self.headers_secured, data=json.dumps(self.data))
+        response = self.app.patch(
+            "/api/v2/users/raywire/activate", headers=self.headers_secured, data=json.dumps({"isactive": "False"}))       
+        result = json.loads(response.data)
+        self.assertEqual(result['status'], 403)
+        self.assertEqual(result['message'], "You cannot change this user's active status")                                
+
+    def test_none_admin_update_user_activity(self):
+        """Test for a none admin user trying to update another user's active status"""
+
+        self.app.post("/api/v2/auth/signup", headers=self.headers,
+                      data=json.dumps(self.data))
+        self.app.post("/api/v2/auth/signup", headers=self.headers,
+                      data=json.dumps(self.data3))
+        response = self.app.post("/api/v2/auth/login",
+                                 headers=self.headers, data=json.dumps(data8))
+        result = json.loads(response.data)
+        token = result['data'][0]['token']
+        response2 = self.app.patch("/api/v2/users/jayd/activate", headers={
+                                   'Content-Type': 'application/json', 'x-access-token': token},
+                                   data=json.dumps({"isactive": "False"}))
+        result2 = json.loads(response2.data)
+        self.assertEqual(
+            result2['message'], "You cannot change this user's active status")
+        self.assertEqual(result2['status'], 403)
+
+    def test_admin_updating_own_activity_status(self):
+        """Test for an admin user trying to update their own activity status"""
+        self.app.post("/api/v2/auth/signup", headers=self.headers,
+                      data=json.dumps(self.data))
+        self.app.patch("/api/v2/users/jayd/promote",
+                       headers=self.headers_secured, data=json.dumps({"isadmin": "True"}))
+        response = self.app.post(
+            "/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))
+        result = json.loads(response.data)
+        token = result['data'][0]['token']
+        response2 = self.app.patch(
+            "/api/v2/users/jayd/activate", headers={'Content-Type': 'application/json',
+            'x-access-token': token},data=json.dumps({"isactive": "False"}))
+        result2 = json.loads(response2.data)
+        self.assertEqual(result2['status'], 403)
+        self.assertEqual(result2['message'], 'You cannot change your own active status')
 
     def tearDown(self):
         url = self.APP.config.get('DATABASE_URL')

@@ -76,7 +76,7 @@ class UserSignUp(Resource):
 
         user_data = {
             "name": user['firstname']+' '+user['lastname'],
-            "usename": user['username'],
+            "username": user['username'],
             "email": user['email'],
             "public_id": user['public_id'],
             "isAdmin": False
@@ -108,6 +108,13 @@ class UserSignIn(Resource):
                 "status": 401,
                 "message": "password or username is invalid"
             })
+
+        if user is 'disabled':
+            return jsonify({
+                "status": 403,
+                "message": "account has been disabled"
+            })
+
         if user is False:
             return jsonify({
                 "status": 401,
@@ -139,8 +146,8 @@ class User(Resource):
         user = self.db.get_user(username)
         if user is None:
             return nonexistent_user()
-        user_data = {
-            'public_id': user['public_id'],
+        data = {
+            'public_id': user['public_id'], 'isActive': user['isactive'],
             'registered': user['registered'], 'firstname': user['firstname'],
             'othernames': user['othernames'], 'lastname': user['lastname'],
             'phoneNumber': user['phonenumber'], 'email': user['email'],
@@ -148,7 +155,7 @@ class User(Resource):
         }
         return jsonify({
             "status": 200,
-            "data": [user_data]
+            "data": [data]
         })
 
     @token_required
@@ -243,6 +250,41 @@ class UserStatus(Resource):
                 "data": success_message
             })
 
+class UserActivity(Resource):
+    """Class with method for disabling or enabling user activity"""
+
+    def __init__(self):
+        self.db = UserModel()
+
+    @token_required
+    def patch(current_user, self, username):
+        """method to deactivate/activate a user"""
+        user = self.db.get_user(username)
+
+        if user is None:
+            return nonexistent_user()
+
+        if current_user['isadmin'] is not True or user['id'] == 1:
+            return jsonify({
+                "status": 403,
+                "message": "You cannot change this user's active status"
+            })
+
+        if current_user['username'] == username:
+            return jsonify({
+                "status": 403,
+                "message": "You cannot change your own active status"
+            })
+
+        user_activity_updated = self.db.activate_user(username)
+        if user_activity_updated is True:
+            return jsonify({
+                "status": 200,
+                "data": {
+                    "username": username,
+                    "message": "User active status has been updated"
+                }
+            })
 
 class UserResetPassword(Resource):
     """Class with method for sending reset password link to a user"""
