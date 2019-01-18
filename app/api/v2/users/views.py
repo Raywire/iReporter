@@ -146,8 +146,8 @@ class User(Resource):
         user = self.db.get_user(username)
         if user is None:
             return nonexistent_user()
-        user_data = {
-            'public_id': user['public_id'],
+        data = {
+            'public_id': user['public_id'], 'isActive': user['isactive'],
             'registered': user['registered'], 'firstname': user['firstname'],
             'othernames': user['othernames'], 'lastname': user['lastname'],
             'phoneNumber': user['phonenumber'], 'email': user['email'],
@@ -155,7 +155,7 @@ class User(Resource):
         }
         return jsonify({
             "status": 200,
-            "data": [user_data]
+            "data": [data]
         })
 
     @token_required
@@ -264,27 +264,26 @@ class UserActivity(Resource):
         if user is None:
             return nonexistent_user()
 
+        if current_user['username'] == username:
+            return jsonify({
+                "status": 403,
+                "message": "You cannot change your own active status"
+            })            
+
         if current_user['isadmin'] is not True or user['id'] == 1:
             return jsonify({
                 "status": 403,
                 "message": "You cannot change this user's active status"
             })
 
-        if current_user['username'] == username:
-            return jsonify({
-                "status": 403,
-                "message": "You cannot change your own active status"
-            })
-
         user_activity_updated = self.db.activate_user(username)
         if user_activity_updated is True:
-            success_message = {
-                "username": username,
-                "message": "User active status has been updated"
-            }
             return jsonify({
                 "status": 200,
-                "data": success_message
+                "data": {
+                    "username": username,
+                    "message": "User active status has been updated"
+                }
             })
 
 class UserResetPassword(Resource):

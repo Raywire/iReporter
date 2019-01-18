@@ -137,6 +137,7 @@ class UserModel:
     def sign_in(self):
         parser_signin.add_argument('username',
                                    required=True,
+                                   type=validate_username,
                                    help="This key is required and should not be empty or formatted wrongly"
                                    )
 
@@ -150,28 +151,27 @@ class UserModel:
             'username': request.json.get('username').lower(),
             'password': request.json.get('password')
         }
-        user = self.get_user(data['username'])
-        if user is not None:
-            user_data = {
-                'id': user['id'],
-                'firstname': user['firstname'],
-                'lastname': user['lastname'],
-                'othernames': user['othernames'],
-                'email': user['email'],
-                'phoneNumber': user['phonenumber'],
-                'username': user['username'],
-                'public_id': user['public_id'],
-                'isAdmin': user['isadmin'],
-                'isActive': user['isactive']
+        current_user = self.get_user(data['username'])
+        if current_user is not None:
+            current_user_data = {
+                'email': current_user['email'],
+                'firstname': current_user['firstname'],
+                'isActive': current_user['isactive'],
+                'isAdmin': current_user['isadmin'],
+                'lastname': current_user['lastname'],
+                'othernames': current_user['othernames'], 
+                'phoneNumber': current_user['phonenumber'],
+                'public_id': current_user['public_id'],
+                'username': current_user['username']               
             }
 
-        if user is None:
+        if current_user is None:
             return None
-        if user['isactive'] is False:
+        if current_user['isactive'] is False:
             return 'disabled' 
-        if check_password_hash(user['password'], data['password']) is False:
+        if check_password_hash(current_user['password'], data['password']) is False:
             return False
-        return user_data
+        return current_user_data
 
     def get_users(self):
         """method to get all users"""
