@@ -149,8 +149,13 @@ let getUsers = (user_data) => {
                                 nextButton.classList.add('opacity');
                                 return document.getElementById('user-data').innerHTML = result;
                             }
-
+                            let faIcon = '';
                             for (let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) && i < users.length; i++) {
+                                if (users[i].isactive === false){
+                                    faIcon = 'fa-ban red';
+                                }else{
+                                    faIcon = 'fa-unlock theme-blue';
+                                }
 
                                 result.innerHTML +=
                                     `
@@ -158,6 +163,7 @@ let getUsers = (user_data) => {
                                         <div class="card">
                                             <div class="container2 align-center">
                                               <a href="view_user.html?username=${users[i].username}">
+                                                <p class="black align-left"><i class="fa ${faIcon}" aria-hidden="true"></i></p>
                                                 <p><i class="fa fa-user-o fa-3x theme-blue" aria-hidden="true"></i></p>
                                                 <h4 class="black"><b>${users[i].firstname} ${users[i].lastname}</b></h4>
                                                 <p>${users[i].username}</p>
@@ -308,9 +314,10 @@ let getUserData = () => {
                         email,
                         phoneNumber,
                         isAdmin,
+                        isActive,
                         registered,
                         public_id
-                    } = user
+                    } = user;
                     let localDateTime = convertToLocalTime(registered);
                     if (othernames == null) {
                         fullname = firstname + ' ' + lastname;
@@ -325,6 +332,7 @@ let getUserData = () => {
                     result += `
                 <div class='incident-header'>
                     <h2>${fullname}</h2>
+                    <h3><span class="black">Active:</span> <span id='activity-data' class="italic">${isActive}</span></h3>
                     <h3><span class="black">Admin Status:</span> <span id='status-data' class="italic">${isAdmin}</span></h3>
                     <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
                     <h4 id='comment-data'><span class="black">Public Id: </span>${public_id}</h4>
@@ -413,7 +421,7 @@ let editUserData = (event) => {
                     document.getElementById('status-message').style.color = "green";
                     document.getElementById('status-message').innerHTML = j['data']['message'];
                     document.getElementById('status').value = status;
-                    document.getElementById('status-data').innerHTML = status;
+                    document.getElementById('status-data').innerHTML = status.toLowerCase();
                 }
             }
             document.getElementById('fa-spin-edit-status').style.display = "none";
@@ -422,6 +430,77 @@ let editUserData = (event) => {
         .catch((error) => {
             console.log(error);
             document.getElementById('fa-spin-edit-status').style.display = "none";
+        });
+}
+
+let changeActiveStatus = (event) => {
+    event.preventDefault();
+    document.getElementById('fa-spin-activity').style.display = "block";
+    document.getElementById('activity-message').innerHTML = '';
+    document.getElementById('activity-message').style.color = "red";
+
+    let uri = config.root + 'users/' + usernameId + '/activate';
+
+    let activity = document.getElementById('activity').value;
+
+    let options = {
+        method: 'PATCH',
+        mode: "cors",
+        headers: new Headers({
+            "Content-Type": "application/json; charset=utf-8",
+            "x-access-token": user.token
+        }),
+        body: JSON.stringify({
+            isactive: activity
+        })
+    }
+    let request = new Request(uri, options);
+
+    fetch(request)
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return response.json();
+            }
+        })
+        .then((j) => {
+            
+            if (j.hasOwnProperty('message')) {
+                if (j['message'] == 'Token is missing') {
+                    logout();
+                }
+                if (j['message'] == 'Token is invalid') {
+                    logout();
+                }
+                if (j['message'] == "You cannot change this user's active status") {
+                    document.getElementById('activity-message').innerHTML = j['message'];
+                }
+                if (j['message'] == 'user does not exist') {
+                    document.getElementById('activity-message').innerHTML = j['message'];
+                }
+                if (j['message'].hasOwnProperty('isactive')) {
+                    document.getElementById('activity-message').innerHTML = "(Accepted values: True, False)";
+                }
+                if (j['message'] == 'You cannot change your own active status') {
+                    document.getElementById('activity-message').innerHTML = j['message'];
+                }
+
+            }
+            if (j.hasOwnProperty('data')) {
+                if (j['data']['message'] == "User active status has been updated") {
+                    document.getElementById('activity-message').style.color = "green";
+                    document.getElementById('activity-message').innerHTML = j['data']['message'];
+                    document.getElementById('activity').value = activity;
+                    document.getElementById('activity-data').innerHTML = activity.toLowerCase();
+                }
+            }
+            document.getElementById('fa-spin-activity').style.display = "none";
+
+        })
+        .catch((error) => {
+            console.log(error);
+            document.getElementById('fa-spin-activity').style.display = "none";
         });
 }
 
