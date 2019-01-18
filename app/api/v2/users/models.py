@@ -3,7 +3,7 @@ from werkzeug import generate_password_hash, check_password_hash
 from app.db_config import connection, init_database
 from flask import request, current_app
 from flask_restful import reqparse
-from app.validators import (validate_username,validate_characters,
+from app.validators import (validate_username, validate_characters,
                             validate_email, validate_integers,
                             validate_password)
 import psycopg2.extras
@@ -19,62 +19,55 @@ parser_user = reqparse.RequestParser(bundle_errors=True)
 parser_promote = reqparse.RequestParser(bundle_errors=True)
 parser_activate = reqparse.RequestParser(bundle_errors=True)
 parser_password = reqparse.RequestParser(bundle_errors=True)
+parser_update = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('firstname',
-                    type=validate_characters,
-                    required=True,
+                    type=validate_characters, required=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('lastname',
-                    type=validate_characters,
-                    required=True,
+                    type=validate_characters, required=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('othernames',
-                    type=validate_characters,
-                    required=False,
+                    type=validate_characters, required=False,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('username',
-                    type=validate_username,
-                    required=True,
+                    type=validate_username, required=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('email',
-                    type=validate_email,
-                    required=True,
+                    type=validate_email, required=True,
                     nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('phoneNumber',
-                    type=validate_integers,
-                    required=False,
+                    type=validate_integers, required=False,
                     nullable=True,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('password',
-                    type=validate_password,
-                    required=True,
+                    type=validate_password, required=True,
                     nullable=False,
                     help="Password must be at least 6 characters"
                     )
 
-parser_activate.add_argument('isactive',
-                            choices=["True", "False"],
-                            required=True,
-                            nullable=False,
-                            help="(Accepted values: True, False)"
-                            )
+parser_activate.add_argument('isactive', choices=["True", "False"],
+                             required=True,
+                             nullable=False,
+                             help="(Accepted values: True, False)"
+                             )
 
 class UserModel:
     """User Model class with methods for manipulation user data"""
@@ -159,16 +152,16 @@ class UserModel:
                 'isActive': current_user['isactive'],
                 'isAdmin': current_user['isadmin'],
                 'lastname': current_user['lastname'],
-                'othernames': current_user['othernames'], 
+                'othernames': current_user['othernames'],
                 'phoneNumber': current_user['phonenumber'],
                 'public_id': current_user['public_id'],
-                'username': current_user['username']               
+                'username': current_user['username']
             }
 
         if current_user is None:
             return None
         if current_user['isactive'] is False:
-            return 'disabled' 
+            return 'disabled'
         if check_password_hash(current_user['password'], data['password']) is False:
             return False
         return current_user_data
@@ -216,7 +209,7 @@ class UserModel:
         cursor = conn.cursor()
         cursor.execute(query)
         conn.commit()
-        return True        
+        return True
 
     def delete_user(self, username):
         """method to delete a user"""
@@ -249,3 +242,55 @@ class UserModel:
         cursor.execute(query, values)
         conn.commit()
         return True
+
+    def update_user(self, username):
+        """method to update a user's profile data"""
+        parser_update.add_argument('email', type=validate_email,
+                                   required=False, nullable=False,
+                                   help="Email must be formatted correctly")
+
+        parser_update.add_argument('phoneNumber', type=validate_integers,
+                                   required=False, nullable=False,
+                                   help="Must be an integer")
+
+        parser_update.add_argument('firstname', type=validate_characters,
+                                   required=False,
+                                   nullable=False,
+                                   help="First name must be formatted correctly")
+
+        parser_update.add_argument('lastname', type=validate_characters,
+                                   required=False, nullable=False,
+                                   help="Last name must be formatted correctly")
+
+        parser_update.add_argument('othernames', type=validate_characters,
+                                   required=False, nullable=False,
+                                   help="Other name must be formatted correctly")
+
+        user = self.get_user(username)
+        if user is None:
+            return None
+
+        args = parser_update.parse_args()
+        new_data = {
+            'email': request.json.get('email', user['email']).lower(),
+            'firstname': request.json.get('firstname', user['firstname']).title(),
+            'lastname': request.json.get('lastname', user['lastname']).title(),
+            'othernames': request.json.get('othernames', user['othernames']).title(),
+            'phoneNumber': request.json.get('phoneNumber', user['phonenumber']),
+        }
+
+        getEmail = self.get_user(new_data['email'])
+
+        if user['email'] != new_data['email']:
+            if getEmail is not None:
+                return 'email exists'
+
+        query = """UPDATE users SET firstname=%s,lastname=%s,othernames=%s,\
+                    email=%s,phonenumber=%s WHERE username=%s"""
+        values = new_data['firstname'], new_data['lastname'], new_data['othernames'], new_data['email'], new_data['phoneNumber'], username
+
+        conn = self.db
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+        return new_data

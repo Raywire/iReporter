@@ -1,9 +1,9 @@
-"""v2 module init file"""
+"""Routes for incident and user views"""
 from flask_restful import Api
 from flask import Blueprint
 from app.api.v2.users.views import (
-    User, Users, UserSignUp, UserSignIn, UserStatus, UserResetPassword,
-    UserActivity)
+    User, Users, UserSignUp, UserSignIn, UserResetPassword)
+from app.api.v2.users.views_update import UserActivity, UserStatus
 from app.api.v2.incidents.views import (
     Intervention, Interventions, UpdateInterventionStatus,
     UpdateInterventionLocation, UpdateInterventionComment)
