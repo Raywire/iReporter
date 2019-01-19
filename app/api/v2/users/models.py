@@ -130,7 +130,6 @@ class UserModel:
     def sign_in(self):
         parser_signin.add_argument('username',
                                    required=True,
-                                   type=validate_username,
                                    help="This key is required and should not be empty or formatted wrongly"
                                    )
 
