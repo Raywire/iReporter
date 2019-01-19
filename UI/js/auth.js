@@ -1,6 +1,7 @@
 let token = getCookie('token');
-let name = getCookie('name');
-let email = getCookie('email');
+let name = localStorage.getItem('profileName');
+let email = localStorage.getItem('profileEmail');
+let phonenumber = localStorage.getItem('profilePhoneNumber');
 let username = getCookie('username');
 let isAdmin = getCookie('isAdmin');
 let isLoggedIn = getCookie('isLoggedIn');
@@ -9,6 +10,7 @@ const user = {
   token: token,
   name: name,
   email: email,
+  phonenumber: phonenumber,
   username: username,
   isAdmin: isAdmin,
   isLoggedIn: isLoggedIn

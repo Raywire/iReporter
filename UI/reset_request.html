@@ -46,74 +46,14 @@
         <div  class="modal-form">
             <form id="requestReset" method="POST">
                 <p class="contact"><label for="name">Reset Password</label></p>
-                <input id="useremail" name="name" placeholder="Enter Your Email or Username" maxlength="36" autocomplete="off" required="" tabindex="1" type="text">                                 
+                <input id="useremail" name="name" placeholder="Enter Your Email or Username" maxlength="100" autocomplete="off" required="" tabindex="1" type="text">                                 
                 <br>
                 <input name="submit" class="button-modal" tabindex="5" value="Request Password Reset" type="submit">
                 <p id="error-message"></p>
                 <i id="fa-spin" class="fa fa-circle-o-notch fa-spin"></i>
             </form>      
             <script>
-                document.getElementById('requestReset').addEventListener('submit', requestReset);
-
-                function requestReset(event){
-                  event.preventDefault();
-                  document.getElementById('error-message').innerHTML = '';
-                  document.getElementById('fa-spin').style.display = "block";
-
-                  let useremail = document.getElementById('useremail').value;
-
-                  let uri = config.root + 'users/' + useremail + '/resetPassword';             
-
-                  let options = {
-                      method: 'POST',
-                      mode: "cors",
-                      headers: new Headers({
-                          "Content-Type": "application/json; charset=utf-8",
-                      }),
-                      body: JSON.stringify({resetlink : config.resetlink})
-                  }
-                  let req = new Request(uri, options);
-
-                  fetch(req)
-                      .then((response)=>{
-                          if(response.ok){
-                              document.getElementById('fa-spin').style.display = "none";
-
-                              return response.json();
-                          }else{
-                              document.getElementById('fa-spin').style.display = "none";
-                              return response.json();
-                          }
-                      })
-                      .then( (j) =>{
-                          let reset_message = `If a user account exists for ${useremail}, an email will be sent with further instructions`;
-                          if(j.hasOwnProperty('message')){
-
-                            if(j['message'].hasOwnProperty('resetlink')){
-                              document.getElementById('error-message').innerHTML = 'resetlink key is missing';
-                            }
-                            if(j['message'] == 'user does not exist'){
-                              document.getElementById('error-message').style.color = 'green';
-                              document.getElementById('error-message').innerHTML = reset_message;
-                              setTimeout(function(){ window.location.replace("signin.html"); }, 5000);
-                            }
-                            if(j['message'] == 'Reset link has been sent to your email'){
-                              document.getElementById('error-message').style.color = 'green';
-                              document.getElementById('error-message').innerHTML = reset_message;
-                              setTimeout(function(){ window.location.replace("signin.html"); }, 5000);
-                            }
-                            if(j['message'] == 'Password reset failed please try again'){
-                              document.getElementById('error-message').innerHTML = j['message']; 
-                            }
-                    
-                          }
-                                                      
-                      })
-                      .catch( (err) =>{
-                          console.log(err);
-                                                
-                      });
-                }
+                document.getElementById('requestReset').addEventListener('submit', (event)=> requestReset(event));
             </script> 
         </div>
       </div>

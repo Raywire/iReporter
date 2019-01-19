@@ -151,9 +151,9 @@ let getUsers = (user_data) => {
                             }
                             let faIcon = '';
                             for (let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) && i < users.length; i++) {
-                                if (users[i].isactive === false){
+                                if (users[i].isactive === false) {
                                     faIcon = 'fa-ban red';
-                                }else{
+                                } else {
                                     faIcon = 'fa-unlock theme-blue';
                                 }
 
@@ -190,9 +190,9 @@ let getUsers = (user_data) => {
                                 virtualEndNumber -= recordsPerPage;
                                 userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
                             }
-                            if(current_page == 1){
+                            if (current_page == 1) {
                                 endNumber = virtualEndNumber;
-                              }
+                            }
                             hideLoader(1000);
                         }
 
@@ -210,10 +210,10 @@ let getUsers = (user_data) => {
                                 }
                                 if (endNumber == startNumber) {
                                     userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
-                                }else{
+                                } else {
                                     document.getElementById('startNumber').innerHTML = startNumber;
                                     document.getElementById('endNumber').innerHTML = endNumber;
-                                }           
+                                }
                             }
                             hideLoader(1000);
                         }
@@ -243,11 +243,11 @@ let getUsers = (user_data) => {
                             return Math.ceil(users.length / recordsPerPage);
                         }
                         let userNumber = document.getElementById('user_number');
-                        if(startNumber === endNumber || endNumber == 0){
+                        if (startNumber === endNumber || endNumber == 0) {
                             userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
-                        }else{
+                        } else {
                             userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
-                        }                            
+                        }
                     }
 
                     let pagination = new Pagination();
@@ -465,7 +465,7 @@ let changeActiveStatus = (event) => {
             }
         })
         .then((j) => {
-            
+
             if (j.hasOwnProperty('message')) {
                 if (j['message'] == 'Token is missing') {
                     logout();
