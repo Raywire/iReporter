@@ -505,7 +505,6 @@ let getDataById = (incident_type, incidentId) => {
                   </div>
                 </div>  
                 `;
-          localStorage.clear();
           localStorage.setItem('coordinates', location);
           document.getElementById('incident-data').innerHTML = result;
           document.getElementById('title').value = title;
@@ -957,6 +956,11 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
 let updateUserData = (event, usernameid) => {
   event.preventDefault();
   document.getElementById('fa-spin-updateProfile').style.display = "block";
+  document.getElementById('firstnameProfile').style.borderColor = "#ccc";
+  document.getElementById('lastnameProfile').style.borderColor = "#ccc";
+  document.getElementById('othernameProfile').style.borderColor = "#ccc";
+  document.getElementById('phonenumberProfile').style.borderColor = "#ccc";
+  document.getElementById('emailProfile').style.borderColor = "#ccc";
 
   let uri = config.root + 'users/' + usernameid;
 
@@ -966,6 +970,18 @@ let updateUserData = (event, usernameid) => {
   let phonenumber = document.getElementById('phonenumberProfile').value;
   let email = document.getElementById('emailProfile').value;
 
+  let data = {
+    firstname: firstname,
+    lastname: lastname,
+    email: email
+  };
+
+  if(othernames != ''){
+    data.othernames = othernames;
+  }
+  if(phonenumber != ''){
+    data.phoneNumber = phonenumber
+  }
 
   let options = {
     method: 'PUT',
@@ -974,9 +990,7 @@ let updateUserData = (event, usernameid) => {
       "Content-Type": "application/json; charset=utf-8",
       "x-access-token": token
     }),
-    body: JSON.stringify({
-      firstname:firstname, lastname:lastname, othernames:othernames, phoneNumber:phonenumber, email:email
-    })
+    body: JSON.stringify(data)
   }
   let request = new Request(uri, options);
 
@@ -1056,12 +1070,6 @@ let loadProfileData = () => {
   let othername = localStorage.getItem('profileOtherName');
   let profileEmail = localStorage.getItem('profileEmail');
 
-  if (othername == null) {
-    othername = '';
-  }
-  if (profilePhoneNumber == null){
-    profilePhoneNumber = '';
-  }
   let profileName = firstname + ' ' + lastname + ' ' + othername;
 
   document.getElementById('name').innerHTML = profileName;

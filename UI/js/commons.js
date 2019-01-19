@@ -3,16 +3,16 @@ const config = {
   resetlink: 'https://raywire.github.io/iReporter/UI/reset_password.html'
 }
 
-function setCookie(cname, cvalue, expirationtime) {
+let setCookie = (cname, cvalue, expirationtime) => {
   let date = new Date();
   date.setTime(date.getTime() + (expirationtime * 60 * 1000));
   let expires = "expires=" + date.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;" + "sameSite=Strict;";
 }
 
-function getCookie(cname) {
+let getCookie = (cname) => {
   var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
+  let decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
   for(var i = 0; i <ca.length; i++) {
     var c = ca[i];

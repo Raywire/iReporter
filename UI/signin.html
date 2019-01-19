@@ -37,114 +37,15 @@
       <h1>Sign In</h1>
       <form id="signIn" method="POST">
         <p>Username</p>
-        <input type="text" id="username" maxlength="36" name="username" placeholder="Enter Username or Email">
+        <input type="text" id="username" maxlength="100" name="username" placeholder="Enter Username or Email">
         <p>Password</p>
         <input type="password" id="password" maxlength="120" name="username" placeholder="Enter Password">
-        <input id='submit' type="submit" name="submit" value="Login">
-        <i id="fa-spin" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+        <input id='submit' type="submit" name="submit" value="Sign In">
+        <i id="fa-spin" class="fa fa-circle-o-notch fa-spin"></i>
         <p id="error-message"></p>
       </form>
       <script>
-        document.getElementById('signIn').addEventListener('submit', signIn);
-
-        function signIn(event) {
-          event.preventDefault();
-          document.getElementById('error-message').innerHTML = "";
-
-          document.getElementById('username').style.borderBottomColor = "white";
-          document.getElementById('password').style.borderBottomColor = "white";
-          document.getElementById('error-message').style.color = "red";
-          document.getElementById('fa-spin').style.display = "block";
-          document.getElementById('submit').value = "Logging In";
-
-          let uri = config.root + 'auth/login';
-
-          let username = document.getElementById('username').value.toLowerCase();
-          let password = document.getElementById('password').value;
-
-          let options = {
-            method: 'POST',
-            mode: "cors",
-            headers: new Headers({
-              "Content-Type": "application/json; charset=utf-8",
-            }),
-            body: JSON.stringify({
-              username: username,
-              password: password
-            })
-          }
-          let req = new Request(uri, options);
-
-          fetch(req)
-            .then((response) => {
-              if (response.ok) {
-                document.getElementById('fa-spin').style.display = "none";
-                document.getElementById('submit').value = "Login";
-
-                return response.json();
-              } else {
-                document.getElementById('fa-spin').style.display = "none";
-                document.getElementById('submit').value = "Login";
-                return response.json();
-              }
-            })
-            .then((j) => {
-
-              if (j.hasOwnProperty('message')) {
-                if (j['message'].hasOwnProperty('password')) {
-                  document.getElementById('username').style.borderBottomColor = "red";
-                }
-                if (j['message'].hasOwnProperty('username')) {
-                  document.getElementById('username').style.borderBottomColor = "red";
-                }
-                if (j['message'] == 'password or username is invalid') {
-                  document.getElementById('username').style.borderBottomColor = "red";
-                  document.getElementById('password').style.borderBottomColor = "red";
-                  document.getElementById('error-message').innerHTML = j['message'];
-                }
-                if (j['message'] == 'account has been disabled') {
-                  document.getElementById('error-message').innerHTML = j['message'];
-                }
-
-              }
-              if (j.hasOwnProperty('data')) {
-                document.getElementById('error-message').style.color = "green";
-                document.getElementById('error-message').innerHTML = "Login successful";
-                
-                let userData = j['data'][0]['user'];
-                let access_token = j['data'][0]['token'];
-                if (userData['othernames'] != null) {
-                  othernames = ' ' + userData['othernames'];
-                } else {
-                  othernames = '';
-                }
-                let name = userData['firstname'] + ' ' + userData['lastname'] + othernames;
-                let email = userData['email'];
-                let username = userData['username'];
-                let isAdmin = userData['isAdmin'];
-                localStorage.setItem('profilePhoneNumber', userData['phoneNumber']);
-                localStorage.setItem('profileFirstName', userData['firstname']);
-                localStorage.setItem('profileLastName', userData['lastname']);
-                localStorage.setItem('profileOtherName', userData['othernames']);
-                localStorage.setItem('profileEmail', userData['email']);
-
-                let expirationTime = 59;
-                setCookie("token", access_token, expirationTime);
-                setCookie("name", name, expirationTime);
-                setCookie("email", email, expirationTime);
-                setCookie("username", username, expirationTime);
-                setCookie("isAdmin", isAdmin, expirationTime);
-                setCookie("isLoggedIn", "True", expirationTime);
-
-                window.location.replace("home.html");
-              }
-
-
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
+        document.getElementById('signIn').addEventListener('submit', (event) => signIn(event));
       </script>
       <div class="container">
         <p><a class="silver" href="reset_request.html">Forgot password?</a></p>
