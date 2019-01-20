@@ -598,10 +598,6 @@ let deleteData = (incident_type, incidentId) => {
     });
 }
 
-function uploadFile() {
-
-}
-
 //Function to get files by file name
 let getFileData = (filetype, filename) => {
 
