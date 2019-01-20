@@ -9,11 +9,10 @@ import psycopg2.extras
 import os
 
 
-UPLOAD_FOLDER_IMAGE = 'upload/images'
-UPLOAD_FOLDER_VIDEO = 'upload/videos'
+UPLOAD_FOLDER_IMAGE = 'uploads/images'
+UPLOAD_FOLDER_VIDEO = 'uploads/videos'
 ALLOWED_EXTENSIONS_IMAGE = set(['png', 'jpg', 'jpeg', 'gif'])
 ALLOWED_EXTENSIONS_VIDEO = set(['mp4', 'avi', 'flv', 'wmv', 'mov'])
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
@@ -50,6 +49,7 @@ class IncidentModel:
 
     def __init__(self):
         url = current_app.config.get('DATABASE_URL')
+        self.APP_ROOT = current_app.config.get('UPLOAD_FOLDER')
         self.db = init_database(url)
 
     def execute_query(self, query):
@@ -220,12 +220,12 @@ class IncidentModel:
         video = incident['videos']
         if image is not None:
             try:
-                os.remove(os.path.join(APP_ROOT, UPLOAD_FOLDER_IMAGE, image))
+                os.remove(os.path.join(self.APP_ROOT, UPLOAD_FOLDER_IMAGE, image))
             except:
                 pass
         if video is not None:
             try:
-                os.remove(os.path.join(APP_ROOT, UPLOAD_FOLDER_VIDEO, video))
+                os.remove(os.path.join(self.APP_ROOT, UPLOAD_FOLDER_VIDEO, video))
             except:
                 pass
         
@@ -263,7 +263,7 @@ class IncidentModel:
                 extension = filename.rsplit('.', 1)[1].lower()
                 filename = str(incident_id) + '.' + extension
 
-                target = os.path.join(APP_ROOT, upload_file_folder, filename)
+                target = os.path.join(self.APP_ROOT, upload_file_folder, filename)
                 upload.save(target)
 
                 values = filename, incident_id

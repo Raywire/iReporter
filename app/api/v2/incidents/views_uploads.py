@@ -1,6 +1,6 @@
 """Views for incident uploads"""
 from flask_restful import Resource
-from flask import jsonify, send_from_directory
+from flask import jsonify, send_from_directory, current_app
 from app.api.v2.incidents.models import IncidentModel
 from app.api.v2.decorator import (
     token_required, nonexistent_incident, owner_can_edit,
@@ -8,9 +8,8 @@ from app.api.v2.decorator import (
 
 import os
 
-UPLOAD_FOLDER_IMAGE = 'upload/images'
-UPLOAD_FOLDER_VIDEO = 'upload/videos'
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER_IMAGE = 'uploads/images'
+UPLOAD_FOLDER_VIDEO = 'uploads/videos'
 
 
 class UploadInterventionImage(Resource):
@@ -169,6 +168,7 @@ class Video(Resource):
     @token_required
     def get(current_user, self, filename):
         """Method to get a video"""
+        APP_ROOT = current_app.config.get('UPLOAD_FOLDER')
         try:
             target = os.path.join(APP_ROOT, UPLOAD_FOLDER_VIDEO)
             return send_from_directory(target, filename)
@@ -181,11 +181,14 @@ class Video(Resource):
 
 class Image(Resource):
     """"Contains method to get an image"""
+    def __init__(self):
+        self.APP_ROOT = current_app.config.get('UPLOAD_FOLDER')
+    
     @token_required
     def get(current_user, self, filename):
         """Method to get an image"""
         try:
-            target = os.path.join(APP_ROOT, UPLOAD_FOLDER_IMAGE)
+            target = os.path.join(self.APP_ROOT, UPLOAD_FOLDER_IMAGE)
             return send_from_directory(target, filename)
         except:
             return jsonify({

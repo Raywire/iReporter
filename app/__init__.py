@@ -9,6 +9,9 @@ from app.api.v1.routes import VERSION_ONE as v1
 from app.api.v2.routes import VERSION_TWO as v2
 
 import uuid
+import os
+
+UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 def url_not_found(error):
     return make_response(jsonify({
@@ -23,6 +26,8 @@ def create_app(config_name='development'):
 
     url = app.config.get('DATABASE_URL')
     CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     create_tables(url)
 
