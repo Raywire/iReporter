@@ -180,8 +180,7 @@ class UserModel:
         """method to upgrade a user to an admin user"""
         parser_promote.add_argument('isadmin',
                                     choices=["True", "False"],
-                                    required=True,
-                                    nullable=False,
+                                    required=True, nullable=False,
                                     help="(Accepted values: True, False)"
                                     )
         args = parser_promote.parse_args()
@@ -225,8 +224,7 @@ class UserModel:
     def update_user_password(self, username):
         """method to change a user's password"""
         parser_password.add_argument('password',
-                                     type=validate_password,
-                                     required=True,
+                                     type=validate_password, required=True,
                                      nullable=False,
                                      help="Password must be at least 6 characters"
                                      )
@@ -253,8 +251,7 @@ class UserModel:
                                    help="Must be an integer")
 
         parser_update.add_argument('firstname', type=validate_characters,
-                                   required=False,
-                                   nullable=False,
+                                   required=False, nullable=False,
                                    help="First name must be formatted correctly")
 
         parser_update.add_argument('lastname', type=validate_characters,
