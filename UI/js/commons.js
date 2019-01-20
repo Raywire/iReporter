@@ -27,7 +27,7 @@ let getCookie = (cname) => {
 }
 
 let scrollFunction = () => {
-  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+  if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
     document.getElementById("toTop").style.display = "block";
   } else {
     document.getElementById("toTop").style.display = "none";

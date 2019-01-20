@@ -21,3 +21,14 @@ describe('Testing the functionality, to check if cookies are reset on logout', (
     expect(getCookie("testusername")).toBe("logged out");
   })
 })
+
+describe('Testing the functionality, to check login feature', () => {
+  it('should check if a user can access login', () => {
+    let email = 'john@doe.com';
+    let password = 'helloworld';
+
+    expect(Users.exists(email, password)).toEqual(false);
+    givenUserExists(email, password);
+    expect(Users.exists(email, password)).toEqual(true);
+  })
+})
