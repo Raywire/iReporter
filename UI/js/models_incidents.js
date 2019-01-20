@@ -314,12 +314,12 @@ let getData = (incident_type, incident_creator, search_data) => {
                                       <a href="${link}=${usernameIncidents[i].id}">
                                         <p><i class="${icon} fa-2x" aria-hidden="true"></i></p>
                                         <h4 class="black truncate"><b>${usernameIncidents[i].title}</b></h4>
-                                      </a>
-                                        <a href="view_by_username.html?type=${usernameIncidents[i].type}&username=${usernameIncidents[i].username}"><p class='italic font-small'><span class="theme-blue">By ${creator}</span></p></a>
                                         <p>${usernameIncidents[i].status}</p>
                                         <p class='italic font-small'>${humanizedTime}</p>
-                                        <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
-                                      
+                                      </a>          
+                                      <a href="view_by_username.html?type=${usernameIncidents[i].type}&username=${usernameIncidents[i].username}"><p class='italic font-small'><span class="theme-blue">By ${creator}</span></p>
+                                      <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+                                      </a>
                                     </div>
                                   </div>               
                               </div>
@@ -455,6 +455,7 @@ let getDataById = (incident_type, incidentId) => {
       if (j.hasOwnProperty('data')) {
         let result = '';
         let imageUrl = '';
+        let videoUrl = '';
         j['data'].map((incident) => {
           const {
             title,
@@ -464,6 +465,7 @@ let getDataById = (incident_type, incidentId) => {
             location,
             username,
             images,
+            videos,
             type
           } = incident
           let localDateTime = convertToLocalTime(createdon);
@@ -486,7 +488,10 @@ let getDataById = (incident_type, incidentId) => {
           if (images == null) {
             imageUrl = 'img/bad-road.jpeg';
           } else {
-            getFileData('images', images)
+            getFileData('images', images);
+          }
+          if (videos != null) {
+            getFileData('videos', videos);
           }
           result += `
                 <div class='incident-header'>
@@ -499,6 +504,12 @@ let getDataById = (incident_type, incidentId) => {
                 <div class="row  bg-color">
                   <div class="column-50 bg-color">
                     <p class='img-details'><img id='main-image' src="${imageUrl}" alt="${title}"></p>
+                    <p class='vid-details'> 
+                      <video id='main-video' controls>
+                        <source src="${videoUrl}" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video> 
+                    </p>
                   </div>
                   <div class="column-50  bg-color align-justify">
                     <p id='comment-data'>${comment}</p>
@@ -510,6 +521,9 @@ let getDataById = (incident_type, incidentId) => {
           document.getElementById('title').value = title;
           document.getElementById('comment').value = comment;
           document.getElementById('location').value = location;
+          if (videos == null) {
+            document.getElementById('main-video').style.display = 'none';
+          }
         });
 
       }
@@ -615,11 +629,17 @@ let getFileData = (filetype, filename) => {
       let contentType = j['type'].split('/')[0];
 
       if (contentType == 'application') {
-        return 'Image not found';
-      } else if (contentType == 'image') {
+        return 'File not found';
+      }
+      if (contentType == 'image') {
         var imgElem = document.getElementById('main-image');
         var imgUrl = URL.createObjectURL(j);
         imgElem.src = imgUrl;
+      }
+      if(contentType == 'video'){
+        var vidElem = document.getElementById('main-video');
+        var videoUrl = URL.createObjectURL(j);
+        vidElem.src = videoUrl;
       }
 
 
@@ -950,6 +970,83 @@ let uploadImage = (event, intervention_type, intervention_id) => {
 
 let uploadVideo = (event, intervention_type, intervention_id) => {
   event.preventDefault();
+  document.getElementById('fa-spin-upload-2').style.display = "block";
+  document.getElementById('upload-message-2').innerHTML = '';
+  document.getElementById('upload-message-2').style.color = "red";
+
+  let uri = config.root + intervention_type + '/' + intervention_id + '/addVideo';
+
+  var formData = new FormData();
+  let fileData = document.getElementById('fileVideo').files[0];
+
+  if (fileData == null) {
+    document.getElementById('fa-spin-upload-2').style.display = "none";
+    document.getElementById('upload-message-2').innerHTML = 'Please select a file';
+    return false;
+  }
+
+  console.log(fileData);
+  console.log(fileData.name);
+  let fileExtension = fileData.name.split('.')[1];
+  let uploadedFileName = intervention_id.toString() + '.' + fileExtension
+  console.log(uploadedFileName);
+
+  formData.append('uploadFile', fileData, fileData.name);
+
+  let options = {
+    method: 'PATCH',
+    mode: "cors",
+    headers: new Headers({
+      "x-access-token": token,
+    }),
+    body: formData
+  }
+  let request = new Request(uri, options);
+
+  fetch(request)
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return response.json();
+      }
+    })
+    .then((j) => {
+      console.log(j);
+      if (j.hasOwnProperty('message')) {
+        if (j['message'] == 'Token is missing') {
+          logout();
+        }
+        if (j['message'] == 'Token is invalid') {
+          logout();
+        }
+        if (j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist') {
+          document.getElementById('upload-message-2').innerHTML = j['message'];
+        }
+        if (j['message'] == 'You cannot upload a video for this incident') {
+          document.getElementById('upload-message-2').innerHTML = j['message'];
+        }
+        if (j['message'] == 'File type not supported' || j['message'] == 'No uploadFile name in form') {
+          document.getElementById('upload-message-2').innerHTML = j['message'];
+        }
+
+      }
+      if (j.hasOwnProperty('data')) {
+        if (j['data'][0]['message'] == "Video added to intervention record" || j['data'][0]['message'] == "Video added to red-flag record") {
+          document.getElementById('upload-message-2').style.color = "green";
+          document.getElementById('upload-message-2').innerHTML = j['data'][0]['message'];
+          document.getElementById('main-video').style.display = 'block';
+          getFileData('videos', uploadedFileName);
+        }
+      }
+      document.getElementById('fa-spin-upload-2').style.display = "none";
+
+    })
+    .catch((error) => {
+      console.log(error);
+      document.getElementById('upload-message-2').innerHTML = "An error occured check if status is draft and try again";
+      document.getElementById('fa-spin-upload-2').style.display = "none";
+    });
 
 }
 

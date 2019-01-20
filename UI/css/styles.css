@@ -284,7 +284,7 @@ select:-moz-focusring {
 }
  @media screen and (max-width: 767px) {
   .main-nav li {
-    border-top: 1px solid silver;
+    border-top: 1px solid #4d4d4d;
     padding-top:10px;
   }
   .top-left h2, .bottom-right h3{
@@ -702,9 +702,6 @@ border-top: none;
 
 .wrapper {
 min-height: 100%;
-/* Equal to height of footer */
-/* But also accounting for potential margin-bottom of last child */
-/* margin-bottom: -50px; */
 }
 .footer,
 .push {
@@ -810,10 +807,10 @@ p#comment-data{
 .module-link:hover{
   color:dodgerblue;
 }
-#main-image{
+#main-image, #main-video{
   width:100%;
 }
-p.img-details{
+p.img-details,p.vid-details{
   padding:10px 0 0 0;
 }
 .font-small{
@@ -973,10 +970,6 @@ select#perPage:-moz-focusring {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-/* div{
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
-  -webkit-tap-highlight-color: transparent;
-} */
 #toTop {
   display: none;
   position: fixed;
@@ -997,4 +990,7 @@ select#perPage:-moz-focusring {
 #toTop:hover {
   background-color: #0b47b6;
   opacity: 1.0;
+}
+.blocked{
+  opacity: 0.4;
 }

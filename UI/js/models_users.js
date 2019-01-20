@@ -149,19 +149,22 @@ let getUsers = (user_data) => {
                                 nextButton.classList.add('opacity');
                                 return document.getElementById('user-data').innerHTML = result;
                             }
-                            let faIcon = '';
+                            let faIcon;
+                            let blocked;
                             for (let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) && i < users.length; i++) {
                                 if (users[i].isactive === false) {
                                     faIcon = 'fa-ban red';
+                                    blocked = 'blocked';
                                 } else {
                                     faIcon = 'fa-unlock theme-blue';
+                                    blocked = ''
                                 }
 
                                 result.innerHTML +=
                                     `
                                       <div class="column">
                                         <div class="card">
-                                            <div class="container2 align-center">
+                                            <div class="container2 align-center  ${blocked}">
                                               <a href="view_user.html?username=${users[i].username}">
                                                 <p class="black align-left"><i class="fa ${faIcon}" aria-hidden="true"></i></p>
                                                 <p><i class="fa fa-user-o fa-3x theme-blue" aria-hidden="true"></i></p>
