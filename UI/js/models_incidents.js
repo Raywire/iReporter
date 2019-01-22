@@ -128,6 +128,7 @@ let getData = (incident_type, incident_creator, search_data) => {
       if (response.ok) {
         try {
           document.getElementById('fa-spin-data').style.display = 'none';
+          showLoader();
         } catch(error) {}
 
         return response.json();
@@ -404,6 +405,7 @@ let getData = (incident_type, incident_creator, search_data) => {
           let pagination = new Pagination();
           pagination.init();
         })();
+        hideLoader(1000);
       }
 
     })
