@@ -52,16 +52,18 @@
         <p id="name"></p>
         <p id="email" class="title"></p>
         <p id="username"></p>
-        <p><button class="button-modal" id="myBtn" data-modal="modal-window-profile">Update Profile</button></p>
-        <p><button id="btnResetPassword" class="button-modal" data-modal="modal-window-reset-password"><i class="fa fa-unlock"
-              aria-hidden="true"></i></button></p>
+        <p>
+          <button class="button-modal" title="Update Profile" id="myBtn" data-modal="modal-window-profile"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+          <button id="btnResetPassword" title="Update Password" class="button-modal" data-modal="modal-window-reset-password"><i class="fa fa-unlock"
+              aria-hidden="true"></i></button>
+           <button id="btnUploadProfilePic" title="Upload Picture" class="button-modal" data-modal="modal-window-upload-profilepic"><i class="fa fa-picture-o" aria-hidden="true"></i></button>
+        </p>
         <div id="modal-window-profile" class="modal">
-
           <!-- Modal content -->
           <div class="modal-content">
             <span class="close">&times;</span>
             <div class="modal-form">
-              <form id="updateUserData" method="POST" enctype="multipart/form-data">
+              <form id="updateUserData" method="POST">
                 <p class="contact"><label for="name">First Name</label></p>
                 <input id="firstnameProfile" name="firstname" maxlength="20" placeholder="First Name" tabindex="1" type="text">
                 <p class="contact"><label for="firstname">Last Name</label></p>
@@ -72,9 +74,6 @@
                 <input id="emailProfile" name="email" maxlength="100" placeholder="email" tabindex="1" type="text">
                 <p class="contact"><label for="phonenumber">Phone Number</label></p>
                 <input id="phonenumberProfile" name="phonenumber" maxlength="20" placeholder="phonenumber" tabindex="1" type="text">
-                <p class="contact"><label for="profilepic">Upload Profile Photo</label></p>
-                <input type="file" id="profilePic" name="profilepic" accept="image/*" multiple>
-
                 <br>
                 <input class="button-normal" name="submit" id="updateProfile" tabindex="5" value="Update Profile" type="submit">
                 <i id="fa-spin-updateProfile" class="fa fa-circle-o-notch fa-spin hide"></i>
@@ -103,6 +102,22 @@
             </div>
           </div>
         </div>
+        <div id="modal-window-upload-profilepic" class="modal">
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-form">
+              <form id="uploadProfilePic" method="POST" enctype="multipart/form-data">
+                <p class="contact"><label for="profilepic">Upload Profile Photo</label></p>
+                <input type="file" id="profilePic" name="profilepic" accept="image/*" multiple>
+                <br>
+                <input class="button-normal" name="submit" id="updateProfile" tabindex="5" value="Update Profile" type="submit">
+                <i id="fa-spin-upload-pic" class="fa fa-circle-o-notch fa-spin hide"></i>
+              </form>
+            </div>
+          </div>
+
+        </div>        
       </div>
       <div class="card">
         <div class="container2">
@@ -126,6 +141,9 @@
           
         document.getElementById('updateUserData').addEventListener('submit', (event) => updateUserData(event,
           profileUserName));
+
+          document.getElementById('uploadProfilePic').addEventListener('submit', (event) => uploadProfilePic(event,
+          profileUserName));  
       </script>
     </div>
     <div class="column">

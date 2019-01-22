@@ -796,8 +796,9 @@ padding:8px;
 span.theme-blue:hover{
   color:dodgerblue;
 }
-p#comment-data{
-  color:#0b47b6;
+p.comment-data-item{
+  text-align: justify;
+  color:#0b47b6 !important; 
   padding:5px
 }
 .module-link{
@@ -807,7 +808,7 @@ p#comment-data{
 .module-link:hover{
   color:dodgerblue;
 }
-#main-image, #main-video{
+#main-image, #main-video, .main-video, .main-image{
   width:100%;
 }
 p.img-details,p.vid-details{
