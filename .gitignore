@@ -1,0 +1,10 @@
+*.pyc 
+venv
+.vscode/
+.pytest_cache
+__pycache__
+.coverage
+.env
+node_modules/
+.eslintrc.js
+package.json

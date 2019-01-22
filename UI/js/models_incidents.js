@@ -128,6 +128,7 @@ let getData = (incident_type, incident_creator, search_data) => {
       if (response.ok) {
         try {
           document.getElementById('fa-spin-data').style.display = 'none';
+          showLoader();
         } catch(error) {}
 
         return response.json();
@@ -404,6 +405,7 @@ let getData = (incident_type, incident_creator, search_data) => {
           let pagination = new Pagination();
           pagination.init();
         })();
+        hideLoader(1000);
       }
 
     })
@@ -455,7 +457,6 @@ let getDataById = (incident_type, incidentId) => {
       if (j.hasOwnProperty('data')) {
         let result = '';
         let imageUrl = '';
-        let videoUrl = '';
         j['data'].map((incident) => {
           const {
             title,
@@ -493,6 +494,14 @@ let getDataById = (incident_type, incidentId) => {
           if (videos != null) {
             getFileData('videos', videos);
           }
+          let paragraph = comment.split('\n');
+          let commentData = '';
+          
+          for(i = 0; i < paragraph.length; i++){
+            commentData += `
+            <p class='comment-data-item'>${paragraph[i]}</p>
+            `;
+          }
           result += `
                 <div class='incident-header'>
                   <h2>${title}</h2>
@@ -504,15 +513,10 @@ let getDataById = (incident_type, incidentId) => {
                 <div class="row  bg-color">
                   <div class="column-50 bg-color">
                     <p class='img-details'><img id='main-image' src="${imageUrl}" alt="${title}"></p>
-                    <p class='vid-details'> 
-                      <video id='main-video' controls>
-                        <source src="${videoUrl}" type="video/mp4">
-                        Your browser does not support the video tag.
-                      </video> 
-                    </p>
+                    <p class='vid-details'></p>
                   </div>
-                  <div class="column-50  bg-color align-justify">
-                    <p id='comment-data'>${comment}</p>
+                  <div class="column-50" id='comment-data'  bg-color align-justify">
+                   ${commentData}
                   </div>
                 </div>  
                 `;
@@ -521,9 +525,6 @@ let getDataById = (incident_type, incidentId) => {
           document.getElementById('title').value = title;
           document.getElementById('comment').value = comment;
           document.getElementById('location').value = location;
-          if (videos == null) {
-            document.getElementById('main-video').style.display = 'none';
-          }
         });
 
       }
@@ -628,14 +629,21 @@ let getFileData = (filetype, filename) => {
         return 'File not found';
       }
       if (contentType == 'image') {
-        var imgElem = document.getElementById('main-image');
-        var imgUrl = URL.createObjectURL(j);
+        let imgElem = document.getElementById('main-image');
+        let imgUrl = URL.createObjectURL(j);
         imgElem.src = imgUrl;
       }
       if(contentType == 'video'){
-        var vidElem = document.getElementById('main-video');
-        var videoUrl = URL.createObjectURL(j);
-        vidElem.src = videoUrl;
+        let videoUrl = URL.createObjectURL(j);
+        let videoElement = document.createElement('video');
+        if(videoElement.canPlayType('video/mp4')){
+          videoElement.setAttribute('src', videoUrl);
+        }else{
+          videoElement.setAttribute('src', videoUrl);
+        }
+        videoElement.setAttribute('controls', 'controls');
+        videoElement.setAttribute('class','main-video');
+        document.getElementsByClassName('vid-details')[0].appendChild(videoElement);
       }
 
 
@@ -792,7 +800,15 @@ let editComment = (event, intervention_type, intervention_id) => {
             title: 'Success',
             message: j['data'][0]['message'],
           });
-          document.getElementById('comment-data').innerHTML = comment;
+          let paragraph = comment.split('\n');
+          let commentData = '';
+          
+          for(i = 0; i < paragraph.length; i++){
+            commentData += `
+            <p class='comment-data-item'>${paragraph[i]}</p>
+            `;
+          }
+          document.getElementById('comment-data').innerHTML = commentData;
         }
       }
       document.getElementById('fa-spin-edit').style.display = "none";
@@ -1031,7 +1047,7 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
         if (j['data'][0]['message'] == "Video added to intervention record" || j['data'][0]['message'] == "Video added to red-flag record") {
           document.getElementById('upload-message-2').style.color = "green";
           document.getElementById('upload-message-2').innerHTML = j['data'][0]['message'];
-          document.getElementById('main-video').style.display = 'block';
+          document.getElementById('uploadVideo').reset();
           getFileData('videos', uploadedFileName);
         }
       }
@@ -1174,6 +1190,10 @@ let loadProfileData = () => {
   document.getElementById('othernameProfile').value = othername;
   document.getElementById('emailProfile').value = profileEmail;
   document.getElementById('phonenumberProfile').value = profilePhoneNumber;
+}
+
+let uploadProfilePic = (event, usernameid) => {
+  event.preventDefault();
 }
 
 let getIncidentNumber = (incident_type) => {
@@ -1375,6 +1395,7 @@ let filterIncidents = () => {
 let perPageSelection = (incident_type, incident_creator) => {
   showLoader()
   getData(incident_type, incident_creator, 'all');
+  document.getElementById('searchIncidentsForm').reset();
   hideLoader(1000);
 }
 

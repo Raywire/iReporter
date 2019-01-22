@@ -72,9 +72,10 @@
 
         document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event));
 
-        function perPageSelection() {
+        let perPageSelection = () => {
           showLoader();
           getUsers('all');
+          document.getElementById('searchUsersForm').reset();
           hideLoader(1500);
         }
       </script>
