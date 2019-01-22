@@ -1,7 +1,8 @@
-import faker from "faker";
 import puppeteer from "puppeteer";
 
 const appUrlBase = 'http://localhost:8000';
+const INDEX = `${appUrlBase}/index.html`;
+const ABOUT = `${appUrlBase}/about.html`;
 const SIGNIN = `${appUrlBase}/signin.html`;
 const SIGNUP = `${appUrlBase}/signup.html`;
 const RESET_REQUEST = `${appUrlBase}/reset_request.html`;
@@ -66,4 +67,32 @@ describe("Testing the Title in Contact Page", () => {
             "iReporter Contact"
         );
     });
+});
+
+describe("Testing the Title in the Landing Page", () => {
+    test("assert that <title> is correct", async () => {
+        await page.goto(INDEX);
+        const title = await page.title();
+        expect(title).toBe(
+            "iReporter"
+        );
+    });
+});
+
+describe("Testing the Title in About Page", () => {
+    test("assert that <title> is correct", async () => {
+        await page.goto(ABOUT);
+        const title = await page.title();
+        expect(title).toBe(
+            "iReporter About"
+        );
+    });
+});
+
+describe("Testing the Navbar exists", () => {
+    test("assert that a div named navbar exists", async () => {
+        await page.goto(SIGNUP);
+        const navbar = await page.$eval(".navbar", el => (el ? true : false));
+        expect(navbar).toBe(true);
+      });
 });
