@@ -4,34 +4,35 @@ function myMap() {
   let lat = parseFloat(latlon[0]);
   let lon = parseFloat(latlon[1]);
 
-  var markers = [];
-  var mapProp= {
+  let markers = [];
+  let mapProp= {
     center:new google.maps.LatLng(lat,lon),
     zoom:6,
   };
-  var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-  var geocoder = new google.maps.Geocoder;
+  let map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+  let geocoder = new google.maps.Geocoder;
 
-  var incidentLocation = {lat: lat, lng: lon};
+  let incidentLocation = {lat: lat, lng: lon};
 
   addNewMarkers(incidentLocation);
   geocodeLatLng(geocoder,coordinates);
   
   function addNewMarkers(location) {
-    var marker = new google.maps.Marker({
+    let marker = new google.maps.Marker({
       position: location,
       map: map,
       title: lat+', '+lon
     });
     markers.push(marker);
-  }                                         
+  }
+  window.location.hash = '#googleMap';                                      
 }
 
 function geocodeLatLng(geocoder, coordinates) {
-    var input = coordinates;
-    var location = [];
-    var latlngStr = input.split(',', 2);
-    var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+    let input = coordinates;
+    let location = [];
+    let latlngStr = input.split(',', 2);
+    let latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
     geocoder.geocode({'location': latlng}, function(results, status) {
       if (status === 'OK') {
         if (results[0]) {
@@ -48,5 +49,5 @@ function geocodeLatLng(geocoder, coordinates) {
   }
 
 
-var btnGeolocate = document.getElementById('btnGeolocate');
+const btnGeolocate = document.getElementById('btnGeolocate');
 google.maps.event.addDomListener(btnGeolocate, 'click', myMap);
