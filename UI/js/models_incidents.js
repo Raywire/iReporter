@@ -57,10 +57,10 @@ let postData = (event, incident_type) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
         if (j['message'].hasOwnProperty('comment')) {
@@ -91,9 +91,9 @@ let postData = (event, incident_type) => {
           message: 'Incident has been created',
         });
 
-        if (incident_type == 'interventions') {
+        if (incident_type === 'interventions') {
           getData('intervention', 'all', 'all');
-        } else if (incident_type == 'redflags'){
+        } else if (incident_type === 'redflags'){
           getData('redflag', 'all', 'all');
         }
         document.getElementById('postData').reset();
@@ -142,13 +142,13 @@ let getData = (incident_type, incident_creator, search_data) => {
     .then((j) => {
 
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'No interventions' || j['message'] == 'No redflags') {
+        if (j['message'] === 'No interventions' || j['message'] === 'No redflags') {
           let result = '';
           result += `
                   <div class='column-100'>
@@ -169,7 +169,7 @@ let getData = (incident_type, incident_creator, search_data) => {
         let searchedIncidents = [];
         let incidents = j['data'];
 
-        if (search_data == 'all' || search_data == '') {
+        if (search_data === 'all' || search_data === '') {
           usernameIncidents = searchedIncidents = incidents;
         } else {
           usernameIncidents = searchedIncidents = incidents.filter(incident => {
@@ -177,7 +177,7 @@ let getData = (incident_type, incident_creator, search_data) => {
           })
         }
 
-        if (incident_creator == 'all') {
+        if (incident_creator === 'all') {
           
         } else {
           usernameIncidents = searchedIncidents.filter(incident => {
@@ -240,7 +240,7 @@ let getData = (incident_type, incident_creator, search_data) => {
             let selectedPage = function () {
               let pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
               for (let i = 0; i < pageNumber.length; i++) {
-                if (i == currentPage - 1) {
+                if (i === currentPage - 1) {
                   pageNumber[i].style.opacity = '1.0';
                 } else {
                   pageNumber[i].style.opacity = '0.5';
@@ -249,10 +249,10 @@ let getData = (incident_type, incident_creator, search_data) => {
             }
 
             let checkButtonOpacity = function () {
-              currentPage == 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
-              currentPage == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
-              document.getElementById('button_next').disabled = currentPage == numPages() ? true : false;
-              document.getElementById('button_prev').disabled = currentPage == 1 ? true : false; 
+              currentPage === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
+              currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
+              document.getElementById('button_next').disabled = currentPage === numPages() ? true : false;
+              document.getElementById('button_prev').disabled = currentPage === 1 ? true : false; 
             }
 
             let changePage = function (page) {
@@ -267,7 +267,7 @@ let getData = (incident_type, incident_creator, search_data) => {
 
               result.innerHTML = '';
 
-              if (usernameIncidents.length == 0) {
+              if (usernameIncidents.length === 0) {
                 let result = '';
                 result += `
                           <div class='column-100'>
@@ -295,15 +295,15 @@ let getData = (incident_type, incident_creator, search_data) => {
                 let link = '';
                 let icon = '';
 
-                if (usernameIncidents[i].username == profileUserName) {
+                if (usernameIncidents[i].username === profileUserName) {
                   creator = 'Me';
                 } else {
                   creator = usernameIncidents[i].username;
                 }
-                if (usernameIncidents[i].type == 'redflag') {
+                if (usernameIncidents[i].type === 'redflag') {
                   link = 'view_redflag.html?redflag_id';
                   icon = 'fa fa-flag red';
-                } else if (usernameIncidents[i].type == 'intervention') {
+                } else if (usernameIncidents[i].type === 'intervention') {
                   link = 'view_intervention.html?intervention_id'
                   icon = 'fa fa-handshake-o theme-blue';
                 }
@@ -340,7 +340,7 @@ let getData = (incident_type, incident_creator, search_data) => {
                 virtualEndNumber -= recordsPerPage;
                 incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
               }
-              if(currentPage == 1){
+              if(currentPage === 1){
                 endNumber = virtualEndNumber;
               }
               hideLoader(1000);
@@ -358,7 +358,7 @@ let getData = (incident_type, incident_creator, search_data) => {
                 if (endNumber > totalNumber) {
                   endNumber = totalNumber;
                 }
-                if (endNumber == startNumber) {
+                if (endNumber === startNumber) {
                   incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
                 }else{
                   document.getElementById('startNumber').innerHTML = startNumber;
@@ -371,7 +371,7 @@ let getData = (incident_type, incident_creator, search_data) => {
 
             let clickPage = function () {
               document.addEventListener('click', function (e) {
-                if (e.target.nodeName == 'SPAN' && e.target.classList.contains('clickPageNumber')) {
+                if (e.target.nodeName === 'SPAN' && e.target.classList.contains('clickPageNumber')) {
                   currentPage = e.target.textContent;
                   changePage(currentPage);
                 }
@@ -382,7 +382,7 @@ let getData = (incident_type, incident_creator, search_data) => {
               let pageNumber = document.getElementById('pageNumber');
               pageNumber.innerHTML = '';
               let numberOfPages = numPages();
-              if (currentPage == 0) {
+              if (currentPage === 0) {
                 currentPage = numberOfPages = 1;
               }
 
@@ -395,7 +395,7 @@ let getData = (incident_type, incident_creator, search_data) => {
 
             let incidentNumber = document.getElementById('incident_number');
 
-            if(startNumber === endNumber || endNumber == 0){
+            if(startNumber === endNumber || endNumber === 0){
               incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
             }else{
                incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
@@ -444,13 +444,13 @@ let getDataById = (incident_type, incidentId) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist') {
+        if (j['message'] === 'Intervention does not exist' || j['message'] === 'Redflag does not exist') {
           document.getElementById('message').innerHTML = j['message'];
         }
       }
@@ -471,7 +471,7 @@ let getDataById = (incident_type, incidentId) => {
           } = incident
           let localDateTime = convertToLocalTime(createdon);
 
-          if (username == profileUserName) {
+          if (username === profileUserName) {
             creator = 'Me';
             let ownerButtons = document.querySelectorAll('.btnOwner'),
               i;
@@ -486,7 +486,7 @@ let getDataById = (incident_type, incidentId) => {
             } catch (error) {}
 
           }
-          if (images == null) {
+          if (images === null) {
             imageUrl = 'img/bad-road.jpeg';
           } else {
             getFileData('images', images);
@@ -563,29 +563,29 @@ let deleteData = (incident_type, incidentId) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist') {
+        if (j['message'] === 'Intervention does not exist' || j['message'] === 'Redflag does not exist') {
           document.getElementById('error-message').innerHTML = j['message'];
         }
-        if (j['message'] == 'Only the creator of this record can delete it') {
+        if (j['message'] === 'Only the creator of this record can delete it') {
           document.getElementById('error-message').innerHTML = j['message'];
         }
-        if (j['message'] == 'Incident can only be deleted when the status is draft') {
+        if (j['message'] === 'Incident can only be deleted when the status is draft') {
           document.getElementById('error-message').innerHTML = j['message'];
         }
 
       }
       if (j.hasOwnProperty('data')) {
-        if (j['data']['message'] == 'Intervention record has been deleted' || j['data']['message'] == 'Redflag record has been deleted') {
+        if (j['data']['message'] === 'Intervention record has been deleted' || j['data']['message'] === 'Redflag record has been deleted') {
           document.getElementById('error-message').innerHTML = j['data']['message'];
-          if (incident_type == 'redflags') {
+          if (incident_type === 'redflags') {
             window.location.replace('redflags.html');
-          } else if (incident_type == 'interventions') {
+          } else if (incident_type === 'interventions') {
             window.location.replace('interventions.html');
           }
         }
@@ -625,15 +625,15 @@ let getFileData = (filetype, filename) => {
       console.log(j);
       let contentType = j['type'].split('/')[0];
 
-      if (contentType == 'application') {
+      if (contentType === 'application') {
         return 'File not found';
       }
-      if (contentType == 'image') {
+      if (contentType === 'image') {
         let imgElem = document.getElementById('main-image');
         let imgUrl = URL.createObjectURL(j);
         imgElem.src = imgUrl;
       }
-      if(contentType == 'video'){
+      if(contentType === 'video'){
         let videoUrl = URL.createObjectURL(j);
         let videoElement = document.createElement('video');
         if(videoElement.canPlayType('video/mp4')){
@@ -685,25 +685,25 @@ let editLocation = (event, intervention_type, intervention_id) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist') {
+        if (j['message'] === 'Intervention does not exist' || j['message'] === 'Redflag does not exist') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
           });
         }
-        if (j['message'] == 'Only the user who created this record can edit it') {
+        if (j['message'] === 'Only the user who created this record can edit it') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
           });
         }
-        if (j['message'] == 'Incident can only be edited when the status is draft') {
+        if (j['message'] === 'Incident can only be edited when the status is draft') {
           warningNotification({
             title: 'Warning',
             message: 'Location can only be edited when the status is draft',
@@ -711,7 +711,7 @@ let editLocation = (event, intervention_type, intervention_id) => {
         }
       }
       if (j.hasOwnProperty('data')) {
-        if (j['data'][0]['message'] == "Updated intervention record's location" || j['data'][0]['message'] == "Updated redflag record's location") {
+        if (j['data'][0]['message'] === "Updated intervention record's location" || j['data'][0]['message'] === "Updated redflag record's location") {
           successNotification({
             title: 'Success',
             message: j['data'][0]['message'],
@@ -762,13 +762,13 @@ let editComment = (event, intervention_type, intervention_id) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist') {
+        if (j['message'] === 'Intervention does not exist' || j['message'] === 'Redflag does not exist') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
@@ -781,13 +781,13 @@ let editComment = (event, intervention_type, intervention_id) => {
             message: 'Comment cannot be empty or start with special characters and whitespace',
           });
         }
-        if (j['message'] == 'Only the user who created this record can edit it') {
+        if (j['message'] === 'Only the user who created this record can edit it') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
           });
         }
-        if (j['message'] == 'Incident can only be edited when the status is draft') {
+        if (j['message'] === 'Incident can only be edited when the status is draft') {
           warningNotification({
             title: 'Warning',
             message: 'Comment can only be edited when the status is draft',
@@ -795,7 +795,7 @@ let editComment = (event, intervention_type, intervention_id) => {
         }
       }
       if (j.hasOwnProperty('data')) {
-        if (j['data'][0]['message'] == "Updated intervention record's comment" || j['data'][0]['message'] == "Updated redflag record's comment") {
+        if (j['data'][0]['message'] === "Updated intervention record's comment" || j['data'][0]['message'] === "Updated redflag record's comment") {
           successNotification({
             title: 'Success',
             message: j['data'][0]['message'],
@@ -852,13 +852,13 @@ let editStatus = (event, intervention_type, intervention_id) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist') {
+        if (j['message'] === 'Intervention does not exist' || j['message'] === 'Redflag does not exist') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
@@ -871,7 +871,7 @@ let editStatus = (event, intervention_type, intervention_id) => {
             message: 'Accepted values: draft, under investigation, rejected, resolved',
           });
         }
-        if (j['message'] == 'Only an admin can change the status of the record') {
+        if (j['message'] === 'Only an admin can change the status of the record') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
@@ -880,7 +880,7 @@ let editStatus = (event, intervention_type, intervention_id) => {
 
       }
       if (j.hasOwnProperty('data')) {
-        if (j['data'][0]['message'] == "Updated intervention record's status" || j['data'][0]['message'] == "Updated redflag record's status") {
+        if (j['data'][0]['message'] === "Updated intervention record's status" || j['data'][0]['message'] === "Updated redflag record's status") {
           successNotification({
             title: 'Success',
             message: j['data'][0]['message'],
@@ -910,7 +910,7 @@ let uploadImage = (event, intervention_type, intervention_id) => {
   var formData = new FormData();
   let fileData = document.getElementById('fileImage').files[0];
 
-  if (fileData == null) {
+  if (fileData === null) {
     document.getElementById('fa-spin-upload').style.display = 'none';
     document.getElementById('upload-message').innerHTML = 'Please select a file';
     return false;
@@ -945,25 +945,25 @@ let uploadImage = (event, intervention_type, intervention_id) => {
     .then((j) => {
       console.log(j);
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist') {
+        if (j['message'] === 'Intervention does not exist' || j['message'] === 'Redflag does not exist') {
           document.getElementById('upload-message').innerHTML = j['message'];
         }
-        if (j['message'] == 'You cannot upload a photo for this incident') {
+        if (j['message'] === 'You cannot upload a photo for this incident') {
           document.getElementById('upload-message').innerHTML = j['message'];
         }
-        if (j['message'] == 'File type not supported' || j['message'] == 'No uploadFile name in form') {
+        if (j['message'] === 'File type not supported' || j['message'] === 'No uploadFile name in form') {
           document.getElementById('upload-message').innerHTML = j['message'];
         }
 
       }
       if (j.hasOwnProperty('data')) {
-        if (j['data'][0]['message'] == 'Image added to intervention record' || j['data'][0]['message'] == 'Image added to red-flag record') {
+        if (j['data'][0]['message'] === 'Image added to intervention record' || j['data'][0]['message'] === 'Image added to red-flag record') {
           document.getElementById('upload-message').style.color = 'green';
           document.getElementById('upload-message').innerHTML = j['data'][0]['message'];
           getFileData('images', uploadedFileName);
@@ -991,7 +991,7 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
   var formData = new FormData();
   let fileData = document.getElementById('fileVideo').files[0];
 
-  if (fileData == null) {
+  if (fileData === null) {
     document.getElementById('fa-spin-upload-2').style.display = 'none';
     document.getElementById('upload-message-2').innerHTML = 'Please select a file';
     return false;
@@ -1026,25 +1026,25 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
     .then((j) => {
       console.log(j);
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'Intervention does not exist' || j['message'] == 'Redflag does not exist') {
+        if (j['message'] === 'Intervention does not exist' || j['message'] === 'Redflag does not exist') {
           document.getElementById('upload-message-2').innerHTML = j['message'];
         }
-        if (j['message'] == 'You cannot upload a video for this incident') {
+        if (j['message'] === 'You cannot upload a video for this incident') {
           document.getElementById('upload-message-2').innerHTML = j['message'];
         }
-        if (j['message'] == 'File type not supported' || j['message'] == 'No uploadFile name in form') {
+        if (j['message'] === 'File type not supported' || j['message'] === 'No uploadFile name in form') {
           document.getElementById('upload-message-2').innerHTML = j['message'];
         }
 
       }
       if (j.hasOwnProperty('data')) {
-        if (j['data'][0]['message'] == 'Video added to intervention record' || j['data'][0]['message'] == 'Video added to red-flag record') {
+        if (j['data'][0]['message'] === 'Video added to intervention record' || j['data'][0]['message'] === 'Video added to red-flag record') {
           document.getElementById('upload-message-2').style.color = 'green';
           document.getElementById('upload-message-2').innerHTML = j['data'][0]['message'];
           document.getElementById('uploadVideo').reset();
@@ -1113,13 +1113,13 @@ let updateUserData = (event, usernameid) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'User does not exist') {
+        if (j['message'] === 'User does not exist') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
@@ -1140,14 +1140,14 @@ let updateUserData = (event, usernameid) => {
         if (j['message'].hasOwnProperty('phoneNumber')) {
           document.getElementById('phonenumberProfile').style.borderColor = 'red';
         }
-        if (j['message'] == 'email already exists'){
+        if (j['message'] === 'email already exists'){
           warningNotification({
             title: 'Warning',
             message: j['message'],
           });          
         }
 
-        if (j['message'] == 'Your profile has been updated') {
+        if (j['message'] === 'Your profile has been updated') {
           localStorage.setItem('profilePhoneNumber', phonenumber);
           localStorage.setItem('profileFirstName', firstname);
           localStorage.setItem('profileLastName', lastname);
@@ -1221,13 +1221,13 @@ let getIncidentNumber = (incident_type) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'No interventions') {
+        if (j['message'] === 'No interventions') {
 
         }
       }
@@ -1257,7 +1257,7 @@ let getIncidentNumber = (incident_type) => {
         })
 
 
-        if (incident_type == 'redflags') {
+        if (incident_type === 'redflags') {
           document.getElementById('my-redflags').innerHTML =
             `<a href='view_by_username.html?type=redflag&username=${profileUserName}'>` + myRedflags.length +
             `</a>`;
@@ -1266,7 +1266,7 @@ let getIncidentNumber = (incident_type) => {
           document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents
             .length;
           document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
-        } else if (incident_type == 'interventions') {
+        } else if (incident_type === 'interventions') {
           document.getElementById('my-interventions').innerHTML =
             `<a href='view_by_username.html?type=intervention&username=${profileUserName}'>` +
             myInterventions.length + `</a>`;
@@ -1326,13 +1326,13 @@ let resetPassword = (event, usernameid) => {
     })
     .then((j) => {
       if (j.hasOwnProperty('message')) {
-        if (j['message'] == 'Token is missing') {
+        if (j['message'] === 'Token is missing') {
           logout();
         }
-        if (j['message'] == 'Token is invalid') {
+        if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] == 'User does not exist') {
+        if (j['message'] === 'User does not exist') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
@@ -1345,14 +1345,14 @@ let resetPassword = (event, usernameid) => {
             message: j['message']['password'],
           });
         }
-        if (j['message'] == 'Only an admin or the user can update their own password') {
+        if (j['message'] === 'Only an admin or the user can update their own password') {
           warningNotification({
             title: 'Warning',
             message: j['message'],
           });
         }
 
-        if (j['message'] == 'User password has been changed') {
+        if (j['message'] === 'User password has been changed') {
           successNotification({
             title: 'Success',
             message: j['message'] + ' for ' + j['username'],

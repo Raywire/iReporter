@@ -25,7 +25,7 @@ var modal = document.getElementsByClassName('modal');
 
 window.onclick = function(event) {
     for (var k = 0; k < modal.length; k++){
-        if (event.target == modal[k]) {
+        if (event.target === modal[k]) {
             modal[k].style.display = 'none';
         }
     }

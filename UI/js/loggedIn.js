@@ -186,15 +186,15 @@ let signUp = (event) => {
                 if (j['message'].hasOwnProperty('email')) {
                     document.getElementById('email').style.borderBottomColor = 'red';
                 }
-                if (j['message'] == 'email already exists') {
+                if (j['message'] === 'email already exists') {
                     document.getElementById('email').style.borderBottomColor = 'red';
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
-                if (j['message'] == 'username already exists') {
+                if (j['message'] === 'username already exists') {
                     document.getElementById('username').style.borderBottomColor = 'red';
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
-                if (j['message'] == 'You have been registered successfully') {
+                if (j['message'] === 'You have been registered successfully') {
                     document.getElementById('error-message').style.color = 'green';
                     document.getElementById('error-message').innerHTML = j['message'];
                     window.location.replace('signin.html');
@@ -251,21 +251,21 @@ let requestReset = (event) => {
                 if (j['message'].hasOwnProperty('resetlink')) {
                     document.getElementById('error-message').innerHTML = 'resetlink key is missing';
                 }
-                if (j['message'] == 'user does not exist') {
+                if (j['message'] === 'user does not exist') {
                     document.getElementById('error-message').style.color = 'green';
                     document.getElementById('error-message').innerHTML = reset_message;
                     setTimeout(function () {
                         window.location.replace('signin.html');
                     }, 5000);
                 }
-                if (j['message'] == 'Reset link has been sent to your email') {
+                if (j['message'] === 'Reset link has been sent to your email') {
                     document.getElementById('error-message').style.color = 'green';
                     document.getElementById('error-message').innerHTML = reset_message;
                     setTimeout(function () {
                         window.location.replace('signin.html');
                     }, 5000);
                 }
-                if (j['message'] == 'Password reset failed please try again') {
+                if (j['message'] === 'Password reset failed please try again') {
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
 
@@ -317,13 +317,13 @@ let resetPassword = (event, profileusername, resettoken) => {
         })
         .then((j) => {
             if (j.hasOwnProperty('message')) {
-                if (j['message'] == 'Token is missing') {
+                if (j['message'] === 'Token is missing') {
                     document.getElementById('error-message').innerHTML = 'Token is missing';
                 }
-                if (j['message'] == 'Token is invalid') {
+                if (j['message'] === 'Token is invalid') {
                     document.getElementById('error-message').innerHTML = 'Token is invalid or has expired';
                 }
-                if (j['message'] == 'User does not exist') {
+                if (j['message'] === 'User does not exist') {
                     warningNotification({
                         title: 'Warning',
                         message: j['message'],
@@ -336,14 +336,14 @@ let resetPassword = (event, profileusername, resettoken) => {
                         message: j['message']['password'],
                     });
                 }
-                if (j['message'] == 'Only an admin or the user can update their own password') {
+                if (j['message'] === 'Only an admin or the user can update their own password') {
                     warningNotification({
                         title: 'Warning',
                         message: j['message'],
                     });
                 }
 
-                if (j['message'] == 'User password has been changed') {
+                if (j['message'] === 'User password has been changed') {
                     successNotification({
                         title: 'Success',
                         message: j['message'] + ' for ' + j['username'],

@@ -16,10 +16,10 @@ let getCookie = (cname) => {
   var ca = decodedCookie.split(';');
   for(var i = 0; i <ca.length; i++) {
     var c = ca[i];
-    while (c.charAt(0) == ' ') {
+    while (c.charAt(0) === ' ') {
       c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
+    if (c.indexOf(name) === 0) {
       return c.substring(name.length, c.length);
     }
   }
@@ -56,7 +56,7 @@ let checkPassword = () => {
   let pass1 = document.getElementById('password').value;
   let confirm_pass1 = document.getElementById('confirm_password').value;
 
-  if (pass1 == confirm_pass1) {
+  if (pass1 === confirm_pass1) {
     document.getElementById('password').style.borderColor = 'green';
     document.getElementById('confirm_password').style.borderColor = 'green';
   } else {
