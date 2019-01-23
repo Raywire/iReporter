@@ -1,7 +1,7 @@
 import faker from "faker";
 import puppeteer from "puppeteer";
 
-const appUrlBase = 'http://localhost:8000';
+const appUrlBase = 'https://raywire.github.io/iReporter/UI';
 const SIGNIN = `${appUrlBase}/signin.html`;
 const SIGNUP = `${appUrlBase}/signup.html`;
 const RESET_REQUEST = `${appUrlBase}/reset_request.html`;
@@ -25,9 +25,7 @@ const width = 1280;
 const height = 720;
 
 beforeAll(async () => {
-  browser = await puppeteer.launch({
-
-  });
+  browser = await puppeteer.launch();
   page = await browser.newPage();
 });
 afterAll(() => {

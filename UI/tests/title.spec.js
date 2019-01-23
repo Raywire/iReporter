@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 
-const appUrlBase = 'http://localhost:8000';
+const appUrlBase = 'https://raywire.github.io/iReporter/UI';
 const INDEX = `${appUrlBase}/index.html`;
 const ABOUT = `${appUrlBase}/about.html`;
 const SIGNIN = `${appUrlBase}/signin.html`;
