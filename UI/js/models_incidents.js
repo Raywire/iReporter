@@ -716,7 +716,6 @@ let editLocation = (event, intervention_type, intervention_id) => {
             title: 'Success',
             message: j['data'][0]['message'],
           });
-          localStorage.clear();
           localStorage.setItem('coordinates', location);
         }
       }
