@@ -7,7 +7,5 @@ __pycache__
 .env
 node_modules/
 .eslintrc.js
-package.json
-.babelrc
 coverage/
 npm-debug.log
