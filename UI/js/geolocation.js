@@ -9,7 +9,7 @@ function myMap() {
     center:new google.maps.LatLng(lat,lon),
     zoom:6,
   };
-  let map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+  let map = new google.maps.Map(document.getElementById('googleMap'),mapProp);
   let geocoder = new google.maps.Geocoder;
 
   let incidentLocation = {lat: lat, lng: lon};

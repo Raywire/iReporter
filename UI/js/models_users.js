@@ -4,10 +4,10 @@ let getUsers = (user_data) => {
 
     let options = {
         method: 'GET',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         })
     }
     let request = new Request(uri, options);
@@ -16,13 +16,13 @@ let getUsers = (user_data) => {
         .then((response) => {
             if (response.ok) {
                 try {
-                    document.getElementById('fa-spin-data').style.display = "none";
+                    document.getElementById('fa-spin-data').style.display = 'none';
                 } catch (error) {}
 
                 return response.json();
             } else {
                 try {
-                    document.getElementById('fa-spin-data').style.display = "none";
+                    document.getElementById('fa-spin-data').style.display = 'none';
                 } catch (error) {}
                 return response.json();
             }
@@ -30,28 +30,28 @@ let getUsers = (user_data) => {
         .then((j) => {
 
             if (j.hasOwnProperty('message')) {
-                if (j['message'] == 'Token is missing') {
+                if (j['message'] === 'Token is missing') {
                     logout();
                 }
-                if (j['message'] == 'Token is invalid') {
+                if (j['message'] === 'Token is invalid') {
                     logout();
                 }
             }
             if (j.hasOwnProperty('data')) {
                 let users = [];
 
-                if (user_data == 'all' || user_data == '') {
+                if (user_data === 'all' || user_data === '') {
                     users = j['data'];
                 } else {
                     let allUsers = j['data'];
 
                     users = allUsers.filter(user => {
-                        if (user_data == 'true') {
+                        if (user_data === 'true') {
                             user_data = true;
-                        } else if (user_data == 'false') {
+                        } else if (user_data === 'false') {
                             user_data = false
                         }
-                        if (user_data == true || user_data == false) {
+                        if (user_data === true || user_data === false) {
                             return user.isadmin === user_data
                         }
                         return user.username === user_data.toLowerCase() || user.firstname === user_data || user.email === user_data.toLowerCase() || user.lastname === user_data || user.phonenumber === user_data;
@@ -59,7 +59,7 @@ let getUsers = (user_data) => {
                 }
 
                 (function () {
-                    "use strict";
+                    'use strict';
 
                     function Pagination() {
 
@@ -68,7 +68,7 @@ let getUsers = (user_data) => {
                         const clickPageNumber = document.querySelectorAll('.clickPageNumber');
                         let perPage = document.getElementById('perPage').value;
 
-                        let current_page = 1;
+                        let currentPage = 1;
                         let recordsPerPage = parseInt(perPage);
                         let startNumber = 1;
                         let totalNumber = users.length;
@@ -94,25 +94,25 @@ let getUsers = (user_data) => {
                         }
 
                         let selectedPage = function () {
-                            let page_number = document.getElementById('page_number').getElementsByClassName(
+                            let pageNumber = document.getElementById('pageNumber').getElementsByClassName(
                                 'clickPageNumber');
-                            for (let i = 0; i < page_number.length; i++) {
-                                if (i == current_page - 1) {
-                                    page_number[i].style.opacity = "1.0";
+                            for (let i = 0; i < pageNumber.length; i++) {
+                                if (i === currentPage - 1) {
+                                    pageNumber[i].style.opacity = '1.0';
                                 } else {
-                                    page_number[i].style.opacity = "0.5";
+                                    pageNumber[i].style.opacity = '0.5';
                                 }
                             }
                         }
 
                         let checkButtonOpacity = function () {
-                            current_page == 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove(
+                            currentPage === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove(
                                 'opacity');
-                            current_page == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove(
+                            currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove(
                                 'opacity');
 
-                            document.getElementById("button_next").disabled = current_page == numPages() ? true : false;
-                            document.getElementById("button_prev").disabled = current_page == 1 ? true : false;
+                            document.getElementById('button_next').disabled = currentPage === numPages() ? true : false;
+                            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
                         }
 
                         let changePage = function (page) {
@@ -125,27 +125,27 @@ let getUsers = (user_data) => {
                                 page = numPages();
                             }
 
-                            result.innerHTML = "";
+                            result.innerHTML = '';
 
-                            if (users.length == 0) {
+                            if (users.length === 0) {
                                 let result = '';
                                 result += `
-                                          <div class="column-100">
-                                          <div class="card">
-                                              <div class="container">
-                                                  <p><i class="fa fa-star-half-o fa-3x" aria-hidden="true"></i></p>
-                                                  <h4 class="theme-blue"><b>
-                                                  We couldn't find an account for "${user_data}"
+                                          <div class='column-100'>
+                                          <div class='card'>
+                                              <div class='container'>
+                                                  <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
+                                                  <h4 class='theme-blue'><b>
+                                                  We couldn't find an account for '${user_data}'
                                                   Make sure the email, username, first name, last name, phone number or status is spelled and formatted correctly
                                                   </b></h4>
                                               </div>
                                             </div>               
                                         </div> 
                                           `;
-                                current_page = 0;
+                                currentPage = 0;
                                 document.getElementById('startNumber').innerHTML = 0;
-                                document.getElementById("button_next").disabled = true;
-                                document.getElementById("button_prev").disabled = true;
+                                document.getElementById('button_next').disabled = true;
+                                document.getElementById('button_prev').disabled = true;
                                 nextButton.classList.add('opacity');
                                 return document.getElementById('user-data').innerHTML = result;
                             }
@@ -162,17 +162,17 @@ let getUsers = (user_data) => {
 
                                 result.innerHTML +=
                                     `
-                                      <div class="column">
-                                        <div class="card">
-                                            <div class="container2 align-center  ${blocked}">
-                                              <a href="view_user.html?username=${users[i].username}">
-                                                <p class="black align-left"><i class="fa ${faIcon}" aria-hidden="true"></i></p>
-                                                <p><i class="fa fa-user-o fa-3x theme-blue" aria-hidden="true"></i></p>
-                                                <h4 class="black"><b>${users[i].firstname} ${users[i].lastname}</b></h4>
+                                      <div class='column'>
+                                        <div class='card'>
+                                            <div class='container2 align-center  ${blocked}'>
+                                              <a href='view_user.html?username=${users[i].username}'>
+                                                <p class='black align-left'><i class='fa ${faIcon}' aria-hidden='true'></i></p>
+                                                <p><i class='fa fa-user-o fa-3x theme-blue' aria-hidden='true'></i></p>
+                                                <h4 class='black'><b>${users[i].firstname} ${users[i].lastname}</b></h4>
                                                 <p>${users[i].username}</p>
                                                 <p class='italic font-small'>${users[i].email}</p>
                                                 <p class='italic font-small'>Admin: ${users[i].isadmin}</p>
-                                                <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+                                                <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
                                               </a>
                                             </div>
                                           </div>               
@@ -185,15 +185,15 @@ let getUsers = (user_data) => {
 
                         let prevPage = function () {
                             showLoader();
-                            if (current_page > 1) {
-                                current_page--;
-                                changePage(current_page);
-                                document.getElementById('current_page').innerHTML = current_page;
+                            if (currentPage > 1) {
+                                currentPage--;
+                                changePage(currentPage);
+                                document.getElementById('currentPage').innerHTML = currentPage;
                                 startNumber -= recordsPerPage;
                                 virtualEndNumber -= recordsPerPage;
                                 userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
                             }
-                            if (current_page == 1) {
+                            if (currentPage === 1) {
                                 endNumber = virtualEndNumber;
                             }
                             hideLoader(1000);
@@ -201,17 +201,17 @@ let getUsers = (user_data) => {
 
                         let nextPage = function () {
                             showLoader();
-                            if (current_page < numPages()) {
-                                current_page++;
-                                changePage(current_page);
-                                document.getElementById('current_page').innerHTML = current_page;
+                            if (currentPage < numPages()) {
+                                currentPage++;
+                                changePage(currentPage);
+                                document.getElementById('currentPage').innerHTML = currentPage;
                                 startNumber += recordsPerPage;
                                 endNumber += recordsPerPage;
                                 virtualEndNumber += recordsPerPage;
                                 if (endNumber > totalNumber) {
                                     endNumber = totalNumber;
                                 }
-                                if (endNumber == startNumber) {
+                                if (endNumber === startNumber) {
                                     userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
                                 } else {
                                     document.getElementById('startNumber').innerHTML = startNumber;
@@ -223,30 +223,30 @@ let getUsers = (user_data) => {
 
                         let clickPage = function () {
                             document.addEventListener('click', function (e) {
-                                if (e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")) {
-                                    current_page = e.target.textContent;
-                                    changePage(current_page);
+                                if (e.target.nodeName === 'SPAN' && e.target.classList.contains('clickPageNumber')) {
+                                    currentPage = e.target.textContent;
+                                    changePage(currentPage);
                                 }
                             });
                         }
 
                         let pageNumbers = function () {
-                            let pageNumber = document.getElementById('page_number');
-                            pageNumber.innerHTML = "";
+                            let pageNumber = document.getElementById('pageNumber');
+                            pageNumber.innerHTML = '';
                             let numberOfPages = numPages();
-                            if (current_page == 0) {
-                                current_page = numberOfPages = 1;
+                            if (currentPage === 0) {
+                                currentPage = numberOfPages = 1;
                             }
 
                             pageNumber.innerHTML =
-                                `<span class=''><span id='current_page'>${current_page}</span> / ${numberOfPages}</span>`;
+                                `<span class=''><span id='currentPage'>${currentPage}</span> / ${numberOfPages}</span>`;
                         }
 
                         let numPages = function () {
                             return Math.ceil(users.length / recordsPerPage);
                         }
                         let userNumber = document.getElementById('user_number');
-                        if (startNumber === endNumber || endNumber == 0) {
+                        if (startNumber === endNumber || endNumber === 0) {
                             userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
                         } else {
                             userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
@@ -270,10 +270,10 @@ let getUserData = () => {
 
     let options = {
         method: 'GET',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         })
     }
     let request = new Request(uri, options);
@@ -281,27 +281,27 @@ let getUserData = () => {
     fetch(request)
         .then((response) => {
             if (response.ok) {
-                document.getElementById('fa-spin-data').style.display = "none";
+                document.getElementById('fa-spin-data').style.display = 'none';
 
                 return response.json();
             } else {
-                document.getElementById('fa-spin-data').style.display = "none";
+                document.getElementById('fa-spin-data').style.display = 'none';
                 return response.json();
             }
         })
         .then((j) => {
 
             if (j.hasOwnProperty('message')) {
-                if (j['message'] == 'Token is missing') {
+                if (j['message'] === 'Token is missing') {
                     logout();
                 }
-                if (j['message'] == 'Token is invalid') {
+                if (j['message'] === 'Token is invalid') {
                     logout();
                 }
-                if (j['message'] == 'Only admin can access this route') {
+                if (j['message'] === 'Only admin can access this route') {
                     logout();
                 }
-                if (j['message'] == 'user does not exist') {
+                if (j['message'] === 'user does not exist') {
                     document.getElementById('message').innerHTML = j['message'];
                 }
             }
@@ -322,12 +322,12 @@ let getUserData = () => {
                         public_id
                     } = user;
                     let localDateTime = convertToLocalTime(registered);
-                    if (othernames == null) {
+                    if (othernames === null) {
                         fullname = firstname + ' ' + lastname;
                     } else {
                         fullname = firstname + ' ' + lastname + ' ' + othernames;
                     }
-                    if (phoneNumber == null) {
+                    if (phoneNumber === null) {
                         phone = 'None';
                     } else {
                         phone = phoneNumber;
@@ -335,20 +335,20 @@ let getUserData = () => {
                     result += `
                 <div class='incident-header'>
                     <h2>${fullname}</h2>
-                    <h3><span class="black">Active:</span> <span id='activity-data' class="italic">${isActive}</span></h3>
-                    <h3><span class="black">Admin Status:</span> <span id='status-data' class="italic">${isAdmin}</span></h3>
-                    <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
-                    <h4 id='comment-data'><span class="black">Public Id: </span>${public_id}</h4>
+                    <h3><span class='black'>Active:</span> <span id='activity-data' class='italic'>${isActive}</span></h3>
+                    <h3><span class='black'>Admin Status:</span> <span id='status-data' class='italic'>${isAdmin}</span></h3>
+                    <h4><span class='black'>Created On:</span> <span class='italic'>${localDateTime}</span></h4>
+                    <h4 id='comment-data'><span class='black'>Public Id: </span>${public_id}</h4>
                     <hr class='incident-line'>
                 </div>
-                <div class="row  bg-color">
-                  <div class="column-50 bg-color">                       
-                    <p><img src="img/img_avatar3.jpeg" alt=""></p>
+                <div class='row  bg-color'>
+                  <div class='column-50 bg-color'>                       
+                    <p><img src='img/img_avatar3.jpeg' alt=''></p>
                   </div>
-                  <div class="column-50  bg-color align-justify">
-                    <p id='comment-data'><span class="black">Email: </span>${email}</p>
-                    <p id='comment-data'><span class="black">Phone Number: </span>${phone}</p>
-                    <p id='comment-data'><span class="black">Username: </span>${username}</p>
+                  <div class='column-50  bg-color align-justify'>
+                    <p id='comment-data'><span class='black'>Email: </span>${email}</p>
+                    <p id='comment-data'><span class='black'>Phone Number: </span>${phone}</p>
+                    <p id='comment-data'><span class='black'>Username: </span>${username}</p>
                   </div>
                 </div>  
                 `;
@@ -366,9 +366,9 @@ let getUserData = () => {
 
 let editUserData = (event) => {
     event.preventDefault();
-    document.getElementById('fa-spin-edit-status').style.display = "block";
+    document.getElementById('fa-spin-edit-status').style.display = 'block';
     document.getElementById('status-message').innerHTML = '';
-    document.getElementById('status-message').style.color = "red";
+    document.getElementById('status-message').style.color = 'red';
 
     let uri = config.root + 'users/' + usernameId + '/promote';
 
@@ -376,10 +376,10 @@ let editUserData = (event) => {
 
     let options = {
         method: 'PATCH',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         }),
         body: JSON.stringify({
             isadmin: status
@@ -398,49 +398,49 @@ let editUserData = (event) => {
         .then((j) => {
 
             if (j.hasOwnProperty('message')) {
-                if (j['message'] == 'Token is missing') {
+                if (j['message'] === 'Token is missing') {
                     logout();
                 }
-                if (j['message'] == 'Token is invalid') {
+                if (j['message'] === 'Token is invalid') {
                     logout();
                 }
-                if (j['message'] == 'Only admin can access this route') {
+                if (j['message'] === 'Only admin can access this route') {
                     logout();
                 }
-                if (j['message'] == 'User does not exist') {
+                if (j['message'] === 'User does not exist') {
                     document.getElementById('status-message').innerHTML = j['message'];
                 }
                 if (j['message'].hasOwnProperty('isadmin')) {
-                    document.getElementById('isadmin').style.borderBottomColor = "red";
-                    document.getElementById('status-message').innerHTML = "(Accepted values: True, False)";
+                    document.getElementById('isadmin').style.borderBottomColor = 'red';
+                    document.getElementById('status-message').innerHTML = '(Accepted values: True, False)';
                 }
-                if (j['message'] == 'You cannot change the status of this user' || j['message'] == 'You cannot change your own admin status') {
+                if (j['message'] === 'You cannot change the status of this user' || j['message'] === 'You cannot change your own admin status') {
                     document.getElementById('status-message').innerHTML = j['message'];
                 }
 
             }
             if (j.hasOwnProperty('data')) {
-                if (j['data']['message'] == "User status has been updated") {
-                    document.getElementById('status-message').style.color = "green";
+                if (j['data']['message'] === 'User status has been updated') {
+                    document.getElementById('status-message').style.color = 'green';
                     document.getElementById('status-message').innerHTML = j['data']['message'];
                     document.getElementById('status').value = status;
                     document.getElementById('status-data').innerHTML = status.toLowerCase();
                 }
             }
-            document.getElementById('fa-spin-edit-status').style.display = "none";
+            document.getElementById('fa-spin-edit-status').style.display = 'none';
 
         })
         .catch((error) => {
             console.log(error);
-            document.getElementById('fa-spin-edit-status').style.display = "none";
+            document.getElementById('fa-spin-edit-status').style.display = 'none';
         });
 }
 
 let changeActiveStatus = (event) => {
     event.preventDefault();
-    document.getElementById('fa-spin-activity').style.display = "block";
+    document.getElementById('fa-spin-activity').style.display = 'block';
     document.getElementById('activity-message').innerHTML = '';
-    document.getElementById('activity-message').style.color = "red";
+    document.getElementById('activity-message').style.color = 'red';
 
     let uri = config.root + 'users/' + usernameId + '/activate';
 
@@ -448,10 +448,10 @@ let changeActiveStatus = (event) => {
 
     let options = {
         method: 'PATCH',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         }),
         body: JSON.stringify({
             isactive: activity
@@ -470,55 +470,55 @@ let changeActiveStatus = (event) => {
         .then((j) => {
 
             if (j.hasOwnProperty('message')) {
-                if (j['message'] == 'Token is missing') {
+                if (j['message'] === 'Token is missing') {
                     logout();
                 }
-                if (j['message'] == 'Token is invalid') {
+                if (j['message'] === 'Token is invalid') {
                     logout();
                 }
-                if (j['message'] == "You cannot change this user's active status") {
+                if (j['message'] === "You cannot change this user's active status") {
                     document.getElementById('activity-message').innerHTML = j['message'];
                 }
-                if (j['message'] == 'user does not exist') {
+                if (j['message'] === 'user does not exist') {
                     document.getElementById('activity-message').innerHTML = j['message'];
                 }
                 if (j['message'].hasOwnProperty('isactive')) {
-                    document.getElementById('activity-message').innerHTML = "(Accepted values: True, False)";
+                    document.getElementById('activity-message').innerHTML = '(Accepted values: True, False)';
                 }
-                if (j['message'] == 'You cannot change your own active status') {
+                if (j['message'] === 'You cannot change your own active status') {
                     document.getElementById('activity-message').innerHTML = j['message'];
                 }
 
             }
             if (j.hasOwnProperty('data')) {
-                if (j['data']['message'] == "User active status has been updated") {
-                    document.getElementById('activity-message').style.color = "green";
+                if (j['data']['message'] === 'User active status has been updated') {
+                    document.getElementById('activity-message').style.color = 'green';
                     document.getElementById('activity-message').innerHTML = j['data']['message'];
                     document.getElementById('activity').value = activity;
                     document.getElementById('activity-data').innerHTML = activity.toLowerCase();
                 }
             }
-            document.getElementById('fa-spin-activity').style.display = "none";
+            document.getElementById('fa-spin-activity').style.display = 'none';
 
         })
         .catch((error) => {
             console.log(error);
-            document.getElementById('fa-spin-activity').style.display = "none";
+            document.getElementById('fa-spin-activity').style.display = 'none';
         });
 }
 
 let deleteUserData = () => {
-    document.getElementById('fa-spin-data-delete').style.display = "block";
+    document.getElementById('fa-spin-data-delete').style.display = 'block';
     document.getElementById('error-message').innerHTML = '';
 
     let uri = config.root + 'users/' + usernameId;
 
     let options = {
         method: 'DELETE',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         })
     }
     let request = new Request(uri, options);
@@ -534,35 +534,35 @@ let deleteUserData = () => {
         .then((j) => {
 
             if (j.hasOwnProperty('message')) {
-                if (j['message'] == 'Token is missing') {
+                if (j['message'] === 'Token is missing') {
                     logout();
                 }
-                if (j['message'] == 'Token is invalid') {
+                if (j['message'] === 'Token is invalid') {
                     logout();
                 }
-                if (j['message'] == 'user does not exist') {
+                if (j['message'] === 'user does not exist') {
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
-                if (j['message'] == 'You cannot delete this user') {
+                if (j['message'] === 'You cannot delete this user') {
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
-                if (j['message'] == 'A user who has posted incidents cannot be deleted') {
+                if (j['message'] === 'A user who has posted incidents cannot be deleted') {
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
 
             }
             if (j.hasOwnProperty('data')) {
-                if (j['data']['message'] == 'user record has been deleted') {
+                if (j['data']['message'] === 'user record has been deleted') {
                     document.getElementById('error-message').innerHTML = j['data']['message'];
-                    window.location.replace("admin.html");
+                    window.location.replace('admin.html');
                 }
             }
-            document.getElementById('fa-spin-data-delete').style.display = "none";
+            document.getElementById('fa-spin-data-delete').style.display = 'none';
 
         })
         .catch((error) => {
             console.log(error);
-            document.getElementById('fa-spin-data-delete').style.display = "none";
+            document.getElementById('fa-spin-data-delete').style.display = 'none';
         });
 }
 

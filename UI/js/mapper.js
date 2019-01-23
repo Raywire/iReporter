@@ -4,7 +4,7 @@ function addLocation() {
     let latlon = coordinates.split(", ");
     let lat = parseFloat(latlon[0]);
     let lon = parseFloat(latlon[1]);
-    if(coordinates==''){
+    if(coordinates===''){
       lat = -1.2921;
       lon = 36.8219;
     }
@@ -15,7 +15,7 @@ function addLocation() {
       zoom:6,
     };
 
-    var map = new google.maps.Map(document.getElementById("addMarker"),mapProp);
+    var map = new google.maps.Map(document.getElementById('addMarker'),mapProp);
 
     //Add marker of current location
     var incidentLocation = {lat: lat, lng: lon};
