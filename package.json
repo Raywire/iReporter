@@ -4,7 +4,6 @@
   "description": "iReporter enables any citizen to bring any form of corruption to the notice of appropriate authorities",
   "main": "index.js",
   "scripts": {
-    "serve": "node test/server.js",
     "test": "jest --coverage test -- -u --coverage --detectOpenHandles"
   },
   "keywords": [],
