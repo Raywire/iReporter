@@ -26,12 +26,9 @@ const height = 720;
 
 beforeAll(async () => {
   browser = await puppeteer.launch({
-    // headless: false,
-    // slowMo: 80,
-    // args: [`--window-size=${width},${height}`]
+
   });
   page = await browser.newPage();
-  // await page.setViewport({ width, height });
 });
 afterAll(() => {
   browser.close();
@@ -54,7 +51,6 @@ describe("Sign Up form", () => {
     await page.click("input[name=confirm_password]");
     await page.type("input[name=confirm_password]", lead.confirm_password);
     await page.click("input[type=submit]");
-    //   await page.waitForSelector(".modal");
   }, 26000);
 });
 
@@ -67,7 +63,6 @@ describe("Sign In form", () => {
     await page.click("input[name=password]");
     await page.type("input[name=password]", lead.password);
     await page.click("input[type=submit]");
-    //   await page.waitForSelector(".modal");
   }, 16000);
 });
 
@@ -78,7 +73,6 @@ describe("Request Password reset form", () => {
     await page.click("input[name=name]");
     await page.type("input[name=name]", lead.username);
     await page.click("input[type=submit]");
-    //   await page.waitForSelector(".modal");
   }, 16000);
 });
 
@@ -91,7 +85,6 @@ describe("Contact form", () => {
     await page.click("textarea[name=comment]");
     await page.type("textarea[name=comment]", lead.message);
     await page.click("input[type=submit]");
-    //   await page.waitForSelector(".modal");
   }, 16000);
 });
 
@@ -104,6 +97,5 @@ describe("Reset Password form", () => {
     await page.click("input[name=confirm_password]");
     await page.type("input[name=confirm_password]", lead.confirm_password);
     await page.click("input[type=submit]");
-    //   await page.waitForSelector(".modal");
   }, 26000);
 });
