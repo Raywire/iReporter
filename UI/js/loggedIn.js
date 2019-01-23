@@ -1,18 +1,18 @@
 let isLoggedIn = getCookie('isLoggedIn');
 
 if (isLoggedIn === 'True') {
-    window.location.replace("home.html");
+    window.location.replace('home.html');
 }
 
 let signIn = (event) => {
     event.preventDefault();
-    document.getElementById('error-message').innerHTML = "";
+    document.getElementById('error-message').innerHTML = '';
 
-    document.getElementById('username').style.borderBottomColor = "white";
-    document.getElementById('password').style.borderBottomColor = "white";
-    document.getElementById('error-message').style.color = "red";
-    document.getElementById('fa-spin').style.display = "block";
-    document.getElementById('submit').value = "Signing In";
+    document.getElementById('username').style.borderBottomColor = 'white';
+    document.getElementById('password').style.borderBottomColor = 'white';
+    document.getElementById('error-message').style.color = 'red';
+    document.getElementById('fa-spin').style.display = 'block';
+    document.getElementById('submit').value = 'Signing In';
 
     let uri = config.root + 'auth/login';
 
@@ -21,9 +21,9 @@ let signIn = (event) => {
 
     let options = {
         method: 'POST',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
+            'Content-Type': 'application/json; charset=utf-8',
         }),
         body: JSON.stringify({
             username: username,
@@ -35,13 +35,13 @@ let signIn = (event) => {
     fetch(request)
         .then((response) => {
             if (response.ok) {
-                document.getElementById('fa-spin').style.display = "none";
-                document.getElementById('submit').value = "Sign In";
+                document.getElementById('fa-spin').style.display = 'none';
+                document.getElementById('submit').value = 'Sign In';
 
                 return response.json();
             } else {
-                document.getElementById('fa-spin').style.display = "none";
-                document.getElementById('submit').value = "Sign In";
+                document.getElementById('fa-spin').style.display = 'none';
+                document.getElementById('submit').value = 'Sign In';
                 return response.json();
             }
         })
@@ -49,14 +49,14 @@ let signIn = (event) => {
 
             if (j.hasOwnProperty('message')) {
                 if (j['message'].hasOwnProperty('password')) {
-                    document.getElementById('username').style.borderBottomColor = "red";
+                    document.getElementById('username').style.borderBottomColor = 'red';
                 }
                 if (j['message'].hasOwnProperty('username')) {
-                    document.getElementById('username').style.borderBottomColor = "red";
+                    document.getElementById('username').style.borderBottomColor = 'red';
                 }
                 if (j['message'] === 'password or username is invalid') {
-                    document.getElementById('username').style.borderBottomColor = "red";
-                    document.getElementById('password').style.borderBottomColor = "red";
+                    document.getElementById('username').style.borderBottomColor = 'red';
+                    document.getElementById('password').style.borderBottomColor = 'red';
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
                 if (j['message'] === 'account has been disabled') {
@@ -65,8 +65,8 @@ let signIn = (event) => {
 
             }
             if (j.hasOwnProperty('data')) {
-                document.getElementById('error-message').style.color = "green";
-                document.getElementById('error-message').innerHTML = "Login successful";
+                document.getElementById('error-message').style.color = 'green';
+                document.getElementById('error-message').innerHTML = 'Login successful';
 
                 let userData = j['data'][0]['user'];
                 let access_token = j['data'][0]['token'];
@@ -92,12 +92,12 @@ let signIn = (event) => {
                 localStorage.setItem('profileEmail', email);
 
                 let expirationTime = 59;
-                setCookie("token", access_token, expirationTime);
-                setCookie("username", username, expirationTime);
-                setCookie("isAdmin", isAdmin, expirationTime);
-                setCookie("isLoggedIn", "True", expirationTime);
+                setCookie('token', access_token, expirationTime);
+                setCookie('username', username, expirationTime);
+                setCookie('isAdmin', isAdmin, expirationTime);
+                setCookie('isLoggedIn', 'True', expirationTime);
 
-                window.location.replace("home.html");
+                window.location.replace('home.html');
             }
 
         })
@@ -108,16 +108,16 @@ let signIn = (event) => {
 
 let signUp = (event) => {
     event.preventDefault();
-    document.getElementById('error-message').innerHTML = "";
-    document.getElementById('firstname').style.borderBottomColor = "white";
-    document.getElementById('lastname').style.borderBottomColor = "white";
-    document.getElementById('username').style.borderBottomColor = "white";
-    document.getElementById('email').style.borderBottomColor = "white";
-    document.getElementById('password').style.borderBottomColor = "white";
-    document.getElementById('confirm_password').style.borderBottomColor = "white";
-    document.getElementById('error-message').style.color = "red";
-    document.getElementById('fa-spin').style.display = "block";
-    document.getElementById('submit').value = "Signing Up";
+    document.getElementById('error-message').innerHTML = '';
+    document.getElementById('firstname').style.borderBottomColor = 'white';
+    document.getElementById('lastname').style.borderBottomColor = 'white';
+    document.getElementById('username').style.borderBottomColor = 'white';
+    document.getElementById('email').style.borderBottomColor = 'white';
+    document.getElementById('password').style.borderBottomColor = 'white';
+    document.getElementById('confirm_password').style.borderBottomColor = 'white';
+    document.getElementById('error-message').style.color = 'red';
+    document.getElementById('fa-spin').style.display = 'block';
+    document.getElementById('submit').value = 'Signing Up';
 
     let uri = config.root + 'auth/signup';
 
@@ -137,19 +137,19 @@ let signUp = (event) => {
     };
 
     if (password != confirm_password) {
-        document.getElementById('fa-spin').style.display = "none";
-        document.getElementById('submit').value = "Sign Up";
-        document.getElementById('error-message').innerHTML = "Passwords do not match";
-        document.getElementById('password').style.borderBottomColor = "red";
-        document.getElementById('confirm_password').style.borderBottomColor = "red";
+        document.getElementById('fa-spin').style.display = 'none';
+        document.getElementById('submit').value = 'Sign Up';
+        document.getElementById('error-message').innerHTML = 'Passwords do not match';
+        document.getElementById('password').style.borderBottomColor = 'red';
+        document.getElementById('confirm_password').style.borderBottomColor = 'red';
         return false;
     }
 
     let options = {
         method: 'POST',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
+            'Content-Type': 'application/json; charset=utf-8',
         }),
         body: JSON.stringify(data)
     }
@@ -158,13 +158,13 @@ let signUp = (event) => {
     fetch(request)
         .then((response) => {
             if (response.ok) {
-                document.getElementById('fa-spin').style.display = "none";
-                document.getElementById('submit').value = "Sign Up";
+                document.getElementById('fa-spin').style.display = 'none';
+                document.getElementById('submit').value = 'Sign Up';
 
                 return response.json();
             } else {
-                document.getElementById('fa-spin').style.display = "none";
-                document.getElementById('submit').value = "Sign Up";
+                document.getElementById('fa-spin').style.display = 'none';
+                document.getElementById('submit').value = 'Sign Up';
                 return response.json();
             }
         })
@@ -172,38 +172,38 @@ let signUp = (event) => {
             if (j.hasOwnProperty('message')) {
                 if (j['message'].hasOwnProperty('password')) {
                     document.getElementById('error-message').innerHTML = j['message']['password'];
-                    document.getElementById('password').style.borderBottomColor = "red";
+                    document.getElementById('password').style.borderBottomColor = 'red';
                 }
                 if (j['message'].hasOwnProperty('firstname')) {
-                    document.getElementById('firstname').style.borderBottomColor = "red";
+                    document.getElementById('firstname').style.borderBottomColor = 'red';
                 }
                 if (j['message'].hasOwnProperty('lastname')) {
-                    document.getElementById('lastname').style.borderBottomColor = "red";
+                    document.getElementById('lastname').style.borderBottomColor = 'red';
                 }
                 if (j['message'].hasOwnProperty('username')) {
-                    document.getElementById('username').style.borderBottomColor = "red";
+                    document.getElementById('username').style.borderBottomColor = 'red';
                 }
                 if (j['message'].hasOwnProperty('email')) {
-                    document.getElementById('email').style.borderBottomColor = "red";
+                    document.getElementById('email').style.borderBottomColor = 'red';
                 }
                 if (j['message'] == 'email already exists') {
-                    document.getElementById('email').style.borderBottomColor = "red";
+                    document.getElementById('email').style.borderBottomColor = 'red';
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
                 if (j['message'] == 'username already exists') {
-                    document.getElementById('username').style.borderBottomColor = "red";
+                    document.getElementById('username').style.borderBottomColor = 'red';
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
                 if (j['message'] == 'You have been registered successfully') {
-                    document.getElementById('error-message').style.color = "green";
+                    document.getElementById('error-message').style.color = 'green';
                     document.getElementById('error-message').innerHTML = j['message'];
-                    window.location.replace("signin.html");
+                    window.location.replace('signin.html');
                 }
 
             }
 
             if (j.hasOwnProperty('data')) {
-                window.location.replace("signin.html");
+                window.location.replace('signin.html');
             }
 
         })
@@ -215,7 +215,7 @@ let signUp = (event) => {
 let requestReset = (event) => {
     event.preventDefault();
     document.getElementById('error-message').innerHTML = '';
-    document.getElementById('fa-spin').style.display = "block";
+    document.getElementById('fa-spin').style.display = 'block';
 
     let useremail = document.getElementById('useremail').value;
 
@@ -223,9 +223,9 @@ let requestReset = (event) => {
 
     let options = {
         method: 'POST',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
+            'Content-Type': 'application/json; charset=utf-8',
         }),
         body: JSON.stringify({
             resetlink: config.resetlink
@@ -236,11 +236,11 @@ let requestReset = (event) => {
     fetch(request)
         .then((response) => {
             if (response.ok) {
-                document.getElementById('fa-spin').style.display = "none";
+                document.getElementById('fa-spin').style.display = 'none';
 
                 return response.json();
             } else {
-                document.getElementById('fa-spin').style.display = "none";
+                document.getElementById('fa-spin').style.display = 'none';
                 return response.json();
             }
         })
@@ -255,14 +255,14 @@ let requestReset = (event) => {
                     document.getElementById('error-message').style.color = 'green';
                     document.getElementById('error-message').innerHTML = reset_message;
                     setTimeout(function () {
-                        window.location.replace("signin.html");
+                        window.location.replace('signin.html');
                     }, 5000);
                 }
                 if (j['message'] == 'Reset link has been sent to your email') {
                     document.getElementById('error-message').style.color = 'green';
                     document.getElementById('error-message').innerHTML = reset_message;
                     setTimeout(function () {
-                        window.location.replace("signin.html");
+                        window.location.replace('signin.html');
                     }, 5000);
                 }
                 if (j['message'] == 'Password reset failed please try again') {
@@ -280,7 +280,7 @@ let requestReset = (event) => {
 
 let resetPassword = (event, profileusername, resettoken) => {
     event.preventDefault();
-    document.getElementById('fa-spin-reset').style.display = "block";
+    document.getElementById('fa-spin-reset').style.display = 'block';
 
     let uri = config.root + 'users/' + profileusername;
 
@@ -288,18 +288,18 @@ let resetPassword = (event, profileusername, resettoken) => {
     let confirm_password = document.getElementById('confirm_password').value;
 
     if (password != confirm_password) {
-        document.getElementById('fa-spin-reset').style.display = "none";
-        document.getElementById('password').style.borderColor = "red";
-        document.getElementById('confirm_password').style.borderColor = "red";
+        document.getElementById('fa-spin-reset').style.display = 'none';
+        document.getElementById('password').style.borderColor = 'red';
+        document.getElementById('confirm_password').style.borderColor = 'red';
         return false;
     }
 
     let options = {
         method: 'PATCH',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": resettoken
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': resettoken
         }),
         body: JSON.stringify({
             password: password
@@ -330,7 +330,7 @@ let resetPassword = (event, profileusername, resettoken) => {
                     });
                 }
                 if (j['message'].hasOwnProperty('password')) {
-                    document.getElementById('password').style.borderColor = "red";
+                    document.getElementById('password').style.borderColor = 'red';
                     warningNotification({
                         title: 'Warning',
                         message: j['message']['password'],
@@ -349,17 +349,17 @@ let resetPassword = (event, profileusername, resettoken) => {
                         message: j['message'] + ' for ' + j['username'],
                     });
                     setTimeout(function () {
-                        window.location.replace("signin.html");
+                        window.location.replace('signin.html');
                     }, 3000);
 
                 }
             }
 
-            document.getElementById('fa-spin-reset').style.display = "none";
+            document.getElementById('fa-spin-reset').style.display = 'none';
 
         })
         .catch((err) => {
             console.log(err);
-            document.getElementById('fa-spin-reset').style.display = "none";
+            document.getElementById('fa-spin-reset').style.display = 'none';
         });
 }

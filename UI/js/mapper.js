@@ -15,7 +15,7 @@ function addLocation() {
       zoom:6,
     };
 
-    var map = new google.maps.Map(document.getElementById("addMarker"),mapProp);
+    var map = new google.maps.Map(document.getElementById('addMarker'),mapProp);
 
     //Add marker of current location
     var incidentLocation = {lat: lat, lng: lon};

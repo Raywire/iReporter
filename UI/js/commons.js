@@ -6,12 +6,12 @@ const config = {
 let setCookie = (cname, cvalue, expirationtime) => {
   let date = new Date();
   date.setTime(date.getTime() + (expirationtime * 60 * 1000));
-  let expires = "expires=" + date.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;" + "sameSite=Strict;";
+  let expires = 'expires=' + date.toUTCString();
+  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/;' + 'sameSite=Strict;';
 }
 
 let getCookie = (cname) => {
-  var name = cname + "=";
+  var name = cname + '=';
   let decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
   for(var i = 0; i <ca.length; i++) {
@@ -23,14 +23,14 @@ let getCookie = (cname) => {
       return c.substring(name.length, c.length);
     }
   }
-  return "logged out";
+  return 'logged out';
 }
 
 let scrollFunction = () => {
   if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
-    document.getElementById("toTop").style.display = "block";
+    document.getElementById('toTop').style.display = 'block';
   } else {
-    document.getElementById("toTop").style.display = "none";
+    document.getElementById('toTop').style.display = 'none';
   }
 }
 
@@ -44,12 +44,12 @@ let hideLoader = (timer) => {
   setTimeout(hide, timer);
 
   function hide() {
-    document.getElementById("loader").style.display = "none";
+    document.getElementById('loader').style.display = 'none';
   }
 }
 
 let showLoader = () => {
-  document.getElementById("loader").style.display = "block";
+  document.getElementById('loader').style.display = 'block';
 }
 
 let checkPassword = () => {
@@ -57,10 +57,10 @@ let checkPassword = () => {
   let confirm_pass1 = document.getElementById('confirm_password').value;
 
   if (pass1 == confirm_pass1) {
-    document.getElementById('password').style.borderColor = "green";
-    document.getElementById('confirm_password').style.borderColor = "green";
+    document.getElementById('password').style.borderColor = 'green';
+    document.getElementById('confirm_password').style.borderColor = 'green';
   } else {
-    document.getElementById('password').style.borderColor = "red";
-    document.getElementById('confirm_password').style.borderColor = "red";
+    document.getElementById('password').style.borderColor = 'red';
+    document.getElementById('confirm_password').style.borderColor = 'red';
   }
 }

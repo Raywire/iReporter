@@ -18,10 +18,10 @@ let humanize = (utcdatetime) => {
 
 let postData = (event, incident_type) => {
   event.preventDefault();
-  document.getElementById('title').style.borderBottomColor = "#ccc";
-  document.getElementById('comment').style.borderBottomColor = "#ccc";
-  document.getElementById('location').style.borderBottomColor = "#ccc";
-  document.getElementById('fa-spin').style.display = "block";
+  document.getElementById('title').style.borderBottomColor = '#ccc';
+  document.getElementById('comment').style.borderBottomColor = '#ccc';
+  document.getElementById('location').style.borderBottomColor = '#ccc';
+  document.getElementById('fa-spin').style.display = 'block';
 
   let uri = config.root + incident_type;
 
@@ -31,10 +31,10 @@ let postData = (event, incident_type) => {
 
   let options = {
     method: 'POST',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": tokenModels
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': tokenModels
     }),
     body: JSON.stringify({
       title: title,
@@ -47,11 +47,11 @@ let postData = (event, incident_type) => {
   fetch(request)
     .then((response) => {
       if (response.ok) {
-        document.getElementById('fa-spin').style.display = "none";
+        document.getElementById('fa-spin').style.display = 'none';
 
         return response.json();
       } else {
-        document.getElementById('fa-spin').style.display = "none";
+        document.getElementById('fa-spin').style.display = 'none';
         return response.json();
       }
     })
@@ -64,21 +64,21 @@ let postData = (event, incident_type) => {
           logout();
         }
         if (j['message'].hasOwnProperty('comment')) {
-          document.getElementById('comment').style.borderBottomColor = "red";
+          document.getElementById('comment').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
             message: 'Comment cannot be empty or start with special characters',
           });
         }
         if (j['message'].hasOwnProperty('title')) {
-          document.getElementById('title').style.borderBottomColor = "red";
+          document.getElementById('title').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
             message: 'Title cannot be empty or start with special characters',
           });
         }
         if (j['message'].hasOwnProperty('location')) {
-          document.getElementById('location').style.borderBottomColor = "red";
+          document.getElementById('location').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
             message: 'Location cannot be empty',
@@ -114,11 +114,11 @@ let getData = (incident_type, incident_creator, search_data) => {
 
   let options = {
     method: 'GET',
-    mode: "cors",
-    cache: "default",
+    mode: 'cors',
+    cache: 'default',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": tokenModels
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': tokenModels
     })
   }
   let request = new Request(uri, options);
@@ -151,11 +151,11 @@ let getData = (incident_type, incident_creator, search_data) => {
         if (j['message'] == 'No interventions' || j['message'] == 'No redflags') {
           let result = '';
           result += `
-                  <div class="column-100">
-                    <div class="card">
-                      <div class="container">
-                          <p><i class="fa fa-flag fa-3x" aria-hidden="true"></i></p>
-                          <h4 class="theme-blue"><b>No Incidents</b></h4> 
+                  <div class='column-100'>
+                    <div class='card'>
+                      <div class='container'>
+                          <p><i class='fa fa-flag fa-3x' aria-hidden='true'></i></p>
+                          <h4 class='theme-blue'><b>No Incidents</b></h4> 
                       </div>
                     </div>               
                   </div> 
@@ -187,12 +187,12 @@ let getData = (incident_type, incident_creator, search_data) => {
             } else {
               let result = '';
               result += `
-                    <div class="column-100">
-                    <div class="card">
-                        <div class="container">
+                    <div class='column-100'>
+                    <div class='card'>
+                        <div class='container'>
                           
-                            <p><i class="fa fa-star-half-o fa-3x" aria-hidden="true"></i></p>
-                            <h4 class="theme-blue"><b>No incidents found</b></h4>
+                            <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
+                            <h4 class='theme-blue'><b>No incidents found</b></h4>
                           
                         </div>
                       </div>               
@@ -205,7 +205,7 @@ let getData = (incident_type, incident_creator, search_data) => {
         }
 
         (function () {
-          "use strict";
+          'use strict';
 
           function Pagination() {
             const prevButton = document.getElementById('button_prev');
@@ -241,9 +241,9 @@ let getData = (incident_type, incident_creator, search_data) => {
               let pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
               for (let i = 0; i < pageNumber.length; i++) {
                 if (i == currentPage - 1) {
-                  pageNumber[i].style.opacity = "1.0";
+                  pageNumber[i].style.opacity = '1.0';
                 } else {
-                  pageNumber[i].style.opacity = "0.5";
+                  pageNumber[i].style.opacity = '0.5';
                 }
               }
             }
@@ -251,8 +251,8 @@ let getData = (incident_type, incident_creator, search_data) => {
             let checkButtonOpacity = function () {
               currentPage == 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
               currentPage == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
-              document.getElementById("button_next").disabled = currentPage == numPages() ? true : false;
-              document.getElementById("button_prev").disabled = currentPage == 1 ? true : false; 
+              document.getElementById('button_next').disabled = currentPage == numPages() ? true : false;
+              document.getElementById('button_prev').disabled = currentPage == 1 ? true : false; 
             }
 
             let changePage = function (page) {
@@ -265,17 +265,17 @@ let getData = (incident_type, incident_creator, search_data) => {
                 page = numPages();
               }
 
-              result.innerHTML = "";
+              result.innerHTML = '';
 
               if (usernameIncidents.length == 0) {
                 let result = '';
                 result += `
-                          <div class="column-100">
-                          <div class="card">
-                              <div class="container">
+                          <div class='column-100'>
+                          <div class='card'>
+                              <div class='container'>
                                 
-                                  <p><i class="fa fa-star-half-o fa-3x" aria-hidden="true"></i></p>
-                                  <h4 class="theme-blue"><b>No incidents found</b></h4>
+                                  <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
+                                  <h4 class='theme-blue'><b>No incidents found</b></h4>
                                 
                               </div>
                             </div>               
@@ -283,8 +283,8 @@ let getData = (incident_type, incident_creator, search_data) => {
                           `;
                 currentPage = 0;
                 document.getElementById('startNumber').innerHTML = 0;
-                document.getElementById("button_next").disabled = true;
-                document.getElementById("button_prev").disabled = true;
+                document.getElementById('button_next').disabled = true;
+                document.getElementById('button_prev').disabled = true;
                 nextButton.classList.add('opacity');
                 prevButton.classList.add('opacity');
                 return document.getElementById('incident-data').innerHTML = result;
@@ -309,17 +309,17 @@ let getData = (incident_type, incident_creator, search_data) => {
                 }
 
                 result.innerHTML += `
-                              <div class="column">
-                                <div class="card">
-                                    <div class="container2 justify">
-                                      <a href="${link}=${usernameIncidents[i].id}">
-                                        <p><i class="${icon} fa-2x" aria-hidden="true"></i></p>
-                                        <h4 class="black truncate"><b>${usernameIncidents[i].title}</b></h4>
+                              <div class='column'>
+                                <div class='card'>
+                                    <div class='container2 justify'>
+                                      <a href='${link}=${usernameIncidents[i].id}'>
+                                        <p><i class='${icon} fa-2x' aria-hidden='true'></i></p>
+                                        <h4 class='black truncate'><b>${usernameIncidents[i].title}</b></h4>
                                         <p>${usernameIncidents[i].status}</p>
                                         <p class='italic font-small'>${humanizedTime}</p>
                                       </a>          
-                                      <a href="view_by_username.html?type=${usernameIncidents[i].type}&username=${usernameIncidents[i].username}"><p class='italic font-small'><span class="theme-blue">By ${creator}</span></p>
-                                      <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+                                      <a href='view_by_username.html?type=${usernameIncidents[i].type}&username=${usernameIncidents[i].username}'><p class='italic font-small'><span class='theme-blue'>By ${creator}</span></p>
+                                      <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
                                       </a>
                                     </div>
                                   </div>               
@@ -371,7 +371,7 @@ let getData = (incident_type, incident_creator, search_data) => {
 
             let clickPage = function () {
               document.addEventListener('click', function (e) {
-                if (e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")) {
+                if (e.target.nodeName == 'SPAN' && e.target.classList.contains('clickPageNumber')) {
                   currentPage = e.target.textContent;
                   changePage(currentPage);
                 }
@@ -380,7 +380,7 @@ let getData = (incident_type, incident_creator, search_data) => {
 
             let pageNumbers = function () {
               let pageNumber = document.getElementById('pageNumber');
-              pageNumber.innerHTML = "";
+              pageNumber.innerHTML = '';
               let numberOfPages = numPages();
               if (currentPage == 0) {
                 currentPage = numberOfPages = 1;
@@ -422,11 +422,11 @@ let getDataById = (incident_type, incidentId) => {
 
   let options = {
     method: 'GET',
-    mode: "cors",
-    cache: "default",
+    mode: 'cors',
+    cache: 'default',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": tokenModels
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': tokenModels
     })
   }
   let request = new Request(uri, options);
@@ -434,11 +434,11 @@ let getDataById = (incident_type, incidentId) => {
   fetch(request)
     .then((response) => {
       if (response.ok) {
-        document.getElementById('fa-spin-data').style.display = "none";
-        document.getElementById("btnGeolocate").disabled = false;
+        document.getElementById('fa-spin-data').style.display = 'none';
+        document.getElementById('btnGeolocate').disabled = false;
         return response.json();
       } else {
-        document.getElementById('fa-spin-data').style.display = "none";
+        document.getElementById('fa-spin-data').style.display = 'none';
         return response.json();
       }
     })
@@ -505,17 +505,17 @@ let getDataById = (incident_type, incidentId) => {
           result += `
                 <div class='incident-header'>
                   <h2>${title}</h2>
-                  <h3><span class="black">Status:</span> <span id='status-data' class="italic">${status}</span></h3>
-                  <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
-                  <h4><span class="black">By:</span> <a href="view_by_username.html?type=${type}&username=${username}"><span class="theme-blue">${creator}</span></a></h4>
+                  <h3><span class='black'>Status:</span> <span id='status-data' class='italic'>${status}</span></h3>
+                  <h4><span class='black'>Created On:</span> <span class='italic'>${localDateTime}</span></h4>
+                  <h4><span class='black'>By:</span> <a href='view_by_username.html?type=${type}&username=${username}'><span class='theme-blue'>${creator}</span></a></h4>
                   <hr class='incident-line'>
                 </div>
-                <div class="row  bg-color">
-                  <div class="column-50 bg-color">
-                    <p class='img-details'><img id='main-image' src="${imageUrl}" alt="${title}"></p>
+                <div class='row  bg-color'>
+                  <div class='column-50 bg-color'>
+                    <p class='img-details'><img id='main-image' src='${imageUrl}' alt='${title}'></p>
                     <p class='vid-details'></p>
                   </div>
-                  <div class="column-50" id='comment-data'  bg-color align-justify">
+                  <div class='column-50' id='comment-data'  bg-color align-justify'>
                    ${commentData}
                   </div>
                 </div>  
@@ -538,17 +538,17 @@ let getDataById = (incident_type, incidentId) => {
 //Function to delete an incident  by id
 
 let deleteData = (incident_type, incidentId) => {
-  document.getElementById('fa-spin-data-delete').style.display = "block";
+  document.getElementById('fa-spin-data-delete').style.display = 'block';
   document.getElementById('error-message').innerHTML = '';
 
   let uri = config.root + incident_type + '/' + incidentId;
 
   let options = {
     method: 'DELETE',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": tokenModels
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': tokenModels
     })
   }
   let request = new Request(uri, options);
@@ -584,18 +584,18 @@ let deleteData = (incident_type, incidentId) => {
         if (j['data']['message'] == 'Intervention record has been deleted' || j['data']['message'] == 'Redflag record has been deleted') {
           document.getElementById('error-message').innerHTML = j['data']['message'];
           if (incident_type == 'redflags') {
-            window.location.replace("redflags.html");
+            window.location.replace('redflags.html');
           } else if (incident_type == 'interventions') {
-            window.location.replace("interventions.html");
+            window.location.replace('interventions.html');
           }
         }
       }
-      document.getElementById('fa-spin-data-delete').style.display = "none";
+      document.getElementById('fa-spin-data-delete').style.display = 'none';
 
     })
     .catch((error) => {
       console.log(error);
-      document.getElementById('fa-spin-data-delete').style.display = "none";
+      document.getElementById('fa-spin-data-delete').style.display = 'none';
     });
 }
 
@@ -606,9 +606,9 @@ let getFileData = (filetype, filename) => {
 
   let options = {
     method: 'GET',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "x-access-token": tokenModels
+      'x-access-token': tokenModels
     })
   }
   let request = new Request(uri, options);
@@ -656,7 +656,7 @@ let getFileData = (filetype, filename) => {
 //Function to edit the location
 let editLocation = (event, intervention_type, intervention_id) => {
   event.preventDefault();
-  document.getElementById('fa-spin-edit').style.display = "block";
+  document.getElementById('fa-spin-edit').style.display = 'block';
 
   let uri = config.root + intervention_type + '/' + intervention_id + '/location';
 
@@ -664,10 +664,10 @@ let editLocation = (event, intervention_type, intervention_id) => {
 
   let options = {
     method: 'PATCH',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": token
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': token
     }),
     body: JSON.stringify({
       location: location
@@ -720,20 +720,20 @@ let editLocation = (event, intervention_type, intervention_id) => {
           localStorage.setItem('coordinates', location);
         }
       }
-      document.getElementById('fa-spin-edit').style.display = "none";
+      document.getElementById('fa-spin-edit').style.display = 'none';
 
     })
     .catch((error) => {
       console.log(error);
-      document.getElementById('fa-spin-edit').style.display = "none";
+      document.getElementById('fa-spin-edit').style.display = 'none';
     });
 }
 
 //Function to edit comment
 let editComment = (event, intervention_type, intervention_id) => {
   event.preventDefault();
-  document.getElementById('fa-spin-edit').style.display = "block";
-  document.getElementById('comment').style.borderBottomColor = "#ccc";
+  document.getElementById('fa-spin-edit').style.display = 'block';
+  document.getElementById('comment').style.borderBottomColor = '#ccc';
 
   let uri = config.root + intervention_type + '/' + intervention_id + '/comment';
 
@@ -741,10 +741,10 @@ let editComment = (event, intervention_type, intervention_id) => {
 
   let options = {
     method: 'PATCH',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": token
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': token
     }),
     body: JSON.stringify({
       comment: comment
@@ -775,7 +775,7 @@ let editComment = (event, intervention_type, intervention_id) => {
           });
         }
         if (j['message'].hasOwnProperty('comment')) {
-          document.getElementById('comment').style.borderBottomColor = "red";
+          document.getElementById('comment').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
             message: 'Comment cannot be empty or start with special characters and whitespace',
@@ -811,19 +811,19 @@ let editComment = (event, intervention_type, intervention_id) => {
           document.getElementById('comment-data').innerHTML = commentData;
         }
       }
-      document.getElementById('fa-spin-edit').style.display = "none";
+      document.getElementById('fa-spin-edit').style.display = 'none';
 
     })
     .catch((error) => {
       console.log(error);
-      document.getElementById('fa-spin-edit').style.display = "none";
+      document.getElementById('fa-spin-edit').style.display = 'none';
     });
 }
 
 //Function to edit status
 let editStatus = (event, intervention_type, intervention_id) => {
   event.preventDefault();
-  document.getElementById('fa-spin-edit-status').style.display = "block";
+  document.getElementById('fa-spin-edit-status').style.display = 'block';
 
   let uri = config.root + intervention_type + '/' + intervention_id + '/status';
 
@@ -831,10 +831,10 @@ let editStatus = (event, intervention_type, intervention_id) => {
 
   let options = {
     method: 'PATCH',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": token
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': token
     }),
     body: JSON.stringify({
       status: status
@@ -865,10 +865,10 @@ let editStatus = (event, intervention_type, intervention_id) => {
           });
         }
         if (j['message'].hasOwnProperty('status')) {
-          document.getElementById('status').style.borderBottomColor = "red";
+          document.getElementById('status').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
-            message: "Accepted values: draft, under investigation, rejected, resolved",
+            message: 'Accepted values: draft, under investigation, rejected, resolved',
           });
         }
         if (j['message'] == 'Only an admin can change the status of the record') {
@@ -889,21 +889,21 @@ let editStatus = (event, intervention_type, intervention_id) => {
           document.getElementById('status-data').innerHTML = status;
         }
       }
-      document.getElementById('fa-spin-edit-status').style.display = "none";
+      document.getElementById('fa-spin-edit-status').style.display = 'none';
 
     })
     .catch((error) => {
       console.log(error);
-      document.getElementById('fa-spin-edit-status').style.display = "none";
+      document.getElementById('fa-spin-edit-status').style.display = 'none';
     });
 }
 
 //Function to upload image
 let uploadImage = (event, intervention_type, intervention_id) => {
   event.preventDefault();
-  document.getElementById('fa-spin-upload').style.display = "block";
+  document.getElementById('fa-spin-upload').style.display = 'block';
   document.getElementById('upload-message').innerHTML = '';
-  document.getElementById('upload-message').style.color = "red";
+  document.getElementById('upload-message').style.color = 'red';
 
   let uri = config.root + intervention_type + '/' + intervention_id + '/addImage';
 
@@ -911,7 +911,7 @@ let uploadImage = (event, intervention_type, intervention_id) => {
   let fileData = document.getElementById('fileImage').files[0];
 
   if (fileData == null) {
-    document.getElementById('fa-spin-upload').style.display = "none";
+    document.getElementById('fa-spin-upload').style.display = 'none';
     document.getElementById('upload-message').innerHTML = 'Please select a file';
     return false;
   }
@@ -926,9 +926,9 @@ let uploadImage = (event, intervention_type, intervention_id) => {
 
   let options = {
     method: 'PATCH',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "x-access-token": token,
+      'x-access-token': token,
     }),
     body: formData
   }
@@ -963,28 +963,28 @@ let uploadImage = (event, intervention_type, intervention_id) => {
 
       }
       if (j.hasOwnProperty('data')) {
-        if (j['data'][0]['message'] == "Image added to intervention record" || j['data'][0]['message'] == "Image added to red-flag record") {
-          document.getElementById('upload-message').style.color = "green";
+        if (j['data'][0]['message'] == 'Image added to intervention record' || j['data'][0]['message'] == 'Image added to red-flag record') {
+          document.getElementById('upload-message').style.color = 'green';
           document.getElementById('upload-message').innerHTML = j['data'][0]['message'];
           getFileData('images', uploadedFileName);
         }
       }
-      document.getElementById('fa-spin-upload').style.display = "none";
+      document.getElementById('fa-spin-upload').style.display = 'none';
 
     })
     .catch((error) => {
       console.log(error);
-      document.getElementById('upload-message').innerHTML = "An error occured check if status is draft and try again";
-      document.getElementById('fa-spin-upload').style.display = "none";
+      document.getElementById('upload-message').innerHTML = 'An error occured check if status is draft and try again';
+      document.getElementById('fa-spin-upload').style.display = 'none';
     });
 
 }
 
 let uploadVideo = (event, intervention_type, intervention_id) => {
   event.preventDefault();
-  document.getElementById('fa-spin-upload-2').style.display = "block";
+  document.getElementById('fa-spin-upload-2').style.display = 'block';
   document.getElementById('upload-message-2').innerHTML = '';
-  document.getElementById('upload-message-2').style.color = "red";
+  document.getElementById('upload-message-2').style.color = 'red';
 
   let uri = config.root + intervention_type + '/' + intervention_id + '/addVideo';
 
@@ -992,7 +992,7 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
   let fileData = document.getElementById('fileVideo').files[0];
 
   if (fileData == null) {
-    document.getElementById('fa-spin-upload-2').style.display = "none";
+    document.getElementById('fa-spin-upload-2').style.display = 'none';
     document.getElementById('upload-message-2').innerHTML = 'Please select a file';
     return false;
   }
@@ -1007,9 +1007,9 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
 
   let options = {
     method: 'PATCH',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "x-access-token": token,
+      'x-access-token': token,
     }),
     body: formData
   }
@@ -1044,32 +1044,32 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
 
       }
       if (j.hasOwnProperty('data')) {
-        if (j['data'][0]['message'] == "Video added to intervention record" || j['data'][0]['message'] == "Video added to red-flag record") {
-          document.getElementById('upload-message-2').style.color = "green";
+        if (j['data'][0]['message'] == 'Video added to intervention record' || j['data'][0]['message'] == 'Video added to red-flag record') {
+          document.getElementById('upload-message-2').style.color = 'green';
           document.getElementById('upload-message-2').innerHTML = j['data'][0]['message'];
           document.getElementById('uploadVideo').reset();
           getFileData('videos', uploadedFileName);
         }
       }
-      document.getElementById('fa-spin-upload-2').style.display = "none";
+      document.getElementById('fa-spin-upload-2').style.display = 'none';
 
     })
     .catch((error) => {
       console.log(error);
-      document.getElementById('upload-message-2').innerHTML = "An error occured check if status is draft and try again";
-      document.getElementById('fa-spin-upload-2').style.display = "none";
+      document.getElementById('upload-message-2').innerHTML = 'An error occured check if status is draft and try again';
+      document.getElementById('fa-spin-upload-2').style.display = 'none';
     });
 
 }
 
 let updateUserData = (event, usernameid) => {
   event.preventDefault();
-  document.getElementById('fa-spin-updateProfile').style.display = "block";
-  document.getElementById('firstnameProfile').style.borderColor = "#ccc";
-  document.getElementById('lastnameProfile').style.borderColor = "#ccc";
-  document.getElementById('othernameProfile').style.borderColor = "#ccc";
-  document.getElementById('phonenumberProfile').style.borderColor = "#ccc";
-  document.getElementById('emailProfile').style.borderColor = "#ccc";
+  document.getElementById('fa-spin-updateProfile').style.display = 'block';
+  document.getElementById('firstnameProfile').style.borderColor = '#ccc';
+  document.getElementById('lastnameProfile').style.borderColor = '#ccc';
+  document.getElementById('othernameProfile').style.borderColor = '#ccc';
+  document.getElementById('phonenumberProfile').style.borderColor = '#ccc';
+  document.getElementById('emailProfile').style.borderColor = '#ccc';
 
   let uri = config.root + 'users/' + usernameid;
 
@@ -1094,10 +1094,10 @@ let updateUserData = (event, usernameid) => {
 
   let options = {
     method: 'PUT',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": token
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': token
     }),
     body: JSON.stringify(data)
   }
@@ -1126,19 +1126,19 @@ let updateUserData = (event, usernameid) => {
           });
         }
         if (j['message'].hasOwnProperty('firstname')) {
-          document.getElementById('firstnameProfile').style.borderColor = "red";
+          document.getElementById('firstnameProfile').style.borderColor = 'red';
         }
         if (j['message'].hasOwnProperty('lastname')) {
-          document.getElementById('lastnameProfile').style.borderColor = "red";
+          document.getElementById('lastnameProfile').style.borderColor = 'red';
         }
         if (j['message'].hasOwnProperty('othernames')) {
-          document.getElementById('othernameProfile').style.borderColor = "red";
+          document.getElementById('othernameProfile').style.borderColor = 'red';
         }
         if (j['message'].hasOwnProperty('email')) {
-          document.getElementById('emailProfile').style.borderColor = "red";
+          document.getElementById('emailProfile').style.borderColor = 'red';
         }
         if (j['message'].hasOwnProperty('phoneNumber')) {
-          document.getElementById('phonenumberProfile').style.borderColor = "red";
+          document.getElementById('phonenumberProfile').style.borderColor = 'red';
         }
         if (j['message'] == 'email already exists'){
           warningNotification({
@@ -1162,12 +1162,12 @@ let updateUserData = (event, usernameid) => {
 
       }
 
-      document.getElementById('fa-spin-updateProfile').style.display = "none";
+      document.getElementById('fa-spin-updateProfile').style.display = 'none';
 
     })
     .catch((error) => {
       console.log(error);
-      document.getElementById('fa-spin-updateProfile').style.display = "none";
+      document.getElementById('fa-spin-updateProfile').style.display = 'none';
     });
 }
 
@@ -1202,10 +1202,10 @@ let getIncidentNumber = (incident_type) => {
 
   let options = {
     method: 'GET',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": user.token
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': user.token
     })
   }
   let req = new Request(uri, options);
@@ -1259,7 +1259,7 @@ let getIncidentNumber = (incident_type) => {
 
         if (incident_type == 'redflags') {
           document.getElementById('my-redflags').innerHTML =
-            `<a href="view_by_username.html?type=redflag&username=${profileUserName}">` + myRedflags.length +
+            `<a href='view_by_username.html?type=redflag&username=${profileUserName}'>` + myRedflags.length +
             `</a>`;
           document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
           document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
@@ -1268,7 +1268,7 @@ let getIncidentNumber = (incident_type) => {
           document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
         } else if (incident_type == 'interventions') {
           document.getElementById('my-interventions').innerHTML =
-            `<a href="view_by_username.html?type=intervention&username=${profileUserName}">` +
+            `<a href='view_by_username.html?type=intervention&username=${profileUserName}'>` +
             myInterventions.length + `</a>`;
           document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
           document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
@@ -1288,7 +1288,7 @@ let getIncidentNumber = (incident_type) => {
 
 let resetPassword = (event, usernameid) => {
   event.preventDefault();
-  document.getElementById('fa-spin-reset').style.display = "block";
+  document.getElementById('fa-spin-reset').style.display = 'block';
 
   let uri = config.root + 'users/' + usernameid;
 
@@ -1296,19 +1296,19 @@ let resetPassword = (event, usernameid) => {
   let confirm_password = document.getElementById('confirm_password').value;
 
   if (password != confirm_password) {
-    document.getElementById('fa-spin-reset').style.display = "none";
-    document.getElementById('submit').value = "Reset Password";
-    document.getElementById('password').style.borderColor = "red";
-    document.getElementById('confirm_password').style.borderColor = "red";
+    document.getElementById('fa-spin-reset').style.display = 'none';
+    document.getElementById('submit').value = 'Reset Password';
+    document.getElementById('password').style.borderColor = 'red';
+    document.getElementById('confirm_password').style.borderColor = 'red';
     return false;
   }
 
   let options = {
     method: 'PATCH',
-    mode: "cors",
+    mode: 'cors',
     headers: new Headers({
-      "Content-Type": "application/json; charset=utf-8",
-      "x-access-token": token
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': token
     }),
     body: JSON.stringify({
       password: password
@@ -1339,7 +1339,7 @@ let resetPassword = (event, usernameid) => {
           });
         }
         if (j['message'].hasOwnProperty('password')) {
-          document.getElementById('password').style.borderColor = "red";
+          document.getElementById('password').style.borderColor = 'red';
           warningNotification({
             title: 'Warning',
             message: j['message']['password'],
@@ -1361,32 +1361,32 @@ let resetPassword = (event, usernameid) => {
 
       }
 
-      document.getElementById('fa-spin-reset').style.display = "none";
+      document.getElementById('fa-spin-reset').style.display = 'none';
 
     })
     .catch((error) => {
       console.log(error);
-      document.getElementById('fa-spin-reset').style.display = "none";
+      document.getElementById('fa-spin-reset').style.display = 'none';
     });
 }
 
 let filterIncidents = () => {
 
   let input, filter, table, column, card, i, txtValue;
-  input = document.getElementById("searchIncidents");
+  input = document.getElementById('searchIncidents');
   filter = input.value.toUpperCase();
-  table = document.getElementById("incident-data");
-  column = table.getElementsByClassName("column");
+  table = document.getElementById('incident-data');
+  column = table.getElementsByClassName('column');
 
   // Loop through all cards, and hide those that don't match the search query
   for (i = 0; i < column.length; i++) {
-    card = column[i].getElementsByClassName("card")[0];
+    card = column[i].getElementsByClassName('card')[0];
     if (card) {
       txtValue = card.textContent || card.innerText;
       if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        column[i].style.display = "";
+        column[i].style.display = '';
       } else {
-        column[i].style.display = "none";
+        column[i].style.display = 'none';
       }
     }
   }

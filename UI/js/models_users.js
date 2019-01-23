@@ -4,10 +4,10 @@ let getUsers = (user_data) => {
 
     let options = {
         method: 'GET',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         })
     }
     let request = new Request(uri, options);
@@ -16,13 +16,13 @@ let getUsers = (user_data) => {
         .then((response) => {
             if (response.ok) {
                 try {
-                    document.getElementById('fa-spin-data').style.display = "none";
+                    document.getElementById('fa-spin-data').style.display = 'none';
                 } catch (error) {}
 
                 return response.json();
             } else {
                 try {
-                    document.getElementById('fa-spin-data').style.display = "none";
+                    document.getElementById('fa-spin-data').style.display = 'none';
                 } catch (error) {}
                 return response.json();
             }
@@ -59,7 +59,7 @@ let getUsers = (user_data) => {
                 }
 
                 (function () {
-                    "use strict";
+                    'use strict';
 
                     function Pagination() {
 
@@ -98,9 +98,9 @@ let getUsers = (user_data) => {
                                 'clickPageNumber');
                             for (let i = 0; i < page_number.length; i++) {
                                 if (i == current_page - 1) {
-                                    page_number[i].style.opacity = "1.0";
+                                    page_number[i].style.opacity = '1.0';
                                 } else {
-                                    page_number[i].style.opacity = "0.5";
+                                    page_number[i].style.opacity = '0.5';
                                 }
                             }
                         }
@@ -111,8 +111,8 @@ let getUsers = (user_data) => {
                             current_page == numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove(
                                 'opacity');
 
-                            document.getElementById("button_next").disabled = current_page == numPages() ? true : false;
-                            document.getElementById("button_prev").disabled = current_page == 1 ? true : false;
+                            document.getElementById('button_next').disabled = current_page == numPages() ? true : false;
+                            document.getElementById('button_prev').disabled = current_page == 1 ? true : false;
                         }
 
                         let changePage = function (page) {
@@ -125,17 +125,17 @@ let getUsers = (user_data) => {
                                 page = numPages();
                             }
 
-                            result.innerHTML = "";
+                            result.innerHTML = '';
 
                             if (users.length == 0) {
                                 let result = '';
                                 result += `
-                                          <div class="column-100">
-                                          <div class="card">
-                                              <div class="container">
-                                                  <p><i class="fa fa-star-half-o fa-3x" aria-hidden="true"></i></p>
-                                                  <h4 class="theme-blue"><b>
-                                                  We couldn't find an account for "${user_data}"
+                                          <div class='column-100'>
+                                          <div class='card'>
+                                              <div class='container'>
+                                                  <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
+                                                  <h4 class='theme-blue'><b>
+                                                  We couldn't find an account for '${user_data}'
                                                   Make sure the email, username, first name, last name, phone number or status is spelled and formatted correctly
                                                   </b></h4>
                                               </div>
@@ -144,8 +144,8 @@ let getUsers = (user_data) => {
                                           `;
                                 current_page = 0;
                                 document.getElementById('startNumber').innerHTML = 0;
-                                document.getElementById("button_next").disabled = true;
-                                document.getElementById("button_prev").disabled = true;
+                                document.getElementById('button_next').disabled = true;
+                                document.getElementById('button_prev').disabled = true;
                                 nextButton.classList.add('opacity');
                                 return document.getElementById('user-data').innerHTML = result;
                             }
@@ -162,17 +162,17 @@ let getUsers = (user_data) => {
 
                                 result.innerHTML +=
                                     `
-                                      <div class="column">
-                                        <div class="card">
-                                            <div class="container2 align-center  ${blocked}">
-                                              <a href="view_user.html?username=${users[i].username}">
-                                                <p class="black align-left"><i class="fa ${faIcon}" aria-hidden="true"></i></p>
-                                                <p><i class="fa fa-user-o fa-3x theme-blue" aria-hidden="true"></i></p>
-                                                <h4 class="black"><b>${users[i].firstname} ${users[i].lastname}</b></h4>
+                                      <div class='column'>
+                                        <div class='card'>
+                                            <div class='container2 align-center  ${blocked}'>
+                                              <a href='view_user.html?username=${users[i].username}'>
+                                                <p class='black align-left'><i class='fa ${faIcon}' aria-hidden='true'></i></p>
+                                                <p><i class='fa fa-user-o fa-3x theme-blue' aria-hidden='true'></i></p>
+                                                <h4 class='black'><b>${users[i].firstname} ${users[i].lastname}</b></h4>
                                                 <p>${users[i].username}</p>
                                                 <p class='italic font-small'>${users[i].email}</p>
                                                 <p class='italic font-small'>Admin: ${users[i].isadmin}</p>
-                                                <p class="black align-right"><i class="fa fa-external-link theme-blue" aria-hidden="true"></i></p>
+                                                <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
                                               </a>
                                             </div>
                                           </div>               
@@ -223,7 +223,7 @@ let getUsers = (user_data) => {
 
                         let clickPage = function () {
                             document.addEventListener('click', function (e) {
-                                if (e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")) {
+                                if (e.target.nodeName == 'SPAN' && e.target.classList.contains('clickPageNumber')) {
                                     current_page = e.target.textContent;
                                     changePage(current_page);
                                 }
@@ -232,7 +232,7 @@ let getUsers = (user_data) => {
 
                         let pageNumbers = function () {
                             let pageNumber = document.getElementById('page_number');
-                            pageNumber.innerHTML = "";
+                            pageNumber.innerHTML = '';
                             let numberOfPages = numPages();
                             if (current_page == 0) {
                                 current_page = numberOfPages = 1;
@@ -270,10 +270,10 @@ let getUserData = () => {
 
     let options = {
         method: 'GET',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         })
     }
     let request = new Request(uri, options);
@@ -281,11 +281,11 @@ let getUserData = () => {
     fetch(request)
         .then((response) => {
             if (response.ok) {
-                document.getElementById('fa-spin-data').style.display = "none";
+                document.getElementById('fa-spin-data').style.display = 'none';
 
                 return response.json();
             } else {
-                document.getElementById('fa-spin-data').style.display = "none";
+                document.getElementById('fa-spin-data').style.display = 'none';
                 return response.json();
             }
         })
@@ -335,20 +335,20 @@ let getUserData = () => {
                     result += `
                 <div class='incident-header'>
                     <h2>${fullname}</h2>
-                    <h3><span class="black">Active:</span> <span id='activity-data' class="italic">${isActive}</span></h3>
-                    <h3><span class="black">Admin Status:</span> <span id='status-data' class="italic">${isAdmin}</span></h3>
-                    <h4><span class="black">Created On:</span> <span class="italic">${localDateTime}</span></h4>
-                    <h4 id='comment-data'><span class="black">Public Id: </span>${public_id}</h4>
+                    <h3><span class='black'>Active:</span> <span id='activity-data' class='italic'>${isActive}</span></h3>
+                    <h3><span class='black'>Admin Status:</span> <span id='status-data' class='italic'>${isAdmin}</span></h3>
+                    <h4><span class='black'>Created On:</span> <span class='italic'>${localDateTime}</span></h4>
+                    <h4 id='comment-data'><span class='black'>Public Id: </span>${public_id}</h4>
                     <hr class='incident-line'>
                 </div>
-                <div class="row  bg-color">
-                  <div class="column-50 bg-color">                       
-                    <p><img src="img/img_avatar3.jpeg" alt=""></p>
+                <div class='row  bg-color'>
+                  <div class='column-50 bg-color'>                       
+                    <p><img src='img/img_avatar3.jpeg' alt=''></p>
                   </div>
-                  <div class="column-50  bg-color align-justify">
-                    <p id='comment-data'><span class="black">Email: </span>${email}</p>
-                    <p id='comment-data'><span class="black">Phone Number: </span>${phone}</p>
-                    <p id='comment-data'><span class="black">Username: </span>${username}</p>
+                  <div class='column-50  bg-color align-justify'>
+                    <p id='comment-data'><span class='black'>Email: </span>${email}</p>
+                    <p id='comment-data'><span class='black'>Phone Number: </span>${phone}</p>
+                    <p id='comment-data'><span class='black'>Username: </span>${username}</p>
                   </div>
                 </div>  
                 `;
@@ -366,9 +366,9 @@ let getUserData = () => {
 
 let editUserData = (event) => {
     event.preventDefault();
-    document.getElementById('fa-spin-edit-status').style.display = "block";
+    document.getElementById('fa-spin-edit-status').style.display = 'block';
     document.getElementById('status-message').innerHTML = '';
-    document.getElementById('status-message').style.color = "red";
+    document.getElementById('status-message').style.color = 'red';
 
     let uri = config.root + 'users/' + usernameId + '/promote';
 
@@ -376,10 +376,10 @@ let editUserData = (event) => {
 
     let options = {
         method: 'PATCH',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         }),
         body: JSON.stringify({
             isadmin: status
@@ -411,8 +411,8 @@ let editUserData = (event) => {
                     document.getElementById('status-message').innerHTML = j['message'];
                 }
                 if (j['message'].hasOwnProperty('isadmin')) {
-                    document.getElementById('isadmin').style.borderBottomColor = "red";
-                    document.getElementById('status-message').innerHTML = "(Accepted values: True, False)";
+                    document.getElementById('isadmin').style.borderBottomColor = 'red';
+                    document.getElementById('status-message').innerHTML = '(Accepted values: True, False)';
                 }
                 if (j['message'] == 'You cannot change the status of this user' || j['message'] == 'You cannot change your own admin status') {
                     document.getElementById('status-message').innerHTML = j['message'];
@@ -420,27 +420,27 @@ let editUserData = (event) => {
 
             }
             if (j.hasOwnProperty('data')) {
-                if (j['data']['message'] == "User status has been updated") {
-                    document.getElementById('status-message').style.color = "green";
+                if (j['data']['message'] == 'User status has been updated') {
+                    document.getElementById('status-message').style.color = 'green';
                     document.getElementById('status-message').innerHTML = j['data']['message'];
                     document.getElementById('status').value = status;
                     document.getElementById('status-data').innerHTML = status.toLowerCase();
                 }
             }
-            document.getElementById('fa-spin-edit-status').style.display = "none";
+            document.getElementById('fa-spin-edit-status').style.display = 'none';
 
         })
         .catch((error) => {
             console.log(error);
-            document.getElementById('fa-spin-edit-status').style.display = "none";
+            document.getElementById('fa-spin-edit-status').style.display = 'none';
         });
 }
 
 let changeActiveStatus = (event) => {
     event.preventDefault();
-    document.getElementById('fa-spin-activity').style.display = "block";
+    document.getElementById('fa-spin-activity').style.display = 'block';
     document.getElementById('activity-message').innerHTML = '';
-    document.getElementById('activity-message').style.color = "red";
+    document.getElementById('activity-message').style.color = 'red';
 
     let uri = config.root + 'users/' + usernameId + '/activate';
 
@@ -448,10 +448,10 @@ let changeActiveStatus = (event) => {
 
     let options = {
         method: 'PATCH',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         }),
         body: JSON.stringify({
             isactive: activity
@@ -483,7 +483,7 @@ let changeActiveStatus = (event) => {
                     document.getElementById('activity-message').innerHTML = j['message'];
                 }
                 if (j['message'].hasOwnProperty('isactive')) {
-                    document.getElementById('activity-message').innerHTML = "(Accepted values: True, False)";
+                    document.getElementById('activity-message').innerHTML = '(Accepted values: True, False)';
                 }
                 if (j['message'] == 'You cannot change your own active status') {
                     document.getElementById('activity-message').innerHTML = j['message'];
@@ -491,34 +491,34 @@ let changeActiveStatus = (event) => {
 
             }
             if (j.hasOwnProperty('data')) {
-                if (j['data']['message'] == "User active status has been updated") {
-                    document.getElementById('activity-message').style.color = "green";
+                if (j['data']['message'] == 'User active status has been updated') {
+                    document.getElementById('activity-message').style.color = 'green';
                     document.getElementById('activity-message').innerHTML = j['data']['message'];
                     document.getElementById('activity').value = activity;
                     document.getElementById('activity-data').innerHTML = activity.toLowerCase();
                 }
             }
-            document.getElementById('fa-spin-activity').style.display = "none";
+            document.getElementById('fa-spin-activity').style.display = 'none';
 
         })
         .catch((error) => {
             console.log(error);
-            document.getElementById('fa-spin-activity').style.display = "none";
+            document.getElementById('fa-spin-activity').style.display = 'none';
         });
 }
 
 let deleteUserData = () => {
-    document.getElementById('fa-spin-data-delete').style.display = "block";
+    document.getElementById('fa-spin-data-delete').style.display = 'block';
     document.getElementById('error-message').innerHTML = '';
 
     let uri = config.root + 'users/' + usernameId;
 
     let options = {
         method: 'DELETE',
-        mode: "cors",
+        mode: 'cors',
         headers: new Headers({
-            "Content-Type": "application/json; charset=utf-8",
-            "x-access-token": user.token
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-access-token': user.token
         })
     }
     let request = new Request(uri, options);
@@ -554,15 +554,15 @@ let deleteUserData = () => {
             if (j.hasOwnProperty('data')) {
                 if (j['data']['message'] == 'user record has been deleted') {
                     document.getElementById('error-message').innerHTML = j['data']['message'];
-                    window.location.replace("admin.html");
+                    window.location.replace('admin.html');
                 }
             }
-            document.getElementById('fa-spin-data-delete').style.display = "none";
+            document.getElementById('fa-spin-data-delete').style.display = 'none';
 
         })
         .catch((error) => {
             console.log(error);
-            document.getElementById('fa-spin-data-delete').style.display = "none";
+            document.getElementById('fa-spin-data-delete').style.display = 'none';
         });
 }
 
