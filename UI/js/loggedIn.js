@@ -54,12 +54,12 @@ let signIn = (event) => {
                 if (j['message'].hasOwnProperty('username')) {
                     document.getElementById('username').style.borderBottomColor = "red";
                 }
-                if (j['message'] == 'password or username is invalid') {
+                if (j['message'] === 'password or username is invalid') {
                     document.getElementById('username').style.borderBottomColor = "red";
                     document.getElementById('password').style.borderBottomColor = "red";
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
-                if (j['message'] == 'account has been disabled') {
+                if (j['message'] === 'account has been disabled') {
                     document.getElementById('error-message').innerHTML = j['message'];
                 }
 
