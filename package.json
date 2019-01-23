@@ -4,8 +4,8 @@
   "description": "iReporter enables any citizen to bring any form of corruption to the notice of appropriate authorities",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "serve": "node test/server.js",
+    "test": "jest --coverage test -- -u --coverage --detectOpenHandles"
   },
   "keywords": [],
   "author": "Ryan Simiyu",
@@ -15,9 +15,6 @@
     "babel-jest": "^23.6.0",
     "babel-preset-env": "^1.7.0",
     "coveralls": "^3.0.2",
-    "eslint": "^5.12.1",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.15.0",
     "faker": "^4.1.0",
     "jest": "^23.6.0",
     "puppeteer": "^1.11.0"
