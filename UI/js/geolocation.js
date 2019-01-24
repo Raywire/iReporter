@@ -1,18 +1,18 @@
 function myMap() {
   let coordinates = localStorage.getItem('coordinates');
-  let latlon = coordinates.split(", ");
+  let latlon = coordinates.split(', ');
   let lat = parseFloat(latlon[0]);
-  let lon = parseFloat(latlon[1]);
+  let lng = parseFloat(latlon[1]);
 
   let markers = [];
   let mapProp= {
-    center:new google.maps.LatLng(lat,lon),
+    center:new google.maps.LatLng(lat,lng),
     zoom:6,
   };
   let map = new google.maps.Map(document.getElementById('googleMap'),mapProp);
   let geocoder = new google.maps.Geocoder;
 
-  let incidentLocation = {lat: lat, lng: lon};
+  let incidentLocation = {lat, lng};
 
   addNewMarkers(incidentLocation);
   geocodeLatLng(geocoder,coordinates);
@@ -21,7 +21,7 @@ function myMap() {
     let marker = new google.maps.Marker({
       position: location,
       map: map,
-      title: lat+', '+lon
+      title: lat+', '+lng
     });
     markers.push(marker);
   }

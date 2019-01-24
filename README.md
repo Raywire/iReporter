@@ -22,25 +22,25 @@ Cd into the iReporter folder
 Run a simple http server using python or node
 With Python:
 
-```
+```python
 python -m SimpleHTTPServer
 ```
 With Node:
 
-```
+```node
 npm install http-server -g
 http-server
 ```
 Run the command to install all packages from packages.json
 
-```
+```node
 npm install
 ```
 
 ## Running the tests
 
 Tests with coverage are run with jest, puppeteer and coveralls
-```
+```node
 npm test
 ```
 ### Break down into end to end tests
@@ -49,11 +49,14 @@ End to end tests check how the front-end integrates with the back-end
 
 ## Built With
 
-*  [Vanilla Javascript](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics)
-*  [Moment.js](https://momentjs.com/)
-*  [HTML 5](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
+  * [Vanilla Javascript](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics)
+  * [Moment.js](https://momentjs.com/)
+  * [HTML 5](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
 
 ## Author
 
-*  **Ryan Simiyu** 
+  * **Ryan Simiyu**
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

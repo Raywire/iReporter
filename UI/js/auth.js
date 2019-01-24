@@ -7,13 +7,13 @@ let isAdmin = getCookie('isAdmin');
 let isLoggedIn = getCookie('isLoggedIn');
 
 const user = {
-  token: token,
-  name: name,
-  email: email,
-  phonenumber: phonenumber,
-  username: username,
-  isAdmin: isAdmin,
-  isLoggedIn: isLoggedIn
+  token,
+  name,
+  email,
+  phonenumber,
+  username,
+  isAdmin,
+  isLoggedIn
 };
 
 if (isLoggedIn === 'False' || isLoggedIn === 'logged out' || token === 'logged out') {

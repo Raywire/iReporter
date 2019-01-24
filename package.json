@@ -4,16 +4,15 @@
   "description": "iReporter enables any citizen to bring any form of corruption to the notice of appropriate authorities",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage test -- -u --coverage --detectOpenHandles"
+    "test": "jest"
   },
   "keywords": [],
   "author": "Ryan Simiyu",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-jest": "^23.6.0",
     "babel-preset-env": "^1.7.0",
-    "coveralls": "^3.0.2",
     "faker": "^4.1.0",
     "jest": "^23.6.0",
     "puppeteer": "^1.11.0"
