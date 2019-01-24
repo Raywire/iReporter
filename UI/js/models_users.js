@@ -1,4 +1,4 @@
-let getUsers = (user_data) => {
+let getUsers = (userdata) => {
 
     let uri = config.root + 'users';
 
@@ -40,21 +40,21 @@ let getUsers = (user_data) => {
             if (j.hasOwnProperty('data')) {
                 let users = [];
 
-                if (user_data === 'all' || user_data === '') {
+                if (userdata === 'all' || userdata === '') {
                     users = j['data'];
                 } else {
                     let allUsers = j['data'];
 
                     users = allUsers.filter(user => {
-                        if (user_data === 'true') {
-                            user_data = true;
-                        } else if (user_data === 'false') {
-                            user_data = false
+                        if (userdata === 'true') {
+                            userdata = true;
+                        } else if (userdata === 'false') {
+                            userdata = false
                         }
-                        if (user_data === true || user_data === false) {
-                            return user.isadmin === user_data
+                        if (userdata === true || userdata === false) {
+                            return user.isadmin === userdata
                         }
-                        return user.username === user_data.toLowerCase() || user.firstname === user_data || user.email === user_data.toLowerCase() || user.lastname === user_data || user.phonenumber === user_data;
+                        return user.username === userdata.toLowerCase() || user.firstname === userdata || user.email === userdata.toLowerCase() || user.lastname === userdata || user.phonenumber === userdata;
                     })
                 }
 
@@ -135,7 +135,7 @@ let getUsers = (user_data) => {
                                               <div class='container'>
                                                   <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
                                                   <h4 class='theme-blue'><b>
-                                                  We couldn't find an account for '${user_data}'
+                                                  We couldn't find an account for '${userdata}'
                                                   Make sure the email, username, first name, last name, phone number or status is spelled and formatted correctly
                                                   </b></h4>
                                               </div>

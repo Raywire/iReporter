@@ -16,14 +16,14 @@ let humanize = (utcdatetime) => {
 
 //Function to post an incident by type
 
-let postData = (event, incident_type) => {
+let postData = (event, incidenttype) => {
   event.preventDefault();
   document.getElementById('title').style.borderBottomColor = '#ccc';
   document.getElementById('comment').style.borderBottomColor = '#ccc';
   document.getElementById('location').style.borderBottomColor = '#ccc';
   document.getElementById('fa-spin').style.display = 'block';
 
-  let uri = config.root + incident_type;
+  let uri = config.root + incidenttype;
 
   let title = document.getElementById('title').value;
   let comment = document.getElementById('comment').value;
@@ -37,9 +37,9 @@ let postData = (event, incident_type) => {
       'x-access-token': tokenModels
     }),
     body: JSON.stringify({
-      title: title,
-      comment: comment,
-      location: location
+      title,
+      comment,
+      location
     })
   }
   let request = new Request(uri, options);
@@ -91,9 +91,9 @@ let postData = (event, incident_type) => {
           message: 'Incident has been created',
         });
 
-        if (incident_type === 'interventions') {
+        if (incidenttype === 'interventions') {
           getData('intervention', 'all', 'all');
-        } else if (incident_type === 'redflags'){
+        } else if (incidenttype === 'redflags'){
           getData('redflag', 'all', 'all');
         }
         document.getElementById('postData').reset();
@@ -108,9 +108,9 @@ let postData = (event, incident_type) => {
 
 //Function to get all incidents by type, createdBy and search parameter
 
-let getData = (incident_type, incident_creator, search_data) => {
+let getData = (incidenttype, incidentcreator, searchdata) => {
 
-  let uri = config.root + incident_type + 's';
+  let uri = config.root + incidenttype + 's';
 
   let options = {
     method: 'GET',
@@ -169,19 +169,19 @@ let getData = (incident_type, incident_creator, search_data) => {
         let searchedIncidents = [];
         let incidents = j['data'];
 
-        if (search_data === 'all' || search_data === '') {
+        if (searchdata === 'all' || searchdata === '') {
           usernameIncidents = searchedIncidents = incidents;
         } else {
           usernameIncidents = searchedIncidents = incidents.filter(incident => {
-            return incident.title.toLowerCase() === search_data.toLowerCase() || incident.id === parseInt(search_data) || incident.username === search_data.toLowerCase() || incident.status === search_data.toLowerCase();
+            return incident.title.toLowerCase() === searchdata.toLowerCase() || incident.id === parseInt(searchdata) || incident.username === searchdata.toLowerCase() || incident.status === searchdata.toLowerCase();
           })
         }
 
-        if (incident_creator === 'all') {
+        if (incidentcreator === 'all') {
           
         } else {
           usernameIncidents = searchedIncidents.filter(incident => {
-            filteredIncidents = incident.username === incident_creator;
+            filteredIncidents = incident.username === incidentcreator;
             if (filteredIncidents) {
               return filteredIncidents;
             } else {
@@ -304,7 +304,7 @@ let getData = (incident_type, incident_creator, search_data) => {
                   link = 'view_redflag.html?redflag_id';
                   icon = 'fa fa-flag red';
                 } else if (usernameIncidents[i].type === 'intervention') {
-                  link = 'view_intervention.html?intervention_id'
+                  link = 'view_intervention.html?intervention_id';
                   icon = 'fa fa-handshake-o theme-blue';
                 }
 
@@ -416,9 +416,9 @@ let getData = (incident_type, incident_creator, search_data) => {
 
 //Function to get an incident by Id
 
-let getDataById = (incident_type, incidentId) => {
+let getDataById = (incidenttype, incidentId) => {
 
-  let uri = config.root + incident_type + '/' + incidentId;
+  let uri = config.root + incidenttype + '/' + incidentId;
 
   let options = {
     method: 'GET',
@@ -537,11 +537,11 @@ let getDataById = (incident_type, incidentId) => {
 
 //Function to delete an incident  by id
 
-let deleteData = (incident_type, incidentId) => {
+let deleteData = (incidenttype, incidentId) => {
   document.getElementById('fa-spin-data-delete').style.display = 'block';
   document.getElementById('error-message').innerHTML = '';
 
-  let uri = config.root + incident_type + '/' + incidentId;
+  let uri = config.root + incidenttype + '/' + incidentId;
 
   let options = {
     method: 'DELETE',
@@ -583,9 +583,9 @@ let deleteData = (incident_type, incidentId) => {
       if (j.hasOwnProperty('data')) {
         if (j['data']['message'] === 'Intervention record has been deleted' || j['data']['message'] === 'Redflag record has been deleted') {
           document.getElementById('error-message').innerHTML = j['data']['message'];
-          if (incident_type === 'redflags') {
+          if (incidenttype === 'redflags') {
             window.location.replace('redflags.html');
-          } else if (incident_type === 'interventions') {
+          } else if (incidenttype === 'interventions') {
             window.location.replace('interventions.html');
           }
         }
@@ -1195,9 +1195,9 @@ let uploadProfilePic = (event, usernameid) => {
   event.preventDefault();
 }
 
-let getIncidentNumber = (incident_type) => {
+let getIncidentNumber = (incidenttype) => {
 
-  let uri = config.root + incident_type;
+  let uri = config.root + incidenttype;
 
   let options = {
     method: 'GET',
@@ -1256,7 +1256,7 @@ let getIncidentNumber = (incident_type) => {
         })
 
 
-        if (incident_type === 'redflags') {
+        if (incidenttype === 'redflags') {
           document.getElementById('my-redflags').innerHTML =
             `<a href='view_by_username.html?type=redflag&username=${profileUserName}'>` + myRedflags.length +
             `</a>`;
@@ -1265,7 +1265,7 @@ let getIncidentNumber = (incident_type) => {
           document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents
             .length;
           document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
-        } else if (incident_type === 'interventions') {
+        } else if (incidenttype === 'interventions') {
           document.getElementById('my-interventions').innerHTML =
             `<a href='view_by_username.html?type=intervention&username=${profileUserName}'>` +
             myInterventions.length + `</a>`;
@@ -1391,18 +1391,18 @@ let filterIncidents = () => {
   }
 }
 
-let perPageSelection = (incident_type, incident_creator) => {
+let perPageSelection = (incidenttype, incidentcreator) => {
   showLoader()
-  getData(incident_type, incident_creator, 'all');
+  getData(incidenttype, incidentcreator, 'all');
   document.getElementById('searchIncidentsForm').reset();
   hideLoader(1000);
 }
 
-let searchIncidents = (event, incident_type, incident_creator)=> {
+let searchIncidents = (event, incidenttype, incidentcreator)=> {
   event.preventDefault();
   showLoader();
   searchParameter = document.getElementById('searchIncidents').value;
 
-  getData(incident_type, incident_creator, searchParameter);
+  getData(incidenttype, incidentcreator, searchParameter);
   hideLoader(1000);
 }

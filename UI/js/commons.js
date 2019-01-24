@@ -54,9 +54,9 @@ let showLoader = () => {
 
 let checkPassword = () => {
   let pass1 = document.getElementById('password').value;
-  let confirm_pass1 = document.getElementById('confirm_password').value;
+  let confirmPass1 = document.getElementById('confirm_password').value;
 
-  if (pass1 === confirm_pass1) {
+  if (pass1 === confirmPass1) {
     document.getElementById('password').style.borderColor = 'green';
     document.getElementById('confirm_password').style.borderColor = 'green';
   } else {

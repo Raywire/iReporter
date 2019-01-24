@@ -26,8 +26,8 @@ let signIn = (event) => {
             'Content-Type': 'application/json; charset=utf-8',
         }),
         body: JSON.stringify({
-            username: username,
-            password: password
+            username,
+            password
         })
     }
     let request = new Request(uri, options);
@@ -69,7 +69,7 @@ let signIn = (event) => {
                 document.getElementById('error-message').innerHTML = 'Login successful';
 
                 let userData = j['data'][0]['user'];
-                let access_token = j['data'][0]['token'];
+                let accessToken = j['data'][0]['token'];
                 if (userData['othernames'] != null) {
                     othernames = userData['othernames'];
                 } else {
@@ -92,7 +92,7 @@ let signIn = (event) => {
                 localStorage.setItem('profileEmail', email);
 
                 let expirationTime = 59;
-                setCookie('token', access_token, expirationTime);
+                setCookie('token', accessToken, expirationTime);
                 setCookie('username', username, expirationTime);
                 setCookie('isAdmin', isAdmin, expirationTime);
                 setCookie('isLoggedIn', 'True', expirationTime);
@@ -126,17 +126,17 @@ let signUp = (event) => {
     let username = document.getElementById('username').value;
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
-    let confirm_password = document.getElementById('confirm_password').value;
+    let confirmPassword = document.getElementById('confirm_password').value;
 
     let data = {
-        firstname: firstname,
-        lastname: lastname,
-        username: username,
-        email: email,
-        password: password
+        firstname,
+        lastname,
+        username,
+        email,
+        password
     };
 
-    if (password != confirm_password) {
+    if (password !== confirmPassword) {
         document.getElementById('fa-spin').style.display = 'none';
         document.getElementById('submit').value = 'Sign Up';
         document.getElementById('error-message').innerHTML = 'Passwords do not match';
@@ -245,7 +245,7 @@ let requestReset = (event) => {
             }
         })
         .then((j) => {
-            let reset_message = `If a user account exists for ${useremail}, an email will be sent with further instructions`;
+            let resetMessage = `If a user account exists for ${useremail}, an email will be sent with further instructions`;
             if (j.hasOwnProperty('message')) {
 
                 if (j['message'].hasOwnProperty('resetlink')) {
@@ -253,14 +253,14 @@ let requestReset = (event) => {
                 }
                 if (j['message'] === 'user does not exist') {
                     document.getElementById('error-message').style.color = 'green';
-                    document.getElementById('error-message').innerHTML = reset_message;
+                    document.getElementById('error-message').innerHTML = resetMessage;
                     setTimeout(function () {
                         window.location.replace('signin.html');
                     }, 5000);
                 }
                 if (j['message'] === 'Reset link has been sent to your email') {
                     document.getElementById('error-message').style.color = 'green';
-                    document.getElementById('error-message').innerHTML = reset_message;
+                    document.getElementById('error-message').innerHTML = resetMessage;
                     setTimeout(function () {
                         window.location.replace('signin.html');
                     }, 5000);
@@ -285,9 +285,9 @@ let resetPassword = (event, profileusername, resettoken) => {
     let uri = config.root + 'users/' + profileusername;
 
     let password = document.getElementById('password').value;
-    let confirm_password = document.getElementById('confirm_password').value;
+    let confirmPassword = document.getElementById('confirm_password').value;
 
-    if (password != confirm_password) {
+    if (password !== confirmPassword) {
         document.getElementById('fa-spin-reset').style.display = 'none';
         document.getElementById('password').style.borderColor = 'red';
         document.getElementById('confirm_password').style.borderColor = 'red';
@@ -302,7 +302,7 @@ let resetPassword = (event, profileusername, resettoken) => {
             'x-access-token': resettoken
         }),
         body: JSON.stringify({
-            password: password
+            password
         })
     }
     let request = new Request(uri, options);
