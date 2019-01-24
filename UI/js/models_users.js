@@ -156,7 +156,7 @@ let getUsers = (userdata) => {
                                     blocked = 'blocked';
                                 } else {
                                     faIcon = 'fa-unlock theme-blue';
-                                    blocked = ''
+                                    blocked = '';
                                 }
 
                                 result.innerHTML +=
