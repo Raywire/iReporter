@@ -6,6 +6,5 @@ __pycache__
 .coverage
 .env
 node_modules/
-.eslintrc.js
 coverage/
 npm-debug.log
