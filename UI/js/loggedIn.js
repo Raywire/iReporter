@@ -136,7 +136,7 @@ let signUp = (event) => {
         password
     };
 
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
         document.getElementById('fa-spin').style.display = 'none';
         document.getElementById('submit').value = 'Sign Up';
         document.getElementById('error-message').innerHTML = 'Passwords do not match';
@@ -302,7 +302,7 @@ let resetPassword = (event, profileusername, resettoken) => {
             'x-access-token': resettoken
         }),
         body: JSON.stringify({
-            password: password
+            password
         })
     }
     let request = new Request(uri, options);
