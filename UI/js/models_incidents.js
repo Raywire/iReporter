@@ -176,12 +176,10 @@ let getData = (incidenttype, incidentcreator, searchdata) => {
             return incident.title.toLowerCase() === searchdata.toLowerCase() || incident.id === parseInt(searchdata) || incident.username === searchdata.toLowerCase() || incident.status === searchdata.toLowerCase();
           })
         }
-
-        if (incidentcreator === 'all') {
           
-        } else {
+        if (incidentcreator !== 'all') {
           usernameIncidents = searchedIncidents.filter(incident => {
-            filteredIncidents = incident.username === incidentcreator;
+            let filteredIncidents = incident.username === incidentcreator;
             if (filteredIncidents) {
               return filteredIncidents;
             } else {
@@ -210,7 +208,6 @@ let getData = (incidenttype, incidentcreator, searchdata) => {
           function Pagination() {
             const prevButton = document.getElementById('button_prev');
             const nextButton = document.getElementById('button_next');
-            const clickPageNumber = document.querySelectorAll('.clickPageNumber');
             let perPage = document.getElementById('perPage').value;
 
             let currentPage = 1;
@@ -457,6 +454,7 @@ let getDataById = (incidenttype, incidentId) => {
       if (j.hasOwnProperty('data')) {
         let result = '';
         let imageUrl = '';
+        let creator = '';
         j['data'].map((incident) => {
           const {
             title,
@@ -497,7 +495,7 @@ let getDataById = (incidenttype, incidentId) => {
           let paragraph = comment.split('\n');
           let commentData = '';
           
-          for(i = 0; i < paragraph.length; i++){
+          for(let i = 0; i < paragraph.length; i++){
             commentData += `
             <p class='comment-data-item'>${paragraph[i]}</p>
             `;
@@ -654,11 +652,11 @@ let getFileData = (filetype, filename) => {
 }
 
 //Function to edit the location
-let editLocation = (event, intervention_type, intervention_id) => {
+let editLocation = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit').style.display = 'block';
 
-  let uri = config.root + intervention_type + '/' + intervention_id + '/location';
+  let uri = config.root + incidentType + '/' + incidentId + '/location';
 
   let location = document.getElementById('location').value;
 
@@ -667,7 +665,7 @@ let editLocation = (event, intervention_type, intervention_id) => {
     mode: 'cors',
     headers: new Headers({
       'Content-Type': 'application/json; charset=utf-8',
-      'x-access-token': token
+      'x-access-token': tokenModels
     }),
     body: JSON.stringify({
       location: location
@@ -729,12 +727,12 @@ let editLocation = (event, intervention_type, intervention_id) => {
 }
 
 //Function to edit comment
-let editComment = (event, intervention_type, intervention_id) => {
+let editComment = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit').style.display = 'block';
   document.getElementById('comment').style.borderBottomColor = '#ccc';
 
-  let uri = config.root + intervention_type + '/' + intervention_id + '/comment';
+  let uri = config.root + incidentType + '/' + incidentId + '/comment';
 
   let comment = document.getElementById('comment').value;
 
@@ -743,7 +741,7 @@ let editComment = (event, intervention_type, intervention_id) => {
     mode: 'cors',
     headers: new Headers({
       'Content-Type': 'application/json; charset=utf-8',
-      'x-access-token': token
+      'x-access-token': tokenModels
     }),
     body: JSON.stringify({
       comment: comment
@@ -802,7 +800,7 @@ let editComment = (event, intervention_type, intervention_id) => {
           let paragraph = comment.split('\n');
           let commentData = '';
           
-          for(i = 0; i < paragraph.length; i++){
+          for(let i = 0; i < paragraph.length; i++){
             commentData += `
             <p class='comment-data-item'>${paragraph[i]}</p>
             `;
@@ -820,11 +818,11 @@ let editComment = (event, intervention_type, intervention_id) => {
 }
 
 //Function to edit status
-let editStatus = (event, intervention_type, intervention_id) => {
+let editStatus = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit-status').style.display = 'block';
 
-  let uri = config.root + intervention_type + '/' + intervention_id + '/status';
+  let uri = config.root + incidentType + '/' + incidentId + '/status';
 
   let status = document.getElementById('status').value;
 
@@ -833,7 +831,7 @@ let editStatus = (event, intervention_type, intervention_id) => {
     mode: 'cors',
     headers: new Headers({
       'Content-Type': 'application/json; charset=utf-8',
-      'x-access-token': token
+      'x-access-token': tokenModels
     }),
     body: JSON.stringify({
       status: status
@@ -898,13 +896,13 @@ let editStatus = (event, intervention_type, intervention_id) => {
 }
 
 //Function to upload image
-let uploadImage = (event, intervention_type, intervention_id) => {
+let uploadImage = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-upload').style.display = 'block';
   document.getElementById('upload-message').innerHTML = '';
   document.getElementById('upload-message').style.color = 'red';
 
-  let uri = config.root + intervention_type + '/' + intervention_id + '/addImage';
+  let uri = config.root + incidentType + '/' + incidentId + '/addImage';
 
   var formData = new FormData();
   let fileData = document.getElementById('fileImage').files[0];
@@ -918,7 +916,7 @@ let uploadImage = (event, intervention_type, intervention_id) => {
   console.log(fileData);
   console.log(fileData.name);
   let fileExtension = fileData.name.split('.')[1];
-  let uploadedFileName = intervention_id.toString() + '.' + fileExtension
+  let uploadedFileName = incidentId.toString() + '.' + fileExtension
   console.log(uploadedFileName);
 
   formData.append('uploadFile', fileData, fileData.name);
@@ -927,7 +925,7 @@ let uploadImage = (event, intervention_type, intervention_id) => {
     method: 'PATCH',
     mode: 'cors',
     headers: new Headers({
-      'x-access-token': token,
+      'x-access-token': tokenModels,
     }),
     body: formData
   }
@@ -979,13 +977,13 @@ let uploadImage = (event, intervention_type, intervention_id) => {
 
 }
 
-let uploadVideo = (event, intervention_type, intervention_id) => {
+let uploadVideo = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-upload-2').style.display = 'block';
   document.getElementById('upload-message-2').innerHTML = '';
   document.getElementById('upload-message-2').style.color = 'red';
 
-  let uri = config.root + intervention_type + '/' + intervention_id + '/addVideo';
+  let uri = config.root + incidentType + '/' + incidentId + '/addVideo';
 
   var formData = new FormData();
   let fileData = document.getElementById('fileVideo').files[0];
@@ -999,7 +997,7 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
   console.log(fileData);
   console.log(fileData.name);
   let fileExtension = fileData.name.split('.')[1];
-  let uploadedFileName = intervention_id.toString() + '.' + fileExtension
+  let uploadedFileName = incidentId.toString() + '.' + fileExtension
   console.log(uploadedFileName);
 
   formData.append('uploadFile', fileData, fileData.name);
@@ -1008,7 +1006,7 @@ let uploadVideo = (event, intervention_type, intervention_id) => {
     method: 'PATCH',
     mode: 'cors',
     headers: new Headers({
-      'x-access-token': token,
+      'x-access-token': tokenModels,
     }),
     body: formData
   }
@@ -1096,7 +1094,7 @@ let updateUserData = (event, usernameid) => {
     mode: 'cors',
     headers: new Headers({
       'Content-Type': 'application/json; charset=utf-8',
-      'x-access-token': token
+      'x-access-token': tokenModels
     }),
     body: JSON.stringify(data)
   }
@@ -1226,9 +1224,6 @@ let getIncidentNumber = (incidenttype) => {
         if (j['message'] === 'Token is invalid') {
           logout();
         }
-        if (j['message'] === 'No interventions') {
-
-        }
       }
       if (j.hasOwnProperty('data')) {
         let incidents = j['data'];
@@ -1307,7 +1302,7 @@ let resetPassword = (event, usernameid) => {
     mode: 'cors',
     headers: new Headers({
       'Content-Type': 'application/json; charset=utf-8',
-      'x-access-token': token
+      'x-access-token': tokenModels
     }),
     body: JSON.stringify({
       password: password
@@ -1401,8 +1396,8 @@ let perPageSelection = (incidenttype, incidentcreator) => {
 let searchIncidents = (event, incidenttype, incidentcreator)=> {
   event.preventDefault();
   showLoader();
-  searchParameter = document.getElementById('searchIncidents').value;
+  let searchParameter = document.getElementById('searchIncidents').value;
 
   getData(incidenttype, incidentcreator, searchParameter);
-  hideLoader(1000);
+  hideLoader(3000);
 }

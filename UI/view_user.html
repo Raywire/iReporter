@@ -140,8 +140,10 @@
                           <p id="error-message"></p>
                         </div>
                         <div class="modal-footer">
-                          <button id="btnDelConfirm" type="button" class="button-normal danger">Delete</button>
-                          <i id="fa-spin-data-delete" class="fa fa-circle-o-notch fa-spin"></i>
+                          <form id="deleteUser" method="POST" >
+                            <button id="btnDelConfirm" type="submit" class="button-normal danger">Delete</button>
+                            <i id="fa-spin-data-delete" class="fa fa-circle-o-notch fa-spin"></i>
+                          </form>
                         </div>
                       </div>
 
@@ -160,17 +162,16 @@
         let urlParams = new URLSearchParams(window.location.search);
         let usernameId = urlParams.get('username');
 
-        getUserData();
+        getUserData(usernameId);
 
-        var btnDelConfirm = document.getElementById('btnDelConfirm');
-        btnDelConfirm.addEventListener("click", deleteUserData);
+        try {
+          document.getElementById('deleteUser').addEventListener('submit', (event) => deleteUserData(event, usernameId));
+        } catch (error) {}        
 
         //Function for an Admin to Promote a specific Users Admin Status
         try {
-          document.getElementById('patchUserData').addEventListener('submit', editUserData);
-        } catch (error) {
-
-        }
+          document.getElementById('patchUserData').addEventListener('submit', (event) => editUserData(event, usernameId));
+        } catch (error) {}
 
         try {
           document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
@@ -180,10 +181,8 @@
 
         //Function for an Admin to Disable or Enable a user
         try {
-          document.getElementById('disableUser').addEventListener('submit', changeActiveStatus);
-        } catch (error) {
-
-        }
+          document.getElementById('disableUser').addEventListener('submit', (event) => changeActiveStatus(event, usernameId));
+        } catch (error) {}
       </script>
     </div>
 

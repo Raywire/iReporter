@@ -33,6 +33,9 @@ a {
 button::-moz-focus-inner,input::-moz-focus-inner {
   border: 0;
 }
+button:hover{
+  cursor:pointer;
+}
 select:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;

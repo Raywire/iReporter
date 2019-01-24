@@ -1,10 +1,10 @@
-let token = getCookie('token');
-let name = localStorage.getItem('profileName');
-let email = localStorage.getItem('profileEmail');
-let phonenumber = localStorage.getItem('profilePhoneNumber');
-let username = getCookie('username');
-let isAdmin = getCookie('isAdmin');
-let isLoggedIn = getCookie('isLoggedIn');
+const token = getCookie('token');
+const name = localStorage.getItem('profileName');
+const email = localStorage.getItem('profileEmail');
+const phonenumber = localStorage.getItem('profilePhoneNumber');
+const username = getCookie('username');
+const isAdmin = getCookie('isAdmin');
+const isLoggedIn = getCookie('isLoggedIn');
 
 const user = {
   token,
@@ -13,7 +13,7 @@ const user = {
   phonenumber,
   username,
   isAdmin,
-  isLoggedIn
+  isLoggedIn,
 };
 
 if (isLoggedIn === 'False' || isLoggedIn === 'logged out' || token === 'logged out') {

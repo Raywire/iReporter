@@ -65,7 +65,6 @@ let getUsers = (userdata) => {
 
                         const prevButton = document.getElementById('button_prev');
                         const nextButton = document.getElementById('button_next');
-                        const clickPageNumber = document.querySelectorAll('.clickPageNumber');
                         let perPage = document.getElementById('perPage').value;
 
                         let currentPage = 1;
@@ -157,7 +156,7 @@ let getUsers = (userdata) => {
                                     blocked = 'blocked';
                                 } else {
                                     faIcon = 'fa-unlock theme-blue';
-                                    blocked = ''
+                                    blocked = '';
                                 }
 
                                 result.innerHTML +=
@@ -264,9 +263,9 @@ let getUsers = (userdata) => {
         });
 }
 
-let getUserData = () => {
+let getUserData = (usernameid) => {
 
-    let uri = config.root + 'users/' + usernameId;
+    let uri = config.root + 'users/' + usernameid;
 
     let options = {
         method: 'GET',
@@ -308,6 +307,7 @@ let getUserData = () => {
             if (j.hasOwnProperty('data')) {
                 let result = '';
                 let fullname = '';
+                let phone = '';
                 j['data'].map((user) => {
                     const {
                         firstname,
@@ -364,13 +364,13 @@ let getUserData = () => {
         });
 }
 
-let editUserData = (event) => {
+let editUserData = (event, usernameid) => {
     event.preventDefault();
     document.getElementById('fa-spin-edit-status').style.display = 'block';
     document.getElementById('status-message').innerHTML = '';
     document.getElementById('status-message').style.color = 'red';
 
-    let uri = config.root + 'users/' + usernameId + '/promote';
+    let uri = config.root + 'users/' + usernameid + '/promote';
 
     let status = document.getElementById('status').value;
 
@@ -436,13 +436,13 @@ let editUserData = (event) => {
         });
 }
 
-let changeActiveStatus = (event) => {
+let changeActiveStatus = (event, usernameid) => {
     event.preventDefault();
     document.getElementById('fa-spin-activity').style.display = 'block';
     document.getElementById('activity-message').innerHTML = '';
     document.getElementById('activity-message').style.color = 'red';
 
-    let uri = config.root + 'users/' + usernameId + '/activate';
+    let uri = config.root + 'users/' + usernameid + '/activate';
 
     let activity = document.getElementById('activity').value;
 
@@ -507,11 +507,12 @@ let changeActiveStatus = (event) => {
         });
 }
 
-let deleteUserData = () => {
+let deleteUserData = (event, usernameid) => {
+    event.preventDefault();
     document.getElementById('fa-spin-data-delete').style.display = 'block';
     document.getElementById('error-message').innerHTML = '';
 
-    let uri = config.root + 'users/' + usernameId;
+    let uri = config.root + 'users/' + usernameid;
 
     let options = {
         method: 'DELETE',
@@ -569,7 +570,7 @@ let deleteUserData = () => {
 let searchUsers = (event) => {
     event.preventDefault();
     showLoader();
-    searchParameter = document.getElementById('searchUsers').value;
+    let searchParameter = document.getElementById('searchUsers').value;
     getUsers(searchParameter);
     hideLoader(1000);
 }
