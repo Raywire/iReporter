@@ -126,7 +126,7 @@ let signUp = (event) => {
     let username = document.getElementById('username').value;
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
-    let confirm_password = document.getElementById('confirm_password').value;
+    let confirmPassword = document.getElementById('confirm_password').value;
 
     let data = {
         firstname,
@@ -136,7 +136,7 @@ let signUp = (event) => {
         password
     };
 
-    if (password != confirm_password) {
+    if (password != confirmPassword) {
         document.getElementById('fa-spin').style.display = 'none';
         document.getElementById('submit').value = 'Sign Up';
         document.getElementById('error-message').innerHTML = 'Passwords do not match';
@@ -285,9 +285,9 @@ let resetPassword = (event, profileusername, resettoken) => {
     let uri = config.root + 'users/' + profileusername;
 
     let password = document.getElementById('password').value;
-    let confirm_password = document.getElementById('confirm_password').value;
+    let confirmPassword = document.getElementById('confirm_password').value;
 
-    if (password !== confirm_password) {
+    if (password !== confirmPassword) {
         document.getElementById('fa-spin-reset').style.display = 'none';
         document.getElementById('password').style.borderColor = 'red';
         document.getElementById('confirm_password').style.borderColor = 'red';

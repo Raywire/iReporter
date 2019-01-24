@@ -5,7 +5,7 @@ Project: iReporter
 Description:iReporter enables any citizen to bring any form of corruption to the notice of appropriate authorities and the
 general public. Users can also report on things that needs government intervention.
 
-[GitHub Pages Link](https://raywire.github.io/iReporter/UI)
+[GitHub Hosting Link](https://raywire.github.io/iReporter/UI)
 
 ## Getting Started
 
@@ -49,13 +49,13 @@ End to end tests check how the front-end integrates with the back-end
 
 ## Built With
 
-  * [Vanilla Javascript](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics)
-  * [Moment.js](https://momentjs.com/)
-  * [HTML 5](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
+*   [Vanilla Javascript](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics)
+*   [Moment.js](https://momentjs.com/)
+*   [HTML 5](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
 
 ## Author
 
-  * **Ryan Simiyu**
+***Ryan Simiyu***
 
 ## License
 
