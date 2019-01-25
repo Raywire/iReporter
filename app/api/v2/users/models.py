@@ -1,17 +1,23 @@
 """User models"""
 from werkzeug import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from app.db_config import connection, init_database
 from flask import request, current_app
 from flask_restful import reqparse
 from app.validators import (validate_username, validate_characters,
                             validate_email, validate_integers,
-                            validate_password)
+                            validate_password, allowed_file)
+from app.db_config import config
 import psycopg2.extras
 
 import datetime
 import re
 import uuid
+import pyrebase
 import os
+
+firebase = pyrebase.initialize_app(config)
+storage = firebase.storage()
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_signin = reqparse.RequestParser(bundle_errors=True)
@@ -22,50 +28,42 @@ parser_password = reqparse.RequestParser(bundle_errors=True)
 parser_update = reqparse.RequestParser(bundle_errors=True)
 
 parser.add_argument('firstname',
-                    type=validate_characters, required=True,
-                    nullable=False,
+                    type=validate_characters, required=True, nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('lastname',
-                    type=validate_characters, required=True,
-                    nullable=False,
+                    type=validate_characters, required=True, nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('othernames',
-                    type=validate_characters, required=False,
-                    nullable=False,
+                    type=validate_characters, required=False, nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('username',
-                    type=validate_username, required=True,
-                    nullable=False,
+                    type=validate_username, required=True, nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('email',
-                    type=validate_email, required=True,
-                    nullable=False,
+                    type=validate_email, required=True, nullable=False,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('phoneNumber',
-                    type=validate_integers, required=False,
-                    nullable=True,
+                    type=validate_integers, required=False, nullable=True,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
 parser.add_argument('password',
-                    type=validate_password, required=True,
-                    nullable=False,
+                    type=validate_password, required=True, nullable=False,
                     help="Password must be at least 6 characters"
                     )
 
 parser_activate.add_argument('isactive', choices=["True", "False"],
-                             required=True,
-                             nullable=False,
+                             required=True, nullable=False,
                              help="(Accepted values: True, False)"
                              )
 
@@ -128,13 +126,11 @@ class UserModel:
         return row
 
     def sign_in(self):
-        parser_signin.add_argument('username',
-                                   required=True,
+        parser_signin.add_argument('username', required=True,
                                    help="This key is required and should not be empty or formatted wrongly"
                                    )
 
-        parser_signin.add_argument('password',
-                                   required=True,
+        parser_signin.add_argument('password', required=True,
                                    help="This key is required and should not be empty or formatted wrongly"
                                    )
 
@@ -154,7 +150,8 @@ class UserModel:
                 'othernames': current_user['othernames'],
                 'phoneNumber': current_user['phonenumber'],
                 'public_id': current_user['public_id'],
-                'username': current_user['username']
+                'username': current_user['username'],
+                'photourl': current_user['photourl']
             }
 
         if current_user is None:
@@ -178,8 +175,7 @@ class UserModel:
 
     def promote_user(self, username):
         """method to upgrade a user to an admin user"""
-        parser_promote.add_argument('isadmin',
-                                    choices=["True", "False"],
+        parser_promote.add_argument('isadmin', choices=["True", "False"],
                                     required=True, nullable=False,
                                     help="(Accepted values: True, False)"
                                     )
@@ -290,3 +286,29 @@ class UserModel:
         cursor.execute(query, values)
         conn.commit()
         return new_data
+
+    def upload_profile_pic(self, username):
+        user = self.get_user(username)
+        query = """UPDATE users SET photourl=%s WHERE username=%s"""
+        if user is None:
+            return None
+
+        if 'file' not in request.files:
+            return 'no file part'
+        file = request.files['file']
+
+        if file.filename == '':
+            return 'select an image'
+        if file and allowed_file(file.filename, 'images'):
+            filename = secure_filename(file.filename)
+            extension = filename.rsplit('.', 1)[1].lower()
+            filename = str(username) + '.' + extension
+            storage.child('images/users/'+filename).put(file)
+            photourl = storage.child('images/users/'+filename).get_url(None)
+            values = photourl, username
+            conn = self.db
+            cursor = conn.cursor()
+            cursor.execute(query, values)
+            conn.commit()
+            return True
+        return "File type not supported"

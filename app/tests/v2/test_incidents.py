@@ -12,6 +12,7 @@ from app.api.v2.send_email import send
 
 expiration_time = 10
 
+
 class IncidentTestCase(unittest.TestCase):
     """Class for testing incidents"""
 
@@ -76,104 +77,110 @@ class IncidentTestCase(unittest.TestCase):
         self.assertEqual(result['status'], 201)
 
     def test_update_status_of_nonexistent_redflag(self):
-        """Test update status of a nonexistant redflag"""       
+        """Test update status of a nonexistant redflag"""
         response = self.app.patch(
             "/api/v2/redflags/2/status", headers=self.headers, data=json.dumps({"status": "resolved"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['message'], 'Redflag does not exist') 
+        self.assertEqual(result['message'], 'Redflag does not exist')
 
     def test_update_status_of_redflag(self):
         """Test update status of a specific redflag"""
         self.app.post(
-            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))        
+            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))
         response = self.app.patch(
             "/api/v2/redflags/1/status", headers=self.headers, data=json.dumps({"status": "resolved"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data'][0]['message'],"Updated redflag record's status")
+        self.assertEqual(result['data'][0]['message'],
+                         "Updated redflag record's status")
 
     def test_update_location_of_nonexistent_redflag(self):
-        """Test update location of a specific redflag"""       
+        """Test update location of a specific redflag"""
         response = self.app.patch(
             "/api/v2/redflags/2/location", headers=self.headers, data=json.dumps({"location": "-75.0, -12.554334"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['message'], 'Redflag does not exist')     
+        self.assertEqual(result['message'], 'Redflag does not exist')
 
     def test_update_location_of_redflag(self):
         """Test update location of a specific redflag"""
         self.app.post(
-            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))        
+            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))
         response = self.app.patch("/api/v2/redflags/1/location", headers=self.headers,
                                   data=json.dumps({"location": "-75.0, -12.554334"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data'][0]['message'],"Updated redflag record's location")
+        self.assertEqual(result['data'][0]['message'],
+                         "Updated redflag record's location")
 
     def test_update_comment_of_nonexistent_redflag(self):
-        """Test update comment of a specific redflag"""       
+        """Test update comment of a specific redflag"""
         response = self.app.patch(
             "/api/v2/redflags/2/comment", headers=self.headers, data=json.dumps({"comment": "Now is what you see"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['message'], 'Redflag does not exist') 
+        self.assertEqual(result['message'], 'Redflag does not exist')
 
     def test_update_comment_of_redflag(self):
         """Test update comment of a specific redflag"""
         self.app.post(
-            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))        
+            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))
         response = self.app.patch("/api/v2/redflags/1/comment", headers=self.headers,
                                   data=json.dumps({"comment": "Cartels are taking over Kenya"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data'][0]['message'],"Updated redflag record's comment")
+        self.assertEqual(result['data'][0]['message'],
+                         "Updated redflag record's comment")
 
     def test_update_status_of_nonexistent_intervention(self):
-        """Test update status of a nonexistant intervention"""       
+        """Test update status of a nonexistant intervention"""
         response = self.app.patch(
             "/api/v2/interventions/2/status", headers=self.headers, data=json.dumps({"status": "resolved"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['message'], 'Intervention does not exist')         
+        self.assertEqual(result['message'], 'Intervention does not exist')
 
     def test_update_status_of_intervention(self):
         """Test update status of a specific intervention"""
         self.app.post(
-            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))        
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
         response = self.app.patch("/api/v2/interventions/1/status",
                                   headers=self.headers, data=json.dumps({"status": "resolved"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data'][0]['message'],"Updated intervention record's status")
+        self.assertEqual(result['data'][0]['message'],
+                         "Updated intervention record's status")
 
     def test_update_location_of_intervention(self):
         """Test update location of a specific intervention"""
         self.app.post(
-            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))         
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
         response = self.app.patch("/api/v2/interventions/1/location",
                                   headers=self.headers, data=json.dumps({"location": "-75.0, -12.554334"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data'][0]['message'],"Updated intervention record's location")
+        self.assertEqual(result['data'][0]['message'],
+                         "Updated intervention record's location")
 
     def test_update_comment_of_nonexistent_intervention(self):
-        """Test update comment of a specific intervention"""       
+        """Test update comment of a specific intervention"""
         response = self.app.patch(
             "/api/v2/interventions/2/comment", headers=self.headers, data=json.dumps({"comment": "Now is what you see"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['message'], 'Intervention does not exist') 
+        self.assertEqual(result['message'], 'Intervention does not exist')
 
     def test_update_comment_of_intervention(self):
         """Test update comment of a specific intervention"""
         self.app.post(
-            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))         
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
         response = self.app.patch("/api/v2/interventions/1/comment", headers=self.headers,
                                   data=json.dumps({"comment": "Cartels are taking over Kenya"}))
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result['data'][0]['message'],"Updated intervention record's comment")
+        self.assertEqual(result['data'][0]['message'],
+                         "Updated intervention record's comment")
 
     def test_get_all_redflags_no_token(self):
         """Test all redflags"""
@@ -354,25 +361,14 @@ class IncidentTestCase(unittest.TestCase):
 
     def test_send_email(self):
         """Tests if email has been sent"""
-        response = send("simiyuwire@gmail.com", "iReporter Test Mail", "If you are reading this this test has passed")
+        response = send("simiyuwire@gmail.com", "iReporter Test Mail",
+                        "If you are reading this this test has passed")
         self.assertTrue(response)
 
     def test_send_email_failed(self):
         """Tests if email has not been sent"""
         response = send("123456", "Failure", "Not a valid email")
-        self.assertFalse(response)    
-
-    def test_nonexistent_image(self):
-        response = self.app.get("/api/v2/uploads/images/154614577211.jpg", headers=self.headers)
-        result = json.loads(response.data)
-        self.assertEqual(result['status'], 404)
-        self.assertEqual(result['message'], 'Image does not exist')
-        
-    def test_nonexistent_video(self):
-        response = self.app.get("/api/v2/uploads/videos/154614577211.mp4", headers=self.headers)
-        result = json.loads(response.data)
-        self.assertEqual(result['status'], 404)
-        self.assertEqual(result['message'], 'Video does not exist')         
+        self.assertFalse(response)
 
     def tearDown(self):
         url = self.APP.config.get('DATABASE_URL')

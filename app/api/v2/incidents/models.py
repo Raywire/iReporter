@@ -2,17 +2,16 @@
 import datetime
 from flask import request, current_app
 from flask_restful import reqparse
-from app.db_config import connection, init_database
-from app.validators import validate_comment, validate_coordinates, validator
+from app.db_config import connection, init_database, config
+from app.validators import (
+    validate_comment, validate_coordinates, validator, allowed_file)
 from werkzeug.utils import secure_filename
 import psycopg2.extras
+import pyrebase
 import os
 
-
-UPLOAD_FOLDER_IMAGE = 'uploads/images'
-UPLOAD_FOLDER_VIDEO = 'uploads/videos'
-ALLOWED_EXTENSIONS_IMAGE = set(['png', 'jpg', 'jpeg', 'gif'])
-ALLOWED_EXTENSIONS_VIDEO = set(['mp4', 'avi', 'flv', 'wmv', 'mov'])
+firebase = pyrebase.initialize_app(config)
+storage = firebase.storage()
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
@@ -57,9 +56,6 @@ class IncidentModel:
         cursor = conn.cursor()
         cursor.execute(query)
         conn.commit()
-
-    def allowed_file(self, filename, filetype):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in filetype
 
     def save_incident(self, incident_type, user_id):
         """method to post one or multiple incidents"""
@@ -220,15 +216,15 @@ class IncidentModel:
         video = incident['videos']
         if image is not None:
             try:
-                os.remove(os.path.join(self.APP_ROOT, UPLOAD_FOLDER_IMAGE, image))
+                storage.delete('uploads/images/'+image)
             except:
                 pass
         if video is not None:
             try:
-                os.remove(os.path.join(self.APP_ROOT, UPLOAD_FOLDER_VIDEO, video))
+                storage.delete('uploads/videos/'+video)
             except:
                 pass
-        
+
         return True
 
     def upload_incident_file(self, incident_type, incident_id, current_user_id, file_type):
@@ -249,22 +245,19 @@ class IncidentModel:
         for upload in uploads:
 
             if file_type == 'videos':
-                allowed_file_type = ALLOWED_EXTENSIONS_VIDEO
-                upload_file_folder = UPLOAD_FOLDER_VIDEO
+                allowed_file_type = 'videos'
                 query = """UPDATE incidents SET videos=%s WHERE id=%s"""
 
             if file_type == 'images':
-                allowed_file_type = ALLOWED_EXTENSIONS_IMAGE
-                upload_file_folder = UPLOAD_FOLDER_IMAGE
+                allowed_file_type = 'images'
                 query = """UPDATE incidents SET images=%s WHERE id=%s"""
 
-            if upload and self.allowed_file(upload.filename, allowed_file_type):
+            if upload and allowed_file(upload.filename, allowed_file_type):
                 filename = secure_filename(upload.filename)
                 extension = filename.rsplit('.', 1)[1].lower()
                 filename = str(incident_id) + '.' + extension
 
-                target = os.path.join(self.APP_ROOT, upload_file_folder, filename)
-                upload.save(target)
+                storage.child('uploads/'+file_type+'/'+filename).put(upload)
 
                 values = filename, incident_id
                 conn = self.db
@@ -274,3 +267,8 @@ class IncidentModel:
                 return True
 
             return "File type not supported"
+
+    def get_file_url(self, file_type, filename):
+        """Get the url for the file by name"""
+        fileurl = storage.child('uploads/'+file_type+'/'+filename).get_url(None)
+        return fileurl

@@ -12,6 +12,7 @@ from app.api.v2.send_email import send
 
 expiration_time = 10
 
+
 class IncidentUploadTestCase(unittest.TestCase):
     """Class for testing incident uploads"""
 
@@ -31,28 +32,16 @@ class IncidentUploadTestCase(unittest.TestCase):
         self.headers_invalid = {
             'Content-Type': 'application/json', 'x-access-token': 'tokenisinvalid'}
 
-    def test_nonexistent_image(self):
-        response = self.app.get("/api/v2/uploads/images/154614577211.jpg", headers=self.headers)
-        result = json.loads(response.data)
-        self.assertEqual(result['status'], 404)
-        self.assertEqual(result['message'], 'Image does not exist')
-        
-    def test_nonexistent_video(self):
-        response = self.app.get("/api/v2/uploads/videos/154614577211.mp4", headers=self.headers)
-        result = json.loads(response.data)
-        self.assertEqual(result['status'], 404)
-        self.assertEqual(result['message'], 'Video does not exist')
+    def test_get_video(self):
+        response = self.app.get(
+            "/api/v2/uploads/videos/test_video.mp4", headers=self.headers)
+        self.assertEqual(response.status_code, 200)
 
-    # def test_get_video(self):
-    #     response = self.app.get("/api/v2/uploads/videos/test_video.mp4", headers=self.headers)
-    #     result = json.loads(response.data)
-    #     self.assertEqual(result, 404)      
-
-    # def test_get_image(self):
-    #     response = self.app.get("/api/v2/uploads/images/test_image.jpg", headers=self.headers)
-    #     result = json.loads(response.data)
-    #     self.assertEqual(result, 404)
+    def test_get_image(self):
+        response = self.app.get(
+            "/api/v2/uploads/images/test_image.jpg", headers=self.headers)
+        self.assertEqual(response.status_code, 200)
 
     def tearDown(self):
         url = self.APP.config.get('DATABASE_URL')
-        destroy_tables(url)        
+        destroy_tables(url)
