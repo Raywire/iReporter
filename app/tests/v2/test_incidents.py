@@ -360,19 +360,7 @@ class IncidentTestCase(unittest.TestCase):
     def test_send_email_failed(self):
         """Tests if email has not been sent"""
         response = send("123456", "Failure", "Not a valid email")
-        self.assertFalse(response)    
-
-    def test_nonexistent_image(self):
-        response = self.app.get("/api/v2/uploads/images/154614577211.jpg", headers=self.headers)
-        result = json.loads(response.data)
-        self.assertEqual(result['status'], 404)
-        self.assertEqual(result['message'], 'Image does not exist')
-        
-    def test_nonexistent_video(self):
-        response = self.app.get("/api/v2/uploads/videos/154614577211.mp4", headers=self.headers)
-        result = json.loads(response.data)
-        self.assertEqual(result['status'], 404)
-        self.assertEqual(result['message'], 'Video does not exist')         
+        self.assertFalse(response)     
 
     def tearDown(self):
         url = self.APP.config.get('DATABASE_URL')
