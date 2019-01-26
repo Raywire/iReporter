@@ -14,7 +14,6 @@ Flask-RESTful==0.3.6
 flask-restplus==0.12.1
 funcsigs==1.0.2
 future==0.16.0
-futures==3.2.0
 gax-google-logging-v2==0.8.3
 gax-google-pubsub-v1==0.8.3
 gcloud==0.17.0
