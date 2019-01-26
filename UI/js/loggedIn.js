@@ -67,6 +67,8 @@ let signIn = (event) => {
             if (j.hasOwnProperty('data')) {
                 document.getElementById('error-message').style.color = 'green';
                 document.getElementById('error-message').innerHTML = 'Login successful';
+                let othernames = '';
+                let phonenumber = '';
 
                 let userData = j['data'][0]['user'];
                 let accessToken = j['data'][0]['token'];
@@ -90,6 +92,7 @@ let signIn = (event) => {
                 localStorage.setItem('profileLastName', userData['lastname']);
                 localStorage.setItem('profileOtherName', othernames);
                 localStorage.setItem('profileEmail', email);
+                localStorage.setItem('profilePhotoUrl', userData['photourl']);
 
                 let expirationTime = 59;
                 setCookie('token', accessToken, expirationTime);

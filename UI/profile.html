@@ -48,7 +48,7 @@
   <div class="container row wrapper">
     <div class="column">
       <div class="card">
-        <img src="img/img_avatar3.jpeg" alt="Profile Picture">
+        <img id='profilePhoto' src="" alt="Profile Picture">
         <p id="name"></p>
         <p id="email" class="title"></p>
         <p id="username"></p>
@@ -109,10 +109,11 @@
             <div class="modal-form">
               <form id="uploadProfilePic" method="POST" enctype="multipart/form-data">
                 <p class="contact"><label for="profilepic">Upload Profile Photo</label></p>
-                <input type="file" id="profilePic" name="profilepic" accept="image/*" multiple>
+                <input type="file" id="profilePic" name="profilepic" accept="image/*">
                 <br>
                 <input class="button-normal" name="submit" id="updateProfile" tabindex="5" value="Update Profile" type="submit">
                 <i id="fa-spin-upload-pic" class="fa fa-circle-o-notch fa-spin hide"></i>
+                <p id="upload-message"></p> 
               </form>
             </div>
           </div>

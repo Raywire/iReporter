@@ -656,8 +656,13 @@ input[type=reset] {
   }
 input[type=reset]:hover,input[type=reset]:focus {
   background-color: #bfbfbf;
-} 
-
+}
+#profilePhoto{
+  padding-top: 10px;
+}
+#uploadProfilePic input[type=file]{
+  color:black;
+}
 form p{
 font-weight: bold;
 }
