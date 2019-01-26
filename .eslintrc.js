@@ -10,6 +10,8 @@ module.exports = {
         "document": true,
         "google": true,
         "getCookie": true,
+        "setCookie": true,
+        "setTimeout": true,
         "logout": true,
         "showLoader": true,
         "hideLoader": true,

@@ -484,7 +484,7 @@ let getDataById = (incidenttype, incidentId) => {
             } catch (error) {}
 
           }
-          if (images === null) {
+          if (images === null || images === undefined) {
             imageUrl = 'img/bad-road.jpeg';
           } else {
             getFileData('images', images);
@@ -510,7 +510,7 @@ let getDataById = (incidenttype, incidentId) => {
                 </div>
                 <div class='row  bg-color'>
                   <div class='column-50 bg-color'>
-                    <p class='img-details'><img id='main-image' src='${imageUrl}' alt='${title}'></p>
+                    <p class='img-details'><img id='main-image' src='${imageUrl}' alt='Image for ${title}'></p>
                     <p class='vid-details'></p>
                   </div>
                   <div class='column-50' id='comment-data'  bg-color align-justify'>
@@ -614,25 +614,19 @@ let getFileData = (filetype, filename) => {
   fetch(request)
     .then((response) => {
       if (response.ok) {
-        return response.blob();
+        return response.json();
       } else {
         return response.json();
       }
     })
     .then((j) => {
-      console.log(j);
-      let contentType = j['type'].split('/')[0];
-
-      if (contentType === 'application') {
-        return 'File not found';
-      }
-      if (contentType === 'image') {
+      if (filetype === 'images') {
         let imgElem = document.getElementById('main-image');
-        let imgUrl = URL.createObjectURL(j);
+        let imgUrl = j;
         imgElem.src = imgUrl;
       }
-      if(contentType === 'video'){
-        let videoUrl = URL.createObjectURL(j);
+      if(filetype === 'videos'){
+        let videoUrl = j;
         let videoElement = document.createElement('video');
         if(videoElement.canPlayType('video/mp4')){
           videoElement.setAttribute('src', videoUrl);
@@ -907,7 +901,7 @@ let uploadImage = (event, incidentType, incidentId) => {
   var formData = new FormData();
   let fileData = document.getElementById('fileImage').files[0];
 
-  if (fileData === null) {
+  if (fileData === null || fileData === undefined) {
     document.getElementById('fa-spin-upload').style.display = 'none';
     document.getElementById('upload-message').innerHTML = 'Please select a file';
     return false;
@@ -988,7 +982,7 @@ let uploadVideo = (event, incidentType, incidentId) => {
   var formData = new FormData();
   let fileData = document.getElementById('fileVideo').files[0];
 
-  if (fileData === null) {
+  if (fileData === null || fileData === undefined) {
     document.getElementById('fa-spin-upload-2').style.display = 'none';
     document.getElementById('upload-message-2').innerHTML = 'Please select a file';
     return false;
@@ -1175,12 +1169,19 @@ let loadProfileData = () => {
   let lastname = localStorage.getItem('profileLastName');
   let othername = localStorage.getItem('profileOtherName');
   let profileEmail = localStorage.getItem('profileEmail');
+  let profilePhotoUrl = localStorage.getItem('profilePhotoUrl');
 
   let profileName = firstname + ' ' + lastname + ' ' + othername;
 
   document.getElementById('name').innerHTML = profileName;
   document.getElementById('email').innerHTML = profileEmail;
   document.getElementById('username').innerHTML = user.username;
+
+  if(profilePhotoUrl == 'null' || profilePhotoUrl == ''){
+    document.getElementById('profilePhoto').src = 'img/img_avatar3.jpeg';
+  }else{
+    document.getElementById('profilePhoto').src = profilePhotoUrl;
+  }
 
   document.getElementById('firstnameProfile').value = firstname;
   document.getElementById('lastnameProfile').value = lastname;
@@ -1191,6 +1192,81 @@ let loadProfileData = () => {
 
 let uploadProfilePic = (event, usernameid) => {
   event.preventDefault();
+  document.getElementById('fa-spin-upload-pic').style.display = 'block';
+  document.getElementById('upload-message').innerHTML = '';
+  document.getElementById('upload-message').style.color = 'red';
+
+  let uri = config.root + 'users/' + usernameid + '/uploadImage';
+
+  var formData = new FormData();
+  let fileData = document.getElementById('profilePic').files[0];
+
+  if (fileData === null || fileData === undefined) {
+    document.getElementById('fa-spin-upload-pic').style.display = 'none';
+    document.getElementById('upload-message').innerHTML = 'Please select a file';
+    return false;
+  }
+
+  console.log(fileData);
+  console.log(fileData.name);
+  let fileExtension = fileData.name.split('.')[1];
+  let uploadedFileName = usernameid + '.' + fileExtension
+  console.log(uploadedFileName);
+
+  formData.append('file', fileData, fileData.name);
+
+  let options = {
+    method: 'PATCH',
+    mode: 'cors',
+    headers: new Headers({
+      'x-access-token': tokenModels,
+    }),
+    body: formData
+  }
+  let request = new Request(uri, options);
+
+  fetch(request)
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return response.json();
+      }
+    })
+    .then((j) => {
+      console.log(j);
+      if (j.hasOwnProperty('message')) {
+        if (j['message'] === 'Token is missing') {
+          logout();
+        }
+        if (j['message'] === 'Token is invalid') {
+          logout();
+        }
+        if (j['message'] === 'user does not exist') {
+          document.getElementById('upload-message').innerHTML = j['message'];
+        }
+        if (j['message'] === 'A user can only upload a picture to their own profile') {
+          document.getElementById('upload-message').innerHTML = j['message'];
+        }
+        if (j['message'] === 'File type not supported' || j['message'] === 'no file part') {
+          document.getElementById('upload-message').innerHTML = j['message'];
+        }
+
+      }
+      if (j.hasOwnProperty('data')) {
+        if (j['data']['message'] === 'Your profile picture has been uploaded') {
+          document.getElementById('upload-message').style.color = 'green';
+          document.getElementById('upload-message').innerHTML = j['data']['message'];
+        }
+      }
+      document.getElementById('fa-spin-upload-pic').style.display = 'none';
+
+    })
+    .catch((error) => {
+      console.log(error);
+      document.getElementById('upload-message').innerHTML = 'An error occured try again';
+      document.getElementById('fa-spin-upload-pic').style.display = 'none';
+    });  
 }
 
 let getIncidentNumber = (incidenttype) => {
