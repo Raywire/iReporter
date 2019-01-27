@@ -6,8 +6,6 @@ from app.api.v2.decorator import (
     token_required, nonexistent_incident, owner_can_edit,
     draft_is_deletable, draft_is_editable, updated_incident)
 
-import os
-
 
 class UploadInterventionImage(Resource):
     """Contains method for uploading an image to an intervention"""

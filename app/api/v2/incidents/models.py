@@ -8,7 +8,6 @@ from app.validators import (
 from werkzeug.utils import secure_filename
 import psycopg2.extras
 import pyrebase
-import os
 
 firebase = pyrebase.initialize_app(config)
 storage = firebase.storage()
@@ -268,7 +267,8 @@ class IncidentModel:
 
             return "File type not supported"
 
-    def get_file_url(self, file_type, filename):
+    @classmethod
+    def get_file_url(cls, file_type, filename):
         """Get the url for the file by name"""
         fileurl = storage.child('uploads/'+file_type+'/'+filename).get_url(None)
         return fileurl

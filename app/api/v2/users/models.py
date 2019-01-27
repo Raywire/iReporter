@@ -11,10 +11,8 @@ from app.db_config import config
 import psycopg2.extras
 
 import datetime
-import re
 import uuid
 import pyrebase
-import os
 
 firebase = pyrebase.initialize_app(config)
 storage = firebase.storage()
