@@ -658,10 +658,11 @@ input[type=reset]:hover,input[type=reset]:focus {
   background-color: #bfbfbf;
 }
 #profilePhoto{
-  padding-top: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
 }
 img.profilePhoto {
-  width: 100%;
+  width: 50%;
   height: auto;
   border-radius: 8px;
 }
