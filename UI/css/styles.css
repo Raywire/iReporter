@@ -660,6 +660,11 @@ input[type=reset]:hover,input[type=reset]:focus {
 #profilePhoto{
   padding-top: 10px;
 }
+img.profilePhoto {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
 #uploadProfilePic input[type=file]{
   color:black;
 }
@@ -1002,4 +1007,16 @@ select#perPage:-moz-focusring {
 }
 .blocked{
   opacity: 0.4;
+}
+.privacy-terms p{
+  text-align: justify;
+  padding:12px;
+}
+.privacy-terms h1,.privacy-terms h2, .privacy-terms h3, .privacy-terms h4, .privacy-terms h5{
+  color:black;
+}
+.privacy-terms ul{
+  text-align: left;
+  margin-left: 2em;
+  color: black;
 }

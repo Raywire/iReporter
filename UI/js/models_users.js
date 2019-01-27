@@ -308,6 +308,7 @@ let getUserData = (usernameid) => {
                 let result = '';
                 let fullname = '';
                 let phone = '';
+                let profilePhoto = '';
                 j['data'].map((user) => {
                     const {
                         firstname,
@@ -319,9 +320,17 @@ let getUserData = (usernameid) => {
                         isAdmin,
                         isActive,
                         registered,
-                        public_id
+                        public_id,
+                        photourl
                     } = user;
                     let localDateTime = convertToLocalTime(registered);
+
+                    if(photourl === null){
+                        profilePhoto = 'img/img_avatar3.jpeg';
+                    }else{
+                        profilePhoto = photourl;
+                    }
+
                     if (othernames === null) {
                         fullname = firstname + ' ' + lastname;
                     } else {
@@ -343,7 +352,7 @@ let getUserData = (usernameid) => {
                 </div>
                 <div class='row  bg-color'>
                   <div class='column-50 bg-color'>                       
-                    <p><img src='img/img_avatar3.jpeg' alt=''></p>
+                    <p><img class='profilePhoto' src='${profilePhoto}' alt='Profile Photo for ${fullname}'></p>
                   </div>
                   <div class='column-50  bg-color align-justify'>
                     <p id='comment-data'><span class='black'>Email: </span>${email}</p>
