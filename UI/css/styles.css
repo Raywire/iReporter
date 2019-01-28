@@ -1071,3 +1071,6 @@ select#perPage:-moz-focusring {
   margin-left: 2em;
   color: black;
 }
+.spacer{
+  padding-bottom: 20px;
+}
