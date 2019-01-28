@@ -23,5 +23,9 @@ module.exports = {
         "fetch": true,
         "Request": true,
         "Headers": true,
+        "FormData": true,
+    },
+    "rules": {
+        "no-unused-vars": ["error", { "vars": "local" }]
     }
 };
