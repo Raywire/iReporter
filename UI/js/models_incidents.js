@@ -485,7 +485,7 @@ let getDataById = (incidenttype, incidentId) => {
 
           }
           if (images === null || images === undefined) {
-            imageUrl = 'img/bad-road.jpeg';
+            imageUrl = 'img/loading.jpg';
           } else {
             imageUrl = 'img/loading.jpg';
             getFileData('images', images);
