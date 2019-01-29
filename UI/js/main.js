@@ -1,5 +1,7 @@
-let mainNav = document.getElementById('js-menu');
-let navBarToggle = document.getElementById('js-navbar-toggle');
- navBarToggle.addEventListener('click', function() {
+const mainNav = document.getElementById('js-menu');
+const navBarToggle = document.getElementById('js-navbar-toggle');
+const activeToggle = () => {
   mainNav.classList.toggle('active');
-});
+};
+
+navBarToggle.addEventListener('click', activeToggle);
