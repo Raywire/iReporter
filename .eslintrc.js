@@ -2,7 +2,7 @@ module.exports = {
     "parserOptions": {
         "ecmaVersion": 6
     },
-    "extends": "eslint:recommended",
+    "extends": "eslint-config-airbnb-base",
     "globals": {
         "config": true,
         "user":true,
@@ -24,6 +24,7 @@ module.exports = {
         "Request": true,
         "Headers": true,
         "FormData": true,
+        "console": true,
     },
     "rules": {
         "no-unused-vars": ["error", { "vars": "local" }]

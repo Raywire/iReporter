@@ -1,21 +1,21 @@
 const config = {
-  root : 'https://pure-wildwood-82378.herokuapp.com/api/v2/',
-  resetlink: 'https://raywire.github.io/iReporter/UI/reset_password.html'
-}
+  root: 'https://pure-wildwood-82378.herokuapp.com/api/v2/',
+  resetlink: 'https://raywire.github.io/iReporter/UI/reset_password.html',
+};
 
-let setCookie = (cname, cvalue, expirationtime) => {
-  let date = new Date();
+const setCookie = (cname, cvalue, expirationtime) => {
+  const date = new Date();
   date.setTime(date.getTime() + (expirationtime * 60 * 1000));
-  let expires = 'expires=' + date.toUTCString();
-  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/;' + 'sameSite=Strict;';
-}
+  const expires = `expires=${date.toUTCString()}`;
+  document.cookie = `${cname}=${cvalue};${expires};path=/;sameSite=Strict;`;
+};
 
-let getCookie = (cname) => {
-  var name = cname + '=';
-  let decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
+const getCookie = (cname) => {
+  const name = `${cname}=`;
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const ca = decodedCookie.split(';');
+  for (let i = 0; i < ca.length; i += 1) {
+    let c = ca[i];
     while (c.charAt(0) === ' ') {
       c = c.substring(1);
     }
@@ -24,37 +24,36 @@ let getCookie = (cname) => {
     }
   }
   return 'logged out';
-}
+};
 
-let scrollFunction = () => {
+const scrollFunction = () => {
   if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
     document.getElementById('toTop').style.display = 'block';
   } else {
     document.getElementById('toTop').style.display = 'none';
   }
-}
+};
 
 // When the user clicks on the button, scroll to the top of the document
-let topFunction = () => {
+const topFunction = () => {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
-}
+};
 
-let hideLoader = (timer) => {
-  setTimeout(hide, timer);
-
+const hideLoader = (timer) => {
   function hide() {
     document.getElementById('loader').style.display = 'none';
   }
-}
+  setTimeout(hide, timer);
+};
 
-let showLoader = () => {
+const showLoader = () => {
   document.getElementById('loader').style.display = 'block';
-}
+};
 
-let checkPassword = () => {
-  let pass1 = document.getElementById('password').value;
-  let confirmPass1 = document.getElementById('confirm_password').value;
+const checkPassword = () => {
+  const pass1 = document.getElementById('password').value;
+  const confirmPass1 = document.getElementById('confirm_password').value;
 
   if (pass1 === confirmPass1) {
     document.getElementById('password').style.borderColor = 'green';
@@ -63,4 +62,4 @@ let checkPassword = () => {
     document.getElementById('password').style.borderColor = 'red';
     document.getElementById('confirm_password').style.borderColor = 'red';
   }
-}
+};
