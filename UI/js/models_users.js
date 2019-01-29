@@ -60,7 +60,6 @@ const getUsers = (userdata) => {
           });
         }
 
-        // function () {
         const Fn = function Pagination() {
           const prevButton = document.getElementById('button_prev');
           const nextButton = document.getElementById('button_next');
@@ -255,7 +254,6 @@ const getUsers = (userdata) => {
 
         const pagination = new Fn();
         pagination.init();
-        // }();
       }
     })
     .catch((error) => {

@@ -208,8 +208,6 @@ let getData = (incidenttype, incidentcreator, searchdata) => {
           });
         }
 
-        // (function () {
-
         const Fn = function Pagination() {
           const prevButton = document.getElementById('button_prev');
           const nextButton = document.getElementById('button_next');
@@ -424,10 +422,9 @@ let getData = (incidenttype, incidentcreator, searchdata) => {
             incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
           }
         };
-
         const pagination = new Fn();
         pagination.init();
-        // })();
+
         hideLoader(1000);
       }
     })
