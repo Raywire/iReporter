@@ -10,6 +10,7 @@
 html, body {
   height: 100%;
   margin: 0;
+  cursor: default;
 }
  body{
   font-family: 'Raleway', sans-serif;
@@ -170,7 +171,11 @@ select:-moz-focusring {
     width: 33.33%;
     padding: 5px;
   }
-  
+  .column-25 {
+    float: left;
+    width: 25%;
+    padding: 5px;
+  }  
   .column-50 {
     float: left;
     width: 50%;
@@ -285,6 +290,44 @@ select:-moz-focusring {
   padding-top: 15px;
   padding-right:4px;
 }
+.icon-card{
+  position: relative;
+  margin-top: -20px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.4);
+  transition: 0.3s;  
+}
+.icon-card i{
+  color: white;
+  padding:12px;
+}
+.column-25{
+  margin-top: 20px;
+}
+.column-25 p {
+  color: #737373;
+  padding-top: 8px;
+}
+.card-footer{
+  border-top: 1px solid #bfbfbf;
+  padding-top: 12px;
+}
+.red-bg{
+  background-color: rgb(239, 83, 80);
+}
+.green-bg{
+  background-color: rgb(102, 187, 106);
+}
+.blue-bg{
+  background-color: rgb(38, 198, 218);
+}
+.orange-bg{
+  background-color: rgb(255, 167, 38);
+}
+.card-footer span{
+  color:black;
+}
  @media screen and (max-width: 767px) {
   .main-nav li {
     border-top: 1px solid #4d4d4d;
@@ -305,7 +348,11 @@ select:-moz-focusring {
     width: 100%;
     padding: 5px;
   }
-  
+  .column-25 {
+    float: left;
+    width: 100%;
+    padding: 5px;
+  }  
   .column-50 {
     float: left;
     width: 100%;
@@ -880,6 +927,9 @@ p.img-details,p.vid-details{
 }
 .font-small{
   font-size: 12px;
+}
+.font-medium{
+  font-size: 13px;
 }
 .clearfix::after{
   content: "";

@@ -42,6 +42,69 @@
       </ul>
     </nav>
     <div class="container row wrapper">
+      <div class="column-100">
+        <div class='column-25'>
+          <div class='card'>
+            <div class='container2'>
+              <div class="icon-card orange-bg">
+                <p class="spacer"><i class='fa fa-pencil-square-o fa-2x' aria-hidden='true'></i></p>
+              </div>
+              <p class='font-medium'>Red Flags: <span class="theme-blue" id='my-draft-redflags'>0</span></p>
+              <p class='font-medium'>Interventions: <span class="theme-blue" id='my-draft-interventions'>0</span></p>
+              <div class="card-footer">
+                <span class="font-medium">Draft</span>
+              </div>        
+            </div>
+          </div>              
+        </div>
+        <div class='column-25'>
+          <div class='card'>
+            <div class='container2'>
+              <div class="icon-card blue-bg">
+                <p class="spacer"><i class='fa fa-search fa-2x' aria-hidden='true'></i></p>
+              </div>
+              <p class='font-medium'>Red Flags: <span class="theme-blue" id='my-underinvestigation-redflags'>0</span></p>
+              <p class='font-medium'>Interventions: <span class="theme-blue" id='my-underinvestigation-interventions'>0</span></p>
+              <div class="card-footer">
+                <span class="font-medium">Under Investigation</span>
+              </div>        
+            </div>
+          </div>              
+        </div>  
+        <div class='column-25'>
+          <div class='card'>
+            <div class='container2'>
+                <div class="icon-card green-bg">
+                  <p class="spacer"><i class='fa fa-check-square-o fa-2x' aria-hidden='true'></i></p>
+                </div>
+                <p class='font-medium'>Red Flags: <span class="theme-blue" id='my-resolved-redflags'>0</span></p>
+                <p class='font-medium'>Interventions: <span class="theme-blue" id='my-resolved-interventions'>0</span></p>
+                <div class="card-footer">
+                  <span class="font-medium">Resolved</span>
+                </div>       
+            </div>
+          </div>              
+        </div>
+        <div class='column-25'>
+          <div class='card'>
+            <div class='container2'>
+                <div class="icon-card red-bg">
+                  <p class="spacer"><i class='fa fa-times fa-2x' aria-hidden='true'></i></p>
+                </div>
+                <p class='font-medium'>Red Flags: <span class="theme-blue" id='my-rejected-redflags'>0</span></p>
+                <p class='font-medium'>Interventions: <span class="theme-blue" id='my-rejected-interventions'>0</span></p>
+                <div class="card-footer">
+                  <span class="font-medium">Rejected</span>
+                </div>        
+            </div>
+          </div>              
+        </div> 
+        <script src="js/models_incidents.js"></script>
+        <script>
+          getIncidentNumber('redflags');
+          getIncidentNumber('interventions');
+        </script>                     
+      </div>
       <div class='column'>
         <div class='card'>
           <div class='container2'>
@@ -74,7 +137,7 @@
               <div class='container2'>
                 <a href='view_by_username.html?type=redflag&username=${user.username}'>
                   <p class="spacer"><i class='fa fa-flag red fa-2x' aria-hidden='true'></i></p>
-                  <p class='italic'>My Red Flags</p>
+                  <p class='italic'>My Red Flags: <span id='my-redflags'>0</span></p>
                   <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
                 </a>          
               </div>
@@ -85,7 +148,7 @@
               <div class='container2'>
                 <a href='view_by_username.html?type=intervention&username=${user.username}'>
                   <p class="spacer"><i class='fa fa-handshake-o theme-blue fa-2x' aria-hidden='true'></i></p>
-                  <p class='italic'>My Interventions</p>
+                  <p class='italic'>My Interventions: <span id='my-interventions'>0</span></p>
                   <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
                 </a>          
               </div>
