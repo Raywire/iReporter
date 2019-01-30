@@ -6,15 +6,16 @@ Project: iReporter
 Description:iReporter enables any citizen to bring any form of corruption to the notice of appropriate authorities and the
 general public. Users can also report on things that needs government intervention.
 
-GitHub Pages Link: https://raywire.github.io/iReporter/UI
+[GitHub Pages Hosting Link](https://raywire.github.io/iReporter/UI)
 
 ## Getting Started
 
-git clone https://github.com/Raywire/iReporter
+git clone the repo
 
 ### Prerequisites
 
 Two postgres databases are required one for testing the other for development
+Service account credentials from Google Cloud for file storage on Firebase 
 
 **Setting up the database with a user who has all privileges**
 ```
@@ -43,26 +44,37 @@ export SUPER_USER_LASTNAME="your-name"
 export SUPER_USER_OTHERNAMES="your-name"
 export SUPER_USER_PHONENUMBER="your-phone-number"
 
+export API_KEY="api-key"
+export AUTH_DOMAIN="project-id.firebaseapp.com"
+export FIREBASE_DATABASE_URL="firebase-database-url"
+export PROJECT_ID="project-id"
+export STORAGE_BUCKET="storage-bucket.appspot.com"
+export MESSAGING_SENDER_ID="messaging-sender-id"
+export PRIVATE_KEY_ID="private-key-id"
+export PRIVATE_KEY="private-key"
+export CLIENT_EMAIL="client-email"
+export CLIENT_ID="client-id"
+export CLIENT_CERT_URL="client-cert-url"
 ```
 ## Running the app
 Cd into the iReporter folder
 
 Create a virtual environment
 
-```
+```python
 python virtualenv venv
 ```
 Run the virtual environment
 
-```
+```python
 source venv/bin/activate
 ```
 Run the command to install all requirements inside the virtual environment
 
-```
+```python
 pip install -r requirements.txt
 ```
-```
+```pypthon
 source .env
 flask run
 ```
@@ -79,15 +91,13 @@ pytest --cov=app/
 Tests check all incidents(red-flags and interventions), user sign up and login endpoints
 Note a super user is created by default in case none is present upon running the app
 
-
 ## Deployment on Heroku
 
 [Heroku Application Link](https://enigmatic-inlet-54773.herokuapp.com/api/v2/auth/signup)
 
 ## Built With
 
-* [Flask](http://flask.pocoo.org/docs/dev/) - Flask
-
+*   [Flask](http://flask.pocoo.org/docs/dev/) - Flask
 
 ## API Endpoints
 
@@ -97,10 +107,9 @@ versioning for the endpoints
 ## API Documentation
 [Apiary API Documentation](https://ireporter14.docs.apiary.io/#)
 
-
 ## Author
 
-* **Ryan Simiyu** 
+*   **Ryan Simiyu** 
 
 ## License
 

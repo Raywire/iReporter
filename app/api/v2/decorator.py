@@ -3,7 +3,6 @@ from app.api.v2.users.models import UserModel
 from flask import jsonify, request
 
 import jwt
-import datetime
 import os
 
 secret_key = os.getenv('SECRET_KEY')

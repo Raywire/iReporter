@@ -84,3 +84,43 @@ class UserActivity(Resource):
                     "message": "User active status has been updated"
                 }
             })
+
+
+class UserProfilePic(Resource):
+    """Class with method for uploading a user's profile picture"""
+
+    def __init__(self):
+        self.db = UserModel()
+
+    @token_required
+    def patch(current_user, self, username):
+        """method to upload a user's profile picture"""
+
+        if current_user['username'] != username:
+            return jsonify({
+                "status": 403,
+                "message": "A user can only upload a picture to their own profile"
+            })
+
+        upload_status = self.db.upload_profile_pic(username)
+
+        if upload_status is None:
+            return jsonify({
+                "status": 404,
+                "message": "user does not exist"
+            })
+
+        if upload_status == 'File type not supported' or upload_status == 'select an image' or upload_status == 'no file part':
+            return jsonify({
+                "status": 400,
+                "message": upload_status
+            })
+
+        if upload_status is True:
+            return jsonify({
+                "status": 200,
+                "data": {
+                    "username": username,
+                    "message": "Your profile picture has been uploaded"
+                }
+            })

@@ -1,5 +1,8 @@
 import re
 
+ALLOWED_EXTENSIONS_IMAGE = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS_VIDEO = set(['mp4', 'webm', 'ogg'])
+
 
 def validator(value):
     """method to validate title"""
@@ -36,12 +39,25 @@ def validate_characters(value):
     if not re.match(r"^[a-zA-Z\d\-\']{1,20}$", value):
         raise ValueError("Use a valid name")
 
+
 def validate_username(value):
     """method to check if variable contains only alphanumeric characters"""
     if not re.match(r"^[a-zA-Z\d]{1,20}$", value):
         raise ValueError("Username can only contain characters and integers")
 
+
 def validate_password(value):
     """method to check if password contains more than 6 characters"""
-    if not re.match(r"^[A-Za-z0-9!@#$%^&+*=?.,]{6,120}$", value):
+    if not re.match(r"^[A-Za-z0-9!@#$%^&+*-_?.,]{6,120}$", value):
         raise ValueError("Enter a valid password")
+
+
+def allowed_file(filename, filetype):
+    if filetype == 'videos':
+        allowed_file_type = ALLOWED_EXTENSIONS_VIDEO
+
+    if filetype == 'images':
+        allowed_file_type = ALLOWED_EXTENSIONS_IMAGE
+
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in allowed_file_type

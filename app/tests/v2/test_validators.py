@@ -3,7 +3,7 @@ import unittest
 from app.validators import (validate_characters, validate_comment,
                             validate_coordinates, validate_integers,
                             validate_email, validator, validate_password,
-                            validate_username)
+                            validate_username, allowed_file)
 
 
 class ValidatorTestCase(unittest.TestCase):
@@ -39,5 +39,9 @@ class ValidatorTestCase(unittest.TestCase):
     def test_for_username(self):
         with self.assertRaises(ValueError):
             validate_username("ryan'")
+
+    def test_allowed_file(self):
+        self.assertTrue(allowed_file('test.MP4', 'videos'))
+        self.assertTrue(allowed_file('test.jpg', 'images'))
       
           

@@ -151,7 +151,8 @@ class User(Resource):
             'registered': user['registered'], 'firstname': user['firstname'],
             'othernames': user['othernames'], 'lastname': user['lastname'],
             'phoneNumber': user['phonenumber'], 'email': user['email'],
-            'username': user['username'], 'isAdmin': user['isadmin']
+            'username': user['username'], 'isAdmin': user['isadmin'],
+            'photourl': user['photourl']
         }
         return jsonify({
             "status": 200,
@@ -225,7 +226,7 @@ class User(Resource):
             return jsonify({
                 "status": 403,
                 "message": "A user can only update their own profile"
-            })             
+            })
 
         if user == "email exists":
             return jsonify({
@@ -236,8 +237,9 @@ class User(Resource):
         return jsonify({
             "status": 200,
             "message": "Your profile has been updated",
-            "data": [ user ]
-        })        
+            "data": [user]
+        })
+
 
 class UserResetPassword(Resource):
     """Class with method for sending reset password link to a user"""
@@ -252,12 +254,12 @@ class UserResetPassword(Resource):
         username = user['username']
         useremail = user['email']
         reset_token = get_token(public_id, 30).decode('UTF-8')
-        json_reset_link = request.json.get('resetlink',None)
+        json_reset_link = request.json.get('resetlink', None)
 
         if json_reset_link is None:
             return {
                 "status": 400,
-                "message":{
+                "message": {
                     "resetlink": "This key is required"
                 }
             }, 400

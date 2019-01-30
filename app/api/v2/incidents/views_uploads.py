@@ -4,12 +4,7 @@ from flask import jsonify, send_from_directory, current_app
 from app.api.v2.incidents.models import IncidentModel
 from app.api.v2.decorator import (
     token_required, nonexistent_incident, owner_can_edit,
-    draft_is_deletable, draft_is_editable, updated_incident)
-
-import os
-
-UPLOAD_FOLDER_IMAGE = 'uploads/images'
-UPLOAD_FOLDER_VIDEO = 'uploads/videos'
+    draft_is_deletable, draft_is_editable)
 
 
 class UploadInterventionImage(Resource):
@@ -26,9 +21,9 @@ class UploadInterventionImage(Resource):
 
         if upload_status is False:
             return jsonify({
-                "status" : 401,
+                "status": 401,
                 "message": "You cannot upload a photo for this incident"
-            })    
+            })
 
         if upload_status is None:
             return jsonify({
@@ -69,7 +64,7 @@ class UploadInterventionVideo(Resource):
 
         if upload_status is False:
             return jsonify({
-                "status" : 401,
+                "status": 401,
                 "message": "You cannot upload a video for this incident"
             })
 
@@ -103,7 +98,7 @@ class UploadRedflagImage(Resource):
 
         if upload_status is False:
             return jsonify({
-                "status" : 401,
+                "status": 401,
                 "message": "You cannot upload a photo for this incident"
             })
 
@@ -149,7 +144,7 @@ class UploadRedflagVideo(Resource):
 
         if status is False:
             return jsonify({
-                "status" : 401,
+                "status": 401,
                 "message": "You cannot upload a video for this incident"
             })
 
@@ -168,30 +163,15 @@ class Video(Resource):
     @token_required
     def get(current_user, self, filename):
         """Method to get a video"""
-        APP_ROOT = current_app.config.get('UPLOAD_FOLDER')
-        try:
-            target = os.path.join(APP_ROOT, UPLOAD_FOLDER_VIDEO)
-            return send_from_directory(target, filename)
-        except:
-            return jsonify({
-                "status": 404,
-                "message": "Video does not exist"
-            })
+        video_url = IncidentModel().get_file_url('videos', filename)
+        return video_url
 
 
 class Image(Resource):
     """"Contains method to get an image"""
-    def __init__(self):
-        self.APP_ROOT = current_app.config.get('UPLOAD_FOLDER')
-    
+
     @token_required
     def get(current_user, self, filename):
         """Method to get an image"""
-        try:
-            target = os.path.join(self.APP_ROOT, UPLOAD_FOLDER_IMAGE)
-            return send_from_directory(target, filename)
-        except:
-            return jsonify({
-                "status": 404,
-                "message": "Image does not exist"
-            })
+        image_url = IncidentModel().get_file_url('images', filename)
+        return image_url
