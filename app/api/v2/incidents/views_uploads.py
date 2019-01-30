@@ -4,7 +4,7 @@ from flask import jsonify, send_from_directory, current_app
 from app.api.v2.incidents.models import IncidentModel
 from app.api.v2.decorator import (
     token_required, nonexistent_incident, owner_can_edit,
-    draft_is_deletable, draft_is_editable, updated_incident)
+    draft_is_deletable, draft_is_editable)
 
 
 class UploadInterventionImage(Resource):

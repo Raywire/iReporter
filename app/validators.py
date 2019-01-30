@@ -48,7 +48,7 @@ def validate_username(value):
 
 def validate_password(value):
     """method to check if password contains more than 6 characters"""
-    if not re.match(r"^[A-Za-z0-9!@#$%^&+*=?.,]{6,120}$", value):
+    if not re.match(r"^[A-Za-z0-9!@#$%^&+*-_?.,]{6,120}$", value):
         raise ValueError("Enter a valid password")
 
 

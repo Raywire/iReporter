@@ -3,9 +3,8 @@ import datetime
 from flask import request
 from flask_restful import reqparse
 from app.validators import validate_coordinates, validate_comment, validator
-import re
 
-INCIDENTS = [] 
+INCIDENTS = []
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
@@ -92,7 +91,7 @@ class RedFlagModel:
 
     def edit_redflag_location(self, incident):
         "Method to edit a redflag's location"
-        args = parser_location.parse_args()
+        parser_location.parse_args()
         incident['location'] = request.json.get('location')
         return "updated"
 

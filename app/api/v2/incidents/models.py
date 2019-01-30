@@ -2,7 +2,7 @@
 import datetime
 from flask import request, current_app
 from flask_restful import reqparse
-from app.db_config import connection, init_database, config
+from app.db_config import init_database, config
 from app.validators import (
     validate_comment, validate_coordinates, validator, allowed_file)
 from werkzeug.utils import secure_filename
@@ -42,7 +42,7 @@ parser.add_argument('title',
 
 
 class IncidentModel:
-    """Class with methods to perform Create, Read, Update, 
+    """Class with methods to perform Create, Read, Update,
         Upload and Delete operations on database"""
 
     def __init__(self):
@@ -58,7 +58,7 @@ class IncidentModel:
 
     def save_incident(self, incident_type, user_id):
         """method to post one or multiple incidents"""
-        args = parser.parse_args()
+        parser.parse_args()
         data = {
             'createdOn': datetime.datetime.utcnow(),
             'createdBy': user_id,
@@ -132,7 +132,7 @@ class IncidentModel:
                                    nullable=False,
                                    help="(Accepted values: draft, under investigation, rejected, resolved)"
                                    )
-        args = parser_status.parse_args()
+        parser_status.parse_args()
         status = request.json.get('status')
         if self.get_incident_by_id(incident_type, incident_id) is None:
             return None
@@ -154,7 +154,7 @@ class IncidentModel:
                                      nullable=False,
                                      help="This key is required and should not be empty or formatted wrongly"
                                      )
-        args = parser_location.parse_args()
+        parser_location.parse_args()
         location = request.json.get('location')
         incident = self.get_incident_by_id(incident_type, incident_id)
         if incident is None:
@@ -177,7 +177,7 @@ class IncidentModel:
                                     nullable=False,
                                     help="This key is required and should not be empty or formatted wrongly"
                                     )
-        args = parser_comment.parse_args()
+        parser_comment.parse_args()
         comment = request.json.get('comment')
         incident = self.get_incident_by_id(incident_type, incident_id)
         if incident is None:
@@ -223,7 +223,6 @@ class IncidentModel:
                 storage.delete('uploads/videos/'+video)
             except:
                 pass
-
         return True
 
     def upload_incident_file(self, incident_type, incident_id, current_user_id, file_type):

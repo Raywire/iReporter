@@ -23,10 +23,8 @@ def success_message(user_id, status):
 class Users(Resource):
     """Class with methods for getting and adding users"""
 
-
     def get(self):
         """method to get all users"""
-
         return make_response(jsonify({
             "status" : 200,
             "data" : db.get_users()
@@ -52,7 +50,7 @@ class Users(Resource):
             return make_response(jsonify({
                 "status" : 400,
                 "error" : "username already exists"
-            }), 400)            
+            }), 400)
 
         success_message = {
             "id" : user_id,
@@ -81,7 +79,7 @@ class User(Resource):
     def delete(self, user_id):
         """method to delete user"""
         get_user = db.get_user(user_id)
-        
+
         if get_user == None:
             return nonexistent_user()
 
@@ -106,7 +104,7 @@ class UpdateUserPassword(Resource):
 
     def patch(self, user_id):
         """method to update user password"""
-        user = db.get_user(user_id)       
+        user = db.get_user(user_id)
 
         if user is None:
             return nonexistent_user()

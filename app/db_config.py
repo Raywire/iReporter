@@ -58,7 +58,6 @@ def create_tables(url):
 
 def destroy_tables(url):
     query = """DROP TABLE IF EXISTS users, incidents;"""
-    test_url = os.getenv('DATABASE_URL_TEST')
     conn = connection(url)
     cursor = conn.cursor()
     cursor.execute(query)
@@ -99,7 +98,7 @@ def tables():
     queries = [table2, table1]
     return queries
 
-def create_super_user(url, public_id):  
+def create_super_user(url, public_id):
 
     user = {
         "email": email,
@@ -117,7 +116,7 @@ def create_super_user(url, public_id):
 
     query = """INSERT INTO users (firstname,lastname,othernames,email,phoneNumber,username,registered,password,isAdmin,public_id,isActive) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8},'{9}','{10}');""".format(
         user['firstname'], user['lastname'], user['othernames'], user['email'], user['phoneNumber'], user['username'], user['registered'], user['password'], user['isAdmin'], user['public_id'], user['isActive'])
-    
+
     conn = connection(url)
     cursor = conn.cursor()
     try:

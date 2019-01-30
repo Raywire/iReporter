@@ -15,6 +15,7 @@ git clone the repo
 ### Prerequisites
 
 Two postgres databases are required one for testing the other for development
+Service account credentials from Google Cloud for file storage on Firebase 
 
 **Setting up the database with a user who has all privileges**
 ```
@@ -43,6 +44,17 @@ export SUPER_USER_LASTNAME="your-name"
 export SUPER_USER_OTHERNAMES="your-name"
 export SUPER_USER_PHONENUMBER="your-phone-number"
 
+export API_KEY="api-key"
+export AUTH_DOMAIN="project-id.firebaseapp.com"
+export FIREBASE_DATABASE_URL="firebase-database-url"
+export PROJECT_ID="project-id"
+export STORAGE_BUCKET="storage-bucket.appspot.com"
+export MESSAGING_SENDER_ID="messaging-sender-id"
+export PRIVATE_KEY_ID="private-key-id"
+export PRIVATE_KEY="private-key"
+export CLIENT_EMAIL="client-email"
+export CLIENT_ID="client-id"
+export CLIENT_CERT_URL="client-cert-url"
 ```
 ## Running the app
 Cd into the iReporter folder
