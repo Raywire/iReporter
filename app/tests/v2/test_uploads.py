@@ -3,6 +3,7 @@ import unittest
 import json
 import jwt
 import datetime
+import os
 
 from ... import create_app
 from flask import current_app
@@ -11,7 +12,7 @@ from app.tests.data import test_user, redflag_data, redflag_data2, redflag_data3
 from app.api.v2.send_email import send
 
 expiration_time = 10
-
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 class IncidentUploadTestCase(unittest.TestCase):
     """Class for testing incident uploads"""
@@ -32,6 +33,8 @@ class IncidentUploadTestCase(unittest.TestCase):
         ) + datetime.timedelta(minutes=expiration_time)}, current_app.config['SECRET_KEY'], algorithm='HS256')
         self.headers = {'Content-Type': 'application/json',
                         'x-access-token': token}
+        self.headers_file = {'Content-Type': 'multipart/form-data',
+                        'x-access-token': token}                
         self.headers_invalid = {
             'Content-Type': 'application/json', 'x-access-token': 'tokenisinvalid'}
 
@@ -105,6 +108,34 @@ class IncidentUploadTestCase(unittest.TestCase):
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 403)
         self.assertEqual(result2['message'], 'A user can only upload a picture to their own profile')
+
+    def test_upload_unsupported_filetype_for_image(self):
+        """Test to check upload image to intervention with unsupported filetype"""
+        self.app.post(
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
+        target = os.path.join(APP_ROOT, 'test_video.mp4')
+        with open(target,'rb') as test_file:
+            response = self.app.patch("/api/v2/interventions/1/addImage", headers=self.headers_file, data={'uploadFile': test_file})
+            result2 = json.loads(response.data)
+            self.assertEqual(result2['status'], 400)
+            self.assertEqual(result2['message'], 'File type not supported')         
+
+    def test_upload_file_on_another_user_incident(self):
+        """Test to check if another user can upload a file to a different incident"""
+        self.app.post(
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
+        self.app.post("/api/v2/auth/signup", headers=self.headers,
+                      data=json.dumps(self.data))
+        response = self.app.post(
+            "/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))
+        result = json.loads(response.data)
+        token = result['data'][0]['token']
+        response2 = self.app.patch("/api/v2/interventions/1/addImage", headers={
+                                   'Content-Type': 'application/json', 'x-access-token': token},
+                                   data=json.dumps({"file": "test.jpg"}))
+        result2 = json.loads(response2.data)
+        self.assertEqual(result2['status'], 401)
+        self.assertEqual(result2['message'], 'You cannot upload a photo for this incident')
 
     def tearDown(self):
         url = self.APP.config.get('DATABASE_URL')
