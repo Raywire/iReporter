@@ -16,6 +16,6 @@ const user = {
   isLoggedIn,
 };
 
-if (isLoggedIn === 'False' || isLoggedIn === 'logged out' || token === 'logged out') {
+if (user.isLoggedIn === 'False' || user.isLoggedIn === 'logged out' || user.token === 'logged out') {
   window.location.replace('signin.html');
 }
