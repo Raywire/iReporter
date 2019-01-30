@@ -6,3 +6,5 @@ const logout = () => {
   localStorage.clear();
   window.location.replace('signin.html');
 };
+
+document.getElementById('logout').addEventListener('click', logout);

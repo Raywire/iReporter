@@ -1,5 +1,9 @@
 const isLoggedIn = getCookie('isLoggedIn');
 
+const redirection = () => {
+  window.location.replace('signin.html');
+};
+
 if (isLoggedIn === 'True') {
   window.location.replace('home.html');
 }
@@ -248,16 +252,12 @@ const requestReset = (event) => {
         if (j.message === 'user does not exist') {
           document.getElementById('error-message').style.color = 'green';
           document.getElementById('error-message').innerHTML = resetMessage;
-          setTimeout(function () {
-            window.location.replace('signin.html');
-          }, 5000);
+          setTimeout(redirection, 5000);
         }
         if (j.message === 'Reset link has been sent to your email') {
           document.getElementById('error-message').style.color = 'green';
           document.getElementById('error-message').innerHTML = resetMessage;
-          setTimeout(function () {
-            window.location.replace('signin.html');
-          }, 5000);
+          setTimeout(redirection, 5000);
         }
         if (j.message === 'Password reset failed please try again') {
           document.getElementById('error-message').innerHTML = j.message;
@@ -338,9 +338,7 @@ const resetPassword = (event, profileusername, resettoken) => {
             title: 'Success',
             message: `${j.message} for ${j.username}`,
           });
-          setTimeout(function () {
-            window.location.replace('signin.html');
-          }, 3000);
+          setTimeout(redirection, 3000);
         }
       }
 

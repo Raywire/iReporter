@@ -1141,3 +1141,8 @@ select#perPage:-moz-focusring {
 .spacer{
   padding-bottom: 20px;
 }
+.badge{
+  background: #f2f2f2;
+  padding: 0 5px;
+  border-radius: 5px;
+}

@@ -37,7 +37,7 @@
           <a href="profile.html" class="nav-links ">profile</a>
         </li>
         <li>
-          <button class="logout-button" onclick="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+          <button id="logout" class="logout-button"><i class="fa fa-power-off" aria-hidden="true"></i></button>
         </li>        
       </ul>
     </nav>
@@ -49,8 +49,8 @@
               <div class="icon-card orange-bg">
                 <p class="spacer"><i class='fa fa-pencil-square-o fa-2x' aria-hidden='true'></i></p>
               </div>
-              <p class='font-medium'>Red Flags: <span class="theme-blue" id='my-draft-redflags'>0</span></p>
-              <p class='font-medium'>Interventions: <span class="theme-blue" id='my-draft-interventions'>0</span></p>
+              <p class='font-medium'>Red Flags: <span class="theme-blue badge" id='my-draft-redflags'>0</span></p>
+              <p class='font-medium'>Interventions: <span class="theme-blue badge" id='my-draft-interventions'>0</span></p>
               <div class="card-footer">
                 <span class="font-medium italic">Draft</span>
               </div>        
@@ -63,8 +63,8 @@
               <div class="icon-card blue-bg">
                 <p class="spacer"><i class='fa fa-search fa-2x' aria-hidden='true'></i></p>
               </div>
-              <p class='font-medium'>Red Flags: <span class="theme-blue" id='my-underinvestigation-redflags'>0</span></p>
-              <p class='font-medium'>Interventions: <span class="theme-blue" id='my-underinvestigation-interventions'>0</span></p>
+              <p class='font-medium'>Red Flags: <span class="theme-blue badge" id='my-underinvestigation-redflags'>0</span></p>
+              <p class='font-medium'>Interventions: <span class="theme-blue badge" id='my-underinvestigation-interventions'>0</span></p>
               <div class="card-footer">
                 <span class="font-medium italic">Under Investigation</span>
               </div>        
@@ -77,8 +77,8 @@
                 <div class="icon-card green-bg">
                   <p class="spacer"><i class='fa fa-check-square-o fa-2x' aria-hidden='true'></i></p>
                 </div>
-                <p class='font-medium'>Red Flags: <span class="theme-blue" id='my-resolved-redflags'>0</span></p>
-                <p class='font-medium'>Interventions: <span class="theme-blue" id='my-resolved-interventions'>0</span></p>
+                <p class='font-medium'>Red Flags: <span class="theme-blue badge" id='my-resolved-redflags'>0</span></p>
+                <p class='font-medium'>Interventions: <span class="theme-blue badge" id='my-resolved-interventions'>0</span></p>
                 <div class="card-footer">
                   <span class="font-medium italic">Resolved</span>
                 </div>       
@@ -91,8 +91,8 @@
                 <div class="icon-card red-bg">
                   <p class="spacer"><i class='fa fa-times fa-2x' aria-hidden='true'></i></p>
                 </div>
-                <p class='font-medium'>Red Flags: <span class="theme-blue" id='my-rejected-redflags'>0</span></p>
-                <p class='font-medium'>Interventions: <span class="theme-blue" id='my-rejected-interventions'>0</span></p>
+                <p class='font-medium'>Red Flags: <span class="theme-blue badge" id='my-rejected-redflags'>0</span></p>
+                <p class='font-medium'>Interventions: <span class="theme-blue badge" id='my-rejected-interventions'>0</span></p>
                 <div class="card-footer">
                   <span class="font-medium italic">Rejected</span>
                 </div>        
@@ -137,7 +137,7 @@
               <div class='container2'>
                 <a href='view_by_username.html?type=redflag&username=${user.username}'>
                   <p class="spacer"><i class='fa fa-flag red fa-2x' aria-hidden='true'></i></p>
-                  <p class='italic'>My Red Flags: <span id='my-redflags'>0</span></p>
+                  <p class='italic'>My Red Flags: <span class='badge' id='my-redflags'>0</span></p>
                   <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
                 </a>          
               </div>
@@ -148,7 +148,7 @@
               <div class='container2'>
                 <a href='view_by_username.html?type=intervention&username=${user.username}'>
                   <p class="spacer"><i class='fa fa-handshake-o theme-blue fa-2x' aria-hidden='true'></i></p>
-                  <p class='italic'>My Interventions: <span id='my-interventions'>0</span></p>
+                  <p class='italic'>My Interventions: <span class='badge' id='my-interventions'>0</span></p>
                   <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
                 </a>          
               </div>

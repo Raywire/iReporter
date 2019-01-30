@@ -1,53 +1,62 @@
-function myMap() {
-  let coordinates = localStorage.getItem('coordinates');
-  let latlon = coordinates.split(', ');
-  let lat = parseFloat(latlon[0]);
-  let lng = parseFloat(latlon[1]);
-
-  let markers = [];
-  let mapProp= {
-    center:new google.maps.LatLng(lat,lng),
-    zoom:6,
+function geocodeLatLng(geocoder, coordinates) {
+  const input = coordinates;
+  const location = [];
+  const latlngStr = input.split(',', 2);
+  const latlng = {
+    lat: parseFloat(latlngStr[0]),
+    lng: parseFloat(latlngStr[1]),
   };
-  let map = new google.maps.Map(document.getElementById('googleMap'),mapProp);
-  let geocoder = new google.maps.Geocoder;
+  geocoder.geocode({
+    location: latlng,
+  }, function (results, status) {
+    if (status === 'OK') {
+      if (results[0]) {
+        location[0] = results[0].formatted_address;
+      } else {
+        location[0] = 'No results found';
+      }
+      document.getElementById('locationArea').innerHTML = location[0];
+    } else {
+      location[0] = `Geocoder failed due to: ${status}`;
+    }
+  });
+  return location;
+}
 
-  let incidentLocation = {lat, lng};
+function myMap() {
+  const coordinates = localStorage.getItem('coordinates');
+  const latlon = coordinates.split(', ');
+  const lat = parseFloat(latlon[0]);
+  const lng = parseFloat(latlon[1]);
 
-  addNewMarkers(incidentLocation);
-  geocodeLatLng(geocoder,coordinates);
-  
+  const markers = [];
+  const mapProp = {
+    center: new google.maps.LatLng(lat, lng),
+    zoom: 6,
+  };
+  const map = new google.maps.Map(document.getElementById('googleMap'), mapProp);
+  const geocoder = new google.maps.Geocoder();
+
+  const incidentLocation = {
+    lat,
+    lng,
+  };
+
   function addNewMarkers(location) {
-    let marker = new google.maps.Marker({
+    const marker = new google.maps.Marker({
       position: location,
-      map: map,
-      title: lat+', '+lng
+      map,
+      title: `${lat}, ${lng}`,
     });
     markers.push(marker);
   }
-  window.location.hash = '#googleMap';                                      
+
+  addNewMarkers(incidentLocation);
+  geocodeLatLng(geocoder, coordinates);
+
+
+  window.location.hash = '#googleMap';
 }
-
-function geocodeLatLng(geocoder, coordinates) {
-    let input = coordinates;
-    let location = [];
-    let latlngStr = input.split(',', 2);
-    let latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
-    geocoder.geocode({'location': latlng}, function(results, status) {
-      if (status === 'OK') {
-        if (results[0]) {
-          location[0] = results[0].formatted_address;
-        } else {
-            location[0] ='No results found';
-        }
-        document.getElementById('locationArea').innerHTML = location[0];
-      } else {
-        location[0] = 'Geocoder failed due to: ' + status;
-      }
-    });
-    return location;
-  }
-
 
 const btnGeolocate = document.getElementById('btnGeolocate');
 google.maps.event.addDomListener(btnGeolocate, 'click', myMap);

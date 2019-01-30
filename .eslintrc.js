@@ -26,7 +26,4 @@ module.exports = {
         "FormData": true,
         "console": true,
     },
-    "rules": {
-        "no-unused-vars": ["error", { "vars": "local" }]
-    }
 };
