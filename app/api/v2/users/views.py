@@ -152,7 +152,7 @@ class User(Resource):
             'othernames': user['othernames'], 'lastname': user['lastname'],
             'phoneNumber': user['phonenumber'], 'email': user['email'],
             'username': user['username'], 'isAdmin': user['isadmin'],
-            'photourl': user['photourl']
+            'photourl': user['photourl'], 'emailVerified': user['emailverified']
         }
         return jsonify({
             "status": 200,

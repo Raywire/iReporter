@@ -3,6 +3,9 @@ import psycopg2
 import os
 from werkzeug import generate_password_hash
 import datetime
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import storage
 
 password = generate_password_hash(os.getenv('SUPER_USER_PASSWORD'))
 email = os.getenv('SUPER_USER_EMAIL')
@@ -14,16 +17,16 @@ phonenumber = os.getenv('SUPER_USER_PHONENUMBER')
 registered = datetime.datetime.utcnow()
 
 admin = {
-  "type": "service_account",
-  "project_id": os.getenv('PROJECT_ID'),
-  "private_key_id": os.getenv('PRIVATE_KEY_ID'),
-  "private_key": os.environ['PRIVATE_KEY'].replace(r'\n', '\n'),
-  "client_email": os.getenv('CLIENT_EMAIL'),
-  "client_id": os.getenv('CLIENT_ID'),
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": os.getenv('CLIENT_CERT_URL')
+    "type": "service_account",
+    "project_id": os.getenv('PROJECT_ID'),
+    "private_key_id": os.getenv('PRIVATE_KEY_ID'),
+    "private_key": os.environ['PRIVATE_KEY'].replace(r'\n', '\n'),
+    "client_email": os.getenv('CLIENT_EMAIL'),
+    "client_id": os.getenv('CLIENT_ID'),
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": os.getenv('CLIENT_CERT_URL')
 }
 
 config = {
@@ -35,6 +38,14 @@ config = {
     "messagingSenderId": os.getenv('MESSAGING_SENDER_ID'),
     "serviceAccount": admin
 }
+
+cred = credentials.Certificate(admin)
+firebase_admin.initialize_app(cred, {
+    'storageBucket': os.getenv('STORAGE_BUCKET'),
+})
+
+bucket = storage.bucket()
+
 
 def connection(url):
     con = psycopg2.connect(url)
@@ -97,6 +108,7 @@ def tables():
 
     queries = [table2, table1]
     return queries
+
 
 def create_super_user(url, public_id):
 

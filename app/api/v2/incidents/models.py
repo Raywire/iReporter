@@ -2,15 +2,11 @@
 import datetime
 from flask import request, current_app
 from flask_restful import reqparse
-from app.db_config import init_database, config
+from app.db_config import init_database, bucket
 from app.validators import (
     validate_comment, validate_coordinates, validator, allowed_file)
 from werkzeug.utils import secure_filename
 import psycopg2.extras
-import pyrebase
-
-firebase = pyrebase.initialize_app(config)
-storage = firebase.storage()
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_location = reqparse.RequestParser(bundle_errors=True)
@@ -215,12 +211,12 @@ class IncidentModel:
         video = incident['videos']
         if image is not None:
             try:
-                storage.delete('uploads/images/'+image)
+                bucket.delete_blob('uploads/images/'+image)
             except:
                 pass
         if video is not None:
             try:
-                storage.delete('uploads/videos/'+video)
+                bucket.delete_blob('uploads/videos/'+video)
             except:
                 pass
         return True
@@ -255,7 +251,8 @@ class IncidentModel:
                 extension = filename.rsplit('.', 1)[1].lower()
                 filename = str(incident_id) + '.' + extension
 
-                storage.child('uploads/'+file_type+'/'+filename).put(upload)
+                blob = bucket.blob('uploads/'+file_type+'/'+filename)
+                blob.upload_from_file(upload)
 
                 values = filename, incident_id
                 conn = self.db
@@ -269,5 +266,5 @@ class IncidentModel:
     @classmethod
     def get_file_url(cls, file_type, filename):
         """Get the url for the file by name"""
-        fileurl = storage.child('uploads/'+file_type+'/'+filename).get_url(None)
-        return fileurl
+        blob = bucket.blob('uploads/'+file_type+'/'+filename)
+        return blob.public_url

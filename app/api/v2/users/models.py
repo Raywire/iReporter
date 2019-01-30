@@ -7,15 +7,11 @@ from flask_restful import reqparse
 from app.validators import (validate_username, validate_characters,
                             validate_email, validate_integers,
                             validate_password, allowed_file)
-from app.db_config import config
+from app.db_config import bucket
 import psycopg2.extras
 
 import datetime
 import uuid
-import pyrebase
-
-firebase = pyrebase.initialize_app(config)
-storage = firebase.storage()
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser_signin = reqparse.RequestParser(bundle_errors=True)
@@ -141,6 +137,7 @@ class UserModel:
         if current_user is not None:
             current_user_data = {
                 'email': current_user['email'],
+                'emailVerified': current_user['emailverified'],
                 'firstname': current_user['firstname'],
                 'isActive': current_user['isactive'],
                 'isAdmin': current_user['isadmin'],
@@ -301,8 +298,9 @@ class UserModel:
             filename = secure_filename(file.filename)
             extension = filename.rsplit('.', 1)[1].lower()
             filename = str(username) + '.' + extension
-            storage.child('images/users/'+filename).put(file)
-            photourl = storage.child('images/users/'+filename).get_url(None)
+            blob = bucket.blob('images/users/'+filename)
+            blob.upload_from_file(file)
+            photourl = blob.public_url
             values = photourl, username
             conn = self.db
             cursor = conn.cursor()
