@@ -83,7 +83,6 @@ select:-moz-focusring {
 .logout-button {
   background: none;
   border: none;
-  /* margin-left: 40px; */
   padding: 0 5px 0 5px;
   text-align: center;
   text-decoration: none;
@@ -282,9 +281,7 @@ select:-moz-focusring {
   overflow: hidden;
   display: block;
   margin: 4px auto;
-  /* position: relative; */
   background-color: white;
-  /* padding: 8px; */
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
   transition: 0.3s;
 }
@@ -460,7 +457,6 @@ select:-moz-focusring {
     font-family: sans-serif;
 }
 .login-box{
-    /* width: 60%;      */
     background: #000;
     top:50%;
     color: #fff;
@@ -983,7 +979,6 @@ p.img-details,p.vid-details{
   transition: 0.3s;
 }
 .pagination .tableList {
-    /* min-height: 250px; */
     text-indent: 20px;
 }
 .tableList .objectBlock {
@@ -1032,7 +1027,6 @@ span.pageButton:hover{
 }
 .per-page{
   color:#737373;
-  /* font-size: 0.9em; */
 }
 .pagination span{
   font-size: 0.95em;
@@ -1045,7 +1039,6 @@ select#perPage{
   background-repeat: no-repeat;
   border: none;
   outline: none;
-  /* color: #555; */
   font-size: inherit;
   margin:0 20px 0 0;
   padding: 5px 10px;
