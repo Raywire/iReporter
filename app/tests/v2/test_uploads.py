@@ -34,7 +34,7 @@ class IncidentUploadTestCase(unittest.TestCase):
         self.headers = {'Content-Type': 'application/json',
                         'x-access-token': token}
         self.headers_file = {'Content-Type': 'multipart/form-data',
-                        'x-access-token': token}                
+                        'x-access-token': token}
         self.headers_invalid = {
             'Content-Type': 'application/json', 'x-access-token': 'tokenisinvalid'}
 
@@ -118,7 +118,7 @@ class IncidentUploadTestCase(unittest.TestCase):
             response = self.app.patch("/api/v2/interventions/1/addImage", headers=self.headers_file, data={'uploadFile': test_file})
             result2 = json.loads(response.data)
             self.assertEqual(result2['status'], 400)
-            self.assertEqual(result2['message'], 'File type not supported')         
+            self.assertEqual(result2['message'], 'File type not supported')
 
     def test_upload_file_on_another_user_incident(self):
         """Test to check if another user can upload a file to a different incident"""
