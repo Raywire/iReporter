@@ -1,7 +1,7 @@
 """User models"""
 from werkzeug import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from app.db_config import connection, init_database
+from app.db_config import connection
 from flask import request, current_app
 from flask_restful import reqparse
 from app.validators import (validate_username, validate_characters,
@@ -145,7 +145,7 @@ class UserModel:
                 'phoneNumber': current_user['phonenumber'],
                 'public_id': current_user['public_id'],
                 'username': current_user['username'],
-                'photourl': current_user['photourl']
+                'photourl': self.get_profile_picture_url(current_user['photourl'])
             }
 
         if current_user is None:
@@ -299,12 +299,20 @@ class UserModel:
             filename = str(username) + '.' + extension
             blob = bucket.blob('images/users/'+filename)
             blob.upload_from_file(file)
-            blob.make_public()
-            photourl = blob.public_url
-            values = photourl, username
+            values = filename, username
             conn = self.db
             cursor = conn.cursor()
             cursor.execute(query, values)
             conn.commit()
             return True
         return "File type not supported"
+
+    def get_profile_picture_url(self, filename):
+        """Get a user's profile picture"""
+        if filename is None:
+            return None 
+        profile_picture = bucket.blob('images/users/'+filename)
+        if profile_picture.exists():
+            profile_picture.make_public()
+            return profile_picture.public_url
+        return None

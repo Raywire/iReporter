@@ -99,6 +99,23 @@ class IncidentUploadTestCase(unittest.TestCase):
         self.assertEqual(result2['status'], 400)
         self.assertEqual(result2['message'], 'No uploadFile name in form')
 
+    def test_upload_profile_picture(self):
+        """Test to upload profile picture"""
+        self.app.post("/api/v2/auth/signup", headers=self.headers,
+                      data=json.dumps(self.data))
+        response = self.app.post(
+            "/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))
+        result = json.loads(response.data)
+        token = result['data'][0]['token']
+        target = os.path.join(APP_ROOT, 'test_img.jpg')
+        with open(target, 'rb') as test_file:
+            response2 = self.app.patch(
+                "/api/v2/users/jayd/uploadImage", headers={'Content-Type': 'multipart/form-data', 'x-access-token': token}, data={'file': test_file})
+            result2 = json.loads(response2.data)
+            self.assertEqual(result2['status'], 200)
+            self.assertEqual(result2['data']['message'],
+                             'Your profile picture has been uploaded')
+
     def test_upload_profile_pic_with_no_file(self):
         """Test to check upload with no file selected"""
         self.app.post("/api/v2/auth/signup", headers=self.headers,
