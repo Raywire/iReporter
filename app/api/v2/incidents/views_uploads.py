@@ -164,6 +164,11 @@ class Video(Resource):
     def get(current_user, self, filename):
         """Method to get a video"""
         video_url = IncidentModel().get_file_url('videos', filename)
+        if video_url is None:
+            return {
+                "status": 404,
+                "message": "Video does not exist"
+            }, 404
         return video_url
 
 
@@ -174,4 +179,9 @@ class Image(Resource):
     def get(current_user, self, filename):
         """Method to get an image"""
         image_url = IncidentModel().get_file_url('images', filename)
+        if image_url is None:
+            return {
+                "status": 404,
+                "message": "Image does not exist"
+            }, 404
         return image_url

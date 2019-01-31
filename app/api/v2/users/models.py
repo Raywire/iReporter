@@ -1,7 +1,7 @@
 """User models"""
 from werkzeug import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from app.db_config import connection, init_database
+from app.db_config import connection
 from flask import request, current_app
 from flask_restful import reqparse
 from app.validators import (validate_username, validate_characters,
@@ -86,8 +86,7 @@ class UserModel:
             'username': request.json.get('username').lower(),
             'registered': datetime.datetime.utcnow(),
             'password': self.set_password(request.json.get('password')),
-            'isAdmin': self.isAdmin,
-            'public_id': self.public_id
+            'isAdmin': self.isAdmin, 'public_id': self.public_id
         }
         userByEmail = self.get_user(data['email'])
         userByUsername = self.get_user(data['username'])
@@ -108,11 +107,11 @@ class UserModel:
 
     def get_user(self, value):
         "Method to get a user by username or public_id"
-        query = """SELECT * from users WHERE public_id='{0}' OR username='{0}' OR email='{0}'""".format(
-            value)
+        query = """SELECT * from users WHERE public_id=%s OR username=%s OR email=%s"""
+        user_value = value, value, value
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cursor.execute(query)
+        cursor.execute(query, user_value)
         row = cursor.fetchone()
 
         if cursor.rowcount == 0:
@@ -146,7 +145,7 @@ class UserModel:
                 'phoneNumber': current_user['phonenumber'],
                 'public_id': current_user['public_id'],
                 'username': current_user['username'],
-                'photourl': current_user['photourl']
+                'photourl': self.get_profile_picture_url(current_user['photourl'])
             }
 
         if current_user is None:
@@ -177,12 +176,12 @@ class UserModel:
         args = parser_promote.parse_args()
         isAdmin = request.json.get('isadmin')
 
-        query = """UPDATE users SET isadmin='{0}' WHERE username='{1}'""".format(
-            isAdmin, username)
+        query = """UPDATE users SET isadmin=%s WHERE username=%s"""
+        values = isAdmin, username
 
         conn = self.db
         cursor = conn.cursor()
-        cursor.execute(query)
+        cursor.execute(query, values)
         conn.commit()
         return True
 
@@ -191,12 +190,12 @@ class UserModel:
         args = parser_activate.parse_args()
         isActive = request.json.get('isactive')
 
-        query = """UPDATE users SET isactive='{0}' WHERE username='{1}'""".format(
-            isActive, username)
+        query = """UPDATE users SET isactive=%s WHERE username=%s"""
+        values = isActive, username
 
         conn = self.db
         cursor = conn.cursor()
-        cursor.execute(query)
+        cursor.execute(query, values)
         conn.commit()
         return True
 
@@ -209,7 +208,7 @@ class UserModel:
                 """DELETE FROM users WHERE username='{0}'""".format(username))
             conn.commit()
             return True
-        except:
+        except psycopg2.IntegrityError:
             return False
 
     def update_user_password(self, username):
@@ -300,11 +299,21 @@ class UserModel:
             filename = str(username) + '.' + extension
             blob = bucket.blob('images/users/'+filename)
             blob.upload_from_file(file)
-            photourl = blob.public_url
-            values = photourl, username
+            values = filename, username
             conn = self.db
             cursor = conn.cursor()
             cursor.execute(query, values)
             conn.commit()
             return True
         return "File type not supported"
+
+    @classmethod
+    def get_profile_picture_url(cls, filename):
+        """Get a user's profile picture"""
+        if filename is None:
+            return None
+        profile_picture = bucket.blob('images/users/'+filename)
+        if profile_picture.exists():
+            profile_picture.make_public()
+            return profile_picture.public_url
+        return None

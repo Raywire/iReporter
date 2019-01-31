@@ -210,15 +210,13 @@ class IncidentModel:
         image = incident['images']
         video = incident['videos']
         if image is not None:
-            try:
+            blob = bucket.blob('uploads/images/'+image)
+            if blob.exists():
                 bucket.delete_blob('uploads/images/'+image)
-            except:
-                pass
         if video is not None:
-            try:
+            blob = bucket.blob('uploads/videos/'+video)
+            if blob.exists():
                 bucket.delete_blob('uploads/videos/'+video)
-            except:
-                pass
         return True
 
     def upload_incident_file(self, incident_type, incident_id, current_user_id, file_type):
@@ -267,4 +265,7 @@ class IncidentModel:
     def get_file_url(cls, file_type, filename):
         """Get the url for the file by name"""
         blob = bucket.blob('uploads/'+file_type+'/'+filename)
-        return blob.public_url
+        if blob.exists():
+            blob.make_public()
+            return blob.public_url
+        return None

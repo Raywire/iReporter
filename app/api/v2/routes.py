@@ -2,7 +2,8 @@
 from flask_restful import Api
 from flask import Blueprint
 from app.api.v2.users.views import (
-    User, Users, UserSignUp, UserSignIn, UserResetPassword)
+    User, Users, UserSignUp, UserSignIn, UserResetPassword,
+    RefreshUserToken)
 from app.api.v2.users.views_update import (
     UserActivity, UserStatus, UserProfilePic)
 from app.api.v2.incidents.views import (
@@ -26,6 +27,7 @@ API.add_resource(User, '/users/<username>')
 API.add_resource(UserStatus, '/users/<username>/promote')
 API.add_resource(UserActivity, '/users/<username>/activate')
 API.add_resource(UserResetPassword, '/users/<email>/resetPassword')
+API.add_resource(RefreshUserToken, '/users/<username>/refreshToken')
 API.add_resource(UserProfilePic, '/users/<username>/uploadImage')
 API.add_resource(Interventions, '/interventions')
 API.add_resource(Intervention, '/interventions/<int:intervention_id>')
