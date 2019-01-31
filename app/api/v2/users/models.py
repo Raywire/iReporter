@@ -307,10 +307,11 @@ class UserModel:
             return True
         return "File type not supported"
 
-    def get_profile_picture_url(self, filename):
+    @classmethod
+    def get_profile_picture_url(cls, filename):
         """Get a user's profile picture"""
         if filename is None:
-            return None 
+            return None
         profile_picture = bucket.blob('images/users/'+filename)
         if profile_picture.exists():
             profile_picture.make_public()
