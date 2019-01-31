@@ -278,3 +278,24 @@ class UserResetPassword(Resource):
             "status": 400,
             "message": "Password reset failed please try again"
         }, 400
+
+
+class RefreshUserToken(Resource):
+    """Class with method to refresh a token"""
+    @token_required
+    def post(current_user, self, username):
+        """method to get a specific user"""
+        user = UserModel().get_user(username)
+        if user is None:
+            return nonexistent_user()
+        if current_user['username'] != username:
+            return {
+                "status": 403,
+                "message": "You can only refresh your own token"
+            }, 403
+
+        return jsonify({
+            "status": 200,
+            "message": "Token for {0} has been refreshed".format(username),
+            "token": get_token(user['public_id'], expiration_time).decode('UTF-8')
+        })

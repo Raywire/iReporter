@@ -73,7 +73,7 @@ class UserTestCase(unittest.TestCase):
                          'Only admin can access this route')
 
     def test_get_specific_user(self):
-        """Test get a specific redflag"""
+        """Test get a specific user"""
         self.app.post("/api/v2/auth/signup",
                       headers=self.headers_secured, data=json.dumps(self.data))
         response = self.app.get("/api/v2/users/jayd",
@@ -89,7 +89,7 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(result['message'], 'user does not exist')
 
     def test_delete_superadmin(self):
-        """Test delete a specific redflag"""
+        """Test delete a superadmin"""
         user = os.getenv('SUPER_USER_USERNAME')
         url = '/api/v2/users/' + user
         self.app.post("/api/v2/auth/signup", headers=self.headers_secured,
@@ -100,7 +100,7 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(result['status'], 403)
 
     def test_delete_nonexistent_user(self):
-        """Test delete a specific redflag"""
+        """Test delete a nonexistent user"""
         response = self.app.delete(
             "/api/v2/users/jayd1", headers=self.headers_secured)
         result = json.loads(response.data)
@@ -108,7 +108,7 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(result['status'], 404)
 
     def test_delete_user(self):
-        """Test delete a specific redflag"""
+        """Test delete a specific user"""
         self.app.post("/api/v2/auth/signup",
                       headers=self.headers_secured, data=json.dumps(self.data))
         response = self.app.delete(
@@ -142,7 +142,7 @@ class UserTestCase(unittest.TestCase):
         token = result['data'][0]['token']
         response2 = self.app.delete(
             "/api/v2/users/jayd", headers={'Content-Type': 'application/json',
-            'x-access-token': token})
+                                           'x-access-token': token})
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 403)
         self.assertEqual(result2['message'], 'You cannot delete this user')
@@ -159,7 +159,7 @@ class UserTestCase(unittest.TestCase):
         token = result['data'][0]['token']
         self.app.post(
             "/api/v2/redflags", headers={'Content-Type': 'application/json',
-            'x-access-token': token}, data=json.dumps(redflag_data))
+                                         'x-access-token': token}, data=json.dumps(redflag_data))
         response2 = self.app.delete(
             "/api/v2/users/jayd", headers=self.headers_secured)
         result2 = json.loads(response2.data)
@@ -181,7 +181,7 @@ class UserTestCase(unittest.TestCase):
             "/api/v2/users/jayd1/promote", headers=self.headers_secured)
         result = json.loads(response.data)
         self.assertEqual(result['message'], 'user does not exist')
-        self.assertEqual(result['status'], 404) 
+        self.assertEqual(result['status'], 404)
 
     def test_none_admin_update_user_status(self):
         """Test for a none admin user trying to update another user's admin status"""
@@ -200,7 +200,7 @@ class UserTestCase(unittest.TestCase):
         result2 = json.loads(response2.data)
         self.assertEqual(
             result2['message'], "You cannot change the status of this user")
-        self.assertEqual(result2['status'], 403)                 
+        self.assertEqual(result2['status'], 403)
 
     def test_admin_updating_own_admin_status(self):
         """Test for an admin user trying to update their own activity status"""
@@ -214,10 +214,11 @@ class UserTestCase(unittest.TestCase):
         token = result['data'][0]['token']
         response2 = self.app.patch(
             "/api/v2/users/jayd/promote", headers={'Content-Type': 'application/json',
-            'x-access-token': token},data=json.dumps({"isadmin": "False"}))
+                                                   'x-access-token': token}, data=json.dumps({"isadmin": "False"}))
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 403)
-        self.assertEqual(result2['message'], 'You cannot change your own admin status')
+        self.assertEqual(result2['message'],
+                         'You cannot change your own admin status')
 
     def test_user_signin(self):
         """Test post a user signin"""
@@ -255,10 +256,10 @@ class UserTestCase(unittest.TestCase):
         self.app.patch(
             "/api/v2/users/jayd/activate", headers=self.headers_secured, data=json.dumps({"isactive": "False"}))
         response = self.app.post(
-            "/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))            
+            "/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))
         result = json.loads(response.data)
         self.assertEqual(result['status'], 403)
-        self.assertEqual(result['message'], "account has been disabled")        
+        self.assertEqual(result['message'], "account has been disabled")
 
     def test_duplicate_user_email(self):
         """Test post a user with existing email"""
@@ -357,20 +358,22 @@ class UserTestCase(unittest.TestCase):
         self.app.post("/api/v2/auth/signup",
                       headers=self.headers_secured, data=json.dumps(self.data))
         response = self.app.patch(
-            "/api/v2/users/jayd/activate", headers=self.headers_secured, data=json.dumps({"isactive": "False"}))       
+            "/api/v2/users/jayd/activate", headers=self.headers_secured, data=json.dumps({"isactive": "False"}))
         result = json.loads(response.data)
         self.assertEqual(result['status'], 200)
-        self.assertEqual(result['data']['message'], "User active status has been updated")
+        self.assertEqual(result['data']['message'],
+                         "User active status has been updated")
 
     def test_disable_superuser_account(self):
         """Tests a disable superuser account"""
         self.app.post("/api/v2/auth/signup",
                       headers=self.headers_secured, data=json.dumps(self.data))
         response = self.app.patch(
-            "/api/v2/users/raywire/activate", headers=self.headers_secured, data=json.dumps({"isactive": "False"}))       
+            "/api/v2/users/raywire/activate", headers=self.headers_secured, data=json.dumps({"isactive": "False"}))
         result = json.loads(response.data)
         self.assertEqual(result['status'], 403)
-        self.assertEqual(result['message'], "You cannot change this user's active status")                                
+        self.assertEqual(result['message'],
+                         "You cannot change this user's active status")
 
     def test_none_admin_update_user_activity(self):
         """Test for a none admin user trying to update another user's active status"""
@@ -403,10 +406,11 @@ class UserTestCase(unittest.TestCase):
         token = result['data'][0]['token']
         response2 = self.app.patch(
             "/api/v2/users/jayd/activate", headers={'Content-Type': 'application/json',
-            'x-access-token': token},data=json.dumps({"isactive": "False"}))
+                                                    'x-access-token': token}, data=json.dumps({"isactive": "False"}))
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 403)
-        self.assertEqual(result2['message'], 'You cannot change your own active status')
+        self.assertEqual(result2['message'],
+                         'You cannot change your own active status')
 
     def test_update_activity_of_nonexistent_user(self):
         """Test to update activity of a nonexistent user"""
@@ -414,7 +418,7 @@ class UserTestCase(unittest.TestCase):
             "/api/v2/users/jayd1/activate", headers=self.headers_secured)
         result = json.loads(response.data)
         self.assertEqual(result['message'], 'user does not exist')
-        self.assertEqual(result['status'], 404)        
+        self.assertEqual(result['status'], 404)
 
     def test_update_user_profile(self):
         """Test for a user updating their own profile"""
@@ -426,8 +430,8 @@ class UserTestCase(unittest.TestCase):
         result = json.loads(response.data)
         token = result['data'][0]['token']
         response2 = self.app.put("/api/v2/users/jayd", headers={
-                                   'Content-Type': 'application/json', 'x-access-token': token},
-                                   data=json.dumps({"othernames": "Sim"}))
+            'Content-Type': 'application/json', 'x-access-token': token},
+            data=json.dumps({"othernames": "Sim"}))
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 200)
         self.assertEqual(result2['message'], 'Your profile has been updated')
@@ -444,8 +448,8 @@ class UserTestCase(unittest.TestCase):
         result = json.loads(response.data)
         token = result['data'][0]['token']
         response2 = self.app.put("/api/v2/users/jayd", headers={
-                                   'Content-Type': 'application/json', 'x-access-token': token},
-                                   data=json.dumps({"email": "rayosim09@gmail.com"}))
+            'Content-Type': 'application/json', 'x-access-token': token},
+            data=json.dumps({"email": "rayosim09@gmail.com"}))
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 400)
         self.assertEqual(result2['message'], 'email already exists')
@@ -460,11 +464,12 @@ class UserTestCase(unittest.TestCase):
         result = json.loads(response.data)
         token = result['data'][0]['token']
         response2 = self.app.put("/api/v2/users/raywire", headers={
-                                   'Content-Type': 'application/json', 'x-access-token': token},
-                                   data=json.dumps({"othernames": "Sim"}))
+            'Content-Type': 'application/json', 'x-access-token': token},
+            data=json.dumps({"othernames": "Sim"}))
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 403)
-        self.assertEqual(result2['message'], 'A user can only update their own profile')
+        self.assertEqual(result2['message'],
+                         'A user can only update their own profile')
 
     def test_update_nonexistent_user_profile(self):
         """Test for a user updating a nonexistent profile"""
@@ -473,7 +478,42 @@ class UserTestCase(unittest.TestCase):
             "/api/v2/users/jayd1", headers=self.headers_secured)
         result = json.loads(response.data)
         self.assertEqual(result['message'], 'user does not exist')
-        self.assertEqual(result['status'], 404) 
+        self.assertEqual(result['status'], 404)
+
+    def test_refresh_token_of_nonexistent_user(self):
+        """Test to refresh a nonexistent user's token"""
+        self.app.post("/api/v2/auth/signup",
+                      headers=self.headers_secured, data=json.dumps(self.data))
+        response = self.app.post("/api/v2/users/jayd12/refreshToken",
+                                 headers=self.headers_secured)
+        result = json.loads(response.data)
+        self.assertEqual(result['status'], 404)
+        self.assertEqual(result['message'],
+                         'user does not exist')
+
+    def test_refresh_token_of_another_user(self):
+        """Test to refresh a user's token"""
+        self.app.post("/api/v2/auth/signup",
+                      headers=self.headers_secured, data=json.dumps(self.data))
+        response = self.app.post("/api/v2/users/jayd/refreshToken",
+                                 headers=self.headers_secured)
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(result['message'],
+                         'You can only refresh your own token')
+
+    def test_refresh_token_of_a_user(self):
+        """Test to refresh a user's token"""
+        response = self.app.post("/api/v2/auth/signup",
+                                 headers=self.headers_secured, data=json.dumps(self.data))
+        result = json.loads(response.data)
+        token = result['data'][0]['token']
+        response2 = self.app.post("/api/v2/users/jayd/refreshToken",
+                                  headers={'Content-Type': 'application/json', 'x-access-token': token})
+        result2 = json.loads(response2.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            result2['message'], 'Token for {0} has been refreshed'.format('jayd'))
 
     def tearDown(self):
         url = self.APP.config.get('DATABASE_URL')

@@ -86,8 +86,7 @@ class UserModel:
             'username': request.json.get('username').lower(),
             'registered': datetime.datetime.utcnow(),
             'password': self.set_password(request.json.get('password')),
-            'isAdmin': self.isAdmin,
-            'public_id': self.public_id
+            'isAdmin': self.isAdmin, 'public_id': self.public_id
         }
         userByEmail = self.get_user(data['email'])
         userByUsername = self.get_user(data['username'])
@@ -108,11 +107,11 @@ class UserModel:
 
     def get_user(self, value):
         "Method to get a user by username or public_id"
-        query = """SELECT * from users WHERE public_id='{0}' OR username='{0}' OR email='{0}'""".format(
-            value)
+        query = """SELECT * from users WHERE public_id=%s OR username=%s OR email=%s"""
+        user_value = value, value, value
         conn = self.db
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cursor.execute(query)
+        cursor.execute(query, user_value)
         row = cursor.fetchone()
 
         if cursor.rowcount == 0:
@@ -177,12 +176,12 @@ class UserModel:
         args = parser_promote.parse_args()
         isAdmin = request.json.get('isadmin')
 
-        query = """UPDATE users SET isadmin='{0}' WHERE username='{1}'""".format(
-            isAdmin, username)
+        query = """UPDATE users SET isadmin=%s WHERE username=%s"""
+        values = isAdmin, username
 
         conn = self.db
         cursor = conn.cursor()
-        cursor.execute(query)
+        cursor.execute(query, values)
         conn.commit()
         return True
 
@@ -191,12 +190,12 @@ class UserModel:
         args = parser_activate.parse_args()
         isActive = request.json.get('isactive')
 
-        query = """UPDATE users SET isactive='{0}' WHERE username='{1}'""".format(
-            isActive, username)
+        query = """UPDATE users SET isactive=%s WHERE username=%s"""
+        values = isActive, username
 
         conn = self.db
         cursor = conn.cursor()
-        cursor.execute(query)
+        cursor.execute(query, values)
         conn.commit()
         return True
 
@@ -209,7 +208,7 @@ class UserModel:
                 """DELETE FROM users WHERE username='{0}'""".format(username))
             conn.commit()
             return True
-        except:
+        except psycopg2.IntegrityError:
             return False
 
     def update_user_password(self, username):
@@ -300,7 +299,7 @@ class UserModel:
             filename = str(username) + '.' + extension
             blob = bucket.blob('images/users/'+filename)
             blob.upload_from_file(file)
-            blob.make_public
+            blob.make_public()
             photourl = blob.public_url
             values = photourl, username
             conn = self.db
