@@ -265,7 +265,7 @@ class IncidentModel:
     def get_file_url(cls, file_type, filename):
         """Get the url for the file by name"""
         blob = bucket.blob('uploads/'+file_type+'/'+filename)
-        blob.make_public()
         if blob.exists():
+            blob.make_public()
             return blob.public_url
         return None
