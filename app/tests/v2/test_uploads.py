@@ -38,6 +38,20 @@ class IncidentUploadTestCase(unittest.TestCase):
         self.headers_invalid = {
             'Content-Type': 'application/json', 'x-access-token': 'tokenisinvalid'}
 
+    def test_get_nonexistent_video(self):
+        response = self.app.get(
+            "/api/v2/uploads/videos/test_video_none.mp4", headers=self.headers)
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(result['message'], 'Video does not exist')
+
+    def test_get_nonexistent_image(self):
+        response = self.app.get(
+            "/api/v2/uploads/images/test_img_none.jpg", headers=self.headers)
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(result['message'], 'Image does not exist')
+
     def test_get_video(self):
         response = self.app.get(
             "/api/v2/uploads/videos/test_video.mp4", headers=self.headers)
@@ -45,7 +59,7 @@ class IncidentUploadTestCase(unittest.TestCase):
 
     def test_get_image(self):
         response = self.app.get(
-            "/api/v2/uploads/images/test_image.jpg", headers=self.headers)
+            "/api/v2/uploads/images/test_img.jpg", headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
     def test_upload_file_to_nonexistent_redflag(self):

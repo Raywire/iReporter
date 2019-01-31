@@ -300,6 +300,7 @@ class UserModel:
             filename = str(username) + '.' + extension
             blob = bucket.blob('images/users/'+filename)
             blob.upload_from_file(file)
+            blob.make_public
             photourl = blob.public_url
             values = photourl, username
             conn = self.db
