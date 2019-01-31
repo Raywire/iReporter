@@ -14,6 +14,7 @@ from app.api.v2.send_email import send
 expiration_time = 10
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+
 class IncidentUploadTestCase(unittest.TestCase):
     """Class for testing incident uploads"""
 
@@ -34,7 +35,7 @@ class IncidentUploadTestCase(unittest.TestCase):
         self.headers = {'Content-Type': 'application/json',
                         'x-access-token': token}
         self.headers_file = {'Content-Type': 'multipart/form-data',
-                        'x-access-token': token}
+                             'x-access-token': token}
         self.headers_invalid = {
             'Content-Type': 'application/json', 'x-access-token': 'tokenisinvalid'}
 
@@ -64,7 +65,8 @@ class IncidentUploadTestCase(unittest.TestCase):
 
     def test_upload_file_to_nonexistent_redflag(self):
         """Test to check upload image to redflag that does not exist"""
-        response = self.app.patch("/api/v2/redflags/1/addImage", headers=self.headers)
+        response = self.app.patch(
+            "/api/v2/redflags/1/addImage", headers=self.headers)
         result2 = json.loads(response.data)
         self.assertEqual(result2['status'], 404)
         self.assertEqual(result2['message'], 'Redflag does not exist')
@@ -73,14 +75,16 @@ class IncidentUploadTestCase(unittest.TestCase):
         """Test to check upload image to redflag with no file"""
         self.app.post(
             "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))
-        response = self.app.patch("/api/v2/redflags/1/addImage", headers=self.headers)
+        response = self.app.patch(
+            "/api/v2/redflags/1/addImage", headers=self.headers)
         result2 = json.loads(response.data)
         self.assertEqual(result2['status'], 400)
-        self.assertEqual(result2['message'], 'No uploadFile name in form')                           
+        self.assertEqual(result2['message'], 'No uploadFile name in form')
 
     def test_upload_file_to_nonexistent_intervention(self):
         """Test to check upload image to intervention that does not exist"""
-        response = self.app.patch("/api/v2/interventions/1/addImage", headers=self.headers)
+        response = self.app.patch(
+            "/api/v2/interventions/1/addImage", headers=self.headers)
         result2 = json.loads(response.data)
         self.assertEqual(result2['status'], 404)
         self.assertEqual(result2['message'], 'Intervention does not exist')
@@ -89,10 +93,11 @@ class IncidentUploadTestCase(unittest.TestCase):
         """Test to check upload image to intervention with no file"""
         self.app.post(
             "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
-        response = self.app.patch("/api/v2/interventions/1/addImage", headers=self.headers)
+        response = self.app.patch(
+            "/api/v2/interventions/1/addImage", headers=self.headers)
         result2 = json.loads(response.data)
         self.assertEqual(result2['status'], 400)
-        self.assertEqual(result2['message'], 'No uploadFile name in form') 
+        self.assertEqual(result2['message'], 'No uploadFile name in form')
 
     def test_upload_profile_pic_with_no_file(self):
         """Test to check upload with no file selected"""
@@ -121,15 +126,17 @@ class IncidentUploadTestCase(unittest.TestCase):
                                    data=json.dumps({"file": "test.jpg"}))
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 403)
-        self.assertEqual(result2['message'], 'A user can only upload a picture to their own profile')
+        self.assertEqual(
+            result2['message'], 'A user can only upload a picture to their own profile')
 
     def test_upload_unsupported_filetype_for_image(self):
         """Test to check upload image to intervention with unsupported filetype"""
         self.app.post(
             "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
         target = os.path.join(APP_ROOT, 'test_video.mp4')
-        with open(target,'rb') as test_file:
-            response = self.app.patch("/api/v2/interventions/1/addImage", headers=self.headers_file, data={'uploadFile': test_file})
+        with open(target, 'rb') as test_file:
+            response = self.app.patch("/api/v2/interventions/1/addImage",
+                                      headers=self.headers_file, data={'uploadFile': test_file})
             result2 = json.loads(response.data)
             self.assertEqual(result2['status'], 400)
             self.assertEqual(result2['message'], 'File type not supported')
@@ -149,7 +156,60 @@ class IncidentUploadTestCase(unittest.TestCase):
                                    data=json.dumps({"file": "test.jpg"}))
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 401)
-        self.assertEqual(result2['message'], 'You cannot upload a photo for this incident')
+        self.assertEqual(result2['message'],
+                         'You cannot upload a photo for this incident')
+
+    def test_upload_image_to_intervention(self):
+        """Test to check upload image to intervention"""
+        self.app.post(
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
+        target = os.path.join(APP_ROOT, 'test_img.jpg')
+        with open(target, 'rb') as test_file:
+            response = self.app.patch("/api/v2/interventions/1/addImage",
+                                      headers=self.headers_file, data={'uploadFile': test_file})
+            result2 = json.loads(response.data)
+            self.assertEqual(result2['status'], 200)
+            self.assertEqual(result2['data'][0]['message'],
+                             'Image added to intervention record')
+
+    def test_upload_image_to_redflag(self):
+        """Test to check upload image to red-flag"""
+        self.app.post(
+            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))
+        target = os.path.join(APP_ROOT, 'test_img.jpg')
+        with open(target, 'rb') as test_file:
+            response = self.app.patch(
+                "/api/v2/redflags/1/addImage", headers=self.headers_file, data={'uploadFile': test_file})
+            result2 = json.loads(response.data)
+            self.assertEqual(result2['status'], 200)
+            self.assertEqual(result2['data'][0]['message'],
+                             'Image added to red-flag record')
+
+    def test_upload_video_to_intervention(self):
+        """Test to check upload video to intervention"""
+        self.app.post(
+            "/api/v2/interventions", headers=self.headers, data=json.dumps(self.redflag_data))
+        target = os.path.join(APP_ROOT, 'test_video.mp4')
+        with open(target, 'rb') as test_file:
+            response = self.app.patch("/api/v2/interventions/1/addVideo",
+                                      headers=self.headers_file, data={'uploadFile': test_file})
+            result2 = json.loads(response.data)
+            self.assertEqual(result2['status'], 200)
+            self.assertEqual(result2['data'][0]['message'],
+                             'Video added to intervention record')
+
+    def test_upload_video_to_redflag(self):
+        """Test to check upload video to red-flag"""
+        self.app.post(
+            "/api/v2/redflags", headers=self.headers, data=json.dumps(self.redflag_data))
+        target = os.path.join(APP_ROOT, 'test_video.mp4')
+        with open(target, 'rb') as test_file:
+            response = self.app.patch(
+                "/api/v2/redflags/1/addVideo", headers=self.headers_file, data={'uploadFile': test_file})
+            result2 = json.loads(response.data)
+            self.assertEqual(result2['status'], 200)
+            self.assertEqual(result2['data'][0]['message'],
+                             'Video added to red-flag record')
 
     def tearDown(self):
         url = self.APP.config.get('DATABASE_URL')
