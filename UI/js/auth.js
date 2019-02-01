@@ -11,9 +11,6 @@ const expiration = localStorage.getItem('expiration');
 const expirationTime = localStorage.getItem('expirationTime');
 const refreshWindow = expiration - nowInMilliseconds;
 const gracePeriod = 300000; // 5 minutes
-console.log(nowInMilliseconds);
-console.log(expiration);
-console.log(refreshWindow);
 
 const user = {
   token,
