@@ -457,7 +457,8 @@ select:-moz-focusring {
     font-family: sans-serif;
 }
 .login-box{
-    background: #000;
+    background: rgba(0,0,0,0.4);
+    border-radius: 5px;
     top:50%;
     color: #fff;
     left:50%;
@@ -476,7 +477,7 @@ select:-moz-focusring {
     left: calc(50% - 50px);
 }
 .login-box h1{
-  color:#737373;
+  color:#20a0ff;
   margin:0;
   padding: 5px 0 10px;
   text-align: center;
