@@ -50,7 +50,8 @@
       <div class="card">
         <img id='profilePhoto' src="" alt="Profile Picture">
         <p id="name"></p>
-        <p id="email" class="title"></p>
+        <p id="email" class="title theme-blue italic"></p>
+        <p class="badge-verified"><span class="font-small theme-blue">Verified: </span><span id="verified" class="italic font-small"></span></p>
         <p id="username"></p>
         <p>
           <button class="button-modal" title="Update Profile" id="myBtn" data-modal="modal-window-profile"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
@@ -96,6 +97,7 @@
                   <input id="confirm_password" name="confirm_password" placeholder="Confirm Password" maxlength="30" tabindex="1" type="password">
                   <br>
                   <input id='submit' name="submit" class="button-normal" tabindex="5" value="Reset Password" type="submit">
+                  <p id="error-message"></p>
                   <i id="fa-spin-reset" class="fa fa-circle-o-notch fa-spin hide"></i>
                 </form>
               </div>
@@ -138,7 +140,7 @@
 
         document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
         document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event,
-          profileUserName));
+          profileUserName, user.token));
           
         document.getElementById('updateUserData').addEventListener('submit', (event) => updateUserData(event,
           profileUserName));

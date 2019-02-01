@@ -856,10 +856,10 @@ padding:8px;
 .theme-blue{
   color:#0b47b6;
 }
-.black{
+.login-box-black{
   color:black;
 }
-.black:hover{
+.login-box-black:hover{
   color:#595959;
 }
 .silver{
@@ -1145,4 +1145,7 @@ select#perPage:-moz-focusring {
   background: #f2f2f2;
   padding: 0 5px;
   border-radius: 5px;
+}
+#verified{
+  color: #737373
 }

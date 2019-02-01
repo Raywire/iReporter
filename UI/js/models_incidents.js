@@ -970,7 +970,7 @@ const uploadImage = (event, incidentType, incidentId) => {
       document.getElementById('upload-message').innerHTML = 'An error occured check if status is draft and try again';
       document.getElementById('fa-spin-upload').style.display = 'none';
     });
-}
+};
 
 const uploadVideo = (event, incidentType, incidentId) => {
   event.preventDefault();
@@ -1032,7 +1032,6 @@ const uploadVideo = (event, incidentType, incidentId) => {
         if (j.message === 'File type not supported' || j.message === 'No uploadFile name in form') {
           document.getElementById('upload-message-2').innerHTML = j.message;
         }
-
       }
       if (Object.prototype.hasOwnProperty.call(j, 'data')) {
         if (j.data[0].message === 'Video added to intervention record' || j.data[0].message === 'Video added to red-flag record') {
@@ -1049,6 +1048,35 @@ const uploadVideo = (event, incidentType, incidentId) => {
       document.getElementById('upload-message-2').innerHTML = 'An error occured check if status is draft and try again';
       document.getElementById('fa-spin-upload-2').style.display = 'none';
     });
+};
+
+const loadProfileData = () => {
+  const profilePhoneNumber = localStorage.getItem('profilePhoneNumber');
+  const firstname = localStorage.getItem('profileFirstName');
+  const lastname = localStorage.getItem('profileLastName');
+  const othername = localStorage.getItem('profileOtherName');
+  const profileEmail = localStorage.getItem('profileEmail');
+  const emailVerified = localStorage.getItem('profileEmailVerified');
+  const profilePhotoUrl = localStorage.getItem('profilePhotoUrl');
+
+  const profileName = `${firstname} ${lastname} ${othername}`;
+
+  document.getElementById('name').innerHTML = profileName;
+  document.getElementById('email').innerHTML = profileEmail;
+  document.getElementById('verified').innerHTML = emailVerified;
+  document.getElementById('username').innerHTML = user.username;
+
+  if (profilePhotoUrl === 'null' || profilePhotoUrl === '') {
+    document.getElementById('profilePhoto').src = 'img/img_avatar3.jpeg';
+  } else {
+    document.getElementById('profilePhoto').src = profilePhotoUrl;
+  }
+
+  document.getElementById('firstnameProfile').value = firstname;
+  document.getElementById('lastnameProfile').value = lastname;
+  document.getElementById('othernameProfile').value = othername;
+  document.getElementById('emailProfile').value = profileEmail;
+  document.getElementById('phonenumberProfile').value = profilePhoneNumber;
 };
 
 const updateUserData = (event, usernameid) => {
@@ -1155,33 +1183,6 @@ const updateUserData = (event, usernameid) => {
       console.log(error);
       document.getElementById('fa-spin-updateProfile').style.display = 'none';
     });
-};
-
-let loadProfileData = () => {
-  const profilePhoneNumber = localStorage.getItem('profilePhoneNumber');
-  const firstname = localStorage.getItem('profileFirstName');
-  const lastname = localStorage.getItem('profileLastName');
-  const othername = localStorage.getItem('profileOtherName');
-  const profileEmail = localStorage.getItem('profileEmail');
-  const profilePhotoUrl = localStorage.getItem('profilePhotoUrl');
-
-  const profileName = `${firstname} ${lastname} ${othername}`;
-
-  document.getElementById('name').innerHTML = profileName;
-  document.getElementById('email').innerHTML = profileEmail;
-  document.getElementById('username').innerHTML = user.username;
-
-  if (profilePhotoUrl === 'null' || profilePhotoUrl === '') {
-    document.getElementById('profilePhoto').src = 'img/img_avatar3.jpeg';
-  } else {
-    document.getElementById('profilePhoto').src = profilePhotoUrl;
-  }
-
-  document.getElementById('firstnameProfile').value = firstname;
-  document.getElementById('lastnameProfile').value = lastname;
-  document.getElementById('othernameProfile').value = othername;
-  document.getElementById('emailProfile').value = profileEmail;
-  document.getElementById('phonenumberProfile').value = profilePhoneNumber;
 };
 
 const uploadProfilePic = (event, usernameid) => {
@@ -1331,87 +1332,6 @@ const getIncidentNumber = (incidenttype) => {
     })
     .catch((error) => {
       console.log(error);
-    });
-};
-
-const resetPassword = (event, usernameid) => {
-  event.preventDefault();
-  document.getElementById('fa-spin-reset').style.display = 'block';
-
-  const uri = `${config.root}users/${usernameid}`;
-
-  const password = document.getElementById('password').value;
-  const confirmPassword = document.getElementById('confirm_password').value;
-
-  if (password !== confirmPassword) {
-    document.getElementById('fa-spin-reset').style.display = 'none';
-    document.getElementById('submit').value = 'Reset Password';
-    document.getElementById('password').style.borderColor = 'red';
-    document.getElementById('confirm_password').style.borderColor = 'red';
-    return false;
-  }
-
-  const options = {
-    method: 'PATCH',
-    mode: 'cors',
-    headers: new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
-      'x-access-token': tokenModels,
-    }),
-    body: JSON.stringify({
-      password,
-    }),
-  };
-  const request = new Request(uri, options);
-
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return response.json();
-    })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
-          logout();
-        }
-        if (j.message === 'Token is invalid') {
-          logout();
-        }
-        if (j.message === 'User does not exist') {
-          warningNotification({
-            title: 'Warning',
-            message: j.message,
-          });
-        }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'password')) {
-          document.getElementById('password').style.borderColor = 'red';
-          warningNotification({
-            title: 'Warning',
-            message: j.message.password,
-          });
-        }
-        if (j.message === 'Only an admin or the user can update their own password') {
-          warningNotification({
-            title: 'Warning',
-            message: j.message,
-          });
-        }
-
-        if (j.message === 'User password has been changed') {
-          successNotification({
-            title: 'Success',
-            message: `${j.message} for ${j.username}`,
-          });
-        }
-      }
-
-      document.getElementById('fa-spin-reset').style.display = 'none';
-    })
-    .catch((error) => {
-      console.log(error);
-      document.getElementById('fa-spin-reset').style.display = 'none';
     });
 };
 

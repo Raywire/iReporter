@@ -8,14 +8,14 @@ function geocodeLatLng(geocoder, coordinates) {
   };
   geocoder.geocode({
     location: latlng,
-  }, function (results, status) {
+  }, (results, status) => {
     if (status === 'OK') {
       if (results[0]) {
         location[0] = results[0].formatted_address;
       } else {
         location[0] = 'No results found';
       }
-      document.getElementById('locationArea').innerHTML = location[0];
+      document.getElementById('locationArea').innerHTML = location;
     } else {
       location[0] = `Geocoder failed due to: ${status}`;
     }
