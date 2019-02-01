@@ -457,10 +457,10 @@ select:-moz-focusring {
     font-family: sans-serif;
 }
 .login-box{
-    background: rgba(0,0,0,0.4);
+    background: rgba(255,255,255,0.8);
     border-radius: 5px;
     top:50%;
-    color: #fff;
+    color: #000;
     left:50%;
     position: absolute;
     transform: translate(-50%, -50%);
@@ -487,7 +487,7 @@ select:-moz-focusring {
   margin: 0;
   padding: 0;
   font-weight: bold;
-  color: white;
+  color: black;
   font-size: 1.0em;
 }
 .login-box input{
@@ -497,11 +497,11 @@ select:-moz-focusring {
 }
 .login-box input[type=text], .login-box input[type=password], .login-box input[type=email] {
   border:none;
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid #000;
   background: transparent;
   outline: none;
   height: 40px;
-  color:#fff;
+  color:#000;
   font-size: 16px;
 }
 .login-box input[type=submit]{
@@ -509,7 +509,7 @@ select:-moz-focusring {
   outline: none;
   height: 40px;
   background: #20a0ff;
-  color:#fff;
+  color:#000;
   width: 50%;
 }
 input[type="submit"]::-moz-focus-inner {
@@ -855,6 +855,12 @@ padding:8px;
 }
 .theme-blue{
   color:#0b47b6;
+}
+.black{
+  color:black;
+}
+.black:hover{
+  color:#595959;
 }
 .silver{
   color:silver;
