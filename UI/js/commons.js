@@ -63,3 +63,83 @@ const checkPassword = () => {
     document.getElementById('confirm_password').style.borderColor = 'red';
   }
 };
+
+const resetPassword = (event, profileusername, resettoken) => {
+  event.preventDefault();
+  document.getElementById('fa-spin-reset').style.display = 'block';
+
+  const uri = `${config.root}users/${profileusername}`;
+
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirm_password').value;
+
+  if (password === confirmPassword) {
+    const options = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=utf-8',
+        'x-access-token': resettoken,
+      }),
+      body: JSON.stringify({
+        password,
+      }),
+    };
+    const request = new Request(uri, options);
+
+    fetch(request)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return response.json();
+      })
+      .then((j) => {
+        if (Object.prototype.hasOwnProperty.call(j, 'message')) {
+          if (j.message === 'Token is missing') {
+            document.getElementById('error-message').innerHTML = 'Token is missing';
+          }
+          if (j.message === 'Token is invalid') {
+            document.getElementById('error-message').innerHTML = 'Token is invalid or has expired';
+          }
+          if (j.message === 'User does not exist') {
+            warningNotification({
+              title: 'Warning',
+              message: j.message,
+            });
+          }
+          if (Object.prototype.hasOwnProperty.call(j.message, 'password')) {
+            document.getElementById('password').style.borderColor = 'red';
+            warningNotification({
+              title: 'Warning',
+              message: j.message.password,
+            });
+          }
+          if (j.message === 'Only an admin or the user can update their own password') {
+            warningNotification({
+              title: 'Warning',
+              message: j.message,
+            });
+          }
+
+          if (j.message === 'User password has been changed') {
+            successNotification({
+              title: 'Success',
+              message: `${j.message} for ${j.username}`,
+            });
+            setTimeout(logout(), 3000);
+          }
+        }
+
+        document.getElementById('fa-spin-reset').style.display = 'none';
+      })
+      .catch((err) => {
+        console.log(err);
+        document.getElementById('fa-spin-reset').style.display = 'none';
+      });
+  } else if (password !== confirmPassword) {
+    document.getElementById('fa-spin-reset').style.display = 'none';
+    document.getElementById('password').style.borderColor = 'red';
+    document.getElementById('confirm_password').style.borderColor = 'red';
+  }
+};
