@@ -95,7 +95,6 @@ const resetPassword = (event, profileusername, resettoken) => {
         return response.json();
       })
       .then((j) => {
-        console.log(j);
         if (Object.prototype.hasOwnProperty.call(j, 'message')) {
           if (j.message === 'Token is missing') {
             document.getElementById('error-message').innerHTML = 'Token is missing';
