@@ -22,6 +22,7 @@
   <script src="js/commons.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/notifications.js"></script>
+  <script src="js/moment.min.js"></script>
 </head>
 
 <body>
@@ -51,7 +52,7 @@
         <img id='profilePhoto' src="" alt="Profile Picture">
         <p id="name"></p>
         <p id="email" class="title theme-blue italic"></p>
-        <p class="badge-verified"><span class="font-small theme-blue">Verified: </span><span id="verified" class="italic font-small"></span></p>
+        <p class="badge-verified"><span id="verified" class="italic font-small"></span></p>
         <p id="username"></p>
         <p>
           <button class="button-modal" title="Update Profile" id="myBtn" data-modal="modal-window-profile"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
@@ -129,6 +130,12 @@
           <p id='my-redflags'>0</p>
           <h4 class="black"><b><i class="fa fa-handshake-o theme-blue" aria-hidden="true"></i> Interventions</b></h4>
           <p id='my-interventions'>0</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="container2">
+            <h4 class="theme-blue"><b><i class="fa fa-clock-o" aria-hidden="true"></i> Logged In</b></h4>
+            <p class="italic font-small" id='login-time'></p>
         </div>
       </div>
       <script src="js/models_incidents.js"></script>
