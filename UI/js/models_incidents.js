@@ -1056,15 +1056,23 @@ const loadProfileData = () => {
   const lastname = localStorage.getItem('profileLastName');
   const othername = localStorage.getItem('profileOtherName');
   const profileEmail = localStorage.getItem('profileEmail');
-  const emailVerified = localStorage.getItem('profileEmailVerified');
+  let emailVerified = localStorage.getItem('profileEmailVerified');
   const profilePhotoUrl = localStorage.getItem('profilePhotoUrl');
+  const logInTime = localStorage.getItem('logInTime');
+  const logInTimeHumanized = humanize(logInTime);
 
   const profileName = `${firstname} ${lastname} ${othername}`;
+  if (emailVerified === true) {
+    emailVerified = 'verified';
+  } else {
+    emailVerified = 'not verified';
+  }
 
   document.getElementById('name').innerHTML = profileName;
   document.getElementById('email').innerHTML = profileEmail;
   document.getElementById('verified').innerHTML = emailVerified;
   document.getElementById('username').innerHTML = user.username;
+  document.getElementById('login-time').innerHTML = logInTimeHumanized;
 
   if (profilePhotoUrl === 'null' || profilePhotoUrl === '') {
     document.getElementById('profilePhoto').src = 'img/img_avatar3.jpeg';

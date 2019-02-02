@@ -100,6 +100,7 @@ const signIn = (event) => {
         const expirationTimeMilliseconds = now + (expirationTime * 60000);
         localStorage.setItem('expiration', expirationTimeMilliseconds);
         localStorage.setItem('expirationTime', expirationTime);
+        localStorage.setItem('logInTime', moment().format());
 
         setCookie('token', accessToken, expirationTime);
         setCookie('username', userData.username, expirationTime);
