@@ -65,23 +65,23 @@ const getUsers = (userdata) => {
           if (usersPerPage > totalNumber) {
             usersPerPage = totalNumber;
           }
-          let endNumber = usersPerPage;
-          let virtualEndNumber = usersPerPage;
+          let userEndNumber = usersPerPage;
+          let virtualUserEndNumber = usersPerPage;
 
-          const selectedPage = () => {
-            const pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
-            for (let i = 0; i < pageNumber.length; i += 1) {
+          const selectedUserPage = () => {
+            const userPageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
+            for (let i = 0; i < userPageNumber.length; i += 1) {
               if (i === currentPage - 1) {
-                pageNumber[i].style.opacity = '1.0';
+                userPageNumber[i].style.opacity = '1.0';
               } else {
-                pageNumber[i].style.opacity = '0.5';
+                userPageNumber[i].style.opacity = '0.5';
               }
             }
           };
 
-          const numPages = () => {
-            const numOfPages = Math.ceil(users.length / usersPerPage);
-            return numOfPages;
+          const numUserPages = () => {
+            const numOfUserPages = Math.ceil(users.length / usersPerPage);
+            return numOfUserPages;
           };
 
           const checkButtonOpacity = () => {
@@ -90,25 +90,25 @@ const getUsers = (userdata) => {
             } else {
               previousButton.classList.remove('opacity');
             }
-            if (currentPage === numPages()) {
+            if (currentPage === numUserPages()) {
               nextButton.classList.add('opacity');
             } else {
               nextButton.classList.remove('opacity');
             }
 
-            document.getElementById('button_next').disabled = currentPage === numPages();
             document.getElementById('button_prev').disabled = currentPage === 1;
+            document.getElementById('button_next').disabled = currentPage === numUserPages();
           };
 
-          const changePage = (page) => {
+          const changeUserPage = (page) => {
             const result = document.getElementById('user-data');
             let pageN = page;
 
             if (pageN < 1) {
               pageN = 1;
             }
-            if (pageN > (numPages() - 1)) {
-              pageN = numPages();
+            if (pageN > (numUserPages() - 1)) {
+              pageN = numUserPages();
             }
 
             result.innerHTML = '';
@@ -167,86 +167,86 @@ const getUsers = (userdata) => {
                                 `;
               }
               checkButtonOpacity();
-              selectedPage();
+              selectedUserPage();
             }
           };
 
-          const prevPage = () => {
+          const previousUserPage = () => {
             showLoader();
             if (currentPage > 1) {
               currentPage -= 1;
-              changePage(currentPage);
+              changeUserPage(currentPage);
               document.getElementById('currentPage').innerHTML = currentPage;
               startNumber -= usersPerPage;
-              virtualEndNumber -= usersPerPage;
-              endNumber -= usersPerPage;
-              userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
+              virtualUserEndNumber -= usersPerPage;
+              userEndNumber -= usersPerPage;
+              userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='userEndNumber'>${virtualUserEndNumber}</span>  of ${totalNumber}`;
             }
             if (currentPage === 1) {
-              endNumber = virtualEndNumber;
+              userEndNumber = virtualUserEndNumber;
             }
             hideLoader(1000);
           };
 
-          const nextPage = () => {
+          const nextUserPage = () => {
             showLoader();
-            if (currentPage < numPages()) {
+            if (currentPage < numUserPages()) {
               currentPage += 1;
-              changePage(currentPage);
+              changeUserPage(currentPage);
               document.getElementById('currentPage').innerHTML = currentPage;
               startNumber += usersPerPage;
-              endNumber += usersPerPage;
-              virtualEndNumber += usersPerPage;
-              if (endNumber > totalNumber) {
-                endNumber = totalNumber;
+              userEndNumber += usersPerPage;
+              virtualUserEndNumber += usersPerPage;
+              if (userEndNumber > totalNumber) {
+                userEndNumber = totalNumber;
               }
-              if (endNumber === startNumber) {
+              if (userEndNumber === startNumber) {
                 userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
               } else {
-                userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
+                userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='userEndNumber'>${userEndNumber}</span>  of ${totalNumber}`;
               }
             }
             hideLoader(1000);
           };
 
           const addEventListeners = () => {
-            previousButton.addEventListener('click', prevPage);
-            nextButton.addEventListener('click', nextPage);
+            previousButton.addEventListener('click', previousUserPage);
+            nextButton.addEventListener('click', nextUserPage);
           };
 
-          const clickPage = () => {
+          const clickUserPage = () => {
             document.addEventListener('click', (e) => {
               if (e.target.nodeName === 'SPAN' && e.target.classList.contains('clickPageNumber')) {
                 currentPage = e.target.textContent;
-                changePage(currentPage);
+                changeUserPage(currentPage);
               }
             });
           };
 
-          const pageNumbers = () => {
+          const userPageNumbers = () => {
             const pageNumber = document.getElementById('pageNumber');
             pageNumber.innerHTML = '';
-            let numberOfPages = numPages();
+            let numberOfPages = numUserPages();
             if (currentPage === 0) {
-              currentPage = 1;
               numberOfPages = 1;
+              currentPage = 1;
             }
 
             pageNumber.innerHTML = `<span class=''><span id='currentPage'>${currentPage}</span> / ${numberOfPages}</span>`;
           };
 
           this.init = () => {
-            changePage(1);
-            clickPage();
-            selectedPage();
-            pageNumbers();
+            clickUserPage();
+            changeUserPage(1);
+            selectedUserPage();
+            userPageNumbers();
             addEventListeners();
           };
 
-          if (startNumber === endNumber || endNumber === 0) {
+          if (startNumber === userEndNumber || userEndNumber === 0) {
             userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
           } else {
-            userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
+            userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='userEndNumber'>${userEndNumber}</span>  of ${totalNumber}`;
           }
         };
 
