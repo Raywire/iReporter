@@ -29,12 +29,11 @@ function myMap() {
   const lat = parseFloat(latlon[0]);
   const lng = parseFloat(latlon[1]);
 
-  const markers = [];
-  const mapProp = {
-    center: new google.maps.LatLng(lat, lng),
-    zoom: 6,
+  const incidentMarkers = [];
+  const centerMap = {
+    center: new google.maps.LatLng(lat, lng), zoom: 6,
   };
-  const map = new google.maps.Map(document.getElementById('googleMap'), mapProp);
+  const incidentMap = new google.maps.Map(document.getElementById('googleMap'), centerMap);
   const geocoder = new google.maps.Geocoder();
 
   const incidentLocation = {
@@ -45,10 +44,10 @@ function myMap() {
   function addNewMarkers(location) {
     const marker = new google.maps.Marker({
       position: location,
-      map,
+      map: incidentMap,
       title: `${lat}, ${lng}`,
     });
-    markers.push(marker);
+    incidentMarkers.push(marker);
   }
 
   addNewMarkers(incidentLocation);
