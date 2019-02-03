@@ -51,11 +51,11 @@ const getUsers = (userdata) => {
           });
         }
 
-        const Fn = function Pagination() {
-          const prevButton = document.getElementById('button_prev');
+        const UserFn = function UserPagination() {
+          const previousButton = document.getElementById('button_prev');
           const nextButton = document.getElementById('button_next');
-          const perPage = document.getElementById('perPage').value;
           const userNumber = document.getElementById('user_number');
+          const perPage = document.getElementById('perPage').value;
 
           let currentPage = 1;
           let usersPerPage = parseInt(perPage, 10);
@@ -86,9 +86,9 @@ const getUsers = (userdata) => {
 
           const checkButtonOpacity = () => {
             if (currentPage === 1) {
-              prevButton.classList.add('opacity');
+              previousButton.classList.add('opacity');
             } else {
-              prevButton.classList.remove('opacity');
+              previousButton.classList.remove('opacity');
             }
             if (currentPage === numPages()) {
               nextButton.classList.add('opacity');
@@ -133,9 +133,8 @@ const getUsers = (userdata) => {
               document.getElementById('button_next').disabled = true;
               document.getElementById('button_prev').disabled = true;
               nextButton.classList.add('opacity');
-              prevButton.classList.add('opacity');
+              previousButton.classList.add('opacity');
               document.getElementById('user-data').innerHTML = resultNone;
-              // return true;
             } else {
               let faIcon;
               let blocked;
@@ -212,7 +211,7 @@ const getUsers = (userdata) => {
 
           const addEventListeners = () => {
             nextButton.addEventListener('click', nextPage);
-            prevButton.addEventListener('click', prevPage);
+            previousButton.addEventListener('click', prevPage);
           };
 
           const clickPage = () => {
@@ -251,8 +250,8 @@ const getUsers = (userdata) => {
           }
         };
 
-        const pagination = new Fn();
-        pagination.init();
+        const userpagination = new UserFn();
+        userpagination.init();
       }
     })
     .catch(() => {
@@ -385,41 +384,41 @@ const editUserData = (event, usernameid) => {
       isadmin: status,
     }),
   };
-  const request = new Request(promoteUserUri, options);
+  const promoteUserRequest = new Request(promoteUserUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(promoteUserRequest)
+    .then((promoteUserResponse) => {
+      if (promoteUserResponse.ok) {
+        return promoteUserResponse.json();
       }
-      return response.json();
+      return promoteUserResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((promoteUserData) => {
+      if (Object.prototype.hasOwnProperty.call(promoteUserData, 'message')) {
+        if (promoteUserData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (promoteUserData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Only admin can access this route') {
+        if (promoteUserData.message === 'Only admin can access this route') {
           logout();
         }
-        if (j.message === 'User does not exist') {
-          document.getElementById('status-message').innerHTML = j.message;
+        if (promoteUserData.message === 'User does not exist') {
+          document.getElementById('status-message').innerHTML = promoteUserData.message;
         }
-        if (Object.prototype.hasOwnProperty.call(j, 'isadmin')) {
+        if (Object.prototype.hasOwnProperty.call(promoteUserData, 'isadmin')) {
           document.getElementById('isadmin').style.borderBottomColor = 'red';
           document.getElementById('status-message').innerHTML = '(Accepted values: True, False)';
         }
-        if (j.message === 'You cannot change the status of this user' || j.message === 'You cannot change your own admin status') {
-          document.getElementById('status-message').innerHTML = j.message;
+        if (promoteUserData.message === 'You cannot change the status of this user' || promoteUserData.message === 'You cannot change your own admin status') {
+          document.getElementById('status-message').innerHTML = promoteUserData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data.message === 'User status has been updated') {
+      if (Object.prototype.hasOwnProperty.call(promoteUserData, 'data')) {
+        if (promoteUserData.data.message === 'User status has been updated') {
           document.getElementById('status-message').style.color = 'green';
-          document.getElementById('status-message').innerHTML = j.data.message;
+          document.getElementById('status-message').innerHTML = promoteUserData.data.message;
           document.getElementById('status').value = status;
           document.getElementById('status-data').innerHTML = status.toLowerCase();
         }
@@ -453,40 +452,40 @@ const changeActiveStatus = (event, usernameid) => {
       isactive: activity,
     }),
   };
-  const request = new Request(activeStatusUri, options);
+  const activeStatusRequest = new Request(activeStatusUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(activeStatusRequest)
+    .then((activeStatusResponse) => {
+      if (activeStatusResponse.ok) {
+        return activeStatusResponse.json();
       }
-      return response.json();
+      return activeStatusResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((activeStatusData) => {
+      if (Object.prototype.hasOwnProperty.call(activeStatusData, 'message')) {
+        if (activeStatusData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (activeStatusData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === "You cannot change this user's active status") {
-          document.getElementById('activity-message').innerHTML = j.message;
+        if (activeStatusData.message === "You cannot change this user's active status") {
+          document.getElementById('activity-message').innerHTML = activeStatusData.message;
         }
-        if (j.message === 'user does not exist') {
-          document.getElementById('activity-message').innerHTML = j.message;
+        if (activeStatusData.message === 'user does not exist') {
+          document.getElementById('activity-message').innerHTML = activeStatusData.message;
         }
-        if (Object.prototype.hasOwnProperty.call(j, 'isactive')) {
+        if (Object.prototype.hasOwnProperty.call(activeStatusData, 'isactive')) {
           document.getElementById('activity-message').innerHTML = '(Accepted values: True, False)';
         }
-        if (j.message === 'You cannot change your own active status') {
-          document.getElementById('activity-message').innerHTML = j.message;
+        if (activeStatusData.message === 'You cannot change your own active status') {
+          document.getElementById('activity-message').innerHTML = activeStatusData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data.message === 'User active status has been updated') {
+      if (Object.prototype.hasOwnProperty.call(activeStatusData, 'data')) {
+        if (activeStatusData.data.message === 'User active status has been updated') {
           document.getElementById('activity-message').style.color = 'green';
-          document.getElementById('activity-message').innerHTML = j.data.message;
+          document.getElementById('activity-message').innerHTML = activeStatusData.data.message;
           document.getElementById('activity').value = activity;
           document.getElementById('activity-data').innerHTML = activity.toLowerCase();
         }
@@ -514,36 +513,36 @@ const deleteUserData = (event, usernameid) => {
       'x-access-token': user.token,
     }),
   };
-  const request = new Request(deleteUserUri, options);
+  const deleteRequest = new Request(deleteUserUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(deleteRequest)
+    .then((deleteResponse) => {
+      if (deleteResponse.ok) {
+        return deleteResponse.json();
       }
-      return response.json();
+      return deleteResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((deleteData) => {
+      if (Object.prototype.hasOwnProperty.call(deleteData, 'message')) {
+        if (deleteData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (deleteData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'user does not exist') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteData.message === 'user does not exist') {
+          document.getElementById('error-message').innerHTML = deleteData.message;
         }
-        if (j.message === 'You cannot delete this user') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteData.message === 'You cannot delete this user') {
+          document.getElementById('error-message').innerHTML = deleteData.message;
         }
-        if (j.message === 'A user who has posted incidents cannot be deleted') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteData.message === 'A user who has posted incidents cannot be deleted') {
+          document.getElementById('error-message').innerHTML = deleteData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data.message === 'user record has been deleted') {
-          document.getElementById('error-message').innerHTML = j.data.message;
+      if (Object.prototype.hasOwnProperty.call(deleteData, 'data')) {
+        if (deleteData.data.message === 'user record has been deleted') {
+          document.getElementById('error-message').innerHTML = deleteData.data.message;
           window.location.replace('admin.html');
         }
       }
