@@ -638,11 +638,11 @@ const editLocation = (event, incidentType, incidentId) => {
   const location = document.getElementById('location').value;
 
   const options = {
-    method: 'PATCH',
     mode: 'cors',
+    method: 'PATCH',
     headers: new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
       'x-access-token': tokenModels,
+      'Content-Type': 'application/json; charset=utf-8',
     }),
     body: JSON.stringify({
       location,
@@ -703,12 +703,10 @@ const editLocation = (event, incidentType, incidentId) => {
 // Function to edit comment
 const editComment = (event, incidentType, incidentId) => {
   event.preventDefault();
+  const comment = document.getElementById('comment').value;
+  const editCommentUri = `${config.root}${incidentType}/${incidentId}/comment`;
   document.getElementById('fa-spin-edit').style.display = 'block';
   document.getElementById('comment').style.borderBottomColor = '#ccc';
-
-  const editCommentUri = `${config.root}${incidentType}/${incidentId}/comment`;
-
-  const comment = document.getElementById('comment').value;
 
   const options = {
     method: 'PATCH',
@@ -876,8 +874,8 @@ const uploadImage = (event, incidentType, incidentId) => {
   const fileData = document.getElementById('fileImage').files[0];
 
   if (fileData === null || fileData === undefined) {
+    document.getElementById('upload-message').innerHTML = 'Please select a an image';
     document.getElementById('fa-spin-upload').style.display = 'none';
-    document.getElementById('upload-message').innerHTML = 'Please select a file';
   } else {
     const fileExtension = fileData.name.split('.')[1];
     const uploadedFileName = `${incidentId.toString()}.${fileExtension}`;
@@ -948,7 +946,7 @@ const uploadVideo = (event, incidentType, incidentId) => {
 
   if (fileData === null || fileData === undefined) {
     document.getElementById('fa-spin-upload-2').style.display = 'none';
-    document.getElementById('upload-message-2').innerHTML = 'Please select a file';
+    document.getElementById('upload-message-2').innerHTML = 'Please select a video';
   } else {
     const fileExtension = fileData.name.split('.')[1];
     const uploadedFileName = `${incidentId.toString()}.${fileExtension}`;
@@ -1094,10 +1092,10 @@ const updateUserData = (event, usernameid) => {
     })
     .then((userData) => {
       if (Object.prototype.hasOwnProperty.call(userData, 'message')) {
-        if (userData.message === 'Token is missing') {
+        if (userData.message === 'Token is invalid') {
           logout();
         }
-        if (userData.message === 'Token is invalid') {
+        if (userData.message === 'Token is missing') {
           logout();
         }
         if (userData.message === 'User does not exist') {
@@ -1157,14 +1155,14 @@ const uploadProfilePic = (event, usernameid) => {
 
   const uploadPicUri = `${config.root}users/${usernameid}/uploadImage`;
 
-  const formData = new FormData();
+  const uploadFileData = new FormData();
   const fileData = document.getElementById('profilePic').files[0];
 
   if (fileData === null || fileData === undefined) {
     document.getElementById('fa-spin-upload-pic').style.display = 'none';
     document.getElementById('upload-message').innerHTML = 'Please select a file';
   } else {
-    formData.append('file', fileData, fileData.name);
+    uploadFileData.append('file', fileData, fileData.name);
 
     const options = {
       method: 'PATCH',
@@ -1172,7 +1170,7 @@ const uploadProfilePic = (event, usernameid) => {
       headers: new Headers({
         'x-access-token': tokenModels,
       }),
-      body: formData,
+      body: uploadFileData,
     };
     const uploadPicRequest = new Request(uploadPicUri, options);
 
