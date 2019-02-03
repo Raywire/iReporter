@@ -17,7 +17,7 @@ const humanize = (utcdatetime) => {
 // Function to get all incidents by type, createdBy and search parameter
 
 const getData = (incidenttype, incidentcreator, searchdata) => {
-  const uri = `${config.root}${incidenttype}s`;
+  const getIncidentsUri = `${config.root}${incidenttype}s`;
 
   const options = {
     method: 'GET',
@@ -28,25 +28,25 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
       'x-access-token': tokenModels,
     }),
   };
-  const request = new Request(uri, options);
+  const incidentsRequest = new Request(getIncidentsUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
+  fetch(incidentsRequest)
+    .then((incidentsResponse) => {
+      if (incidentsResponse.ok) {
         showLoader();
-        return response.json();
+        return incidentsResponse.json();
       }
-      return response.json();
+      return incidentsResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((incidentsData) => {
+      if (Object.prototype.hasOwnProperty.call(incidentsData, 'message')) {
+        if (incidentsData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (incidentsData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'No interventions' || j.message === 'No redflags') {
+        if (incidentsData.message === 'No interventions' || incidentsData.message === 'No redflags') {
           let result = '';
           result += `
                   <div class='column-100'>
@@ -61,11 +61,11 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
           document.getElementById('incident-data').innerHTML = result;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+      if (Object.prototype.hasOwnProperty.call(incidentsData, 'data')) {
         let creator = '';
         let usernameIncidents = [];
         let searchedIncidents = [];
-        const incidents = j.data;
+        const incidents = incidentsData.data;
 
         if (searchdata === 'all' || searchdata === '') {
           usernameIncidents = incidents;
@@ -98,6 +98,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
         }
 
         const Fn = function Pagination() {
+          const incidentNumber = document.getElementById('incident_number');
           const prevButton = document.getElementById('button_prev');
           const nextButton = document.getElementById('button_next');
           const perPage = document.getElementById('perPage').value;
@@ -130,20 +131,29 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
           };
 
           const checkButtonOpacity = () => {
-            currentPage === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
-            currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
+            if (currentPage === numPages()) {
+              nextButton.classList.add('opacity');
+            } else {
+              nextButton.classList.remove('opacity');
+            }
+            if (currentPage === 1) {
+              prevButton.classList.add('opacity');
+            } else {
+              prevButton.classList.remove('opacity');
+            }
             document.getElementById('button_next').disabled = currentPage === numPages();
             document.getElementById('button_prev').disabled = currentPage === 1;
           };
 
           const changePage = (page) => {
+            let pageIncidents = page;
             const result = document.getElementById('incident-data');
 
-            if (page < 1) {
-              page = 1;
+            if (pageIncidents < 1) {
+              pageIncidents = 1;
             }
-            if (page > (numPages() - 1)) {
-              page = numPages();
+            if (pageIncidents > (numPages() - 1)) {
+              pageIncidents = numPages();
             }
 
             result.innerHTML = '';
@@ -167,48 +177,48 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
               nextButton.classList.add('opacity');
               prevButton.classList.add('opacity');
               document.getElementById('incident-data').innerHTML = resultNone;
-              return true;
-            }
+            } else {
+              const pIn = pageIncidents;
+              const p = recordsPerPage;
+              for (let i = (pIn - 1) * p; i < (pIn * p) && i < usernameIncidents.length; i += 1) {
+                const humanizedTime = humanize(usernameIncidents[i].createdon);
+                let link = '';
+                let icon = '';
 
-            const p = recordsPerPage;
-            for (let i = (page - 1) * p; i < (page * p) && i < usernameIncidents.length; i += 1) {
-              const humanizedTime = humanize(usernameIncidents[i].createdon);
-              let link = '';
-              let icon = '';
+                if (usernameIncidents[i].username === profileUserName) {
+                  creator = 'Me';
+                } else {
+                  creator = usernameIncidents[i].username;
+                }
+                if (usernameIncidents[i].type === 'redflag') {
+                  link = 'view_redflag.html?redflag_id';
+                  icon = 'fa fa-flag red';
+                } else if (usernameIncidents[i].type === 'intervention') {
+                  link = 'view_intervention.html?intervention_id';
+                  icon = 'fa fa-handshake-o theme-blue';
+                }
 
-              if (usernameIncidents[i].username === profileUserName) {
-                creator = 'Me';
-              } else {
-                creator = usernameIncidents[i].username;
+                result.innerHTML += `
+                              <div class='column'>
+                                <div class='card'>
+                                  <div class='container2 justify'>
+                                    <a href='${link}=${usernameIncidents[i].id}'>
+                                      <p><i class='${icon} fa-2x' aria-hidden='true'></i></p>
+                                      <h4 class='black truncate'><b>${usernameIncidents[i].title}</b></h4>
+                                      <p>${usernameIncidents[i].status}</p>
+                                      <p class='italic font-small'>${humanizedTime}</p>
+                                    </a>                   
+                                    <a href='view_by_username.html?type=${usernameIncidents[i].type}&username=${usernameIncidents[i].username}'><p class='italic font-small'><span class='theme-blue'>By ${creator}</span></p>
+                                    <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
+                                    </a>
+                                  </div>
+                                </div>               
+                              </div>
+                          `;
               }
-              if (usernameIncidents[i].type === 'redflag') {
-                link = 'view_redflag.html?redflag_id';
-                icon = 'fa fa-flag red';
-              } else if (usernameIncidents[i].type === 'intervention') {
-                link = 'view_intervention.html?intervention_id';
-                icon = 'fa fa-handshake-o theme-blue';
-              }
-
-              result.innerHTML += `
-                            <div class='column'>
-                              <div class='card'>
-                                <div class='container2 justify'>
-                                  <a href='${link}=${usernameIncidents[i].id}'>
-                                    <p><i class='${icon} fa-2x' aria-hidden='true'></i></p>
-                                    <h4 class='black truncate'><b>${usernameIncidents[i].title}</b></h4>
-                                    <p>${usernameIncidents[i].status}</p>
-                                    <p class='italic font-small'>${humanizedTime}</p>
-                                  </a>                   
-                                  <a href='view_by_username.html?type=${usernameIncidents[i].type}&username=${usernameIncidents[i].username}'><p class='italic font-small'><span class='theme-blue'>By ${creator}</span></p>
-                                  <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
-                                  </a>
-                                </div>
-                              </div>               
-                            </div>
-                        `;
+              checkButtonOpacity();
+              selectedPage();
             }
-            checkButtonOpacity();
-            selectedPage();
           };
 
           const prevPage = () => {
@@ -284,8 +294,6 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
             addEventListeners();
           };
 
-          let incidentNumber = document.getElementById('incident_number');
-
           if (startNumber === endNumber || endNumber === 0) {
             incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
           } else {
@@ -298,8 +306,8 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
         hideLoader(1000);
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
@@ -312,7 +320,7 @@ const postData = (event, incidenttype) => {
   document.getElementById('location').style.borderBottomColor = '#ccc';
   document.getElementById('fa-spin').style.display = 'block';
 
-  const uri = config.root + incidenttype;
+  const createIncidentUri = config.root + incidenttype;
 
   const title = document.getElementById('title').value;
   const comment = document.getElementById('comment').value;
@@ -331,41 +339,41 @@ const postData = (event, incidenttype) => {
       location,
     }),
   };
-  const request = new Request(uri, options);
+  const createIncidentRequest = new Request(createIncidentUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
+  fetch(createIncidentRequest)
+    .then((createIncidentResponse) => {
+      if (createIncidentResponse.ok) {
         document.getElementById('fa-spin').style.display = 'none';
 
-        return response.json();
+        return createIncidentResponse.json();
       }
       document.getElementById('fa-spin').style.display = 'none';
-      return response.json();
+      return createIncidentResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((createIncidentData) => {
+      if (Object.prototype.hasOwnProperty.call(createIncidentData, 'message')) {
+        if (createIncidentData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (createIncidentData.message === 'Token is invalid') {
           logout();
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'comment')) {
+        if (Object.prototype.hasOwnProperty.call(createIncidentData.message, 'comment')) {
           document.getElementById('comment').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
             message: 'Comment cannot be empty or start with special characters',
           });
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'title')) {
+        if (Object.prototype.hasOwnProperty.call(createIncidentData.message, 'title')) {
           document.getElementById('title').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
             message: 'Title cannot be empty or start with special characters',
           });
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'location')) {
+        if (Object.prototype.hasOwnProperty.call(createIncidentData.message, 'location')) {
           document.getElementById('location').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
@@ -373,7 +381,7 @@ const postData = (event, incidenttype) => {
           });
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+      if (Object.prototype.hasOwnProperty.call(createIncidentData, 'data')) {
         successNotification({
           title: 'Success',
           message: 'Incident has been created',
@@ -388,14 +396,14 @@ const postData = (event, incidenttype) => {
         document.getElementById('modal-window-create').style.display = 'none';
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
 // Function to get files by file name
 const getFileData = (filetype, filename) => {
-  const uri = `${config.root}uploads/${filetype}/${filename}`;
+  const getFileUri = `${config.root}uploads/${filetype}/${filename}`;
 
   const options = {
     method: 'GET',
@@ -404,14 +412,14 @@ const getFileData = (filetype, filename) => {
       'x-access-token': tokenModels,
     }),
   };
-  const request = new Request(uri, options);
+  const getFileRequest = new Request(getFileUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(getFileRequest)
+    .then((getFileResponse) => {
+      if (getFileResponse.ok) {
+        return getFileResponse.json();
       }
-      return response.json();
+      return getFileResponse.json();
     })
     .then((j) => {
       if (filetype === 'images') {
@@ -432,15 +440,15 @@ const getFileData = (filetype, filename) => {
         document.getElementsByClassName('vid-details')[0].appendChild(videoElement);
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
 // Function to get an incident by Id
 
 const getDataById = (incidenttype, incidentId) => {
-  const uri = `${config.root}${incidenttype}/${incidentId}`;
+  const getIncidentUri = `${config.root}${incidenttype}/${incidentId}`;
 
   const options = {
     method: 'GET',
@@ -451,35 +459,35 @@ const getDataById = (incidenttype, incidentId) => {
       'x-access-token': tokenModels,
     }),
   };
-  const request = new Request(uri, options);
+  const getIncidentRequest = new Request(getIncidentUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
+  fetch(getIncidentRequest)
+    .then((getIncidentResponse) => {
+      if (getIncidentResponse.ok) {
         document.getElementById('fa-spin-data').style.display = 'none';
         document.getElementById('btnGeolocate').disabled = false;
-        return response.json();
+        return getIncidentResponse.json();
       }
       document.getElementById('fa-spin-data').style.display = 'none';
-      return response.json();
+      return getIncidentResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((getIncidentData) => {
+      if (Object.prototype.hasOwnProperty.call(getIncidentData, 'message')) {
+        if (getIncidentData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (getIncidentData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Intervention does not exist' || j.message === 'Redflag does not exist') {
-          document.getElementById('message').innerHTML = j.message;
+        if (getIncidentData.message === 'Intervention does not exist' || getIncidentData.message === 'Redflag does not exist') {
+          document.getElementById('message').innerHTML = getIncidentData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+      if (Object.prototype.hasOwnProperty.call(getIncidentData, 'data')) {
         let result = '';
         let imageUrl = '';
         let creator = '';
-        j.data.map((incident) => {
+        getIncidentData.data.forEach((incident) => {
           const {
             title,
             comment,
@@ -554,8 +562,8 @@ const getDataById = (incidenttype, incidentId) => {
         });
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
@@ -565,7 +573,7 @@ const deleteData = (incidenttype, incidentId) => {
   document.getElementById('fa-spin-data-delete').style.display = 'block';
   document.getElementById('error-message').innerHTML = '';
 
-  const uri = `${config.root}${incidenttype}/${incidentId}`;
+  const deleteIncidentUri = `${config.root}${incidenttype}/${incidentId}`;
 
   const options = {
     method: 'DELETE',
@@ -575,36 +583,36 @@ const deleteData = (incidenttype, incidentId) => {
       'x-access-token': tokenModels,
     }),
   };
-  const request = new Request(uri, options);
+  const deleteIncidentRequest = new Request(deleteIncidentUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(deleteIncidentRequest)
+    .then((deleteIncidentResponse) => {
+      if (deleteIncidentResponse.ok) {
+        return deleteIncidentResponse.json();
       }
-      return response.json();
+      return deleteIncidentResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((deleteIncidentData) => {
+      if (Object.prototype.hasOwnProperty.call(deleteIncidentData, 'message')) {
+        if (deleteIncidentData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (deleteIncidentData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Intervention does not exist' || j.message === 'Redflag does not exist') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteIncidentData.message === 'Intervention does not exist' || deleteIncidentData.message === 'Redflag does not exist') {
+          document.getElementById('error-message').innerHTML = deleteIncidentData.message;
         }
-        if (j.message === 'Only the creator of this record can delete it') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteIncidentData.message === 'Only the creator of this record can delete it') {
+          document.getElementById('error-message').innerHTML = deleteIncidentData.message;
         }
-        if (j.message === 'Incident can only be deleted when the status is draft') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteIncidentData.message === 'Incident can only be deleted when the status is draft') {
+          document.getElementById('error-message').innerHTML = deleteIncidentData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data.message === 'Intervention record has been deleted' || j.data.message === 'Redflag record has been deleted') {
-          document.getElementById('error-message').innerHTML = j.data.message;
+      if (Object.prototype.hasOwnProperty.call(deleteIncidentData, 'data')) {
+        if (deleteIncidentData.data.message === 'Intervention record has been deleted' || deleteIncidentData.data.message === 'Redflag record has been deleted') {
+          document.getElementById('error-message').innerHTML = deleteIncidentData.data.message;
           if (incidenttype === 'redflags') {
             window.location.replace('redflags.html');
           } else if (incidenttype === 'interventions') {
@@ -614,8 +622,8 @@ const deleteData = (incidenttype, incidentId) => {
       }
       document.getElementById('fa-spin-data-delete').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+      document.getElementById('error-message').innerText = 'An error occured please try again';
       document.getElementById('fa-spin-data-delete').style.display = 'none';
     });
 };
@@ -625,70 +633,69 @@ const editLocation = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit').style.display = 'block';
 
-  const uri = `${config.root}${incidentType}/${incidentId}/location`;
+  const editLocationUri = `${config.root}${incidentType}/${incidentId}/location`;
 
   const location = document.getElementById('location').value;
 
   const options = {
-    method: 'PATCH',
     mode: 'cors',
+    method: 'PATCH',
     headers: new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
       'x-access-token': tokenModels,
+      'Content-Type': 'application/json; charset=utf-8',
     }),
     body: JSON.stringify({
       location,
     }),
   };
-  const request = new Request(uri, options);
+  const editLocationRequest = new Request(editLocationUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(editLocationRequest)
+    .then((editLocationResponse) => {
+      if (editLocationResponse.ok) {
+        return editLocationResponse.json();
       }
-      return response.json();
+      return editLocationResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((editLocationData) => {
+      if (Object.prototype.hasOwnProperty.call(editLocationData, 'message')) {
+        if (editLocationData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (editLocationData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Intervention does not exist' || j.message === 'Redflag does not exist') {
+        if (editLocationData.message === 'Intervention does not exist' || editLocationData.message === 'Redflag does not exist') {
           warningNotification({
             title: 'Warning',
-            message: j.message,
+            message: editLocationData.message,
           });
         }
-        if (j.message === 'Only the user who created this record can edit it') {
+        if (editLocationData.message === 'Only the user who created this record can edit it') {
           warningNotification({
             title: 'Warning',
-            message: j.message,
+            message: editLocationData.message,
           });
         }
-        if (j.message === 'Incident can only be edited when the status is draft') {
+        if (editLocationData.message === 'Incident can only be edited when the status is draft') {
           warningNotification({
             title: 'Warning',
             message: 'Location can only be edited when the status is draft',
           });
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data[0].message === "Updated intervention record's location" || j.data[0].message === "Updated redflag record's location") {
+      if (Object.prototype.hasOwnProperty.call(editLocationData, 'data')) {
+        if (editLocationData.data[0].message === "Updated intervention record's location" || editLocationData.data[0].message === "Updated redflag record's location") {
           successNotification({
             title: 'Success',
-            message: j.data[0].message,
+            message: editLocationData.data[0].message,
           });
           localStorage.setItem('coordinates', location);
         }
       }
       document.getElementById('fa-spin-edit').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
       document.getElementById('fa-spin-edit').style.display = 'none';
     });
 };
@@ -696,12 +703,11 @@ const editLocation = (event, incidentType, incidentId) => {
 // Function to edit comment
 const editComment = (event, incidentType, incidentId) => {
   event.preventDefault();
+  const hideSpinner = 'none';
+  const comment = document.getElementById('comment').value;
+  const editCommentUri = `${config.root}${incidentType}/${incidentId}/comment`;
   document.getElementById('fa-spin-edit').style.display = 'block';
   document.getElementById('comment').style.borderBottomColor = '#ccc';
-
-  const uri = `${config.root}${incidentType}/${incidentId}/comment`;
-
-  const comment = document.getElementById('comment').value;
 
   const options = {
     method: 'PATCH',
@@ -714,54 +720,54 @@ const editComment = (event, incidentType, incidentId) => {
       comment,
     }),
   };
-  const request = new Request(uri, options);
+  const editCommentRequest = new Request(editCommentUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(editCommentRequest)
+    .then((editCommentResponse) => {
+      if (editCommentResponse.ok) {
+        return editCommentResponse.json();
       }
-      return response.json();
+      return editCommentResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((editCommentData) => {
+      if (Object.prototype.hasOwnProperty.call(editCommentData, 'message')) {
+        if (editCommentData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (editCommentData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Intervention does not exist' || j.message === 'Redflag does not exist') {
+        if (editCommentData.message === 'Intervention does not exist' || editCommentData.message === 'Redflag does not exist') {
           warningNotification({
             title: 'Warning',
-            message: j.message,
+            message: editCommentData.message,
           });
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'comment')) {
+        if (Object.prototype.hasOwnProperty.call(editCommentData.message, 'comment')) {
           document.getElementById('comment').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
             message: 'Comment cannot be empty or start with special characters and whitespace',
           });
         }
-        if (j.message === 'Only the user who created this record can edit it') {
+        if (editCommentData.message === 'Only the user who created this record can edit it') {
           warningNotification({
             title: 'Warning',
-            message: j.message,
+            message: editCommentData.message,
           });
         }
-        if (j.message === 'Incident can only be edited when the status is draft') {
+        if (editCommentData.message === 'Incident can only be edited when the status is draft') {
           warningNotification({
             title: 'Warning',
             message: 'Comment can only be edited when the status is draft',
           });
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data[0].message === "Updated intervention record's comment" || j.data[0].message === "Updated redflag record's comment") {
+      if (Object.prototype.hasOwnProperty.call(editCommentData, 'data')) {
+        if (editCommentData.data[0].message === "Updated intervention record's comment" || editCommentData.data[0].message === "Updated redflag record's comment") {
           successNotification({
             title: 'Success',
-            message: j.data[0].message,
+            message: editCommentData.data[0].message,
           });
           const paragraph = comment.split('\n');
           let commentData = '';
@@ -774,11 +780,10 @@ const editComment = (event, incidentType, incidentId) => {
           document.getElementById('comment-data').innerHTML = commentData;
         }
       }
-      document.getElementById('fa-spin-edit').style.display = 'none';
+      document.getElementById('fa-spin-edit').style.display = hideSpinner;
     })
-    .catch((error) => {
-      console.log(error);
-      document.getElementById('fa-spin-edit').style.display = 'none';
+    .catch(() => {
+      document.getElementById('fa-spin-edit').style.display = hideSpinner;
     });
 };
 
@@ -787,7 +792,7 @@ const editStatus = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit-status').style.display = 'block';
 
-  const uri = `${config.root}${incidentType}/${incidentId}/status`;
+  const editStatusUri = `${config.root}${incidentType}/${incidentId}/status`;
 
   const status = document.getElementById('status').value;
 
@@ -802,49 +807,49 @@ const editStatus = (event, incidentType, incidentId) => {
       status,
     }),
   };
-  const request = new Request(uri, options);
+  const editStatusRequest = new Request(editStatusUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(editStatusRequest)
+    .then((editStatusResponse) => {
+      if (editStatusResponse.ok) {
+        return editStatusResponse.json();
       }
-      return response.json();
+      return editStatusResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((editStatusData) => {
+      if (Object.prototype.hasOwnProperty.call(editStatusData, 'message')) {
+        if (editStatusData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (editStatusData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Intervention does not exist' || j.message === 'Redflag does not exist') {
+        if (editStatusData.message === 'Intervention does not exist' || editStatusData.message === 'Redflag does not exist') {
           warningNotification({
             title: 'Warning',
-            message: j.message,
+            message: editStatusData.message,
           });
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'status')) {
+        if (Object.prototype.hasOwnProperty.call(editStatusData.message, 'status')) {
           document.getElementById('status').style.borderBottomColor = 'red';
           warningNotification({
             title: 'Warning',
             message: 'Accepted values: draft, under investigation, rejected, resolved',
           });
         }
-        if (j.message === 'Only an admin can change the status of the record') {
+        if (editStatusData.message === 'Only an admin can change the status of the record') {
           warningNotification({
             title: 'Warning',
-            message: j.message,
+            message: editStatusData.message,
           });
         }
       }
 
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data[0].message === "Updated intervention record's status" || j.data[0].message === "Updated redflag record's status") {
+      if (Object.prototype.hasOwnProperty.call(editStatusData, 'data')) {
+        if (editStatusData.data[0].message === "Updated intervention record's status" || editStatusData.data[0].message === "Updated redflag record's status") {
           successNotification({
             title: 'Success',
-            message: j.data[0].message,
+            message: editStatusData.data[0].message,
           });
           document.getElementById('status').value = status;
           document.getElementById('status-data').innerHTML = status;
@@ -852,8 +857,7 @@ const editStatus = (event, incidentType, incidentId) => {
       }
       document.getElementById('fa-spin-edit-status').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
       document.getElementById('fa-spin-edit-status').style.display = 'none';
     });
 };
@@ -865,75 +869,69 @@ const uploadImage = (event, incidentType, incidentId) => {
   document.getElementById('upload-message').innerHTML = '';
   document.getElementById('upload-message').style.color = 'red';
 
-  const uri = `${config.root}${incidentType}/${incidentId}/addImage`;
+  const uploadImageUri = `${config.root}${incidentType}/${incidentId}/addImage`;
 
-  const formData = new FormData();
+  const imageFormData = new FormData();
   const fileData = document.getElementById('fileImage').files[0];
 
   if (fileData === null || fileData === undefined) {
+    document.getElementById('upload-message').innerHTML = 'Please select a an image';
     document.getElementById('fa-spin-upload').style.display = 'none';
-    document.getElementById('upload-message').innerHTML = 'Please select a file';
-    return false;
+  } else {
+    const imageExtension = fileData.name.split('.')[1];
+    const uploadedImageFilename = `${incidentId.toString()}.${imageExtension}`;
+
+    imageFormData.append('uploadFile', fileData, fileData.name);
+
+    const options = {
+      headers: new Headers({
+        'x-access-token': tokenModels,
+      }),
+      method: 'PATCH',
+      mode: 'cors',
+      body: imageFormData,
+    };
+    const uploadImageRequest = new Request(uploadImageUri, options);
+
+    fetch(uploadImageRequest)
+      .then((uploadImageResponse) => {
+        if (uploadImageResponse.ok) {
+          return uploadImageResponse.json();
+        }
+        return uploadImageResponse.json();
+      })
+      .then((uploadImageData) => {
+        if (Object.prototype.hasOwnProperty.call(uploadImageData, 'message')) {
+          if (uploadImageData.message === 'Token is missing') {
+            logout();
+          }
+          if (uploadImageData.message === 'Token is invalid') {
+            logout();
+          }
+          if (uploadImageData.message === 'Intervention does not exist' || uploadImageData.message === 'Redflag does not exist') {
+            document.getElementById('upload-message').innerHTML = uploadImageData.message;
+          }
+          if (uploadImageData.message === 'You cannot upload a photo for this incident') {
+            document.getElementById('upload-message').innerHTML = uploadImageData.message;
+          }
+          if (uploadImageData.message === 'File type not supported' || uploadImageData.message === 'No uploadFile name in form') {
+            document.getElementById('upload-message').innerHTML = uploadImageData.message;
+          }
+        }
+        if (Object.prototype.hasOwnProperty.call(uploadImageData, 'data')) {
+          if (uploadImageData.data[0].message === 'Image added to intervention record' || uploadImageData.data[0].message === 'Image added to red-flag record') {
+            document.getElementById('upload-message').style.color = 'green';
+            document.getElementById('upload-message').innerHTML = uploadImageData.data[0].message;
+            getFileData('images', uploadedImageFilename);
+          }
+        }
+        document.getElementById('fa-spin-upload').style.display = 'none';
+      })
+      .catch(() => {
+        document.getElementById('upload-message').innerHTML = 'An error occured check if status is draft and try again';
+        document.getElementById('fa-spin-upload').style.display = 'none';
+      });
   }
-
-  console.log(fileData);
-  console.log(fileData.name);
-  const fileExtension = fileData.name.split('.')[1];
-  const uploadedFileName = `${incidentId.toString()}.${fileExtension}`;
-  console.log(uploadedFileName);
-
-  formData.append('uploadFile', fileData, fileData.name);
-
-  const options = {
-    method: 'PATCH',
-    mode: 'cors',
-    headers: new Headers({
-      'x-access-token': tokenModels,
-    }),
-    body: formData,
-  };
-  const request = new Request(uri, options);
-
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return response.json();
-    })
-    .then((j) => {
-      console.log(j);
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
-          logout();
-        }
-        if (j.message === 'Token is invalid') {
-          logout();
-        }
-        if (j.message === 'Intervention does not exist' || j.message === 'Redflag does not exist') {
-          document.getElementById('upload-message').innerHTML = j.message;
-        }
-        if (j.message === 'You cannot upload a photo for this incident') {
-          document.getElementById('upload-message').innerHTML = j.message;
-        }
-        if (j.message === 'File type not supported' || j.message === 'No uploadFile name in form') {
-          document.getElementById('upload-message').innerHTML = j.message;
-        }
-      }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data[0].message === 'Image added to intervention record' || j.data[0].message === 'Image added to red-flag record') {
-          document.getElementById('upload-message').style.color = 'green';
-          document.getElementById('upload-message').innerHTML = j.data[0].message;
-          getFileData('images', uploadedFileName);
-        }
-      }
-      document.getElementById('fa-spin-upload').style.display = 'none';
-    })
-    .catch((error) => {
-      console.log(error);
-      document.getElementById('upload-message').innerHTML = 'An error occured check if status is draft and try again';
-      document.getElementById('fa-spin-upload').style.display = 'none';
-    });
 };
 
 const uploadVideo = (event, incidentType, incidentId) => {
@@ -942,76 +940,70 @@ const uploadVideo = (event, incidentType, incidentId) => {
   document.getElementById('upload-message-2').innerHTML = '';
   document.getElementById('upload-message-2').style.color = 'red';
 
-  const uri = `${config.root}${incidentType}/${incidentId}/addVideo`;
+  const uploadVideoUri = `${config.root}${incidentType}/${incidentId}/addVideo`;
 
   const formData = new FormData();
   const fileData = document.getElementById('fileVideo').files[0];
 
   if (fileData === null || fileData === undefined) {
     document.getElementById('fa-spin-upload-2').style.display = 'none';
-    document.getElementById('upload-message-2').innerHTML = 'Please select a file';
-    return false;
+    document.getElementById('upload-message-2').innerHTML = 'Please select a video';
+  } else {
+    const fileExtension = fileData.name.split('.')[1];
+    const uploadedFileName = `${incidentId.toString()}.${fileExtension}`;
+
+    formData.append('uploadFile', fileData, fileData.name);
+
+    const options = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: new Headers({
+        'x-access-token': tokenModels,
+      }),
+      body: formData,
+    };
+    const uploadVideoRequest = new Request(uploadVideoUri, options);
+
+    fetch(uploadVideoRequest)
+      .then((uploadVideoResponse) => {
+        if (uploadVideoResponse.ok) {
+          return uploadVideoResponse.json();
+        }
+        return uploadVideoResponse.json();
+      })
+      .then((uploadVideoData) => {
+        if (Object.prototype.hasOwnProperty.call(uploadVideoData, 'message')) {
+          if (uploadVideoData.message === 'Token is missing') {
+            logout();
+          }
+          if (uploadVideoData.message === 'Token is invalid') {
+            logout();
+          }
+          if (uploadVideoData.message === 'Intervention does not exist' || uploadVideoData.message === 'Redflag does not exist') {
+            document.getElementById('upload-message-2').innerHTML = uploadVideoData.message;
+          }
+          if (uploadVideoData.message === 'You cannot upload a video for this incident') {
+            document.getElementById('upload-message-2').innerHTML = uploadVideoData.message;
+          }
+          if (uploadVideoData.message === 'File type not supported' || uploadVideoData.message === 'No uploadFile name in form') {
+            document.getElementById('upload-message-2').innerHTML = uploadVideoData.message;
+          }
+        }
+        if (Object.prototype.hasOwnProperty.call(uploadVideoData, 'data')) {
+          if (uploadVideoData.data[0].message === 'Video added to intervention record' || uploadVideoData.data[0].message === 'Video added to red-flag record') {
+            document.getElementById('upload-message-2').style.color = 'green';
+            document.getElementById('upload-message-2').innerHTML = uploadVideoData.data[0].message;
+            document.getElementById('uploadVideo').reset();
+            getFileData('videos', uploadedFileName);
+          }
+        }
+        document.getElementById('fa-spin-upload-2').style.display = 'none';
+      })
+      .catch(() => {
+        document.getElementById('upload-message-2').innerHTML = 'An error occured check if status is draft and try again';
+        document.getElementById('fa-spin-upload-2').style.display = 'none';
+      });
   }
-
-  console.log(fileData);
-  console.log(fileData.name);
-  const fileExtension = fileData.name.split('.')[1];
-  const uploadedFileName = `${incidentId.toString()}.${fileExtension}`;
-  console.log(uploadedFileName);
-
-  formData.append('uploadFile', fileData, fileData.name);
-
-  const options = {
-    method: 'PATCH',
-    mode: 'cors',
-    headers: new Headers({
-      'x-access-token': tokenModels,
-    }),
-    body: formData,
-  };
-  const request = new Request(uri, options);
-
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return response.json();
-    })
-    .then((j) => {
-      console.log(j);
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
-          logout();
-        }
-        if (j.message === 'Token is invalid') {
-          logout();
-        }
-        if (j.message === 'Intervention does not exist' || j.message === 'Redflag does not exist') {
-          document.getElementById('upload-message-2').innerHTML = j.message;
-        }
-        if (j.message === 'You cannot upload a video for this incident') {
-          document.getElementById('upload-message-2').innerHTML = j.message;
-        }
-        if (j.message === 'File type not supported' || j.message === 'No uploadFile name in form') {
-          document.getElementById('upload-message-2').innerHTML = j.message;
-        }
-      }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data[0].message === 'Video added to intervention record' || j.data[0].message === 'Video added to red-flag record') {
-          document.getElementById('upload-message-2').style.color = 'green';
-          document.getElementById('upload-message-2').innerHTML = j.data[0].message;
-          document.getElementById('uploadVideo').reset();
-          getFileData('videos', uploadedFileName);
-        }
-      }
-      document.getElementById('fa-spin-upload-2').style.display = 'none';
-    })
-    .catch((error) => {
-      console.log(error);
-      document.getElementById('upload-message-2').innerHTML = 'An error occured check if status is draft and try again';
-      document.getElementById('fa-spin-upload-2').style.display = 'none';
-    });
 };
 
 const loadProfileData = () => {
@@ -1060,7 +1052,7 @@ const updateUserData = (event, usernameid) => {
   document.getElementById('phonenumberProfile').style.borderColor = '#ccc';
   document.getElementById('emailProfile').style.borderColor = '#ccc';
 
-  const uri = `${config.root}users/${usernameid}`;
+  const updateUserUri = `${config.root}users/${usernameid}`;
 
   const firstname = document.getElementById('firstnameProfile').value;
   const lastname = document.getElementById('lastnameProfile').value;
@@ -1090,52 +1082,52 @@ const updateUserData = (event, usernameid) => {
     }),
     body: JSON.stringify(data),
   };
-  const request = new Request(uri, options);
+  const updateUserRequest = new Request(updateUserUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(updateUserRequest)
+    .then((updateUserResponse) => {
+      if (updateUserResponse.ok) {
+        return updateUserResponse.json();
       }
-      return response.json();
+      return updateUserResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((userData) => {
+      if (Object.prototype.hasOwnProperty.call(userData, 'message')) {
+        if (userData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (userData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'User does not exist') {
+        if (userData.message === 'User does not exist') {
           warningNotification({
             title: 'Warning',
-            message: j.message,
+            message: userData.message,
           });
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'firstname')) {
+        if (Object.prototype.hasOwnProperty.call(userData.message, 'firstname')) {
           document.getElementById('firstnameProfile').style.borderColor = 'red';
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'lastname')) {
+        if (Object.prototype.hasOwnProperty.call(userData.message, 'lastname')) {
           document.getElementById('lastnameProfile').style.borderColor = 'red';
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'othernames')) {
+        if (Object.prototype.hasOwnProperty.call(userData.message, 'othernames')) {
           document.getElementById('othernameProfile').style.borderColor = 'red';
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'email')) {
+        if (Object.prototype.hasOwnProperty.call(userData.message, 'email')) {
           document.getElementById('emailProfile').style.borderColor = 'red';
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'phoneNumber')) {
+        if (Object.prototype.hasOwnProperty.call(userData.message, 'phoneNumber')) {
           document.getElementById('phonenumberProfile').style.borderColor = 'red';
         }
-        if (j.message === 'email already exists') {
+        if (userData.message === 'email already exists') {
           warningNotification({
             title: 'Warning',
-            message: j.message,
+            message: userData.message,
           });
         }
 
-        if (j.message === 'Your profile has been updated') {
+        if (userData.message === 'Your profile has been updated') {
           localStorage.setItem('profilePhoneNumber', phonenumber);
           localStorage.setItem('profileFirstName', firstname);
           localStorage.setItem('profileLastName', lastname);
@@ -1144,15 +1136,14 @@ const updateUserData = (event, usernameid) => {
           loadProfileData();
           successNotification({
             title: 'Success',
-            message: `${j.message} for ${usernameid}`,
+            message: `${userData.message} for ${usernameid}`,
           });
         }
       }
 
       document.getElementById('fa-spin-updateProfile').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
       document.getElementById('fa-spin-updateProfile').style.display = 'none';
     });
 };
@@ -1163,78 +1154,69 @@ const uploadProfilePic = (event, usernameid) => {
   document.getElementById('upload-message').innerHTML = '';
   document.getElementById('upload-message').style.color = 'red';
 
-  const uri = `${config.root}users/${usernameid}/uploadImage`;
+  const uploadPicUri = `${config.root}users/${usernameid}/uploadImage`;
 
-  const formData = new FormData();
+  const uploadFileData = new FormData();
   const fileData = document.getElementById('profilePic').files[0];
 
   if (fileData === null || fileData === undefined) {
     document.getElementById('fa-spin-upload-pic').style.display = 'none';
     document.getElementById('upload-message').innerHTML = 'Please select a file';
-    return false;
+  } else {
+    uploadFileData.append('file', fileData, fileData.name);
+
+    const options = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: new Headers({
+        'x-access-token': tokenModels,
+      }),
+      body: uploadFileData,
+    };
+    const uploadPicRequest = new Request(uploadPicUri, options);
+
+    fetch(uploadPicRequest)
+      .then((uploadPicResponse) => {
+        if (uploadPicResponse.ok) {
+          return uploadPicResponse.json();
+        }
+        return uploadPicResponse.json();
+      })
+      .then((uploadPicData) => {
+        if (Object.prototype.hasOwnProperty.call(uploadPicData, 'message')) {
+          if (uploadPicData.message === 'Token is missing') {
+            logout();
+          }
+          if (uploadPicData.message === 'Token is invalid') {
+            logout();
+          }
+          if (uploadPicData.message === 'user does not exist') {
+            document.getElementById('upload-message').innerHTML = uploadPicData.message;
+          }
+          if (uploadPicData.message === 'A user can only upload a picture to their own profile') {
+            document.getElementById('upload-message').innerHTML = uploadPicData.message;
+          }
+          if (uploadPicData.message === 'File type not supported' || uploadPicData.message === 'no file part') {
+            document.getElementById('upload-message').innerHTML = uploadPicData.message;
+          }
+        }
+        if (Object.prototype.hasOwnProperty.call(uploadPicData, 'data')) {
+          if (uploadPicData.data.message === 'Your profile picture has been uploaded') {
+            document.getElementById('upload-message').style.color = 'green';
+            document.getElementById('upload-message').innerHTML = uploadPicData.data.message;
+          }
+        }
+        document.getElementById('fa-spin-upload-pic').style.display = 'none';
+      })
+      .catch(() => {
+        document.getElementById('upload-message').innerHTML = 'An error occured try again';
+        document.getElementById('fa-spin-upload-pic').style.display = 'none';
+      });
   }
-
-  console.log(fileData);
-  console.log(fileData.name);
-  const fileExtension = fileData.name.split('.')[1];
-  const uploadedFileName = `${usernameid}.${fileExtension}`;
-  console.log(uploadedFileName);
-
-  formData.append('file', fileData, fileData.name);
-
-  const options = {
-    method: 'PATCH',
-    mode: 'cors',
-    headers: new Headers({
-      'x-access-token': tokenModels,
-    }),
-    body: formData,
-  };
-  const request = new Request(uri, options);
-
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return response.json();
-    })
-    .then((j) => {
-      console.log(j);
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
-          logout();
-        }
-        if (j.message === 'Token is invalid') {
-          logout();
-        }
-        if (j.message === 'user does not exist') {
-          document.getElementById('upload-message').innerHTML = j.message;
-        }
-        if (j.message === 'A user can only upload a picture to their own profile') {
-          document.getElementById('upload-message').innerHTML = j.message;
-        }
-        if (j.message === 'File type not supported' || j.message === 'no file part') {
-          document.getElementById('upload-message').innerHTML = j.message;
-        }
-      }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data.message === 'Your profile picture has been uploaded') {
-          document.getElementById('upload-message').style.color = 'green';
-          document.getElementById('upload-message').innerHTML = j.data.message;
-        }
-      }
-      document.getElementById('fa-spin-upload-pic').style.display = 'none';
-    })
-    .catch((error) => {
-      console.log(error);
-      document.getElementById('upload-message').innerHTML = 'An error occured try again';
-      document.getElementById('fa-spin-upload-pic').style.display = 'none';
-    });
 };
 
 const getIncidentNumber = (incidenttype) => {
-  const uri = config.root + incidenttype;
+  const incidentNumberUri = config.root + incidenttype;
 
   const options = {
     method: 'GET',
@@ -1244,47 +1226,54 @@ const getIncidentNumber = (incidenttype) => {
       'x-access-token': user.token,
     }),
   };
-  const request = new Request(uri, options);
+  const incidentNumberRequest = new Request(incidentNumberUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(incidentNumberRequest)
+    .then((incidentNumberResponse) => {
+      if (incidentNumberResponse.ok) {
+        return incidentNumberResponse.json();
       }
-      return response.json();
+      return incidentNumberResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((incidentNumberData) => {
+      if (Object.prototype.hasOwnProperty.call(incidentNumberData, 'message')) {
+        if (incidentNumberData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (incidentNumberData.message === 'Token is invalid') {
           logout();
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        const incidents = j.data;
+      if (Object.prototype.hasOwnProperty.call(incidentNumberData, 'data')) {
+        const incidents = incidentNumberData.data;
         const myIncidents = incidents.filter((incident) => {
-          return incident.username === profileUserName;
+          const filtered = incident.username === profileUserName;
+          return filtered;
         });
 
         const myRedflags = myIncidents.filter((incident) => {
-          return incident.type === 'redflag';
+          const redflags = incident.type === 'redflag';
+          return redflags;
         });
         const myInterventions = myIncidents.filter((incident) => {
-          return incident.type === 'intervention';
+          const interventions = incident.type === 'intervention';
+          return interventions;
         });
         const myDraftIncidents = myIncidents.filter((incident) => {
-          return incident.status === 'draft';
+          const draft = incident.status === 'draft';
+          return draft;
         });
         const myResolvedIncidents = myIncidents.filter((incident) => {
-          return incident.status === 'resolved';
+          const resolved = incident.status === 'resolved';
+          return resolved;
         });
         const myUnderInvestigationIncidents = myIncidents.filter((incident) => {
-          return incident.status === 'under investigation';
+          const underinvestigation = incident.status === 'under investigation';
+          return underinvestigation;
         });
         const myRejectedIncidents = myIncidents.filter((incident) => {
-          return incident.status === 'rejected';
+          const rejected = incident.status === 'rejected';
+          return rejected;
         });
 
         if (incidenttype === 'redflags') {
@@ -1302,8 +1291,8 @@ const getIncidentNumber = (incidenttype) => {
         }
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
