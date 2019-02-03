@@ -253,12 +253,7 @@ const requestReset = (event) => {
         if (Object.prototype.hasOwnProperty.call(resetRequestData.message, 'resetlink')) {
           document.getElementById('error-message').innerHTML = 'resetlink key is missing';
         }
-        if (resetRequestData.message === 'user does not exist') {
-          document.getElementById('error-message').style.color = 'green';
-          document.getElementById('error-message').innerHTML = resetMessage;
-          setTimeout(redirection, 5000);
-        }
-        if (resetRequestData.message === 'Reset link has been sent to your email') {
+        if (resetRequestData.message === 'user does not exist' || resetRequestData.message === 'Reset link has been sent to your email') {
           document.getElementById('error-message').style.color = 'green';
           document.getElementById('error-message').innerHTML = resetMessage;
           setTimeout(redirection, 5000);
