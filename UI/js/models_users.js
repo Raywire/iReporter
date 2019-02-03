@@ -85,10 +85,16 @@ const getUsers = (userdata) => {
           };
 
           const checkButtonOpacity = () => {
-            currentPage === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove(
-              'opacity');
-            currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove(
-              'opacity');
+            if (currentPage === 1) {
+              prevButton.classList.add('opacity');
+            } else {
+              prevButton.classList.remove('opacity');
+            }
+            if (currentPage === numPages()) {
+              nextButton.classList.add('opacity');
+            } else {
+              nextButton.classList.remove('opacity');
+            }
 
             document.getElementById('button_next').disabled = currentPage === numPages();
             document.getElementById('button_prev').disabled = currentPage === 1;
@@ -96,12 +102,13 @@ const getUsers = (userdata) => {
 
           const changePage = (page) => {
             const result = document.getElementById('user-data');
+            let pageN = page;
 
-            if (page < 1) {
-              page = 1;
+            if (pageN < 1) {
+              pageN = 1;
             }
-            if (page > (numPages() - 1)) {
-              page = numPages();
+            if (pageN > (numPages() - 1)) {
+              pageN = numPages();
             }
 
             result.innerHTML = '';
@@ -128,40 +135,41 @@ const getUsers = (userdata) => {
               nextButton.classList.add('opacity');
               prevButton.classList.add('opacity');
               document.getElementById('user-data').innerHTML = resultNone;
-              return true;
-            }
-            let faIcon;
-            let blocked;
-            const upp = usersPerPage;
-            for (let i = (page - 1) * upp; i < (page * upp) && i < users.length; i += 1) {
-              if (users[i].isactive === false) {
-                faIcon = 'fa-ban red';
-                blocked = 'blocked';
-              } else {
-                faIcon = 'fa-unlock theme-blue';
-                blocked = '';
-              }
+              // return true;
+            } else {
+              let faIcon;
+              let blocked;
+              const upp = usersPerPage;
+              for (let i = (pageN - 1) * upp; i < (pageN * upp) && i < users.length; i += 1) {
+                if (users[i].isactive === false) {
+                  faIcon = 'fa-ban red';
+                  blocked = 'blocked';
+                } else {
+                  faIcon = 'fa-unlock theme-blue';
+                  blocked = '';
+                }
 
-              result.innerHTML += `
-                <div class='column'>
-                  <div class='card'>
-                      <div class='container2 align-center  ${blocked}'>
-                        <a href='view_user.html?username=${users[i].username}'>
-                          <p class='black align-left'><i class='fa ${faIcon}' aria-hidden='true'></i></p>
-                          <p><i class='fa fa-user-o fa-3x theme-blue' aria-hidden='true'></i></p>
-                          <h4 class='black'><b>${users[i].firstname} ${users[i].lastname}</b></h4>
-                          <p>${users[i].username}</p>
-                          <p class='italic font-small'>${users[i].email}</p>
-                          <p class='italic font-small'>Admin: ${users[i].isadmin}</p>
-                          <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
-                        </a>
-                      </div>
-                    </div>               
-                </div>
-                              `;
+                result.innerHTML += `
+                  <div class='column'>
+                    <div class='card'>
+                        <div class='container2 align-center  ${blocked}'>
+                          <a href='view_user.html?username=${users[i].username}'>
+                            <p class='black align-left'><i class='fa ${faIcon}' aria-hidden='true'></i></p>
+                            <p><i class='fa fa-user-o fa-3x theme-blue' aria-hidden='true'></i></p>
+                            <h4 class='black'><b>${users[i].firstname} ${users[i].lastname}</b></h4>
+                            <p>${users[i].username}</p>
+                            <p class='italic font-small'>${users[i].email}</p>
+                            <p class='italic font-small'>Admin: ${users[i].isadmin}</p>
+                            <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
+                          </a>
+                        </div>
+                      </div>               
+                  </div>
+                                `;
+              }
+              checkButtonOpacity();
+              selectedPage();
             }
-            checkButtonOpacity();
-            selectedPage();
           };
 
           const prevPage = () => {
@@ -196,8 +204,7 @@ const getUsers = (userdata) => {
               if (endNumber === startNumber) {
                 userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
               } else {
-                document.getElementById('startNumber').innerHTML = startNumber;
-                document.getElementById('endNumber').innerHTML = endNumber;
+                userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
               }
             }
             hideLoader(1000);
@@ -296,7 +303,7 @@ const getUserData = (usernameid) => {
         let fullname = '';
         let phone = '';
         let profilePhoto = '';
-        userData.data.map((user) => {
+        userData.data.forEach((user) => {
           const {
             firstname,
             lastname,
