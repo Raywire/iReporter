@@ -130,10 +130,10 @@ const getUsers = (userdata) => {
                         `;
               currentPage = 0;
               document.getElementById('startNumber').innerHTML = 0;
-              document.getElementById('button_next').disabled = true;
               document.getElementById('button_prev').disabled = true;
-              nextButton.classList.add('opacity');
+              document.getElementById('button_next').disabled = true;
               previousButton.classList.add('opacity');
+              nextButton.classList.add('opacity');
               document.getElementById('user-data').innerHTML = resultNone;
             } else {
               let faIcon;
@@ -210,8 +210,8 @@ const getUsers = (userdata) => {
           };
 
           const addEventListeners = () => {
-            nextButton.addEventListener('click', nextPage);
             previousButton.addEventListener('click', prevPage);
+            nextButton.addEventListener('click', nextPage);
           };
 
           const clickPage = () => {
@@ -237,9 +237,9 @@ const getUsers = (userdata) => {
 
           this.init = () => {
             changePage(1);
-            pageNumbers();
-            selectedPage();
             clickPage();
+            selectedPage();
+            pageNumbers();
             addEventListeners();
           };
 
@@ -437,19 +437,18 @@ const changeActiveStatus = (event, usernameid) => {
   document.getElementById('activity-message').innerHTML = '';
   document.getElementById('activity-message').style.color = 'red';
 
+  const isactive = document.getElementById('activity').value;
   const activeStatusUri = `${config.root}users/${usernameid}/activate`;
-
-  const activity = document.getElementById('activity').value;
 
   const options = {
     method: 'PATCH',
     mode: 'cors',
     headers: new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
       'x-access-token': user.token,
+      'Content-Type': 'application/json; charset=utf-8',
     }),
     body: JSON.stringify({
-      isactive: activity,
+      isactive,
     }),
   };
   const activeStatusRequest = new Request(activeStatusUri, options);
@@ -486,8 +485,8 @@ const changeActiveStatus = (event, usernameid) => {
         if (activeStatusData.data.message === 'User active status has been updated') {
           document.getElementById('activity-message').style.color = 'green';
           document.getElementById('activity-message').innerHTML = activeStatusData.data.message;
-          document.getElementById('activity').value = activity;
-          document.getElementById('activity-data').innerHTML = activity.toLowerCase();
+          document.getElementById('activity').value = isactive;
+          document.getElementById('activity-data').innerHTML = isactive.toLowerCase();
         }
       }
       document.getElementById('fa-spin-activity').style.display = 'none';
