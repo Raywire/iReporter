@@ -21,7 +21,7 @@ const signIn = (event) => {
   const uri = `${config.root}auth/login`;
 
   const username = document.getElementById('username').value.toLowerCase();
-  const password = document.getElementById('password').value;
+  const currentPassword = document.getElementById('password').value;
 
   const options = {
     method: 'POST',
@@ -31,48 +31,46 @@ const signIn = (event) => {
     }),
     body: JSON.stringify({
       username,
-      password,
+      password: currentPassword,
     }),
   };
-  const request = new Request(uri, options);
+  const signInRequest = new Request(uri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
+  fetch(signInRequest)
+    .then((signInResponse) => {
+      if (signInResponse.ok) {
         document.getElementById('fa-spin').style.display = 'none';
         document.getElementById('submit').value = 'Sign In';
 
-        return response.json();
+        return signInResponse.json();
       }
-      document.getElementById('fa-spin').style.display = 'none';
-      document.getElementById('submit').value = 'Sign In';
-      return response.json();
+      return signInResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (Object.prototype.hasOwnProperty.call(j.message, 'password')) {
+    .then((signInData) => {
+      if (Object.prototype.hasOwnProperty.call(signInData, 'message')) {
+        if (Object.prototype.hasOwnProperty.call(signInData.message, 'password')) {
           document.getElementById('password').style.borderBottomColor = 'red';
         }
-        if (Object.prototype.hasOwnProperty.call(j.message, 'username')) {
+        if (Object.prototype.hasOwnProperty.call(signInData.message, 'username')) {
           document.getElementById('username').style.borderBottomColor = 'red';
         }
-        if (j.message === 'password or username is invalid') {
+        if (signInData.message === 'password or username is invalid') {
           document.getElementById('username').style.borderBottomColor = 'red';
           document.getElementById('password').style.borderBottomColor = 'red';
-          document.getElementById('error-message').innerHTML = j.message;
+          document.getElementById('error-message').innerHTML = signInData.message;
         }
-        if (j.message === 'account has been disabled') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (signInData.message === 'account has been disabled') {
+          document.getElementById('error-message').innerHTML = signInData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+      if (Object.prototype.hasOwnProperty.call(signInData, 'data')) {
         document.getElementById('error-message').style.color = 'green';
         document.getElementById('error-message').innerHTML = 'Login successful';
         let othername = '';
         let phonenumber = '';
 
-        const userData = j.data[0].user;
-        const accessToken = j.data[0].token;
+        const userData = signInData.data[0].user;
+        const accessToken = signInData.data[0].token;
         if (userData.othernames != null) {
           othername = userData.othernames;
         } else {
@@ -137,7 +135,7 @@ const signUp = (event) => {
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('confirm_password').value;
 
-  const data = {
+  const newUserData = {
     firstname,
     lastname,
     username,
@@ -152,56 +150,56 @@ const signUp = (event) => {
       headers: new Headers({
         'Content-Type': 'application/json; charset=utf-8',
       }),
-      body: JSON.stringify(data),
+      body: JSON.stringify(newUserData),
     };
-    const request = new Request(uri, options);
+    const signUpRequest = new Request(uri, options);
 
-    fetch(request)
-      .then((response) => {
-        if (response.ok) {
+    fetch(signUpRequest)
+      .then((signUpResponse) => {
+        if (signUpResponse.ok) {
           document.getElementById('fa-spin').style.display = 'none';
           document.getElementById('submit').value = 'Sign Up';
 
-          return response.json();
+          return signUpResponse.json();
         }
         document.getElementById('fa-spin').style.display = 'none';
         document.getElementById('submit').value = 'Sign Up';
-        return response.json();
+        return signUpResponse.json();
       })
-      .then((j) => {
-        if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-          if (Object.prototype.hasOwnProperty.call(j.message, 'password')) {
-            document.getElementById('error-message').innerHTML = j.message.password;
+      .then((signUpData) => {
+        if (Object.prototype.hasOwnProperty.call(signUpData, 'message')) {
+          if (Object.prototype.hasOwnProperty.call(signUpData.message, 'password')) {
+            document.getElementById('error-message').innerHTML = signUpData.message.password;
             document.getElementById('password').style.borderBottomColor = 'red';
           }
-          if (Object.prototype.hasOwnProperty.call(j.message, 'firstname')) {
+          if (Object.prototype.hasOwnProperty.call(signUpData.message, 'firstname')) {
             document.getElementById('firstname').style.borderBottomColor = 'red';
           }
-          if (Object.prototype.hasOwnProperty.call(j.message, 'lastname')) {
+          if (Object.prototype.hasOwnProperty.call(signUpData.message, 'lastname')) {
             document.getElementById('lastname').style.borderBottomColor = 'red';
           }
-          if (Object.prototype.hasOwnProperty.call(j.message, 'username')) {
+          if (Object.prototype.hasOwnProperty.call(signUpData.message, 'username')) {
             document.getElementById('username').style.borderBottomColor = 'red';
           }
-          if (Object.prototype.hasOwnProperty.call(j.message, 'email')) {
+          if (Object.prototype.hasOwnProperty.call(signUpData.message, 'email')) {
             document.getElementById('email').style.borderBottomColor = 'red';
           }
-          if (j.message === 'email already exists') {
+          if (signUpData.message === 'email already exists') {
             document.getElementById('email').style.borderBottomColor = 'red';
-            document.getElementById('error-message').innerHTML = j.message;
+            document.getElementById('error-message').innerHTML = signUpData.message;
           }
-          if (j.message === 'username already exists') {
+          if (signUpData.message === 'username already exists') {
             document.getElementById('username').style.borderBottomColor = 'red';
-            document.getElementById('error-message').innerHTML = j.message;
+            document.getElementById('error-message').innerHTML = signUpData.message;
           }
-          if (j.message === 'You have been registered successfully') {
+          if (signUpData.message === 'You have been registered successfully') {
             document.getElementById('error-message').style.color = 'green';
-            document.getElementById('error-message').innerHTML = j.message;
+            document.getElementById('error-message').innerHTML = signUpData.message;
             window.location.replace('signin.html');
           }
         }
 
-        if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+        if (Object.prototype.hasOwnProperty.call(signUpData, 'data')) {
           window.location.replace('signin.html');
         }
       })
@@ -225,6 +223,7 @@ const requestReset = (event) => {
   const useremail = document.getElementById('useremail').value;
 
   const uri = `${config.root}users/${useremail}/resetPassword`;
+  const domain = config.resetlink;
 
   const options = {
     method: 'POST',
@@ -233,39 +232,39 @@ const requestReset = (event) => {
       'Content-Type': 'application/json; charset=utf-8',
     }),
     body: JSON.stringify({
-      resetlink: config.resetlink,
+      resetlink: domain,
     }),
   };
-  const request = new Request(uri, options);
+  const resetRequest = new Request(uri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
+  fetch(resetRequest)
+    .then((requestResetResponse) => {
+      if (requestResetResponse.ok) {
         document.getElementById('fa-spin').style.display = 'none';
 
-        return response.json();
+        return requestResetResponse.json();
       }
       document.getElementById('fa-spin').style.display = 'none';
-      return response.json();
+      return requestResetResponse.json();
     })
-    .then((j) => {
+    .then((resetRequestData) => {
       const resetMessage = `If a user account exists for ${useremail}, an email will be sent with further instructions`;
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (Object.prototype.hasOwnProperty.call(j.message, 'resetlink')) {
+      if (Object.prototype.hasOwnProperty.call(resetRequestData, 'message')) {
+        if (Object.prototype.hasOwnProperty.call(resetRequestData.message, 'resetlink')) {
           document.getElementById('error-message').innerHTML = 'resetlink key is missing';
         }
-        if (j.message === 'user does not exist') {
+        if (resetRequestData.message === 'user does not exist') {
           document.getElementById('error-message').style.color = 'green';
           document.getElementById('error-message').innerHTML = resetMessage;
           setTimeout(redirection, 5000);
         }
-        if (j.message === 'Reset link has been sent to your email') {
+        if (resetRequestData.message === 'Reset link has been sent to your email') {
           document.getElementById('error-message').style.color = 'green';
           document.getElementById('error-message').innerHTML = resetMessage;
           setTimeout(redirection, 5000);
         }
-        if (j.message === 'Password reset failed please try again') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (resetRequestData.message === 'Password reset failed please try again') {
+          document.getElementById('error-message').innerHTML = resetRequestData.message;
         }
       }
     })
