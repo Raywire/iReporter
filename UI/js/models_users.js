@@ -1,5 +1,5 @@
 const getUsers = (userdata) => {
-  const uri = `${config.root}users`;
+  const getUsersUri = `${config.root}users`;
 
   const options = {
     method: 'GET',
@@ -9,31 +9,31 @@ const getUsers = (userdata) => {
       'x-access-token': user.token,
     }),
   };
-  const request = new Request(uri, options);
+  const getUsersRequest = new Request(getUsersUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(getUsersRequest)
+    .then((getUsersResponse) => {
+      if (getUsersResponse.ok) {
+        return getUsersResponse.json();
       }
-      return response.json();
+      return getUsersResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((usersData) => {
+      if (Object.prototype.hasOwnProperty.call(usersData, 'message')) {
+        if (usersData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (usersData.message === 'Token is invalid') {
           logout();
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+      if (Object.prototype.hasOwnProperty.call(usersData, 'data')) {
         let users = [];
 
         if (userdata === 'all' || userdata === '') {
-          users = j.data;
+          users = usersData.data;
         } else {
-          const allUsers = j.data;
+          const allUsers = usersData.data;
 
           users = allUsers.filter((user) => {
             let userStatus = '';
@@ -45,60 +45,70 @@ const getUsers = (userdata) => {
             if (userStatus === true || userStatus === false) {
               return user.isadmin === userStatus;
             }
-            return user.username === userdata.toLowerCase() || user.firstname === userdata || user.email === userdata.toLowerCase() || user.lastname === userdata || user.phonenumber === userdata;
+            return user.username === userdata.toLowerCase() || user.firstname === userdata
+             || user.email === userdata.toLowerCase() || user.lastname === userdata
+             || user.phonenumber === userdata;
           });
         }
 
-        const Fn = function Pagination() {
-          const prevButton = document.getElementById('button_prev');
+        const UserFn = function UserPagination() {
+          const previousButton = document.getElementById('button_prev');
           const nextButton = document.getElementById('button_next');
+          const userNumber = document.getElementById('user_number');
           const perPage = document.getElementById('perPage').value;
 
           let currentPage = 1;
-          let recordsPerPage = parseInt(perPage, 10);
+          let usersPerPage = parseInt(perPage, 10);
           let startNumber = 1;
           const totalNumber = users.length;
 
-          if (recordsPerPage > totalNumber) {
-            recordsPerPage = totalNumber;
+          if (usersPerPage > totalNumber) {
+            usersPerPage = totalNumber;
           }
-          let endNumber = recordsPerPage;
-          let virtualEndNumber = recordsPerPage;
+          let userEndNumber = usersPerPage;
+          let virtualUserEndNumber = usersPerPage;
 
-          const selectedPage = () => {
-            const pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
-            for (let i = 0; i < pageNumber.length; i += 1) {
+          const selectedUserPage = () => {
+            const userPageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
+            for (let i = 0; i < userPageNumber.length; i += 1) {
               if (i === currentPage - 1) {
-                pageNumber[i].style.opacity = '1.0';
+                userPageNumber[i].style.opacity = '1.0';
               } else {
-                pageNumber[i].style.opacity = '0.5';
+                userPageNumber[i].style.opacity = '0.5';
               }
             }
           };
 
-          const numPages = () => {
-            const numOfPages = Math.ceil(users.length / recordsPerPage);
-            return numOfPages;
+          const numUserPages = () => {
+            const numOfUserPages = Math.ceil(users.length / usersPerPage);
+            return numOfUserPages;
           };
 
           const checkButtonOpacity = () => {
-            currentPage === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove(
-              'opacity');
-            currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove(
-              'opacity');
+            if (currentPage === 1) {
+              previousButton.classList.add('opacity');
+            } else {
+              previousButton.classList.remove('opacity');
+            }
+            if (currentPage === numUserPages()) {
+              nextButton.classList.add('opacity');
+            } else {
+              nextButton.classList.remove('opacity');
+            }
 
-            document.getElementById('button_next').disabled = currentPage === numPages() ? true : false;
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
+            document.getElementById('button_prev').disabled = currentPage === 1;
+            document.getElementById('button_next').disabled = currentPage === numUserPages();
           };
 
-          const changePage = (page) => {
+          const changeUserPage = (page) => {
             const result = document.getElementById('user-data');
+            let pageN = page;
 
-            if (page < 1) {
-              page = 1;
+            if (pageN < 1) {
+              pageN = 1;
             }
-            if (page > (numPages() - 1)) {
-              page = numPages();
+            if (pageN > (numUserPages() - 1)) {
+              pageN = numUserPages();
             }
 
             result.innerHTML = '';
@@ -120,137 +130,137 @@ const getUsers = (userdata) => {
                         `;
               currentPage = 0;
               document.getElementById('startNumber').innerHTML = 0;
-              document.getElementById('button_next').disabled = true;
               document.getElementById('button_prev').disabled = true;
+              document.getElementById('button_next').disabled = true;
+              previousButton.classList.add('opacity');
               nextButton.classList.add('opacity');
-              return document.getElementById('user-data').innerHTML = resultNone;
-            }
-            let faIcon;
-            let blocked;
-            for (let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) && i < users.length; i += 1) {
-              if (users[i].isactive === false) {
-                faIcon = 'fa-ban red';
-                blocked = 'blocked';
-              } else {
-                faIcon = 'fa-unlock theme-blue';
-                blocked = '';
-              }
+              document.getElementById('user-data').innerHTML = resultNone;
+            } else {
+              let faIcon;
+              let blocked;
+              const upp = usersPerPage;
+              for (let i = (pageN - 1) * upp; i < (pageN * upp) && i < users.length; i += 1) {
+                if (users[i].isactive === false) {
+                  faIcon = 'fa-ban red';
+                  blocked = 'blocked';
+                } else {
+                  faIcon = 'fa-unlock theme-blue';
+                  blocked = '';
+                }
 
-              result.innerHTML +=
-                `
-                <div class='column'>
-                  <div class='card'>
-                      <div class='container2 align-center  ${blocked}'>
-                        <a href='view_user.html?username=${users[i].username}'>
-                          <p class='black align-left'><i class='fa ${faIcon}' aria-hidden='true'></i></p>
-                          <p><i class='fa fa-user-o fa-3x theme-blue' aria-hidden='true'></i></p>
-                          <h4 class='black'><b>${users[i].firstname} ${users[i].lastname}</b></h4>
-                          <p>${users[i].username}</p>
-                          <p class='italic font-small'>${users[i].email}</p>
-                          <p class='italic font-small'>Admin: ${users[i].isadmin}</p>
-                          <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
-                        </a>
-                      </div>
-                    </div>               
-                </div>
-                              `;
+                result.innerHTML += `
+                  <div class='column'>
+                    <div class='card'>
+                        <div class='container2 align-center  ${blocked}'>
+                          <a href='view_user.html?username=${users[i].username}'>
+                            <p class='black align-left'><i class='fa ${faIcon}' aria-hidden='true'></i></p>
+                            <p><i class='fa fa-user-o fa-3x theme-blue' aria-hidden='true'></i></p>
+                            <h4 class='black'><b>${users[i].firstname} ${users[i].lastname}</b></h4>
+                            <p>${users[i].username}</p>
+                            <p class='italic font-small'>${users[i].email}</p>
+                            <p class='italic font-small'>Admin: ${users[i].isadmin}</p>
+                            <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
+                          </a>
+                        </div>
+                      </div>               
+                  </div>
+                                `;
+              }
+              checkButtonOpacity();
+              selectedUserPage();
             }
-            checkButtonOpacity();
-            selectedPage();
           };
 
-          const prevPage = () => {
+          const previousUserPage = () => {
             showLoader();
             if (currentPage > 1) {
               currentPage -= 1;
-              changePage(currentPage);
+              changeUserPage(currentPage);
               document.getElementById('currentPage').innerHTML = currentPage;
-              startNumber -= recordsPerPage;
-              virtualEndNumber -= recordsPerPage;
-              endNumber -= recordsPerPage;
-              userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
+              startNumber -= usersPerPage;
+              virtualUserEndNumber -= usersPerPage;
+              userEndNumber -= usersPerPage;
+              userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='userEndNumber'>${virtualUserEndNumber}</span>  of ${totalNumber}`;
             }
             if (currentPage === 1) {
-              endNumber = virtualEndNumber;
+              userEndNumber = virtualUserEndNumber;
             }
             hideLoader(1000);
           };
 
-          const nextPage = () => {
+          const nextUserPage = () => {
             showLoader();
-            if (currentPage < numPages()) {
+            if (currentPage < numUserPages()) {
               currentPage += 1;
-              changePage(currentPage);
+              changeUserPage(currentPage);
               document.getElementById('currentPage').innerHTML = currentPage;
-              startNumber += recordsPerPage;
-              endNumber += recordsPerPage;
-              virtualEndNumber += recordsPerPage;
-              if (endNumber > totalNumber) {
-                endNumber = totalNumber;
+              startNumber += usersPerPage;
+              userEndNumber += usersPerPage;
+              virtualUserEndNumber += usersPerPage;
+              if (userEndNumber > totalNumber) {
+                userEndNumber = totalNumber;
               }
-              if (endNumber === startNumber) {
+              if (userEndNumber === startNumber) {
                 userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
               } else {
-                document.getElementById('startNumber').innerHTML = startNumber;
-                document.getElementById('endNumber').innerHTML = endNumber;
+                userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='userEndNumber'>${userEndNumber}</span>  of ${totalNumber}`;
               }
             }
             hideLoader(1000);
           };
 
           const addEventListeners = () => {
-            nextButton.addEventListener('click', nextPage);
-            prevButton.addEventListener('click', prevPage);
+            previousButton.addEventListener('click', previousUserPage);
+            nextButton.addEventListener('click', nextUserPage);
           };
 
-          const clickPage = () => {
+          const clickUserPage = () => {
             document.addEventListener('click', (e) => {
               if (e.target.nodeName === 'SPAN' && e.target.classList.contains('clickPageNumber')) {
                 currentPage = e.target.textContent;
-                changePage(currentPage);
+                changeUserPage(currentPage);
               }
             });
           };
 
-          const pageNumbers = () => {
+          const userPageNumbers = () => {
             const pageNumber = document.getElementById('pageNumber');
             pageNumber.innerHTML = '';
-            let numberOfPages = numPages();
+            let numberOfPages = numUserPages();
             if (currentPage === 0) {
-              currentPage = 1;
               numberOfPages = 1;
+              currentPage = 1;
             }
 
             pageNumber.innerHTML = `<span class=''><span id='currentPage'>${currentPage}</span> / ${numberOfPages}</span>`;
           };
 
           this.init = () => {
-            changePage(1);
-            pageNumbers();
-            selectedPage();
-            clickPage();
+            clickUserPage();
+            changeUserPage(1);
+            selectedUserPage();
+            userPageNumbers();
             addEventListeners();
           };
 
-          let userNumber = document.getElementById('user_number');
-          if (startNumber === endNumber || endNumber === 0) {
+          if (startNumber === userEndNumber || userEndNumber === 0) {
             userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
           } else {
-            userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
+            userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='userEndNumber'>${userEndNumber}</span>  of ${totalNumber}`;
           }
         };
 
-        const pagination = new Fn();
-        pagination.init();
+        const userpagination = new UserFn();
+        userpagination.init();
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
 const getUserData = (usernameid) => {
-  const uri = `${config.root}users/${usernameid}`;
+  const getUserUri = `${config.root}users/${usernameid}`;
 
   const options = {
     method: 'GET',
@@ -260,39 +270,39 @@ const getUserData = (usernameid) => {
       'x-access-token': user.token,
     }),
   };
-  const request = new Request(uri, options);
+  const userDataRequest = new Request(getUserUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
+  fetch(userDataRequest)
+    .then((userDataResponse) => {
+      if (userDataResponse.ok) {
         document.getElementById('fa-spin-data').style.display = 'none';
 
-        return response.json();
+        return userDataResponse.json();
       }
       document.getElementById('fa-spin-data').style.display = 'none';
-      return response.json();
+      return userDataResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((userData) => {
+      if (Object.prototype.hasOwnProperty.call(userData, 'message')) {
+        if (userData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (userData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Only admin can access this route') {
+        if (userData.message === 'Only admin can access this route') {
           logout();
         }
-        if (j.message === 'user does not exist') {
-          document.getElementById('message').innerHTML = j.message;
+        if (userData.message === 'user does not exist') {
+          document.getElementById('message').innerHTML = userData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+      if (Object.prototype.hasOwnProperty.call(userData, 'data')) {
         let result = '';
         let fullname = '';
         let phone = '';
         let profilePhoto = '';
-        j.data.map((user) => {
+        userData.data.forEach((user) => {
           const {
             firstname,
             lastname,
@@ -303,7 +313,7 @@ const getUserData = (usernameid) => {
             isAdmin,
             isActive,
             registered,
-            public_id,
+            public_id: publicId,
             photourl,
           } = user;
           const localDateTime = convertToLocalTime(registered);
@@ -330,7 +340,7 @@ const getUserData = (usernameid) => {
                     <h3><span class='black'>Active:</span> <span id='activity-data' class='italic'>${isActive}</span></h3>
                     <h3><span class='black'>Admin Status:</span> <span id='status-data' class='italic'>${isAdmin}</span></h3>
                     <h4><span class='black'>Created On:</span> <span class='italic'>${localDateTime}</span></h4>
-                    <h4 id='comment-data'><span class='black'>Public Id: </span>${public_id}</h4>
+                    <h4 id='comment-data'><span class='black'>Public Id: </span>${publicId}</h4>
                     <hr class='incident-line'>
                 </div>
                 <div class='row  bg-color'>
@@ -348,8 +358,8 @@ const getUserData = (usernameid) => {
         });
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
@@ -359,7 +369,7 @@ const editUserData = (event, usernameid) => {
   document.getElementById('status-message').innerHTML = '';
   document.getElementById('status-message').style.color = 'red';
 
-  const uri = `${config.root}users/${usernameid}/promote`;
+  const promoteUserUri = `${config.root}users/${usernameid}/promote`;
 
   const status = document.getElementById('status').value;
 
@@ -374,49 +384,49 @@ const editUserData = (event, usernameid) => {
       isadmin: status,
     }),
   };
-  const request = new Request(uri, options);
+  const promoteUserRequest = new Request(promoteUserUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(promoteUserRequest)
+    .then((promoteUserResponse) => {
+      if (promoteUserResponse.ok) {
+        return promoteUserResponse.json();
       }
-      return response.json();
+      return promoteUserResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((promoteUserData) => {
+      if (Object.prototype.hasOwnProperty.call(promoteUserData, 'message')) {
+        if (promoteUserData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (promoteUserData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Only admin can access this route') {
+        if (promoteUserData.message === 'Only admin can access this route') {
           logout();
         }
-        if (j.message === 'User does not exist') {
-          document.getElementById('status-message').innerHTML = j.message;
+        if (promoteUserData.message === 'User does not exist') {
+          document.getElementById('status-message').innerHTML = promoteUserData.message;
         }
-        if (Object.prototype.hasOwnProperty.call(j, 'isadmin')) {
+        if (Object.prototype.hasOwnProperty.call(promoteUserData, 'isadmin')) {
           document.getElementById('isadmin').style.borderBottomColor = 'red';
           document.getElementById('status-message').innerHTML = '(Accepted values: True, False)';
         }
-        if (j.message === 'You cannot change the status of this user' || j.message === 'You cannot change your own admin status') {
-          document.getElementById('status-message').innerHTML = j.message;
+        if (promoteUserData.message === 'You cannot change the status of this user' || promoteUserData.message === 'You cannot change your own admin status') {
+          document.getElementById('status-message').innerHTML = promoteUserData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data.message === 'User status has been updated') {
+      if (Object.prototype.hasOwnProperty.call(promoteUserData, 'data')) {
+        if (promoteUserData.data.message === 'User status has been updated') {
           document.getElementById('status-message').style.color = 'green';
-          document.getElementById('status-message').innerHTML = j.data.message;
+          document.getElementById('status-message').innerHTML = promoteUserData.data.message;
           document.getElementById('status').value = status;
           document.getElementById('status-data').innerHTML = status.toLowerCase();
         }
       }
       document.getElementById('fa-spin-edit-status').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+      document.getElementById('status-message').innerHTML = 'An error has occurred please try again';
       document.getElementById('fa-spin-edit-status').style.display = 'none';
     });
 };
@@ -427,63 +437,62 @@ const changeActiveStatus = (event, usernameid) => {
   document.getElementById('activity-message').innerHTML = '';
   document.getElementById('activity-message').style.color = 'red';
 
-  const uri = `${config.root}users/${usernameid}/activate`;
-
-  const activity = document.getElementById('activity').value;
+  const isactive = document.getElementById('activity').value;
+  const activeStatusUri = `${config.root}users/${usernameid}/activate`;
 
   const options = {
     method: 'PATCH',
     mode: 'cors',
     headers: new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
       'x-access-token': user.token,
+      'Content-Type': 'application/json; charset=utf-8',
     }),
     body: JSON.stringify({
-      isactive: activity,
+      isactive,
     }),
   };
-  const request = new Request(uri, options);
+  const activeStatusRequest = new Request(activeStatusUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(activeStatusRequest)
+    .then((activeStatusResponse) => {
+      if (activeStatusResponse.ok) {
+        return activeStatusResponse.json();
       }
-      return response.json();
+      return activeStatusResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((activeStatusData) => {
+      if (Object.prototype.hasOwnProperty.call(activeStatusData, 'message')) {
+        if (activeStatusData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (activeStatusData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === "You cannot change this user's active status") {
-          document.getElementById('activity-message').innerHTML = j.message;
+        if (activeStatusData.message === "You cannot change this user's active status") {
+          document.getElementById('activity-message').innerHTML = activeStatusData.message;
         }
-        if (j.message === 'user does not exist') {
-          document.getElementById('activity-message').innerHTML = j.message;
+        if (activeStatusData.message === 'user does not exist') {
+          document.getElementById('activity-message').innerHTML = activeStatusData.message;
         }
-        if (Object.prototype.hasOwnProperty.call(j, 'isactive')) {
+        if (Object.prototype.hasOwnProperty.call(activeStatusData, 'isactive')) {
           document.getElementById('activity-message').innerHTML = '(Accepted values: True, False)';
         }
-        if (j.message === 'You cannot change your own active status') {
-          document.getElementById('activity-message').innerHTML = j.message;
+        if (activeStatusData.message === 'You cannot change your own active status') {
+          document.getElementById('activity-message').innerHTML = activeStatusData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data.message === 'User active status has been updated') {
+      if (Object.prototype.hasOwnProperty.call(activeStatusData, 'data')) {
+        if (activeStatusData.data.message === 'User active status has been updated') {
           document.getElementById('activity-message').style.color = 'green';
-          document.getElementById('activity-message').innerHTML = j.data.message;
-          document.getElementById('activity').value = activity;
-          document.getElementById('activity-data').innerHTML = activity.toLowerCase();
+          document.getElementById('activity-message').innerHTML = activeStatusData.data.message;
+          document.getElementById('activity').value = isactive;
+          document.getElementById('activity-data').innerHTML = isactive.toLowerCase();
         }
       }
       document.getElementById('fa-spin-activity').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+      document.getElementById('activity-message').innerHTML = 'An error has occurred please try again';
       document.getElementById('fa-spin-activity').style.display = 'none';
     });
 };
@@ -493,7 +502,7 @@ const deleteUserData = (event, usernameid) => {
   document.getElementById('fa-spin-data-delete').style.display = 'block';
   document.getElementById('error-message').innerHTML = '';
 
-  const uri = `${config.root}users/${usernameid}`;
+  const deleteUserUri = `${config.root}users/${usernameid}`;
 
   const options = {
     method: 'DELETE',
@@ -503,43 +512,43 @@ const deleteUserData = (event, usernameid) => {
       'x-access-token': user.token,
     }),
   };
-  const request = new Request(uri, options);
+  const deleteRequest = new Request(deleteUserUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(deleteRequest)
+    .then((deleteResponse) => {
+      if (deleteResponse.ok) {
+        return deleteResponse.json();
       }
-      return response.json();
+      return deleteResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((deleteData) => {
+      if (Object.prototype.hasOwnProperty.call(deleteData, 'message')) {
+        if (deleteData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (deleteData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'user does not exist') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteData.message === 'user does not exist') {
+          document.getElementById('error-message').innerHTML = deleteData.message;
         }
-        if (j.message === 'You cannot delete this user') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteData.message === 'You cannot delete this user') {
+          document.getElementById('error-message').innerHTML = deleteData.message;
         }
-        if (j.message === 'A user who has posted incidents cannot be deleted') {
-          document.getElementById('error-message').innerHTML = j.message;
+        if (deleteData.message === 'A user who has posted incidents cannot be deleted') {
+          document.getElementById('error-message').innerHTML = deleteData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        if (j.data.message === 'user record has been deleted') {
-          document.getElementById('error-message').innerHTML = j.data.message;
+      if (Object.prototype.hasOwnProperty.call(deleteData, 'data')) {
+        if (deleteData.data.message === 'user record has been deleted') {
+          document.getElementById('error-message').innerHTML = deleteData.data.message;
           window.location.replace('admin.html');
         }
       }
       document.getElementById('fa-spin-data-delete').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+      document.getElementById('error-message').innerHTML = 'An error has occurred please try again';
       document.getElementById('fa-spin-data-delete').style.display = 'none';
     });
 };

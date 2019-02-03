@@ -108,8 +108,8 @@ const signIn = (event) => {
         window.location.replace('home.html');
       }
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
+      document.getElementById('error-message').innerText = 'An error has occurred please try again';
     });
 };
 
@@ -203,8 +203,8 @@ const signUp = (event) => {
           window.location.replace('signin.html');
         }
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        document.getElementById('error-message').innerText = 'An error has occurred please try again';
       });
   } else if (password !== confirmPassword) {
     document.getElementById('fa-spin').style.display = 'none';
@@ -263,7 +263,7 @@ const requestReset = (event) => {
         }
       }
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
+      document.getElementById('error-message').innerText = 'An error has occurred please try again';
     });
 };
