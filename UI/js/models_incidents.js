@@ -14,6 +14,297 @@ const humanize = (utcdatetime) => {
   return humanizedDate;
 };
 
+// Function to get all incidents by type, createdBy and search parameter
+
+const getData = (incidenttype, incidentcreator, searchdata) => {
+  const uri = `${config.root}${incidenttype}s`;
+
+  const options = {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'default',
+    headers: new Headers({
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-access-token': tokenModels,
+    }),
+  };
+  const request = new Request(uri, options);
+
+  fetch(request)
+    .then((response) => {
+      if (response.ok) {
+        showLoader();
+        return response.json();
+      }
+      return response.json();
+    })
+    .then((j) => {
+      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
+        if (j.message === 'Token is missing') {
+          logout();
+        }
+        if (j.message === 'Token is invalid') {
+          logout();
+        }
+        if (j.message === 'No interventions' || j.message === 'No redflags') {
+          let result = '';
+          result += `
+                  <div class='column-100'>
+                    <div class='card'>
+                      <div class='container'>
+                          <p><i class='fa fa-flag fa-3x' aria-hidden='true'></i></p>
+                          <h4 class='theme-blue'><b>No Incidents</b></h4> 
+                      </div>
+                    </div>               
+                  </div> 
+                  `;
+          document.getElementById('incident-data').innerHTML = result;
+        }
+      }
+      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+        let creator = '';
+        let usernameIncidents = [];
+        let searchedIncidents = [];
+        const incidents = j.data;
+
+        if (searchdata === 'all' || searchdata === '') {
+          usernameIncidents = incidents;
+          searchedIncidents = incidents;
+        } else {
+          usernameIncidents = searchedIncidents = incidents.filter((incident) => {
+            return incident.title.toLowerCase() === searchdata.toLowerCase() || incident.id === parseInt(searchdata, 10) || incident.username === searchdata.toLowerCase() || incident.status === searchdata.toLowerCase();
+          });
+        }
+
+        if (incidentcreator !== 'all') {
+          usernameIncidents = searchedIncidents.filter((incident) => {
+            const filteredIncidents = incident.username === incidentcreator;
+            if (filteredIncidents) {
+              return filteredIncidents;
+            }
+            let result = '';
+            result += `
+                      <div class='column-100'>
+                        <div class='card'>
+                          <div class='container'>
+                              <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
+                              <h4 class='theme-blue'><b>No incidents found</b></h4>
+                          </div>
+                        </div>               
+                      </div>               
+                    `;
+            document.getElementById('incident-data').innerHTML = result;
+          });
+        }
+
+        const Fn = function Pagination() {
+          const prevButton = document.getElementById('button_prev');
+          const nextButton = document.getElementById('button_next');
+          const perPage = document.getElementById('perPage').value;
+
+          let currentPage = 1;
+          let recordsPerPage = parseInt(perPage, 10);
+          let startNumber = 1;
+          const totalNumber = usernameIncidents.length;
+
+          if (recordsPerPage > totalNumber) {
+            recordsPerPage = totalNumber;
+          }
+          let endNumber = recordsPerPage;
+          let virtualEndNumber = recordsPerPage;
+
+          const selectedPage = () => {
+            const pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
+            for (let i = 0; i < pageNumber.length; i += 1) {
+              if (i === currentPage - 1) {
+                pageNumber[i].style.opacity = '1.0';
+              } else {
+                pageNumber[i].style.opacity = '0.5';
+              }
+            }
+          };
+
+          const numPages = () => {
+            const numpages = Math.ceil(usernameIncidents.length / recordsPerPage);
+            return numpages;
+          };
+
+          const checkButtonOpacity = () => {
+            currentPage === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
+            currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
+            document.getElementById('button_next').disabled = currentPage === numPages() ? true : false;
+            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
+            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
+            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
+            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
+            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
+          };
+
+          const changePage = (page) => {
+            const result = document.getElementById('incident-data');
+
+            if (page < 1) {
+              page = 1;
+            }
+            if (page > (numPages() - 1)) {
+              page = numPages();
+            }
+
+            result.innerHTML = '';
+
+            if (usernameIncidents.length === 0) {
+              let resultNone = '';
+              resultNone += `
+                        <div class='column-100'>
+                          <div class='card'>
+                            <div class='container'>
+                                <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
+                                <h4 class='theme-blue'><b>No incidents found</b></h4>
+                            </div>
+                          </div>               
+                        </div>               
+                        `;
+              currentPage = 0;
+              document.getElementById('startNumber').innerHTML = 0;
+              document.getElementById('button_next').disabled = true;
+              document.getElementById('button_prev').disabled = true;
+              nextButton.classList.add('opacity');
+              prevButton.classList.add('opacity');
+              return document.getElementById('incident-data').innerHTML = resultNone;
+            }
+
+            for (let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) && i < usernameIncidents.length; i += 1) {
+              const humanizedTime = humanize(usernameIncidents[i].createdon);
+              let link = '';
+              let icon = '';
+
+              if (usernameIncidents[i].username === profileUserName) {
+                creator = 'Me';
+              } else {
+                creator = usernameIncidents[i].username;
+              }
+              if (usernameIncidents[i].type === 'redflag') {
+                link = 'view_redflag.html?redflag_id';
+                icon = 'fa fa-flag red';
+              } else if (usernameIncidents[i].type === 'intervention') {
+                link = 'view_intervention.html?intervention_id';
+                icon = 'fa fa-handshake-o theme-blue';
+              }
+
+              result.innerHTML += `
+                            <div class='column'>
+                              <div class='card'>
+                                <div class='container2 justify'>
+                                  <a href='${link}=${usernameIncidents[i].id}'>
+                                    <p><i class='${icon} fa-2x' aria-hidden='true'></i></p>
+                                    <h4 class='black truncate'><b>${usernameIncidents[i].title}</b></h4>
+                                    <p>${usernameIncidents[i].status}</p>
+                                    <p class='italic font-small'>${humanizedTime}</p>
+                                  </a>                   
+                                  <a href='view_by_username.html?type=${usernameIncidents[i].type}&username=${usernameIncidents[i].username}'><p class='italic font-small'><span class='theme-blue'>By ${creator}</span></p>
+                                  <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
+                                  </a>
+                                </div>
+                              </div>               
+                            </div>
+                        `;
+            }
+            checkButtonOpacity();
+            selectedPage();
+          };
+
+          const prevPage = () => {
+            showLoader();
+            if (currentPage > 1) {
+              currentPage -= 1;
+              changePage(currentPage);
+              document.getElementById('currentPage').innerHTML = currentPage;
+              startNumber -= recordsPerPage;
+              virtualEndNumber -= recordsPerPage;
+              endNumber -= recordsPerPage;
+              incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
+            }
+            if (currentPage === 1) {
+              endNumber = virtualEndNumber;
+            }
+            hideLoader(1000);
+          };
+
+          const nextPage = () => {
+            showLoader();
+            if (currentPage < numPages()) {
+              currentPage += 1;
+              changePage(currentPage);
+              document.getElementById('currentPage').innerHTML = currentPage;
+              startNumber += recordsPerPage;
+              endNumber += recordsPerPage;
+              virtualEndNumber += recordsPerPage;
+              if (endNumber > totalNumber) {
+                endNumber = totalNumber;
+              }
+              if (endNumber === startNumber) {
+                incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
+              } else {
+                document.getElementById('startNumber').innerHTML = startNumber;
+                document.getElementById('endNumber').innerHTML = endNumber;
+              }
+            }
+            hideLoader(1000);
+          };
+
+          const addEventListeners = () => {
+            nextButton.addEventListener('click', nextPage);
+            prevButton.addEventListener('click', prevPage);
+          };
+
+          const clickPage = () => {
+            document.addEventListener('click', (e) => {
+              if (e.target.nodeName === 'SPAN' && e.target.classList.contains('clickPageNumber')) {
+                currentPage = e.target.textContent;
+                changePage(currentPage);
+              }
+            });
+          };
+
+          const pageNumbers = () => {
+            const pageNumber = document.getElementById('pageNumber');
+            pageNumber.innerHTML = '';
+            let numberOfPages = numPages();
+            if (currentPage === 0) {
+              currentPage = 1;
+              numberOfPages = 1;
+            }
+
+            pageNumber.innerHTML = `<span class=''><span id='currentPage'>${currentPage}</span> / ${numberOfPages}</span>`;
+          };
+
+          this.init = () => {
+            changePage(1);
+            pageNumbers();
+            selectedPage();
+            clickPage();
+            addEventListeners();
+          };
+
+          let incidentNumber = document.getElementById('incident_number');
+
+          if (startNumber === endNumber || endNumber === 0) {
+            incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
+          } else {
+            incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
+          }
+        };
+        const pagination = new Fn();
+        pagination.init();
+
+        hideLoader(1000);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 // Function to post an incident by type
 
 const postData = (event, incidenttype) => {
@@ -104,17 +395,14 @@ const postData = (event, incidenttype) => {
     });
 };
 
-// Function to get all incidents by type, createdBy and search parameter
-
-let getData = (incidenttype, incidentcreator, searchdata) => {
-  const uri = `${config.root}${incidenttype}s`;
+// Function to get files by file name
+const getFileData = (filetype, filename) => {
+  const uri = `${config.root}uploads/${filetype}/${filename}`;
 
   const options = {
     method: 'GET',
     mode: 'cors',
-    cache: 'default',
     headers: new Headers({
-      'Content-Type': 'application/json; charset=utf-8',
       'x-access-token': tokenModels,
     }),
   };
@@ -123,309 +411,27 @@ let getData = (incidenttype, incidentcreator, searchdata) => {
   fetch(request)
     .then((response) => {
       if (response.ok) {
-        try {
-          document.getElementById('fa-spin-data').style.display = 'none';
-          showLoader();
-        } catch (error) {
-          console.log(error);
-        }
-
         return response.json();
-      }
-      try {
-        document.getElementById('fa-spin-data').style.display = 'none';
-      } catch (error) {
-        console.log(error);
       }
       return response.json();
     })
     .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
-          logout();
-        }
-        if (j.message === 'Token is invalid') {
-          logout();
-        }
-        if (j.message === 'No interventions' || j.message === 'No redflags') {
-          let result = '';
-          result += `
-                  <div class='column-100'>
-                    <div class='card'>
-                      <div class='container'>
-                          <p><i class='fa fa-flag fa-3x' aria-hidden='true'></i></p>
-                          <h4 class='theme-blue'><b>No Incidents</b></h4> 
-                      </div>
-                    </div>               
-                  </div> 
-                  `;
-          document.getElementById('incident-data').innerHTML = result;
-        }
+      if (filetype === 'images') {
+        const imgElem = document.getElementById('main-image');
+        const imgUrl = j;
+        imgElem.src = imgUrl;
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
-        let creator = '';
-        let usernameIncidents = [];
-        let searchedIncidents = [];
-        const incidents = j.data;
-
-        if (searchdata === 'all' || searchdata === '') {
-          usernameIncidents = incidents;
-          searchedIncidents = incidents;
+      if (filetype === 'videos') {
+        const videoUrl = j;
+        const videoElement = document.createElement('video');
+        if (videoElement.canPlayType('video/mp4')) {
+          videoElement.setAttribute('src', videoUrl);
         } else {
-          usernameIncidents = searchedIncidents = incidents.filter((incident) => {
-            return incident.title.toLowerCase() === searchdata.toLowerCase() || incident.id === parseInt(searchdata) || incident.username === searchdata.toLowerCase() || incident.status === searchdata.toLowerCase();
-          });
+          videoElement.setAttribute('src', videoUrl);
         }
-
-        if (incidentcreator !== 'all') {
-          usernameIncidents = searchedIncidents.filter((incident) => {
-            const filteredIncidents = incident.username === incidentcreator;
-            if (filteredIncidents) {
-              return filteredIncidents;
-            }
-            let result = '';
-            result += `
-                      <div class='column-100'>
-                        <div class='card'>
-                          <div class='container'>
-                              <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
-                              <h4 class='theme-blue'><b>No incidents found</b></h4>
-                          </div>
-                        </div>               
-                      </div>               
-                        </div>               
-                      </div> 
-                        </div>
-                      </div> 
-                  </div> 
-                      </div>               
-                  </div> 
-                      </div> 
-                  </div> 
-                      </div> 
-                    `;
-            document.getElementById('incident-data').innerHTML = result;
-          });
-        }
-
-        const Fn = function Pagination() {
-          const prevButton = document.getElementById('button_prev');
-          const nextButton = document.getElementById('button_next');
-          const perPage = document.getElementById('perPage').value;
-
-          let currentPage = 1;
-          let recordsPerPage = parseInt(perPage, 10);
-          let startNumber = 1;
-          const totalNumber = usernameIncidents.length;
-
-          if (recordsPerPage > totalNumber) {
-            recordsPerPage = totalNumber;
-          }
-          let endNumber = recordsPerPage;
-          let virtualEndNumber = recordsPerPage;
-
-          this.init = function () {
-            changePage(1);
-            pageNumbers();
-            selectedPage();
-            clickPage();
-            addEventListeners();
-          };
-
-          let addEventListeners = () => {
-            nextButton.addEventListener('click', nextPage);
-            prevButton.addEventListener('click', prevPage);
-          };
-
-          let selectedPage = () => {
-            const pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
-            for (let i = 0; i < pageNumber.length; i += 1) {
-              if (i === currentPage - 1) {
-                pageNumber[i].style.opacity = '1.0';
-              } else {
-                pageNumber[i].style.opacity = '0.5';
-              }
-            }
-          };
-
-          const checkButtonOpacity = () => {
-            currentPage === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
-            currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
-            document.getElementById('button_next').disabled = currentPage === numPages() ? true : false;
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false; 
-              document.getElementById('button_prev').disabled = currentPage === 1 ? true : false; 
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false; 
-              document.getElementById('button_prev').disabled = currentPage === 1 ? true : false; 
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false; 
-          };
-
-          let changePage = (page) => {
-            const result = document.getElementById('incident-data');
-
-            if (page < 1) {
-              page = 1;
-            }
-            if (page > (numPages() - 1)) {
-              page = numPages();
-            }
-
-            result.innerHTML = '';
-
-            if (usernameIncidents.length === 0) {
-              let result = '';
-              result += `
-                        <div class='column-100'>
-                        <div class='card'>
-                            <div class='container'>
-                              
-                                <p><i class='fa fa-star-half-o fa-3x' aria-hidden='true'></i></p>
-                                <h4 class='theme-blue'><b>No incidents found</b></h4>
-                              
-                            </div>
-                          </div>               
-                            </div>               
-                              </div>
-                            </div>               
-                          </div>               
-                            </div>               
-                          </div>               
-                        </div> 
-                        `;
-              currentPage = 0;
-              document.getElementById('startNumber').innerHTML = 0;
-              document.getElementById('button_next').disabled = true;
-              document.getElementById('button_prev').disabled = true;
-              nextButton.classList.add('opacity');
-              prevButton.classList.add('opacity');
-              return document.getElementById('incident-data').innerHTML = result;
-            }
-
-            for (let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) && i < usernameIncidents.length; i++) {
-              const humanizedTime = humanize(usernameIncidents[i].createdon);
-              let link = '';
-              let icon = '';
-
-              if (usernameIncidents[i].username === profileUserName) {
-                creator = 'Me';
-              } else {
-                creator = usernameIncidents[i].username;
-              }
-              if (usernameIncidents[i].type === 'redflag') {
-                link = 'view_redflag.html?redflag_id';
-                icon = 'fa fa-flag red';
-              } else if (usernameIncidents[i].type === 'intervention') {
-                link = 'view_intervention.html?intervention_id';
-                icon = 'fa fa-handshake-o theme-blue';
-              }
-
-              result.innerHTML += `
-                            <div class='column'>
-                              <div class='card'>
-                                  <div class='container2 justify'>
-                                    <a href='${link}=${usernameIncidents[i].id}'>
-                                      <p><i class='${icon} fa-2x' aria-hidden='true'></i></p>
-                                      <h4 class='black truncate'><b>${usernameIncidents[i].title}</b></h4>
-                                      <p>${usernameIncidents[i].status}</p>
-                                      <p class='italic font-small'>${humanizedTime}</p>
-                                    </a>          
-                                      </a>          
-                                    </a>          
-                                      </a>          
-                                    </a>          
-                                    <a href='view_by_username.html?type=${usernameIncidents[i].type}&username=${usernameIncidents[i].username}'><p class='italic font-small'><span class='theme-blue'>By ${creator}</span></p>
-                                    <p class='black align-right'><i class='fa fa-external-link theme-blue' aria-hidden='true'></i></p>
-                                    </a>
-                                  </div>
-                                </div>               
-                                  </div>               
-                                </div>               
-                                  </div>               
-                              </div>
-                                  </div>               
-                                </div>               
-                            </div>
-                        `;
-            }
-            checkButtonOpacity();
-            selectedPage();
-          };
-
-          let prevPage = () => {
-            showLoader();
-            if (currentPage > 1) {
-              currentPage -= 1;
-              changePage(currentPage);
-              document.getElementById('currentPage').innerHTML = currentPage;
-              startNumber -= recordsPerPage;
-              virtualEndNumber -= recordsPerPage;
-              endNumber -= recordsPerPage;
-              incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
-            }
-            if (currentPage === 1) {
-              endNumber = virtualEndNumber;
-            }
-            hideLoader(1000);
-          };
-
-          let nextPage = () => {
-            showLoader();
-            if (currentPage < numPages()) {
-              currentPage += 1;
-              changePage(currentPage);
-              document.getElementById('currentPage').innerHTML = currentPage;
-              startNumber += recordsPerPage;
-              endNumber += recordsPerPage;
-              virtualEndNumber += recordsPerPage;
-              if (endNumber > totalNumber) {
-                endNumber = totalNumber;
-              }
-              if (endNumber === startNumber) {
-                incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
-              } else {
-                document.getElementById('startNumber').innerHTML = startNumber;
-                document.getElementById('endNumber').innerHTML = endNumber;
-              }
-            }
-            hideLoader(1000);
-          };
-
-          let clickPage = () => {
-            document.addEventListener('click', function (e) {
-              if (e.target.nodeName === 'SPAN' && e.target.classList.contains('clickPageNumber')) {
-                currentPage = e.target.textContent;
-                changePage(currentPage);
-              }
-            });
-          };
-
-          let pageNumbers = () => {
-            const pageNumber = document.getElementById('pageNumber');
-            pageNumber.innerHTML = '';
-            let numberOfPages = numPages();
-            if (currentPage === 0) {
-              currentPage = 1;
-              numberOfPages = 1;
-            }
-
-            pageNumber.innerHTML = `<span class=''><span id='currentPage'>${currentPage}</span> / ${numberOfPages}</span>`;
-          };
-
-          let numPages = () => {
-            return Math.ceil(usernameIncidents.length / recordsPerPage);
-          };
-
-          let incidentNumber = document.getElementById('incident_number');
-
-          if (startNumber === endNumber || endNumber === 0) {
-            incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
-          } else {
-            incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
-          }
-        };
-        const pagination = new Fn();
-        pagination.init();
-
-        hideLoader(1000);
+        videoElement.setAttribute('controls', 'controls');
+        videoElement.setAttribute('class', 'main-video');
+        document.getElementsByClassName('vid-details')[0].appendChild(videoElement);
       }
     })
     .catch((error) => {
@@ -500,7 +506,9 @@ const getDataById = (incidenttype, incidentId) => {
             document.getElementById('btnGeolocate').style.display = 'inline';
             try {
               document.getElementById('btnEditStatus').style.display = 'inline';
-            } catch (error) {}
+            } catch (error) {
+              console.log(error);
+            }
           }
           if (images === null || images === undefined) {
             imageUrl = 'img/loading.jpg';
@@ -510,6 +518,9 @@ const getDataById = (incidenttype, incidentId) => {
           }
           if (videos != null) {
             getFileData('videos', videos);
+          } else {
+            const videoDetails = document.getElementsByClassName('vid-details');
+            videoDetails.textContent = 'No videos';
           }
           const paragraph = comment.split('\n');
           let commentData = '';
@@ -608,51 +619,6 @@ const deleteData = (incidenttype, incidentId) => {
     .catch((error) => {
       console.log(error);
       document.getElementById('fa-spin-data-delete').style.display = 'none';
-    });
-};
-
-// Function to get files by file name
-let getFileData = (filetype, filename) => {
-
-  const uri = `${config.root}uploads/${filetype}/${filename}`;
-
-  const options = {
-    method: 'GET',
-    mode: 'cors',
-    headers: new Headers({
-      'x-access-token': tokenModels,
-    }),
-  };
-  const request = new Request(uri, options);
-
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      return response.json();
-    })
-    .then((j) => {
-      if (filetype === 'images') {
-        const imgElem = document.getElementById('main-image');
-        const imgUrl = j;
-        imgElem.src = imgUrl;
-      }
-      if (filetype === 'videos') {
-        const videoUrl = j;
-        const videoElement = document.createElement('video');
-        if (videoElement.canPlayType('video/mp4')) {
-          videoElement.setAttribute('src', videoUrl);
-        } else {
-          videoElement.setAttribute('src', videoUrl);
-        }
-        videoElement.setAttribute('controls', 'controls');
-        videoElement.setAttribute('class', 'main-video');
-        document.getElementsByClassName('vid-details')[0].appendChild(videoElement);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
     });
 };
 
@@ -903,7 +869,7 @@ const uploadImage = (event, incidentType, incidentId) => {
 
   const uri = `${config.root}${incidentType}/${incidentId}/addImage`;
 
-  let formData = new FormData();
+  const formData = new FormData();
   const fileData = document.getElementById('fileImage').files[0];
 
   if (fileData === null || fileData === undefined) {
@@ -980,7 +946,7 @@ const uploadVideo = (event, incidentType, incidentId) => {
 
   const uri = `${config.root}${incidentType}/${incidentId}/addVideo`;
 
-  let formData = new FormData();
+  const formData = new FormData();
   const fileData = document.getElementById('fileVideo').files[0];
 
   if (fileData === null || fileData === undefined) {
@@ -1201,7 +1167,7 @@ const uploadProfilePic = (event, usernameid) => {
 
   const uri = `${config.root}users/${usernameid}/uploadImage`;
 
-  let formData = new FormData();
+  const formData = new FormData();
   const fileData = document.getElementById('profilePic').files[0];
 
   if (fileData === null || fileData === undefined) {

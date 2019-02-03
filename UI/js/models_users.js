@@ -14,18 +14,7 @@ const getUsers = (userdata) => {
   fetch(request)
     .then((response) => {
       if (response.ok) {
-        try {
-          document.getElementById('fa-spin-data').style.display = 'none';
-        } catch (error) {
-          console.log(error);
-        }
-
         return response.json();
-      }
-      try {
-        document.getElementById('fa-spin-data').style.display = 'none';
-      } catch (error) {
-        console.log(error);
       }
       return response.json();
     })
@@ -76,21 +65,7 @@ const getUsers = (userdata) => {
           let endNumber = recordsPerPage;
           let virtualEndNumber = recordsPerPage;
 
-
-          this.init = function () {
-            changePage(1);
-            pageNumbers();
-            selectedPage();
-            clickPage();
-            addEventListeners();
-          };
-
-          let addEventListeners = () => {
-            nextButton.addEventListener('click', nextPage);
-            prevButton.addEventListener('click', prevPage);
-          };
-
-          let selectedPage = () => {
+          const selectedPage = () => {
             const pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
             for (let i = 0; i < pageNumber.length; i += 1) {
               if (i === currentPage - 1) {
@@ -99,6 +74,11 @@ const getUsers = (userdata) => {
                 pageNumber[i].style.opacity = '0.5';
               }
             }
+          };
+
+          const numPages = () => {
+            const numOfPages = Math.ceil(users.length / recordsPerPage);
+            return numOfPages;
           };
 
           const checkButtonOpacity = () => {
@@ -111,7 +91,7 @@ const getUsers = (userdata) => {
             document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
           };
 
-          let changePage = (page) => {
+          const changePage = (page) => {
             const result = document.getElementById('user-data');
 
             if (page < 1) {
@@ -124,8 +104,8 @@ const getUsers = (userdata) => {
             result.innerHTML = '';
 
             if (users.length === 0) {
-              let result = '';
-              result += `
+              let resultNone = '';
+              resultNone += `
                         <div class='column-100'>
                           <div class='card'>
                             <div class='container'>
@@ -143,7 +123,7 @@ const getUsers = (userdata) => {
               document.getElementById('button_next').disabled = true;
               document.getElementById('button_prev').disabled = true;
               nextButton.classList.add('opacity');
-              return document.getElementById('user-data').innerHTML = result;
+              return document.getElementById('user-data').innerHTML = resultNone;
             }
             let faIcon;
             let blocked;
@@ -179,7 +159,7 @@ const getUsers = (userdata) => {
             selectedPage();
           };
 
-          let prevPage = () => {
+          const prevPage = () => {
             showLoader();
             if (currentPage > 1) {
               currentPage -= 1;
@@ -196,7 +176,7 @@ const getUsers = (userdata) => {
             hideLoader(1000);
           };
 
-          let nextPage = () => {
+          const nextPage = () => {
             showLoader();
             if (currentPage < numPages()) {
               currentPage += 1;
@@ -218,8 +198,13 @@ const getUsers = (userdata) => {
             hideLoader(1000);
           };
 
-          let clickPage = () => {
-            document.addEventListener('click', function (e) {
+          const addEventListeners = () => {
+            nextButton.addEventListener('click', nextPage);
+            prevButton.addEventListener('click', prevPage);
+          };
+
+          const clickPage = () => {
+            document.addEventListener('click', (e) => {
               if (e.target.nodeName === 'SPAN' && e.target.classList.contains('clickPageNumber')) {
                 currentPage = e.target.textContent;
                 changePage(currentPage);
@@ -227,12 +212,7 @@ const getUsers = (userdata) => {
             });
           };
 
-          let numPages = () => {
-            const numOfPages = Math.ceil(users.length / recordsPerPage);
-            return numOfPages;
-          };
-
-          let pageNumbers = () => {
+          const pageNumbers = () => {
             const pageNumber = document.getElementById('pageNumber');
             pageNumber.innerHTML = '';
             let numberOfPages = numPages();
@@ -242,6 +222,14 @@ const getUsers = (userdata) => {
             }
 
             pageNumber.innerHTML = `<span class=''><span id='currentPage'>${currentPage}</span> / ${numberOfPages}</span>`;
+          };
+
+          this.init = () => {
+            changePage(1);
+            pageNumbers();
+            selectedPage();
+            clickPage();
+            addEventListeners();
           };
 
           let userNumber = document.getElementById('user_number');
@@ -261,7 +249,7 @@ const getUsers = (userdata) => {
     });
 };
 
-let getUserData = (usernameid) => {
+const getUserData = (usernameid) => {
   const uri = `${config.root}users/${usernameid}`;
 
   const options = {
@@ -365,7 +353,7 @@ let getUserData = (usernameid) => {
     });
 };
 
-let editUserData = (event, usernameid) => {
+const editUserData = (event, usernameid) => {
   event.preventDefault();
   document.getElementById('fa-spin-edit-status').style.display = 'block';
   document.getElementById('status-message').innerHTML = '';
@@ -433,7 +421,7 @@ let editUserData = (event, usernameid) => {
     });
 };
 
-let changeActiveStatus = (event, usernameid) => {
+const changeActiveStatus = (event, usernameid) => {
   event.preventDefault();
   document.getElementById('fa-spin-activity').style.display = 'block';
   document.getElementById('activity-message').innerHTML = '';
@@ -500,7 +488,7 @@ let changeActiveStatus = (event, usernameid) => {
     });
 };
 
-let deleteUserData = (event, usernameid) => {
+const deleteUserData = (event, usernameid) => {
   event.preventDefault();
   document.getElementById('fa-spin-data-delete').style.display = 'block';
   document.getElementById('error-message').innerHTML = '';
