@@ -703,6 +703,7 @@ const editLocation = (event, incidentType, incidentId) => {
 // Function to edit comment
 const editComment = (event, incidentType, incidentId) => {
   event.preventDefault();
+  const hideSpinner = 'none';
   const comment = document.getElementById('comment').value;
   const editCommentUri = `${config.root}${incidentType}/${incidentId}/comment`;
   document.getElementById('fa-spin-edit').style.display = 'block';
@@ -779,10 +780,10 @@ const editComment = (event, incidentType, incidentId) => {
           document.getElementById('comment-data').innerHTML = commentData;
         }
       }
-      document.getElementById('fa-spin-edit').style.display = 'none';
+      document.getElementById('fa-spin-edit').style.display = hideSpinner;
     })
     .catch(() => {
-      document.getElementById('fa-spin-edit').style.display = 'none';
+      document.getElementById('fa-spin-edit').style.display = hideSpinner;
     });
 };
 
@@ -870,25 +871,25 @@ const uploadImage = (event, incidentType, incidentId) => {
 
   const uploadImageUri = `${config.root}${incidentType}/${incidentId}/addImage`;
 
-  const formData = new FormData();
+  const imageFormData = new FormData();
   const fileData = document.getElementById('fileImage').files[0];
 
   if (fileData === null || fileData === undefined) {
     document.getElementById('upload-message').innerHTML = 'Please select a an image';
     document.getElementById('fa-spin-upload').style.display = 'none';
   } else {
-    const fileExtension = fileData.name.split('.')[1];
-    const uploadedFileName = `${incidentId.toString()}.${fileExtension}`;
+    const imageExtension = fileData.name.split('.')[1];
+    const uploadedImageFilename = `${incidentId.toString()}.${imageExtension}`;
 
-    formData.append('uploadFile', fileData, fileData.name);
+    imageFormData.append('uploadFile', fileData, fileData.name);
 
     const options = {
-      method: 'PATCH',
-      mode: 'cors',
       headers: new Headers({
         'x-access-token': tokenModels,
       }),
-      body: formData,
+      method: 'PATCH',
+      mode: 'cors',
+      body: imageFormData,
     };
     const uploadImageRequest = new Request(uploadImageUri, options);
 
@@ -921,7 +922,7 @@ const uploadImage = (event, incidentType, incidentId) => {
           if (uploadImageData.data[0].message === 'Image added to intervention record' || uploadImageData.data[0].message === 'Image added to red-flag record') {
             document.getElementById('upload-message').style.color = 'green';
             document.getElementById('upload-message').innerHTML = uploadImageData.data[0].message;
-            getFileData('images', uploadedFileName);
+            getFileData('images', uploadedImageFilename);
           }
         }
         document.getElementById('fa-spin-upload').style.display = 'none';
