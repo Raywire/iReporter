@@ -22,8 +22,8 @@
   <script src="js/commons.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/isAdmin.js"></script>
-  <script src="js/notifications.js"></script>
-  <script src="js/moment.min.js"></script>
+  <script src="plugins/notifications.js"></script>
+  <script src="plugins/moment.min.js"></script>
 </head>
 
 <body>
@@ -99,6 +99,7 @@
                               <input id="confirm_password" maxlength="30" name="confirm_password" placeholder="Confirm Password" tabindex="1" type="password">
                               <br>
                               <input id='submit' name="submit" class="button-normal" tabindex="5" value="Reset Password" type="submit">
+                              <p id="reset-message"></p>
                               <i id="fa-spin-reset" class="fa fa-circle-o-notch fa-spin hide" ></i>
                             </form>
                           </div>
@@ -176,7 +177,7 @@
         try {
           document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
           document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event,
-            usernameId));
+            usernameId, user.token));
         } catch (error) {}
 
         //Function for an Admin to Disable or Enable a user
