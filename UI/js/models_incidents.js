@@ -132,12 +132,8 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
           const checkButtonOpacity = () => {
             currentPage === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
             currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
-            document.getElementById('button_next').disabled = currentPage === numPages() ? true : false;
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
+            document.getElementById('button_next').disabled = currentPage === numPages();
+            document.getElementById('button_prev').disabled = currentPage === 1;
           };
 
           const changePage = (page) => {
@@ -170,10 +166,12 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
               document.getElementById('button_prev').disabled = true;
               nextButton.classList.add('opacity');
               prevButton.classList.add('opacity');
-              return document.getElementById('incident-data').innerHTML = resultNone;
+              document.getElementById('incident-data').innerHTML = resultNone;
+              return true;
             }
 
-            for (let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) && i < usernameIncidents.length; i += 1) {
+            const p = recordsPerPage;
+            for (let i = (page - 1) * p; i < (page * p) && i < usernameIncidents.length; i += 1) {
               const humanizedTime = humanize(usernameIncidents[i].createdon);
               let link = '';
               let icon = '';

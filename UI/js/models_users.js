@@ -1,5 +1,5 @@
 const getUsers = (userdata) => {
-  const uri = `${config.root}users`;
+  const getUsersUri = `${config.root}users`;
 
   const options = {
     method: 'GET',
@@ -9,31 +9,31 @@ const getUsers = (userdata) => {
       'x-access-token': user.token,
     }),
   };
-  const request = new Request(uri, options);
+  const getUsersRequest = new Request(getUsersUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  fetch(getUsersRequest)
+    .then((getUsersResponse) => {
+      if (getUsersResponse.ok) {
+        return getUsersResponse.json();
       }
-      return response.json();
+      return getUsersResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((usersData) => {
+      if (Object.prototype.hasOwnProperty.call(usersData, 'message')) {
+        if (usersData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (usersData.message === 'Token is invalid') {
           logout();
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+      if (Object.prototype.hasOwnProperty.call(usersData, 'data')) {
         let users = [];
 
         if (userdata === 'all' || userdata === '') {
-          users = j.data;
+          users = usersData.data;
         } else {
-          const allUsers = j.data;
+          const allUsers = usersData.data;
 
           users = allUsers.filter((user) => {
             let userStatus = '';
@@ -45,7 +45,9 @@ const getUsers = (userdata) => {
             if (userStatus === true || userStatus === false) {
               return user.isadmin === userStatus;
             }
-            return user.username === userdata.toLowerCase() || user.firstname === userdata || user.email === userdata.toLowerCase() || user.lastname === userdata || user.phonenumber === userdata;
+            return user.username === userdata.toLowerCase() || user.firstname === userdata
+             || user.email === userdata.toLowerCase() || user.lastname === userdata
+             || user.phonenumber === userdata;
           });
         }
 
@@ -53,17 +55,18 @@ const getUsers = (userdata) => {
           const prevButton = document.getElementById('button_prev');
           const nextButton = document.getElementById('button_next');
           const perPage = document.getElementById('perPage').value;
+          const userNumber = document.getElementById('user_number');
 
           let currentPage = 1;
-          let recordsPerPage = parseInt(perPage, 10);
+          let usersPerPage = parseInt(perPage, 10);
           let startNumber = 1;
           const totalNumber = users.length;
 
-          if (recordsPerPage > totalNumber) {
-            recordsPerPage = totalNumber;
+          if (usersPerPage > totalNumber) {
+            usersPerPage = totalNumber;
           }
-          let endNumber = recordsPerPage;
-          let virtualEndNumber = recordsPerPage;
+          let endNumber = usersPerPage;
+          let virtualEndNumber = usersPerPage;
 
           const selectedPage = () => {
             const pageNumber = document.getElementById('pageNumber').getElementsByClassName('clickPageNumber');
@@ -77,7 +80,7 @@ const getUsers = (userdata) => {
           };
 
           const numPages = () => {
-            const numOfPages = Math.ceil(users.length / recordsPerPage);
+            const numOfPages = Math.ceil(users.length / usersPerPage);
             return numOfPages;
           };
 
@@ -87,8 +90,8 @@ const getUsers = (userdata) => {
             currentPage === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove(
               'opacity');
 
-            document.getElementById('button_next').disabled = currentPage === numPages() ? true : false;
-            document.getElementById('button_prev').disabled = currentPage === 1 ? true : false;
+            document.getElementById('button_next').disabled = currentPage === numPages();
+            document.getElementById('button_prev').disabled = currentPage === 1;
           };
 
           const changePage = (page) => {
@@ -123,11 +126,14 @@ const getUsers = (userdata) => {
               document.getElementById('button_next').disabled = true;
               document.getElementById('button_prev').disabled = true;
               nextButton.classList.add('opacity');
-              return document.getElementById('user-data').innerHTML = resultNone;
+              prevButton.classList.add('opacity');
+              document.getElementById('user-data').innerHTML = resultNone;
+              return true;
             }
             let faIcon;
             let blocked;
-            for (let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) && i < users.length; i += 1) {
+            const upp = usersPerPage;
+            for (let i = (page - 1) * upp; i < (page * upp) && i < users.length; i += 1) {
               if (users[i].isactive === false) {
                 faIcon = 'fa-ban red';
                 blocked = 'blocked';
@@ -136,8 +142,7 @@ const getUsers = (userdata) => {
                 blocked = '';
               }
 
-              result.innerHTML +=
-                `
+              result.innerHTML += `
                 <div class='column'>
                   <div class='card'>
                       <div class='container2 align-center  ${blocked}'>
@@ -165,9 +170,9 @@ const getUsers = (userdata) => {
               currentPage -= 1;
               changePage(currentPage);
               document.getElementById('currentPage').innerHTML = currentPage;
-              startNumber -= recordsPerPage;
-              virtualEndNumber -= recordsPerPage;
-              endNumber -= recordsPerPage;
+              startNumber -= usersPerPage;
+              virtualEndNumber -= usersPerPage;
+              endNumber -= usersPerPage;
               userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
             }
             if (currentPage === 1) {
@@ -182,9 +187,9 @@ const getUsers = (userdata) => {
               currentPage += 1;
               changePage(currentPage);
               document.getElementById('currentPage').innerHTML = currentPage;
-              startNumber += recordsPerPage;
-              endNumber += recordsPerPage;
-              virtualEndNumber += recordsPerPage;
+              startNumber += usersPerPage;
+              endNumber += usersPerPage;
+              virtualEndNumber += usersPerPage;
               if (endNumber > totalNumber) {
                 endNumber = totalNumber;
               }
@@ -232,7 +237,6 @@ const getUsers = (userdata) => {
             addEventListeners();
           };
 
-          let userNumber = document.getElementById('user_number');
           if (startNumber === endNumber || endNumber === 0) {
             userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
           } else {
@@ -244,13 +248,13 @@ const getUsers = (userdata) => {
         pagination.init();
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
 const getUserData = (usernameid) => {
-  const uri = `${config.root}users/${usernameid}`;
+  const getUserUri = `${config.root}users/${usernameid}`;
 
   const options = {
     method: 'GET',
@@ -260,39 +264,39 @@ const getUserData = (usernameid) => {
       'x-access-token': user.token,
     }),
   };
-  const request = new Request(uri, options);
+  const userDataRequest = new Request(getUserUri, options);
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
+  fetch(userDataRequest)
+    .then((userDataResponse) => {
+      if (userDataResponse.ok) {
         document.getElementById('fa-spin-data').style.display = 'none';
 
-        return response.json();
+        return userDataResponse.json();
       }
       document.getElementById('fa-spin-data').style.display = 'none';
-      return response.json();
+      return userDataResponse.json();
     })
-    .then((j) => {
-      if (Object.prototype.hasOwnProperty.call(j, 'message')) {
-        if (j.message === 'Token is missing') {
+    .then((userData) => {
+      if (Object.prototype.hasOwnProperty.call(userData, 'message')) {
+        if (userData.message === 'Token is missing') {
           logout();
         }
-        if (j.message === 'Token is invalid') {
+        if (userData.message === 'Token is invalid') {
           logout();
         }
-        if (j.message === 'Only admin can access this route') {
+        if (userData.message === 'Only admin can access this route') {
           logout();
         }
-        if (j.message === 'user does not exist') {
-          document.getElementById('message').innerHTML = j.message;
+        if (userData.message === 'user does not exist') {
+          document.getElementById('message').innerHTML = userData.message;
         }
       }
-      if (Object.prototype.hasOwnProperty.call(j, 'data')) {
+      if (Object.prototype.hasOwnProperty.call(userData, 'data')) {
         let result = '';
         let fullname = '';
         let phone = '';
         let profilePhoto = '';
-        j.data.map((user) => {
+        userData.data.map((user) => {
           const {
             firstname,
             lastname,
@@ -303,7 +307,7 @@ const getUserData = (usernameid) => {
             isAdmin,
             isActive,
             registered,
-            public_id,
+            public_id: publicId,
             photourl,
           } = user;
           const localDateTime = convertToLocalTime(registered);
@@ -330,7 +334,7 @@ const getUserData = (usernameid) => {
                     <h3><span class='black'>Active:</span> <span id='activity-data' class='italic'>${isActive}</span></h3>
                     <h3><span class='black'>Admin Status:</span> <span id='status-data' class='italic'>${isAdmin}</span></h3>
                     <h4><span class='black'>Created On:</span> <span class='italic'>${localDateTime}</span></h4>
-                    <h4 id='comment-data'><span class='black'>Public Id: </span>${public_id}</h4>
+                    <h4 id='comment-data'><span class='black'>Public Id: </span>${publicId}</h4>
                     <hr class='incident-line'>
                 </div>
                 <div class='row  bg-color'>
@@ -348,8 +352,8 @@ const getUserData = (usernameid) => {
         });
       }
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+
     });
 };
 
@@ -359,7 +363,7 @@ const editUserData = (event, usernameid) => {
   document.getElementById('status-message').innerHTML = '';
   document.getElementById('status-message').style.color = 'red';
 
-  const uri = `${config.root}users/${usernameid}/promote`;
+  const promoteUserUri = `${config.root}users/${usernameid}/promote`;
 
   const status = document.getElementById('status').value;
 
@@ -374,7 +378,7 @@ const editUserData = (event, usernameid) => {
       isadmin: status,
     }),
   };
-  const request = new Request(uri, options);
+  const request = new Request(promoteUserUri, options);
 
   fetch(request)
     .then((response) => {
@@ -415,8 +419,8 @@ const editUserData = (event, usernameid) => {
       }
       document.getElementById('fa-spin-edit-status').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+      document.getElementById('status-message').innerHTML = 'An error has occurred please try again';
       document.getElementById('fa-spin-edit-status').style.display = 'none';
     });
 };
@@ -427,7 +431,7 @@ const changeActiveStatus = (event, usernameid) => {
   document.getElementById('activity-message').innerHTML = '';
   document.getElementById('activity-message').style.color = 'red';
 
-  const uri = `${config.root}users/${usernameid}/activate`;
+  const activeStatusUri = `${config.root}users/${usernameid}/activate`;
 
   const activity = document.getElementById('activity').value;
 
@@ -442,7 +446,7 @@ const changeActiveStatus = (event, usernameid) => {
       isactive: activity,
     }),
   };
-  const request = new Request(uri, options);
+  const request = new Request(activeStatusUri, options);
 
   fetch(request)
     .then((response) => {
@@ -482,8 +486,8 @@ const changeActiveStatus = (event, usernameid) => {
       }
       document.getElementById('fa-spin-activity').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+      document.getElementById('activity-message').innerHTML = 'An error has occurred please try again';
       document.getElementById('fa-spin-activity').style.display = 'none';
     });
 };
@@ -493,7 +497,7 @@ const deleteUserData = (event, usernameid) => {
   document.getElementById('fa-spin-data-delete').style.display = 'block';
   document.getElementById('error-message').innerHTML = '';
 
-  const uri = `${config.root}users/${usernameid}`;
+  const deleteUserUri = `${config.root}users/${usernameid}`;
 
   const options = {
     method: 'DELETE',
@@ -503,7 +507,7 @@ const deleteUserData = (event, usernameid) => {
       'x-access-token': user.token,
     }),
   };
-  const request = new Request(uri, options);
+  const request = new Request(deleteUserUri, options);
 
   fetch(request)
     .then((response) => {
@@ -538,8 +542,8 @@ const deleteUserData = (event, usernameid) => {
       }
       document.getElementById('fa-spin-data-delete').style.display = 'none';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(() => {
+      document.getElementById('error-message').innerHTML = 'An error has occurred please try again';
       document.getElementById('fa-spin-data-delete').style.display = 'none';
     });
 };
