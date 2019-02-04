@@ -560,3 +560,7 @@ const searchUsers = (event) => {
   getUsers(searchParameter);
   hideLoader(1000);
 };
+
+/* eslint-disable-next-line no-unused-vars */
+const globalFunctionsModelsUsers = [getUserData, editUserData, changeActiveStatus,
+  deleteUserData, searchUsers];

@@ -1319,3 +1319,8 @@ const searchIncidents = (event, incidenttype, incidentcreator) => {
   getData(incidenttype, incidentcreator, searchParameter);
   hideLoader(3000);
 };
+
+/* eslint-disable-next-line no-unused-vars */
+const globalFunctionsModelIncidents = [postData, getDataById, deleteData, editLocation,
+  editComment, editStatus, uploadImage, uploadVideo, getFileData, updateUserData,
+  uploadProfilePic, getIncidentNumber, perPageSelection, searchIncidents];
