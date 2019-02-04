@@ -52,11 +52,11 @@
         <!-- Trigger/Open The Modal -->
         <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Red Flag"><i class="fa fa-plus"
             aria-hidden="true"></i> <span class="mobile-hidden"> red flag</span></button>
-        <button class="button-normal" onclick="perPageSelection('redflag', 'all')"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+        <button class="button-normal" onclick="perPageSelection('redflag', 'allIncidents')"><i class="fa fa-refresh" aria-hidden="true"></i></button>
       </div>
       <div class="button-right">
         <form id='searchIncidentsForm'>
-          <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status or title">
+          <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status, title">
         </form>
       </div>
     </div>
@@ -101,14 +101,14 @@
       </table>
       <script src="js/models_incidents.js"></script>
       <script>
-        getData('redflag', 'all', 'all');
+        getData('redflag', 'allIncidents', 'allIncidents');
         document.getElementById('searchIncidentsForm').addEventListener('submit', (event) => searchIncidents(event, 'redflag',
-          'all'));
+          'allIncidents'));
       </script>
       <div class="pagination">
         <div class="pagination-block">
           <span class="per-page">per page:</span>
-          <select id='perPage' onchange="perPageSelection('redflag', 'all')">
+          <select id='perPage' onchange="perPageSelection('redflag', 'allIncidents')">
             <option value="60" selected="selected">60</option>
             <option value="120">120</option>
             <option value="300">300</option>

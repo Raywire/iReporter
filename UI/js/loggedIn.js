@@ -267,3 +267,6 @@ const requestReset = (event) => {
       document.getElementById('error-message').innerText = 'An error has occurred please try again';
     });
 };
+
+/* eslint-disable-next-line no-unused-vars */
+const globalFunctionsLoggedIn = [signIn, signUp, requestReset];

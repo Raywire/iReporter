@@ -53,12 +53,12 @@
           <!-- Trigger/Open The Modal -->
           <button class="button-modal" id="btnEdit" data-modal="modal-window-create" title="Add Intervention"><i class="fa fa-plus"
               aria-hidden="true"></i> <span class="mobile-hidden"> intervention</span></button>
-          <button class="button-normal" onclick="perPageSelection('intervention', 'all')"><i class="fa fa-refresh"
+          <button class="button-normal" onclick="perPageSelection('intervention', 'allIncidents')"><i class="fa fa-refresh"
               aria-hidden="true"></i></button>
         </div>
         <div class="button-right">
           <form id='searchIncidentsForm'>
-            <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status or title">
+            <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status, title">
           </form>
         </div>
       </div>
@@ -105,14 +105,14 @@
       </table>
       <script src="js/models_incidents.js"></script>
       <script>
-        getData('intervention', 'all', 'all');
+        getData('intervention', 'allIncidents', 'allIncidents');
         document.getElementById('searchIncidentsForm').addEventListener('submit', (event) => searchIncidents(event,
-          'intervention', 'all'));
+          'intervention', 'allIncidents'));
       </script>
       <div class="pagination">
         <div class="pagination-block">
           <span class="per-page">per page:</span>
-          <select id='perPage' onchange="perPageSelection('intervention', 'all')">
+          <select id='perPage' onchange="perPageSelection('intervention', 'allIncidents')">
             <option value="60" selected="selected">60</option>
             <option value="120">120</option>
             <option value="300">300</option>

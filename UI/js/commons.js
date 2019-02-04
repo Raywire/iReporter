@@ -139,3 +139,7 @@ const resetPassword = (event, profileusername, resettoken) => {
     document.getElementById('confirm_password').style.borderColor = 'red';
   }
 };
+
+/* eslint-disable-next-line no-unused-vars */
+const globalFunctionsCommons = [getCookie, setCookie, scrollFunction, topFunction,
+  hideLoader, showLoader, checkPassword, resetPassword];

@@ -68,13 +68,13 @@
       </table>
       <script src="js/models_users.js"></script>
       <script>
-        getUsers('all');
+        getUsers('allUsers');
 
         document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event));
 
         let perPageSelection = () => {
           showLoader();
-          getUsers('all');
+          getUsers('allUsers');
           document.getElementById('searchUsersForm').reset();
           hideLoader(1500);
         }
