@@ -182,9 +182,7 @@ const getUsers = (userdata) => {
               userEndNumber -= usersPerPage;
               userNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='userEndNumber'>${virtualUserEndNumber}</span>  of ${totalNumber}`;
             }
-            if (currentPage === 1) {
-              userEndNumber = virtualUserEndNumber;
-            }
+            userEndNumber = virtualUserEndNumber;
             hideLoader(1000);
           };
 

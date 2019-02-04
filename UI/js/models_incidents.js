@@ -239,9 +239,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
               endNumber -= recordsPerPage;
               incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${virtualEndNumber}</span>  of ${totalNumber}`;
             }
-            if (currentPage === 1) {
-              endNumber = virtualEndNumber;
-            }
+            endNumber = virtualEndNumber;
             hideLoader(1000);
           };
 
@@ -260,8 +258,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
               if (endNumber === startNumber) {
                 incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span> of ${totalNumber}`;
               } else {
-                document.getElementById('startNumber').innerHTML = startNumber;
-                document.getElementById('endNumber').innerHTML = endNumber;
+                incidentNumber.innerHTML = `<span id='startNumber'>${startNumber}</span><span id='dash'>-</span><span id='endNumber'>${endNumber}</span>  of ${totalNumber}`;
               }
             }
             hideLoader(1000);

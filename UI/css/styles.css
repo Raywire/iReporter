@@ -1,7 +1,7 @@
 @font-face {
   font-family: "Raleway";
   src: url("fonts/Raleway/Raleway-Medium.ttf");
-  }
+}
 * {
   box-sizing: border-box;
   padding: 0;
@@ -105,7 +105,7 @@ select:-moz-focusring {
   }   
   .truncate {
     white-space: nowrap; 
-    width: 200px; 
+    width: 210px; 
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -230,6 +230,26 @@ select:-moz-focusring {
     border-radius: 10px;
     background: white;
     padding: 40px 30px;
+  }
+}
+@media screen and (min-width: 900px) {
+  .truncate {
+    width: 250px; 
+  }
+}
+@media screen and (min-width: 1024px) {
+  .truncate {
+    width: 300px; 
+  }
+}
+@media screen and (min-width: 1200px) {
+  .truncate {
+    width: 350px; 
+  }
+}
+@media screen and (min-width: 1300px) {
+  .truncate {
+    width: 400px; 
   }
 }
  /*responsive image class*/
