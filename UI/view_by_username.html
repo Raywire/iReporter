@@ -54,7 +54,7 @@
         <form id='searchIncidentsForm' class="search-bar-left">
           <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status, title">
         </form>
-        <button class="button-normal search-bar-right" onclick="perPageSelection(incident_type, incident_creator)"><i
+        <button class="button-normal search-bar-right" onclick="globalFunctionsModelIncidents.perPageSelection(incident_type, incident_creator)"><i
             class="fa fa-refresh" aria-hidden="true"></i></button>
       </div>
       <table>
@@ -73,8 +73,8 @@
         let incident_creator = urlParams2.get('username');
         let incident_type = urlParams2.get('type');
 
-        getData(incident_type, incident_creator, 'allIncidents');
-        document.getElementById('searchIncidentsForm').addEventListener('submit', (event) => searchIncidents(event,
+        globalFunctionsModelIncidents.getData(incident_type, incident_creator, 'allIncidents');
+        document.getElementById('searchIncidentsForm').addEventListener('submit', (event) => globalFunctionsModelIncidents.searchIncidents(event,
           incident_type, incident_creator));
 
         document.getElementById('by-username').innerHTML = 'By' + ' ' + (incident_creator == user.username ? 'Me' :
@@ -83,7 +83,7 @@
       <div class="pagination">
         <div class="pagination-block">
           <span class="per-page">per page:</span>
-          <select id='perPage' onchange="perPageSelection(incident_type, incident_creator)">
+          <select id='perPage' onchange="globalFunctionsModelIncidents.perPageSelection(incident_type, incident_creator)">
             <option value="60" selected="selected">60</option>
             <option value="120">120</option>
             <option value="300">300</option>
@@ -97,9 +97,9 @@
       <div class="hide" id="loader"></div>
       <button id="toTop" title="Go to top"><i class="fa fa-angle-up" aria-hidden="true"></i></button> 
       <script>
-        document.getElementById('toTop').addEventListener('click', topFunction);
-        
-        window.onscroll = function() {scrollFunction()};        
+        document.getElementById('toTop').addEventListener('click', globalFunctionsCommons.topFunction);
+
+        window.onscroll = () => { globalFunctionsCommons.scrollFunction() };
       </script> 
     </div>
     <div class="push"></div>

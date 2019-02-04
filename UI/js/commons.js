@@ -141,5 +141,13 @@ const resetPassword = (event, profileusername, resettoken) => {
 };
 
 /* eslint-disable-next-line no-unused-vars */
-const globalFunctionsCommons = [getCookie, setCookie, scrollFunction, topFunction,
-  hideLoader, showLoader, checkPassword, resetPassword];
+const globalFunctionsCommons = {
+  getCookie,
+  setCookie,
+  scrollFunction,
+  topFunction,
+  hideLoader,
+  showLoader,
+  checkPassword,
+  resetPassword,
+};

@@ -68,23 +68,23 @@
       </table>
       <script src="js/models_users.js"></script>
       <script>
-        getUsers('allUsers');
+        globalFunctionsModelsUsers.getUsers('allUsers');
 
-        document.getElementById('searchUsersForm').addEventListener('submit', (event) => searchUsers(event));
+        document.getElementById('searchUsersForm').addEventListener('submit', (event) => globalFunctionsModelsUsers.searchUsers(event));
 
         let perPageSelection = () => {
-          showLoader();
-          getUsers('allUsers');
+          globalFunctionsCommons.showLoader();
+          globalFunctionsModelsUsers.getUsers('allUsers');
           document.getElementById('searchUsersForm').reset();
-          hideLoader(1500);
+          globalFunctionsCommons.hideLoader(1500);
         }
       </script>
       <div class="hide" id="loader"></div>
       <button id="toTop" title="Go to top"><i class="fa fa-angle-up" aria-hidden="true"></i></button> 
       <script>
-        document.getElementById('toTop').addEventListener('click', topFunction);
+        document.getElementById('toTop').addEventListener('click', globalFunctionsCommons.topFunction);
         
-        window.onscroll = function() {scrollFunction()};        
+        window.onscroll = () => { globalFunctionsCommons.scrollFunction() };        
       </script>       
     </div>
     <div class="pagination">

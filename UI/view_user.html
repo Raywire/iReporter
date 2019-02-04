@@ -163,26 +163,26 @@
         let urlParams = new URLSearchParams(window.location.search);
         let usernameId = urlParams.get('username');
 
-        getUserData(usernameId);
+        globalFunctionsModelsUsers.getUserData(usernameId);
 
         try {
-          document.getElementById('deleteUser').addEventListener('submit', (event) => deleteUserData(event, usernameId));
+          document.getElementById('deleteUser').addEventListener('submit', (event) => globalFunctionsModelsUsers.deleteUserData(event, usernameId));
         } catch (error) {}        
 
         //Function for an Admin to Promote a specific Users Admin Status
         try {
-          document.getElementById('patchUserData').addEventListener('submit', (event) => editUserData(event, usernameId));
+          document.getElementById('patchUserData').addEventListener('submit', (event) => globalFunctionsModelsUsers.editUserData(event, usernameId));
         } catch (error) {}
 
         try {
-          document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
-          document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event,
+          document.getElementById('confirm_password').addEventListener('keyup', globalFunctionsCommons.checkPassword);
+          document.getElementById('resetPassword').addEventListener('submit', (event) => globalFunctionsCommons.resetPassword(event,
             usernameId, user.token));
         } catch (error) {}
 
         //Function for an Admin to Disable or Enable a user
         try {
-          document.getElementById('disableUser').addEventListener('submit', (event) => changeActiveStatus(event, usernameId));
+          document.getElementById('disableUser').addEventListener('submit', (event) => globalFunctionsModelsUsers.changeActiveStatus(event, usernameId));
         } catch (error) {}
       </script>
     </div>

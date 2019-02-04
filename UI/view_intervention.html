@@ -116,9 +116,8 @@
                   <div  class="modal-content">
                       <span class="close">&times;</span>
                           <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Edit Intervention</h5>
-                                <span aria-hidden="true">&times;</span>
-                              
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Intervention</h5>
+                            <span aria-hidden="true">&times;</span>
                           </div>
                           <div class="modal-body">
                             <div  class="modal-form">
@@ -148,7 +147,6 @@
                           <form id="uploadImage" method="POST" enctype="multipart/form-data">
                             <p class="contact"><label for="profilepic">Upload Image</label></p>
                             <input class="black" type="file" id="fileImage" name="uploadFile" accept="image/*" multiple>
-                            
                             <br>
                             <input class="button-normal" name="submit" id="submit" tabindex="5" value="Upload" type="submit">
                             <i id="fa-spin-upload" class="fa fa-circle-o-notch fa-spin" ></i>
@@ -183,37 +181,35 @@
               let interventionId = urlParams.get('intervention_id');
 
               //Method call to get intervention by id
-              getDataById('interventions', interventionId);
-             
+              globalFunctionsModelIncidents.getDataById('interventions', interventionId);
+
               //Method to delete an intervention
               var btnDelConfirm = document.getElementById('btnDelConfirm');
               btnDelConfirm.addEventListener("click", deleteIntervention);
               function deleteIntervention(){
-                deleteData('interventions', interventionId);
+                globalFunctionsModelIncidents.deleteData('interventions', interventionId);
               }
 
               //Update a specific Intervention's Location
-              document.getElementById('patchData').addEventListener('submit', (event) => editLocation(event, 'interventions', interventionId)); 
+              document.getElementById('patchData').addEventListener('submit', (event) => globalFunctionsModelIncidents.editLocation(event, 'interventions', interventionId)); 
 
               //Update a specific Intervention's Comment
-              document.getElementById('patchData').addEventListener('submit', (event) => editComment(event, 'interventions', interventionId));
-   
+              document.getElementById('patchData').addEventListener('submit', (event) => globalFunctionsModelIncidents.editComment(event, 'interventions', interventionId));
+
               //Admin Update a specific Intervention's Status
               try {
-                document.getElementById('patchStatus').addEventListener('submit', (event) => editStatus(event, 'interventions', interventionId));
+                document.getElementById('patchStatus').addEventListener('submit', (event) => globalFunctionsModelIncidents.editStatus(event, 'interventions', interventionId));
               }
               catch(error) {
-                
+
               } 
-              
+
               //Upload an image
-              document.getElementById('uploadImage').addEventListener('submit', (event) => uploadImage(event, 'interventions', interventionId));
+              document.getElementById('uploadImage').addEventListener('submit', (event) => globalFunctionsModelIncidents.uploadImage(event, 'interventions', interventionId));
               
-
               //Upload an Video
-              document.getElementById('uploadVideo').addEventListener('submit', (event) => uploadVideo(event, 'interventions', interventionId));
-
-             
+              document.getElementById('uploadVideo').addEventListener('submit', (event) => globalFunctionsModelIncidents.uploadVideo(event, 'interventions', interventionId));
+       
             </script>          
         </div>
         <p id="locationArea"></p>

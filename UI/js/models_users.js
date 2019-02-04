@@ -150,7 +150,7 @@ const getUsers = (userdata) => {
 
                 result.innerHTML += `
                   <div class='column'>
-                    <div class='card'>
+                    <div class='card border-radius'>
                         <div class='container2 align-center  ${blocked}'>
                           <a href='view_user.html?username=${users[i].username}'>
                             <p class='black align-left'><i class='fa ${faIcon}' aria-hidden='true'></i></p>
@@ -562,5 +562,11 @@ const searchUsers = (event) => {
 };
 
 /* eslint-disable-next-line no-unused-vars */
-const globalFunctionsModelsUsers = [getUserData, editUserData, changeActiveStatus,
-  deleteUserData, searchUsers];
+const globalFunctionsModelsUsers = {
+  getUsers,
+  getUserData,
+  editUserData,
+  changeActiveStatus,
+  deleteUserData,
+  searchUsers,
+};

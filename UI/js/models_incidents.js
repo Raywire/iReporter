@@ -207,7 +207,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
 
                 result.innerHTML += `
                               <div class='column'>
-                                <div class='card'>
+                                <div class='card border-radius'>
                                   <div class='container2 justify'>
                                     <a href='${link}=${usernameIncidents[i].id}'>
                                       <p><i class='${icon} fa-2x' aria-hidden='true'></i></p>
@@ -1321,6 +1321,21 @@ const searchIncidents = (event, incidenttype, incidentcreator) => {
 };
 
 /* eslint-disable-next-line no-unused-vars */
-const globalFunctionsModelIncidents = [postData, getDataById, deleteData, editLocation,
-  editComment, editStatus, uploadImage, uploadVideo, getFileData, updateUserData,
-  uploadProfilePic, getIncidentNumber, perPageSelection, searchIncidents];
+const globalFunctionsModelIncidents = {
+  getData,
+  postData,
+  getDataById,
+  deleteData,
+  editLocation,
+  editComment,
+  editStatus,
+  uploadImage,
+  uploadVideo,
+  getFileData,
+  updateUserData,
+  uploadProfilePic,
+  loadProfileData,
+  getIncidentNumber,
+  perPageSelection,
+  searchIncidents,
+};

@@ -183,35 +183,34 @@
               let redflagId = urlParams.get('redflag_id');
 
               //Method call to get redflag by id
-              getDataById('redflags', redflagId);            
+              globalFunctionsModelIncidents.getDataById('redflags', redflagId);            
 
               //Method to delete an intervention
               var btnDelConfirm = document.getElementById('btnDelConfirm');
               btnDelConfirm.addEventListener("click", deleteIntervention);
               function deleteIntervention(){
-                deleteData('redflags', redflagId);
+                globalFunctionsModelIncidents.deleteData('redflags', redflagId);
               }
 
               //Update a specific Intervention's Location
-              document.getElementById('patchData').addEventListener('submit', (event) => editLocation(event, 'redflags', redflagId)); 
+              document.getElementById('patchData').addEventListener('submit', (event) => globalFunctionsModelIncidents.editLocation(event, 'redflags', redflagId)); 
 
               //Update a specific Intervention's Comment
-              document.getElementById('patchData').addEventListener('submit', (event) => editComment(event, 'redflags', redflagId));
-   
+              document.getElementById('patchData').addEventListener('submit', (event) => globalFunctionsModelIncidents.editComment(event, 'redflags', redflagId));
+
               //Admin Update a specific Intervention's Status
               try {
-                document.getElementById('patchStatus').addEventListener('submit', (event) => editStatus(event, 'redflags', redflagId));
+                document.getElementById('patchStatus').addEventListener('submit', (event) => globalFunctionsModelIncidents.editStatus(event, 'redflags', redflagId));
               }
               catch(error) {
-                
-              } 
-              
+
+              }
+
               //Upload an image
-              document.getElementById('uploadImage').addEventListener('submit', (event) => uploadImage(event, 'redflags', redflagId));
-              
+              document.getElementById('uploadImage').addEventListener('submit', (event) => globalFunctionsModelIncidents.uploadImage(event, 'redflags', redflagId));
 
               //Upload an Video
-              document.getElementById('uploadVideo').addEventListener('submit', (event) => uploadVideo(event, 'redflags', redflagId));              
+              document.getElementById('uploadVideo').addEventListener('submit', (event) => globalFunctionsModelIncidents.uploadVideo(event, 'redflags', redflagId));              
 
             </script>          
         </div>
