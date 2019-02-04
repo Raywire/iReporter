@@ -1,6 +1,6 @@
 module.exports = {
     "parserOptions": {
-        "ecmaVersion": 6
+        "ecmaVersion": 2018
     },
     "extends": "eslint-config-airbnb-base",
     "globals": {
@@ -26,4 +26,7 @@ module.exports = {
         "FormData": true,
         "console": true,
     },
+    "rules": {
+        "no-unused-vars": [1, { "vars": "local"}],
+    }
 };

@@ -52,7 +52,7 @@
       <div class="search-bar">
         <i id="fa-spin-search" class="fa fa-circle-o-notch fa-spin"></i>
         <form id='searchIncidentsForm' class="search-bar-left">
-          <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status or title">
+          <input type="text" id="searchIncidents" class="search-data" placeholder="Search by username, status, title">
         </form>
         <button class="button-normal search-bar-right" onclick="perPageSelection(incident_type, incident_creator)"><i
             class="fa fa-refresh" aria-hidden="true"></i></button>
@@ -73,7 +73,7 @@
         let incident_creator = urlParams2.get('username');
         let incident_type = urlParams2.get('type');
 
-        getData(incident_type, incident_creator, 'all');
+        getData(incident_type, incident_creator, 'allIncidents');
         document.getElementById('searchIncidentsForm').addEventListener('submit', (event) => searchIncidents(event,
           incident_type, incident_creator));
 

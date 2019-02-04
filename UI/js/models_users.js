@@ -30,7 +30,7 @@ const getUsers = (userdata) => {
       if (Object.prototype.hasOwnProperty.call(usersData, 'data')) {
         let users = [];
 
-        if (userdata === 'all' || userdata === '') {
+        if (userdata === 'allUsers' || userdata === '') {
           users = usersData.data;
         } else {
           const allUsers = usersData.data;
@@ -115,7 +115,7 @@ const getUsers = (userdata) => {
 
             if (users.length === 0) {
               let resultNone = '';
-              resultNone += `
+              resultNone = `
                         <div class='column-100'>
                           <div class='card'>
                             <div class='container'>

@@ -67,23 +67,29 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
         let searchedIncidents = [];
         const incidents = incidentsData.data;
 
-        if (searchdata === 'all' || searchdata === '') {
+        if (searchdata === 'allIncidents' || searchdata === '') {
           usernameIncidents = incidents;
           searchedIncidents = incidents;
         } else {
-          usernameIncidents = searchedIncidents = incidents.filter((incident) => {
-            return incident.title.toLowerCase() === searchdata.toLowerCase() || incident.id === parseInt(searchdata, 10) || incident.username === searchdata.toLowerCase() || incident.status === searchdata.toLowerCase();
+          const searched = incidents.filter((incident) => {
+            const s = incident.title.toLowerCase() === searchdata.toLowerCase()
+             || incident.id === parseInt(searchdata, 10)
+             || incident.username === searchdata.toLowerCase()
+             || incident.status === searchdata.toLowerCase();
+            return s;
           });
+          usernameIncidents = searched;
+          searchedIncidents = searched;
         }
 
-        if (incidentcreator !== 'all') {
+        if (incidentcreator !== 'allIncidents') {
           usernameIncidents = searchedIncidents.filter((incident) => {
             const filteredIncidents = incident.username === incidentcreator;
             if (filteredIncidents) {
               return filteredIncidents;
             }
             let result = '';
-            result += `
+            result = `
                       <div class='column-100'>
                         <div class='card'>
                           <div class='container'>
@@ -94,6 +100,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
                       </div>               
                     `;
             document.getElementById('incident-data').innerHTML = result;
+            return null;
           });
         }
 
@@ -160,7 +167,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
 
             if (usernameIncidents.length === 0) {
               let resultNone = '';
-              resultNone += `
+              resultNone = `
                         <div class='column-100'>
                           <div class='card'>
                             <div class='container'>
@@ -315,9 +322,10 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
 
 const postData = (event, incidenttype) => {
   event.preventDefault();
-  document.getElementById('title').style.borderBottomColor = '#ccc';
-  document.getElementById('comment').style.borderBottomColor = '#ccc';
-  document.getElementById('location').style.borderBottomColor = '#ccc';
+  const whiteColor = '#ccc';
+  document.getElementById('title').style.borderBottomColor = whiteColor;
+  document.getElementById('comment').style.borderBottomColor = whiteColor;
+  document.getElementById('location').style.borderBottomColor = whiteColor;
   document.getElementById('fa-spin').style.display = 'block';
 
   const createIncidentUri = config.root + incidenttype;
@@ -388,9 +396,9 @@ const postData = (event, incidenttype) => {
         });
 
         if (incidenttype === 'interventions') {
-          getData('intervention', 'all', 'all');
+          getData('intervention', 'allIncidents', 'allIncidents');
         } else if (incidenttype === 'redflags') {
-          getData('redflag', 'all', 'all');
+          getData('redflag', 'allIncidents', 'allIncidents');
         }
         document.getElementById('postData').reset();
         document.getElementById('modal-window-create').style.display = 'none';
@@ -1298,7 +1306,7 @@ const getIncidentNumber = (incidenttype) => {
 
 const perPageSelection = (incidenttype, incidentcreator) => {
   showLoader();
-  getData(incidenttype, incidentcreator, 'all');
+  getData(incidenttype, incidentcreator, 'allIncidents');
   document.getElementById('searchIncidentsForm').reset();
   hideLoader(1000);
 };
