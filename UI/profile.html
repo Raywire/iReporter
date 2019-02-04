@@ -140,20 +140,20 @@
       </div>
       <script src="js/models_incidents.js"></script>
       <script>
-        loadProfileData();
+        globalFunctionsModelIncidents.loadProfileData();
 
-        getIncidentNumber('redflags');
-        getIncidentNumber('interventions');
+        globalFunctionsModelIncidents.getIncidentNumber('redflags');
+        globalFunctionsModelIncidents.getIncidentNumber('interventions');
 
-        document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
-        document.getElementById('resetPassword').addEventListener('submit', (event) => resetPassword(event,
+        document.getElementById('confirm_password').addEventListener('keyup', globalFunctionsCommons.checkPassword);
+        document.getElementById('resetPassword').addEventListener('submit', (event) => globalFunctionsCommons.resetPassword(event,
           profileUserName, user.token));
-          
-        document.getElementById('updateUserData').addEventListener('submit', (event) => updateUserData(event,
+
+        document.getElementById('updateUserData').addEventListener('submit', (event) => globalFunctionsModelIncidents.updateUserData(event,
           profileUserName));
 
-          document.getElementById('uploadProfilePic').addEventListener('submit', (event) => uploadProfilePic(event,
-          profileUserName));  
+          document.getElementById('uploadProfilePic').addEventListener('submit', (event) => globalFunctionsModelIncidents.uploadProfilePic(event,
+          profileUserName));
       </script>
     </div>
     <div class="column">

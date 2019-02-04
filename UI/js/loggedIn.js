@@ -269,4 +269,8 @@ const requestReset = (event) => {
 };
 
 /* eslint-disable-next-line no-unused-vars */
-const globalFunctionsLoggedIn = [signIn, signUp, requestReset];
+const globalFunctionsLoggedIn = {
+  signIn,
+  signUp,
+  requestReset,
+};

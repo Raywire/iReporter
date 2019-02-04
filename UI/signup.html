@@ -71,8 +71,8 @@
         <p id="error-message"></p>
       </form>
       <script>
-        document.getElementById('signUp').addEventListener('submit', (event) => signUp(event));
-        document.getElementById('confirm_password').addEventListener('keyup', checkPassword);
+        document.getElementById('signUp').addEventListener('submit', (event) => globalFunctionsLoggedIn.signUp(event));
+        document.getElementById('confirm_password').addEventListener('keyup', globalFunctionsCommons.checkPassword);
       </script>
     </div>
   </div>
