@@ -14,6 +14,7 @@ module.exports = {
         "getCookie": "writeable",
         "setCookie": "writeable",
         "logout": "writeable",
+        "google": "writeable",
         "showLoader": "writeable",
         "hideLoader": "writeable",
         "moment": "writeable",
