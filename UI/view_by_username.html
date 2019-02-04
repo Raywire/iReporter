@@ -77,8 +77,8 @@
         document.getElementById('searchIncidentsForm').addEventListener('submit', (event) => globalFunctionsModelIncidents.searchIncidents(event,
           incident_type, incident_creator));
 
-        document.getElementById('by-username').innerHTML = 'By' + ' ' + (incident_creator == user.username ? 'Me' :
-          incident_creator);
+        document.getElementById('by-username').innerHTML = `By ${(incident_creator == user.username ? 'Me' :
+          incident_creator)}`;
       </script>
       <div class="pagination">
         <div class="pagination-block">
