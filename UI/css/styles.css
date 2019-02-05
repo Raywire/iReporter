@@ -1104,7 +1104,7 @@ select#perPage:-moz-focusring {
 
 #loader {
   position: fixed;
-  left: 58%;
+  left: 54%;
   top: 50%;
   z-index: 1;
   margin: -75px 0 0 -75px;
