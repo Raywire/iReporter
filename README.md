@@ -9,12 +9,12 @@ general public. Users can also report on things that needs government interventi
 
 ## Getting Started
 
-Git clone the repo
+Git clone the repo and cd into the root folder.
 
 ### Prerequisites
 
 Node to run the tests
-A simple HTTP Server to load the static pagess
+A simple HTTP Server to load the static pages
 
 ## Running the app
 Cd into the iReporter folder
