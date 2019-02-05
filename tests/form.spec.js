@@ -16,13 +16,11 @@ const lead = {
   email: faker.internet.email(),
   password: '123456',
   confirm_password: '123456',
-  message: faker.random.words()
+  message: faker.random.words(),
 };
 
 let page;
 let browser;
-const width = 1280;
-const height = 720;
 
 beforeAll(async () => {
   browser = await puppeteer.launch();

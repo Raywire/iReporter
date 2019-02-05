@@ -13,86 +13,86 @@ let page;
 let browser;
 
 beforeAll(async () => {
-    browser = await puppeteer.launch();
-    page = await browser.newPage();
+  browser = await puppeteer.launch();
+  page = await browser.newPage();
 });
 afterAll(() => {
-    browser.close();
+  browser.close();
 });
 describe('Testing the Title in Sign Up Page', () => {
-    test('assert that <title> is correct', async () => {
-        await page.goto(SIGNUP);
-        const title = await page.title();
-        expect(title).toBe(
-            'iReporter Sign Up'
-        );
-    });
+  test('assert that <title> is correct', async () => {
+    await page.goto(SIGNUP);
+    const title = await page.title();
+    expect(title).toBe(
+      'iReporter Sign Up',
+    );
+  });
 });
 
 describe('Testing the Title in Sign In Page', () => {
-    test('assert that <title> is correct', async () => {
-        await page.goto(SIGNIN);
-        const title = await page.title();
-        expect(title).toBe(
-            'iReporter Sign In'
-        );
-    });
+  test('assert that <title> is correct', async () => {
+    await page.goto(SIGNIN);
+    const title = await page.title();
+    expect(title).toBe(
+      'iReporter Sign In',
+    );
+  });
 });
 
 describe('Testing the Title in Request Password Reset Page', () => {
-    test('assert that <title> is correct', async () => {
-        await page.goto(RESET_REQUEST);
-        const title = await page.title();
-        expect(title).toBe(
-            'iReporter Request Password Reset'
-        );
-    });
+  test('assert that <title> is correct', async () => {
+    await page.goto(RESET_REQUEST);
+    const title = await page.title();
+    expect(title).toBe(
+      'iReporter Request Password Reset',
+    );
+  });
 });
 
 describe('Testing the Title in Reset Password Page', () => {
-    test('assert that <title> is correct', async () => {
-        await page.goto(RESET_PASSWORD);
-        const title = await page.title();
-        expect(title).toBe(
-            'iReporter Password Reset'
-        );
-    });
+  test('assert that <title> is correct', async () => {
+    await page.goto(RESET_PASSWORD);
+    const title = await page.title();
+    expect(title).toBe(
+      'iReporter Password Reset',
+    );
+  });
 });
 
 describe('Testing the Title in Contact Page', () => {
-    test('assert that <title> is correct', async () => {
-        await page.goto(CONTACT);
-        const title = await page.title();
-        expect(title).toBe(
-            'iReporter Contact'
-        );
-    });
+  test('assert that <title> is correct', async () => {
+    await page.goto(CONTACT);
+    const title = await page.title();
+    expect(title).toBe(
+      'iReporter Contact',
+    );
+  });
 });
 
 describe('Testing the Title in the Landing Page', () => {
-    test('assert that <title> is correct', async () => {
-        await page.goto(INDEX);
-        const title = await page.title();
-        expect(title).toBe(
-            'iReporter'
-        );
-    });
+  test('assert that <title> is correct', async () => {
+    await page.goto(INDEX);
+    const title = await page.title();
+    expect(title).toBe(
+      'iReporter',
+    );
+  });
 });
 
 describe('Testing the Title in About Page', () => {
-    test('assert that <title> is correct', async () => {
-        await page.goto(ABOUT);
-        const title = await page.title();
-        expect(title).toBe(
-            'iReporter About'
-        );
-    });
+  test('assert that <title> is correct', async () => {
+    await page.goto(ABOUT);
+    const title = await page.title();
+    expect(title).toBe(
+      'iReporter About',
+    );
+  });
 });
 
 describe('Testing the Navbar exists', () => {
-    test('assert that a div named navbar exists', async () => {
-        await page.goto(SIGNUP);
-        const navbar = await page.$eval('.navbar', el => (el ? true : false));
-        expect(navbar).toBe(true);
-      });
+  test('assert that a div named navbar exists', async () => {
+    await page.goto(SIGNUP);
+    const navbar = await page.$eval('.navbar', el => (el ? true : false));
+    expect(navbar).toBe(true);
+  });
 });

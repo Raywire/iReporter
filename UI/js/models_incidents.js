@@ -10,6 +10,11 @@ const convertToLocalTime = (utcdatetime) => {
 
 const humanize = (utcdatetime) => {
   const datetimeiso = new Date(utcdatetime).toISOString();
+  moment.relativeTimeThreshold('s', 59);
+  moment.relativeTimeThreshold('m', 59);
+  moment.relativeTimeThreshold('h', 23);
+  moment.relativeTimeThreshold('d', 28);
+  moment.relativeTimeThreshold('M', 11);
   const humanizedDate = moment(datetimeiso).fromNow();
   return humanizedDate;
 };
@@ -178,7 +183,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
                         </div>               
                         `;
               currentPage = 0;
-              document.getElementById('startNumber').innerHTML = 0;
+              document.getElementById('startNumber').innerText = 0;
               document.getElementById('button_next').disabled = true;
               document.getElementById('button_prev').disabled = true;
               nextButton.classList.add('opacity');
@@ -233,7 +238,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
             if (currentPage > 1) {
               currentPage -= 1;
               changePage(currentPage);
-              document.getElementById('currentPage').innerHTML = currentPage;
+              document.getElementById('currentPage').innerText = currentPage;
               startNumber -= recordsPerPage;
               virtualEndNumber -= recordsPerPage;
               endNumber -= recordsPerPage;
@@ -248,7 +253,7 @@ const getData = (incidenttype, incidentcreator, searchdata) => {
             if (currentPage < numPages()) {
               currentPage += 1;
               changePage(currentPage);
-              document.getElementById('currentPage').innerHTML = currentPage;
+              document.getElementById('currentPage').innerText = currentPage;
               startNumber += recordsPerPage;
               endNumber += recordsPerPage;
               virtualEndNumber += recordsPerPage;
@@ -485,7 +490,7 @@ const getDataById = (incidenttype, incidentId) => {
           logout();
         }
         if (getIncidentData.message === 'Intervention does not exist' || getIncidentData.message === 'Redflag does not exist') {
-          document.getElementById('message').innerHTML = getIncidentData.message;
+          document.getElementById('message').innerText = getIncidentData.message;
         }
       }
       if (Object.prototype.hasOwnProperty.call(getIncidentData, 'data')) {
@@ -515,10 +520,8 @@ const getDataById = (incidenttype, incidentId) => {
           } else {
             creator = username;
             document.getElementById('btnGeolocate').style.display = 'inline';
-            try {
+            if (user.isAdmin === 'true') {
               document.getElementById('btnEditStatus').style.display = 'inline';
-            } catch (error) {
-              console.log(error);
             }
           }
           if (images === null || images === undefined) {
@@ -576,7 +579,7 @@ const getDataById = (incidenttype, incidentId) => {
 
 const deleteData = (incidenttype, incidentId) => {
   document.getElementById('fa-spin-data-delete').style.display = 'block';
-  document.getElementById('error-message').innerHTML = '';
+  document.getElementById('error-message').innerText = '';
 
   const deleteIncidentUri = `${config.root}${incidenttype}/${incidentId}`;
 
@@ -606,18 +609,18 @@ const deleteData = (incidenttype, incidentId) => {
           logout();
         }
         if (deleteIncidentData.message === 'Intervention does not exist' || deleteIncidentData.message === 'Redflag does not exist') {
-          document.getElementById('error-message').innerHTML = deleteIncidentData.message;
+          document.getElementById('error-message').innerText = deleteIncidentData.message;
         }
         if (deleteIncidentData.message === 'Only the creator of this record can delete it') {
-          document.getElementById('error-message').innerHTML = deleteIncidentData.message;
+          document.getElementById('error-message').innerText = deleteIncidentData.message;
         }
         if (deleteIncidentData.message === 'Incident can only be deleted when the status is draft') {
-          document.getElementById('error-message').innerHTML = deleteIncidentData.message;
+          document.getElementById('error-message').innerText = deleteIncidentData.message;
         }
       }
       if (Object.prototype.hasOwnProperty.call(deleteIncidentData, 'data')) {
         if (deleteIncidentData.data.message === 'Intervention record has been deleted' || deleteIncidentData.data.message === 'Redflag record has been deleted') {
-          document.getElementById('error-message').innerHTML = deleteIncidentData.data.message;
+          document.getElementById('error-message').innerText = deleteIncidentData.data.message;
           if (incidenttype === 'redflags') {
             window.location.replace('redflags.html');
           } else if (incidenttype === 'interventions') {
@@ -857,7 +860,7 @@ const editStatus = (event, incidentType, incidentId) => {
             message: editStatusData.data[0].message,
           });
           document.getElementById('status').value = status;
-          document.getElementById('status-data').innerHTML = status;
+          document.getElementById('status-data').innerText = status;
         }
       }
       document.getElementById('fa-spin-edit-status').style.display = 'none';
@@ -871,7 +874,7 @@ const editStatus = (event, incidentType, incidentId) => {
 const uploadImage = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-upload').style.display = 'block';
-  document.getElementById('upload-message').innerHTML = '';
+  document.getElementById('upload-message').innerText = '';
   document.getElementById('upload-message').style.color = 'red';
 
   const uploadImageUri = `${config.root}${incidentType}/${incidentId}/addImage`;
@@ -880,7 +883,7 @@ const uploadImage = (event, incidentType, incidentId) => {
   const fileData = document.getElementById('fileImage').files[0];
 
   if (fileData === null || fileData === undefined) {
-    document.getElementById('upload-message').innerHTML = 'Please select a an image';
+    document.getElementById('upload-message').innerText = 'Please select a an image';
     document.getElementById('fa-spin-upload').style.display = 'none';
   } else {
     const imageExtension = fileData.name.split('.')[1];
@@ -914,26 +917,26 @@ const uploadImage = (event, incidentType, incidentId) => {
             logout();
           }
           if (uploadImageData.message === 'Intervention does not exist' || uploadImageData.message === 'Redflag does not exist') {
-            document.getElementById('upload-message').innerHTML = uploadImageData.message;
+            document.getElementById('upload-message').innerText = uploadImageData.message;
           }
           if (uploadImageData.message === 'You cannot upload a photo for this incident') {
-            document.getElementById('upload-message').innerHTML = uploadImageData.message;
+            document.getElementById('upload-message').innerText = uploadImageData.message;
           }
           if (uploadImageData.message === 'File type not supported' || uploadImageData.message === 'No uploadFile name in form') {
-            document.getElementById('upload-message').innerHTML = uploadImageData.message;
+            document.getElementById('upload-message').innerText = uploadImageData.message;
           }
         }
         if (Object.prototype.hasOwnProperty.call(uploadImageData, 'data')) {
           if (uploadImageData.data[0].message === 'Image added to intervention record' || uploadImageData.data[0].message === 'Image added to red-flag record') {
             document.getElementById('upload-message').style.color = 'green';
-            document.getElementById('upload-message').innerHTML = uploadImageData.data[0].message;
+            document.getElementById('upload-message').innerText = uploadImageData.data[0].message;
             getFileData('images', uploadedImageFilename);
           }
         }
         document.getElementById('fa-spin-upload').style.display = 'none';
       })
       .catch(() => {
-        document.getElementById('upload-message').innerHTML = 'An error occured check if status is draft and try again';
+        document.getElementById('upload-message').innerText = 'An error occured check if status is draft and try again';
         document.getElementById('fa-spin-upload').style.display = 'none';
       });
   }
@@ -942,7 +945,7 @@ const uploadImage = (event, incidentType, incidentId) => {
 const uploadVideo = (event, incidentType, incidentId) => {
   event.preventDefault();
   document.getElementById('fa-spin-upload-2').style.display = 'block';
-  document.getElementById('upload-message-2').innerHTML = '';
+  document.getElementById('upload-message-2').innerText = '';
   document.getElementById('upload-message-2').style.color = 'red';
 
   const uploadVideoUri = `${config.root}${incidentType}/${incidentId}/addVideo`;
@@ -952,7 +955,7 @@ const uploadVideo = (event, incidentType, incidentId) => {
 
   if (fileData === null || fileData === undefined) {
     document.getElementById('fa-spin-upload-2').style.display = 'none';
-    document.getElementById('upload-message-2').innerHTML = 'Please select a video';
+    document.getElementById('upload-message-2').innerText = 'Please select a video';
   } else {
     const fileExtension = fileData.name.split('.')[1];
     const uploadedFileName = `${incidentId.toString()}.${fileExtension}`;
@@ -985,19 +988,19 @@ const uploadVideo = (event, incidentType, incidentId) => {
             logout();
           }
           if (uploadVideoData.message === 'Intervention does not exist' || uploadVideoData.message === 'Redflag does not exist') {
-            document.getElementById('upload-message-2').innerHTML = uploadVideoData.message;
+            document.getElementById('upload-message-2').innerText = uploadVideoData.message;
           }
           if (uploadVideoData.message === 'You cannot upload a video for this incident') {
-            document.getElementById('upload-message-2').innerHTML = uploadVideoData.message;
+            document.getElementById('upload-message-2').innerText = uploadVideoData.message;
           }
           if (uploadVideoData.message === 'File type not supported' || uploadVideoData.message === 'No uploadFile name in form') {
-            document.getElementById('upload-message-2').innerHTML = uploadVideoData.message;
+            document.getElementById('upload-message-2').innerText = uploadVideoData.message;
           }
         }
         if (Object.prototype.hasOwnProperty.call(uploadVideoData, 'data')) {
           if (uploadVideoData.data[0].message === 'Video added to intervention record' || uploadVideoData.data[0].message === 'Video added to red-flag record') {
             document.getElementById('upload-message-2').style.color = 'green';
-            document.getElementById('upload-message-2').innerHTML = uploadVideoData.data[0].message;
+            document.getElementById('upload-message-2').innerText = uploadVideoData.data[0].message;
             document.getElementById('uploadVideo').reset();
             getFileData('videos', uploadedFileName);
           }
@@ -1005,7 +1008,7 @@ const uploadVideo = (event, incidentType, incidentId) => {
         document.getElementById('fa-spin-upload-2').style.display = 'none';
       })
       .catch(() => {
-        document.getElementById('upload-message-2').innerHTML = 'An error occured check if status is draft and try again';
+        document.getElementById('upload-message-2').innerText = 'An error occured check if status is draft and try again';
         document.getElementById('fa-spin-upload-2').style.display = 'none';
       });
   }
@@ -1027,13 +1030,16 @@ const loadProfileData = () => {
     emailVerified = 'verified';
   } else {
     emailVerified = 'not verified';
+    infoNotification({
+      message: `Hi ${firstname}, your account has not yet been verified`,
+    });
   }
 
-  document.getElementById('name').innerHTML = profileName;
-  document.getElementById('email').innerHTML = profileEmail;
-  document.getElementById('verified').innerHTML = emailVerified;
-  document.getElementById('username').innerHTML = user.username;
-  document.getElementById('login-time').innerHTML = logInTimeHumanized;
+  document.getElementById('name').innerText = profileName;
+  document.getElementById('email').innerText = profileEmail;
+  document.getElementById('verified').innerText = emailVerified;
+  document.getElementById('username').innerText = user.username;
+  document.getElementById('login-time').innerText = logInTimeHumanized;
 
   if (profilePhotoUrl === 'null' || profilePhotoUrl === '') {
     document.getElementById('profilePhoto').src = 'img/img_avatar3.jpeg';
@@ -1156,7 +1162,7 @@ const updateUserData = (event, usernameid) => {
 const uploadProfilePic = (event, usernameid) => {
   event.preventDefault();
   document.getElementById('fa-spin-upload-pic').style.display = 'block';
-  document.getElementById('upload-message').innerHTML = '';
+  document.getElementById('upload-message').innerText = '';
   document.getElementById('upload-message').style.color = 'red';
 
   const uploadPicUri = `${config.root}users/${usernameid}/uploadImage`;
@@ -1166,7 +1172,7 @@ const uploadProfilePic = (event, usernameid) => {
 
   if (fileData === null || fileData === undefined) {
     document.getElementById('fa-spin-upload-pic').style.display = 'none';
-    document.getElementById('upload-message').innerHTML = 'Please select a file';
+    document.getElementById('upload-message').innerText = 'Please select a file';
   } else {
     uploadFileData.append('file', fileData, fileData.name);
 
@@ -1196,25 +1202,25 @@ const uploadProfilePic = (event, usernameid) => {
             logout();
           }
           if (uploadPicData.message === 'user does not exist') {
-            document.getElementById('upload-message').innerHTML = uploadPicData.message;
+            document.getElementById('upload-message').innerText = uploadPicData.message;
           }
           if (uploadPicData.message === 'A user can only upload a picture to their own profile') {
-            document.getElementById('upload-message').innerHTML = uploadPicData.message;
+            document.getElementById('upload-message').innerText = uploadPicData.message;
           }
           if (uploadPicData.message === 'File type not supported' || uploadPicData.message === 'no file part') {
-            document.getElementById('upload-message').innerHTML = uploadPicData.message;
+            document.getElementById('upload-message').innerText = uploadPicData.message;
           }
         }
         if (Object.prototype.hasOwnProperty.call(uploadPicData, 'data')) {
           if (uploadPicData.data.message === 'Your profile picture has been uploaded') {
             document.getElementById('upload-message').style.color = 'green';
-            document.getElementById('upload-message').innerHTML = uploadPicData.data.message;
+            document.getElementById('upload-message').innerText = uploadPicData.data.message;
           }
         }
         document.getElementById('fa-spin-upload-pic').style.display = 'none';
       })
       .catch(() => {
-        document.getElementById('upload-message').innerHTML = 'An error occured try again';
+        document.getElementById('upload-message').innerText = 'An error occured try again';
         document.getElementById('fa-spin-upload-pic').style.display = 'none';
       });
   }
@@ -1283,16 +1289,16 @@ const getIncidentNumber = (incidenttype) => {
 
         if (incidenttype === 'redflags') {
           document.getElementById('my-redflags').innerHTML = `<a href='view_by_username.html?type=redflag&username=${profileUserName}'>${myRedflags.length}</a>`;
-          document.getElementById('my-draft-redflags').innerHTML = myDraftIncidents.length;
-          document.getElementById('my-resolved-redflags').innerHTML = myResolvedIncidents.length;
-          document.getElementById('my-underinvestigation-redflags').innerHTML = myUnderInvestigationIncidents.length;
-          document.getElementById('my-rejected-redflags').innerHTML = myRejectedIncidents.length;
+          document.getElementById('my-draft-redflags').innerText = myDraftIncidents.length;
+          document.getElementById('my-resolved-redflags').innerText = myResolvedIncidents.length;
+          document.getElementById('my-underinvestigation-redflags').innerText = myUnderInvestigationIncidents.length;
+          document.getElementById('my-rejected-redflags').innerText = myRejectedIncidents.length;
         } else if (incidenttype === 'interventions') {
           document.getElementById('my-interventions').innerHTML = `<a href='view_by_username.html?type=intervention&username=${profileUserName}'>${myInterventions.length}</a>`;
-          document.getElementById('my-draft-interventions').innerHTML = myDraftIncidents.length;
-          document.getElementById('my-resolved-interventions').innerHTML = myResolvedIncidents.length;
-          document.getElementById('my-underinvestigation-interventions').innerHTML = myUnderInvestigationIncidents.length;
-          document.getElementById('my-rejected-interventions').innerHTML = myRejectedIncidents.length;
+          document.getElementById('my-draft-interventions').innerText = myDraftIncidents.length;
+          document.getElementById('my-resolved-interventions').innerText = myResolvedIncidents.length;
+          document.getElementById('my-underinvestigation-interventions').innerText = myUnderInvestigationIncidents.length;
+          document.getElementById('my-rejected-interventions').innerText = myRejectedIncidents.length;
         }
       }
     })
