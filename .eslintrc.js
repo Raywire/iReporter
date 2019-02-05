@@ -21,6 +21,7 @@ module.exports = {
         "warningNotification": "writeable",
         "successNotification": "writeable",
         "infoNotification": "writeable",
+        "errorNotification": "writeable",
         "convertToLocalTime": "writeable",
     },
     "rules": {
