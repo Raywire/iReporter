@@ -20,6 +20,8 @@ module.exports = {
         "moment": "writeable",
         "warningNotification": "writeable",
         "successNotification": "writeable",
+        "infoNotification": "writeable",
+        "errorNotification": "writeable",
         "convertToLocalTime": "writeable",
     },
     "rules": {

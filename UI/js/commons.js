@@ -96,7 +96,10 @@ const resetPassword = (event, profileusername, resettoken) => {
       .then((j) => {
         if (Object.prototype.hasOwnProperty.call(j, 'message')) {
           if (j.message === 'Token is missing' || j.message === 'Token is invalid') {
-            logout();
+            errorNotification({
+              title: 'Error',
+              message: 'Token is missing or is invalid',
+            });
           }
           if (j.message === 'User does not exist') {
             warningNotification({
@@ -123,7 +126,6 @@ const resetPassword = (event, profileusername, resettoken) => {
               title: 'Success',
               message: `${j.message} for ${j.username}`,
             });
-            setTimeout(logout(), 3000);
           }
         }
 

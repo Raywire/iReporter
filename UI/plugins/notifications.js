@@ -172,6 +172,11 @@
         return c.apply(void 0, ["p"].concat(n))
     }
 }, function(t, n) {}]);
+const infoNotification = window.createNotification({
+    closeOnClick: true,
+    showDuration: 3500,
+    theme: 'info'
+});
 const successNotification = window.createNotification({
     closeOnClick: true,
     showDuration: 3500,

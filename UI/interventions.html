@@ -98,7 +98,7 @@
           <tr>
             <td>
               <p id="message"></p>
-              <center><i id="fa-spin-data" class="fa fa-circle-o-notch fa-spin"></i></center>
+              <center><div class="lds-dual-ring" id="fa-spin-data"></div></center>
             </td>
           </tr>
         </tbody>
@@ -113,7 +113,8 @@
         <div class="pagination-block">
           <span class="per-page">per page:</span>
           <select id='perPage' onchange="globalFunctionsModelIncidents.perPageSelection('intervention', 'allIncidents')">
-            <option value="60" selected="selected">60</option>
+            <option value="30" selected>30</option>
+            <option value="60">60</option>
             <option value="120">120</option>
             <option value="300">300</option>
           </select>
