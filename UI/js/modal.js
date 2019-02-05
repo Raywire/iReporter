@@ -2,7 +2,7 @@ const btn = document.getElementsByClassName('button-modal');
 
 for (let i = 0; i < btn.length; i += 1) {
   const thisBtn = btn[i];
-  thisBtn.addEventListener('click', function () {
+  thisBtn.addEventListener('click', function openModal() {
     const modal = document.getElementById(this.dataset.modal);
     modal.style.display = 'block';
   }, false);
