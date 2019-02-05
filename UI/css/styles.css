@@ -231,6 +231,9 @@ select:-moz-focusring {
     background: white;
     padding: 40px 30px;
   }
+  #loader {
+    left: 54%;
+  }  
 }
 @media screen and (min-width: 900px) {
   .truncate {
@@ -413,7 +416,10 @@ select:-moz-focusring {
   }
   .wrapper-index {
     min-height: 100%;
-    }
+  }
+  #loader {
+    left: 62%;
+  }   
  }
  @media screen and (max-width: 539px) {
   .button-left{
@@ -1104,7 +1110,6 @@ select#perPage:-moz-focusring {
 
 #loader {
   position: fixed;
-  left: 54%;
   top: 50%;
   z-index: 1;
   margin: -75px 0 0 -75px;
