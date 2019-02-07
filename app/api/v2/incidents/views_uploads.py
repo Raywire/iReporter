@@ -16,28 +16,28 @@ class UploadInterventionImage(Resource):
     @token_required
     def patch(current_user, self, intervention_id):
         """method to upload image to an intervention"""
-        upload_status = self.intervention_upload_model.upload_incident_file(
+        upload_image = self.intervention_upload_model.upload_incident_file(
             "intervention", intervention_id, current_user['id'], 'images')
 
-        if upload_status is False:
+        if upload_image is False:
             return jsonify({
                 "status": 401,
                 "message": "You cannot upload a photo for this incident"
             })
 
-        if upload_status is None:
+        if upload_image is None:
             return jsonify({
                 "status": 404,
                 "message": "Intervention does not exist"
             })
 
-        if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
+        if upload_image == 'No uploadFile name in form' or upload_image == 'File type not supported':
             return jsonify({
                 "status": 400,
                 "message": upload_status
             })
 
-        if upload_status is True:
+        if upload_image is True:
             return jsonify({
                 "status": 200,
                 "data": [{
@@ -53,28 +53,28 @@ class UploadInterventionVideo(Resource):
     @token_required
     def patch(current_user, self, intervention_id):
         """method to upload videos to an intervention"""
-        upload_status = IncidentModel().upload_incident_file(
+        upload_video = IncidentModel().upload_incident_file(
             "intervention", intervention_id, current_user['id'], 'videos')
 
-        if upload_status is None:
+        if upload_video is None:
             return jsonify({
                 "status": 404,
                 "message": "Intervention does not exist"
             })
 
-        if upload_status is False:
+        if upload_video is False:
             return jsonify({
                 "status": 401,
                 "message": "You cannot upload a video for this incident"
             })
 
-        if upload_status == 'File type not supported' or upload_status == 'No uploadFile name in form':
+        if upload_video == 'File type not supported' or upload_video == 'No uploadFile name in form':
             return jsonify({
                 "status": 400,
-                "message": upload_status
+                "message": upload_video
             })
 
-        if upload_status is True:
+        if upload_video is True:
             return jsonify({
                 "status": 200,
                 "data": [{
@@ -102,7 +102,7 @@ class UploadRedflagImage(Resource):
                 "message": "You cannot upload a photo for this incident"
             })
 
-        if upload_status == 'No uploadFile name in form' or upload_status == 'File type not supported':
+        if upload_status == 'File type not supported' or upload_status == 'No uploadFile name in form':
             return jsonify({
                 "status": 400,
                 "message": upload_status
@@ -174,11 +174,13 @@ class Video(Resource):
 
 class Image(Resource):
     """"Contains method to get an image"""
+    def __init__(self):
+        self.get_image = IncidentModel()
 
     @token_required
     def get(current_user, self, filename):
         """Method to get an image"""
-        image_url = IncidentModel().get_file_url('images', filename)
+        image_url = self.get_image.get_file_url('images', filename)
         if image_url is None:
             return {
                 "status": 404,
