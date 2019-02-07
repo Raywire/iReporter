@@ -210,12 +210,12 @@ class IncidentModel:
         image = incident['images']
         video = incident['videos']
         if image is not None:
-            blob = bucket.blob('uploads/images/'+image)
-            if blob.exists():
+            image_file = bucket.blob('uploads/images/'+image)
+            if image_file.exists():
                 bucket.delete_blob('uploads/images/'+image)
         if video is not None:
-            blob = bucket.blob('uploads/videos/'+video)
-            if blob.exists():
+            video_blob = bucket.blob('uploads/videos/'+video)
+            if video_blob.exists():
                 bucket.delete_blob('uploads/videos/'+video)
         return True
 

@@ -78,9 +78,9 @@ class UserModel:
         """method to add a user"""
         args = parser.parse_args()
         data = {
-            'firstname': request.json.get('firstname').title(),
-            'lastname': request.json.get('lastname').title(),
-            'othernames': request.json.get('othernames', '').title(),
+            'firstname': request.json.get('firstname').capitalize(),
+            'lastname': request.json.get('lastname').capitalize(),
+            'othernames': request.json.get('othernames', '').capitalize(),
             'email': request.json.get('email').lower(),
             'phoneNumber': request.json.get('phoneNumber'),
             'username': request.json.get('username').lower(),
@@ -259,9 +259,9 @@ class UserModel:
         args = parser_update.parse_args()
         new_data = {
             'email': request.json.get('email', user['email']).lower(),
-            'firstname': request.json.get('firstname', user['firstname']).title(),
-            'lastname': request.json.get('lastname', user['lastname']).title(),
-            'othernames': request.json.get('othernames', user['othernames']).title(),
+            'firstname': request.json.get('firstname', user['firstname']).capitalize(),
+            'lastname': request.json.get('lastname', user['lastname']).capitalize(),
+            'othernames': request.json.get('othernames', user['othernames']).capitalize(),
             'phoneNumber': request.json.get('phoneNumber', user['phonenumber']),
         }
 
