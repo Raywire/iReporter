@@ -2,7 +2,7 @@
 from flask_restful import Resource
 from flask import jsonify, request
 from app.api.v2.users.models import UserModel
-from app.api.v2.decorator import token_required
+from app.api.v2.decorator import token_required, get_token
 from app.api.v2.send_email import send
 
 
@@ -128,6 +128,8 @@ class VerifyAccount(Resource):
     def patch(current_user, self, username):
         """Method to verify a user's account"""
         loggedin_user = UserModel().get_user(username)
+        if current_user['verification'] is False:
+            return {"message": "Verification failed please use the link in your email address"}, 403
 
         if loggedin_user is None:
             return jsonify({
@@ -167,6 +169,7 @@ class RequestVerification(Resource):
         email = unverified_user['email']
         public_id = unverified_user['public_id']
         json_verification_link = request.json.get('verificationlink', None)
+        verification_token = get_token(public_id, 30, True).decode('UTF-8')
 
         if json_verification_link is None:
             return {
@@ -175,10 +178,10 @@ class RequestVerification(Resource):
                 }
             }, 400
 
-        verification_link = json_verification_link + '?username=' + username
+        verification_link = json_verification_link + '?username=' + username + '?token=' + verification_token
         verification_message = "If you didn't ask to verify this address, you can ignore this email.\n\nThanks,\n\nYour iReporter team"
         subject = "Account Verification"
-        body = "Follow this link to verify your email address: {0}\n{1}".format(
+        body = "Follow this link within half an hour to verify your email address: {0}\n{1}".format(
             verification_link, verification_message)
         if send(email, subject, body) is True:
             return jsonify({

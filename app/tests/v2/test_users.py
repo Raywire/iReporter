@@ -7,16 +7,16 @@ import os
 
 from ... import create_app
 from flask import current_app
-from app.db_config import (create_super_user, destroy_tables, create_tables)
+from app.db_config import (create_super_user, destroy_tables)
 from app.tests.data import (
     test_user, data, data2, data3, data4, data5, data6, data7,
     data8, redflag_data)
+from app.api.v2.decorator import get_token
 
 
 expiration_time = 10
 
 test_email = os.getenv('SUPER_USER_EMAIL')
-
 
 class UserTestCase(unittest.TestCase):
     """Class for User testcase"""
@@ -40,10 +40,12 @@ class UserTestCase(unittest.TestCase):
 
         self.headers = {'Content-Type': 'application/json'}
 
-        token = jwt.encode({'public_id': self.test_user['public_id'], 'exp': datetime.datetime.utcnow(
-        ) + datetime.timedelta(minutes=expiration_time)}, current_app.config['SECRET_KEY'], algorithm='HS256')
+        token = get_token(self.test_user['public_id'], expiration_time, False)
+        verification_token = get_token(self.test_user['public_id'], expiration_time, True)
         self.headers_secured = {'Content-Type': 'application/json',
                                 'x-access-token': token}
+        self.headers_verification = {'Content-Type': 'application/json',
+                                'x-access-token': verification_token}
 
     def test_user_signup(self):
         """Test post a user signup"""
@@ -285,7 +287,7 @@ class UserTestCase(unittest.TestCase):
         """Tests for wrong key in user post request"""
         response = self.app.post(
             "/api/v2/auth/signup", headers=self.headers, data=json.dumps(self.data2))
-        result = json.loads(response.data)
+        json.loads(response.data)
         self.assertEqual(response.status_code, 400)
 
     def test_promote_super_user(self):
@@ -517,6 +519,15 @@ class UserTestCase(unittest.TestCase):
 
     def test_verify_user_account(self):
         """Test to verify a user's account"""
+        response2 = self.app.patch("/api/v2/users/raywire/verify",
+                                   headers=self.headers_verification)
+        result2 = json.loads(response2.data)
+        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(
+            result2['data']['message'], 'Your account has been verified')
+
+    def test_unauthorized_verify_user_account(self):
+        """Test to verify a user's account with an invalid token"""
         response = self.app.post("/api/v2/auth/signup",
                                  headers=self.headers_secured, data=json.dumps(self.data))
         result = json.loads(response.data)
@@ -524,33 +535,27 @@ class UserTestCase(unittest.TestCase):
         response2 = self.app.patch("/api/v2/users/jaydtestuser/verify",
                                    headers={'Content-Type': 'application/json', 'x-access-token': token})
         result2 = json.loads(response2.data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response2.status_code, 403)
         self.assertEqual(
-            result2['data']['message'], 'Your account has been verified')
+            result2['message'], 'Verification failed please use the link in your email address')
 
     def test_verify_nonexistent_user_account(self):
         """Test to verify a nonexistent user's account"""
-        response = self.app.post("/api/v2/auth/signup",
-                                 headers=self.headers_secured, data=json.dumps(self.data))
-        result = json.loads(response.data)
-        token = result['data'][0]['token']
         response2 = self.app.patch("/api/v2/users/jaydtestusernone/verify",
-                                   headers={'Content-Type': 'application/json', 'x-access-token': token})
+                                   headers=self.headers_verification)
         result2 = json.loads(response2.data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response2.status_code, 200)
         self.assertEqual(
             result2['message'], 'user does not exist')
 
     def test_verify_another_user_account(self):
         """Test to verify another user's account"""
-        response = self.app.post("/api/v2/auth/signup",
+        self.app.post("/api/v2/auth/signup",
                                  headers=self.headers_secured, data=json.dumps(self.data))
-        result = json.loads(response.data)
-        token = result['data'][0]['token']
         response2 = self.app.patch("/api/v2/users/jaydtestuser/verify",
-                                   headers=self.headers_secured)
+                                   headers=self.headers_verification)
         result2 = json.loads(response2.data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response2.status_code, 200)
         self.assertEqual(
             result2['message'], 'A user can only verify their own account')
 
@@ -559,7 +564,6 @@ class UserTestCase(unittest.TestCase):
         response = self.app.post("/api/v2/auth/signup",
                                  headers=self.headers_secured, data=json.dumps(self.data))
         result = json.loads(response.data)
-        token = result['data'][0]['token']
         response2 = self.app.post("/api/v2/users/jaydtestuser/requestVerification",
                                    headers=self.headers_secured)
         result2 = json.loads(response2.data)
