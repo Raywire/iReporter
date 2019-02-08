@@ -1,8 +1,9 @@
 """Views for users"""
 from flask_restful import Resource
-from flask import jsonify
+from flask import jsonify, request
 from app.api.v2.users.models import UserModel
 from app.api.v2.decorator import token_required
+from app.api.v2.send_email import send
 
 
 class UserStatus(Resource):
@@ -104,12 +105,6 @@ class UserProfilePic(Resource):
 
         upload_status = self.db.upload_profile_pic(username)
 
-        if upload_status is None:
-            return jsonify({
-                "status": 404,
-                "message": "user does not exist"
-            })
-
         if upload_status == 'File type not supported' or upload_status == 'select an image' or upload_status == 'no file part':
             return jsonify({
                 "status": 400,
@@ -124,3 +119,73 @@ class UserProfilePic(Resource):
                     "message": "Your profile picture has been uploaded"
                 }
             })
+
+
+class VerifyAccount(Resource):
+    """Class with method to verify a user's account"""
+
+    @token_required
+    def patch(current_user, self, username):
+        """Method to verify a user's account"""
+        loggedin_user = UserModel().get_user(username)
+
+        if loggedin_user is None:
+            return jsonify({
+                "status": 404,
+                "message": "user does not exist"
+            })
+        if current_user['username'] != username:
+            return jsonify({
+                "status": 403,
+                "message": "A user can only verify their own account"
+            })
+
+        verification = UserModel().verify_user(username)
+        if verification == 'account verified':
+            return jsonify({
+                "status": 200,
+                "data": {
+                    "username": username,
+                    "message": "Your account has been verified"
+                }
+            })
+
+
+class RequestVerification(Resource):
+    """Class with method to request an account verification link"""
+    @token_required
+    def post(current_user, self, username):
+        """Method to request account verification"""
+        unverified_user = UserModel().get_user(username)
+
+        if current_user['username'] != username:
+            return {
+                "status": 403,
+                "message": "A user can only request verification for their own account"
+            }, 403
+
+        email = unverified_user['email']
+        public_id = unverified_user['public_id']
+        json_verification_link = request.json.get('verificationlink', None)
+
+        if json_verification_link is None:
+            return {
+                "message": {
+                    "verificationlink": "This key is required"
+                }
+            }, 400
+
+        verification_link = json_verification_link + '?username=' + username
+        verification_message = "If you didn't ask to verify this address, you can ignore this email.\n\nThanks,\n\nYour iReporter team"
+        subject = "Account Verification"
+        body = "Follow this link to verify your email address: {0}\n{1}".format(
+            verification_link, verification_message)
+        if send(email, subject, body) is True:
+            return jsonify({
+                "status": 200,
+                "message": "Verification link has been sent to your email"
+            })
+        return {
+            "status": 400,
+            "message": "Verification failed please try again"
+        }, 400

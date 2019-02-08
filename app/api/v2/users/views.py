@@ -94,7 +94,7 @@ class UserSignUp(Resource):
 
 
 class UserSignIn(Resource):
-    """Class containing user signin get method"""
+    """Class containing user signin method"""
 
     def __init__(self):
         self.db = UserModel()
@@ -133,7 +133,7 @@ class UserSignIn(Resource):
 
 
 class User(Resource):
-    """Class with methods for getting and deleting a  specific user"""
+    """Class with methods for getting and deleting a specific user"""
 
     def __init__(self):
         self.db = UserModel()

@@ -5,7 +5,7 @@ from app.db_config import connection
 from flask import request, current_app
 from flask_restful import reqparse
 from app.validators import (validate_username, validate_characters,
-                            validate_email, validate_integers,
+                            validate_email, validate_phonenumber,
                             validate_password, allowed_file)
 from app.db_config import bucket
 import psycopg2.extras
@@ -47,7 +47,7 @@ parser.add_argument('email',
                     )
 
 parser.add_argument('phoneNumber',
-                    type=validate_integers, required=False, nullable=True,
+                    type=validate_phonenumber, required=False, nullable=True,
                     help="This key is required and should not be empty or formatted wrongly"
                     )
 
@@ -60,6 +60,7 @@ parser_activate.add_argument('isactive', choices=["True", "False"],
                              required=True, nullable=False,
                              help="(Accepted values: True, False)"
                              )
+
 
 class UserModel:
     """User Model class with methods for manipulation user data"""
@@ -236,9 +237,9 @@ class UserModel:
                                    required=False, nullable=False,
                                    help="Email must be formatted correctly")
 
-        parser_update.add_argument('phoneNumber', type=validate_integers,
+        parser_update.add_argument('phoneNumber', type=validate_phonenumber,
                                    required=False, nullable=False,
-                                   help="Must be an integer")
+                                   help="Enter a valid phone number")
 
         parser_update.add_argument('firstname', type=validate_characters,
                                    required=False, nullable=False,
@@ -317,3 +318,12 @@ class UserModel:
             profile_picture.make_public()
             return profile_picture.public_url
         return None
+
+    def verify_user(self, username):
+        query_verify = """UPDATE users SET emailverified=%s WHERE username=%s"""
+        value = True, username
+        connection_verify = self.db
+        cursor_verify = connection_verify.cursor()
+        cursor_verify.execute(query_verify, value)
+        connection_verify.commit()
+        return 'account verified'

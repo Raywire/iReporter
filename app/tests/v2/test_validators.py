@@ -1,7 +1,7 @@
 """Tests for validators run with pytest"""
 import unittest
 from app.validators import (validate_characters, validate_comment,
-                            validate_coordinates, validate_integers,
+                            validate_coordinates, validate_phonenumber,
                             validate_email, validator, validate_password,
                             validate_username, allowed_file)
 
@@ -10,7 +10,7 @@ class ValidatorTestCase(unittest.TestCase):
 
     def test_for_integers(self):
         with self.assertRaises(ValueError):
-            validate_integers("123f")
+            validate_phonenumber("123f")
 
     def test_for_characters(self):
         with self.assertRaises(ValueError):
