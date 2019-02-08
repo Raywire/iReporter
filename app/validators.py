@@ -22,9 +22,9 @@ def validate_comment(value):
         raise ValueError("Comment cannot start with special characters")
 
 
-def validate_integers(value):
+def validate_phonenumber(value):
     """method to check for only integers"""
-    if not re.match(r"^[0-9]{5,20}$", value):
+    if not re.match(r"^07[0-9]{8}$", value):
         raise ValueError("Only integers allowed")
 
 

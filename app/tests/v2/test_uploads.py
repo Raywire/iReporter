@@ -10,6 +10,7 @@ from flask import current_app
 from app.db_config import create_super_user, destroy_tables, create_tables
 from app.tests.data import test_user, redflag_data, redflag_data2, redflag_data3, data, data5
 from app.api.v2.send_email import send
+from app.api.v2.decorator import get_token
 
 expiration_time = 10
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -30,8 +31,7 @@ class IncidentUploadTestCase(unittest.TestCase):
         self.data = data
         self.data5 = data5
         self.redflag_data = redflag_data
-        token = jwt.encode({'public_id': self.test_user['public_id'], 'exp': datetime.datetime.utcnow(
-        ) + datetime.timedelta(minutes=expiration_time)}, current_app.config['SECRET_KEY'], algorithm='HS256')
+        token = get_token(self.test_user['public_id'], expiration_time, False)
         self.headers = {'Content-Type': 'application/json',
                         'x-access-token': token}
         self.headers_file = {'Content-Type': 'multipart/form-data',
@@ -110,7 +110,7 @@ class IncidentUploadTestCase(unittest.TestCase):
         target = os.path.join(APP_ROOT, 'test_img.jpg')
         with open(target, 'rb') as test_file:
             response2 = self.app.patch(
-                "/api/v2/users/jayd/uploadImage", headers={'Content-Type': 'multipart/form-data', 'x-access-token': token}, data={'file': test_file})
+                "/api/v2/users/jaydtestuser/uploadImage", headers={'Content-Type': 'multipart/form-data', 'x-access-token': token}, data={'file': test_file})
             result2 = json.loads(response2.data)
             self.assertEqual(result2['status'], 200)
             self.assertEqual(result2['data']['message'],
@@ -124,7 +124,7 @@ class IncidentUploadTestCase(unittest.TestCase):
             "/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))
         result = json.loads(response.data)
         token = result['data'][0]['token']
-        response2 = self.app.patch("/api/v2/users/jayd/uploadImage", headers={
+        response2 = self.app.patch("/api/v2/users/jaydtestuser/uploadImage", headers={
                                    'Content-Type': 'application/json', 'x-access-token': token})
         result2 = json.loads(response2.data)
         self.assertEqual(result2['status'], 400)
@@ -138,7 +138,7 @@ class IncidentUploadTestCase(unittest.TestCase):
             "/api/v2/auth/login", headers=self.headers, data=json.dumps(self.data5))
         result = json.loads(response.data)
         token = result['data'][0]['token']
-        response2 = self.app.patch("/api/v2/users/jayd2/uploadImage", headers={
+        response2 = self.app.patch("/api/v2/users/jaydtestuser2/uploadImage", headers={
                                    'Content-Type': 'application/json', 'x-access-token': token},
                                    data=json.dumps({"file": "test.jpg"}))
         result2 = json.loads(response2.data)

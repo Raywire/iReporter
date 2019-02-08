@@ -1,13 +1,9 @@
 """Views for users"""
 from flask_restful import Resource
-from flask import jsonify, request, current_app
+from flask import jsonify, request
 from app.api.v2.users.models import UserModel
 from app.api.v2.send_email import send
-from app.api.v2.decorator import token_required
-
-import jwt
-import datetime
-import os
+from app.api.v2.decorator import token_required, get_token
 
 try:
     expiration_time = int(os.getenv('EXPIRATION_TIME'))
@@ -27,12 +23,6 @@ def admin_user():
         "status": 403,
         "message": "Only admin can access this route"
     })
-
-
-def get_token(public_id, expiration):
-    token = jwt.encode({'public_id': public_id, 'exp': datetime.datetime.utcnow(
-    ) + datetime.timedelta(minutes=expiration)}, current_app.config['SECRET_KEY'], algorithm='HS256')
-    return token
 
 
 class Users(Resource):
@@ -86,7 +76,7 @@ class UserSignUp(Resource):
             "message": "You have been registered successfully",
             "data": [
                 {
-                    "token": get_token(user['public_id'], expiration_time).decode('UTF-8'),
+                    "token": get_token(user['public_id'], expiration_time, False).decode('UTF-8'),
                     "user": user_data
                 }
             ]
@@ -94,7 +84,7 @@ class UserSignUp(Resource):
 
 
 class UserSignIn(Resource):
-    """Class containing user signin get method"""
+    """Class containing user signin method"""
 
     def __init__(self):
         self.db = UserModel()
@@ -125,7 +115,7 @@ class UserSignIn(Resource):
             "status": 200,
             "data": [
                 {
-                    "token": get_token(user['public_id'], expiration_time).decode('UTF-8'),
+                    "token": get_token(user['public_id'], expiration_time, False).decode('UTF-8'),
                     "user": user
                 }
             ]
@@ -133,7 +123,7 @@ class UserSignIn(Resource):
 
 
 class User(Resource):
-    """Class with methods for getting and deleting a  specific user"""
+    """Class with methods for getting and deleting a specific user"""
 
     def __init__(self):
         self.db = UserModel()
@@ -254,7 +244,7 @@ class UserResetPassword(Resource):
         public_id = user['public_id']
         username = user['username']
         useremail = user['email']
-        reset_token = get_token(public_id, 30).decode('UTF-8')
+        reset_token = get_token(public_id, 30, False).decode('UTF-8')
         json_reset_link = request.json.get('resetlink', None)
 
         if json_reset_link is None:
@@ -298,5 +288,5 @@ class RefreshUserToken(Resource):
         return jsonify({
             "status": 200,
             "message": "Token for {0} has been refreshed".format(username),
-            "token": get_token(user['public_id'], expiration_time).decode('UTF-8')
+            "token": get_token(user['public_id'], expiration_time, False).decode('UTF-8')
         })

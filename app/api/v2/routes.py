@@ -5,7 +5,8 @@ from app.api.v2.users.views import (
     User, Users, UserSignUp, UserSignIn, UserResetPassword,
     RefreshUserToken)
 from app.api.v2.users.views_update import (
-    UserActivity, UserStatus, UserProfilePic)
+    UserActivity, UserStatus, UserProfilePic, VerifyAccount,
+    RequestVerification)
 from app.api.v2.incidents.views import (
     Intervention, Interventions, UpdateInterventionStatus,
     UpdateInterventionLocation, UpdateInterventionComment)
@@ -29,6 +30,8 @@ API.add_resource(UserActivity, '/users/<username>/activate')
 API.add_resource(UserResetPassword, '/users/<email>/resetPassword')
 API.add_resource(RefreshUserToken, '/users/<username>/refreshToken')
 API.add_resource(UserProfilePic, '/users/<username>/uploadImage')
+API.add_resource(RequestVerification, '/users/<username>/requestVerification')
+API.add_resource(VerifyAccount, '/users/<username>/verify')
 API.add_resource(Interventions, '/interventions')
 API.add_resource(Intervention, '/interventions/<int:intervention_id>')
 API.add_resource(UpdateInterventionStatus,

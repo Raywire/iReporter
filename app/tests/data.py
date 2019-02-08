@@ -13,68 +13,68 @@ test_user = {
 }
 
 data = {
-    "firstname" : "John",
-    "lastname" : "Doe",
-    "othernames" : "Simiyu",
-    "email" : "john@doe.com",
-    "phoneNumber" : "0727272727",
+    "firstname": "John",
+    "lastname": "Doe",
+    "othernames": "Simiyu",
+    "email": "raywiretest@gmail.com",
+    "phoneNumber": "0727272727",
     "public_id": "f3b8a1c3-f775-49e1-991c-5bfb963eb418",
-    "username" : "jayd",
-    "password" : "123456",
-    "isAdmin" : False
+    "username": "jaydtestuser",
+    "password": "123456",
+    "isAdmin": False
 }
 
 data2 = {
-    "firstname" : "John",
-    "lastname" : "Doe",
-    "othernames" : "Simiyu",
-    "email" : "john@doe.com",
-    "phoneNumber" : "0727272727",
-    "usernames" : "jayd",
-    "password" : "123456",
-    "isAdmin" : False
+    "firstname": "John",
+    "lastname": "Doe",
+    "othernames": "Simiyu",
+    "email": "raywiretest@gmail.com",
+    "phoneNumber": "0727272727",
+    "usernames": "jaydtestuser",
+    "password": "123456",
+    "isAdmin": False
 }
 
 data3 = {
-    "firstname" : "Ryan",
-    "lastname" : "Wire",
-    "othernames" : "Simiyu",
-    "email" : "rayosim09@gmail.com",
-    "phoneNumber" : "0724374281",
-    "username" : "rayosim",
-    "password" : "123456",
-    "isAdmin" : True
+    "firstname": "Ryan",
+    "lastname": "Wire",
+    "othernames": "Simiyu",
+    "email": "rayosim09@gmail.com",
+    "phoneNumber": "0724374281",
+    "username": "rayosim",
+    "password": "123456",
+    "isAdmin": True
 }
 
 data4 = {
-    "firstname" : "Ryan",
-    "lastname" : "Wire",
-    "othernames" : "Simiyu",
-    "email" : "ryansimiyu@gmail.com",
-    "phoneNumber" : "0724374281",
-    "username" : "rayosim",
-    "password" : "123456",
-    "isAdmin" : True
+    "firstname": "Ryan",
+    "lastname": "Wire",
+    "othernames": "Simiyu",
+    "email": "ryansimiyu@gmail.com",
+    "phoneNumber": "0724374281",
+    "username": "rayosim",
+    "password": "123456",
+    "isAdmin": True
 }
 
 data5 = {
-    "username" : "jayd",
-    "password" : "123456"
+    "username": "jaydtestuser",
+    "password": "123456"
 }
 
 data6 = {
-    "username" : "jayd",
-    "password" : "1234567"
+    "username": "jaydtestuser",
+    "password": "1234567"
 }
 
 data7 = {
-    "username" : "jayd3",
-    "password" : "123456"
+    "username": "jaydtestuser3",
+    "password": "123456"
 }
 
 data8 = {
-    "username" : "rayosim",
-    "password" : "123456"
+    "username": "rayosim",
+    "password": "123456"
 }
 
 redflag_data = {
