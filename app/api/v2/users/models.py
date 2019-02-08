@@ -267,14 +267,16 @@ class UserModel:
         }
 
         getEmail = self.get_user(new_data['email'])
+        verification_status = True
 
         if user['email'] != new_data['email']:
             if getEmail is not None:
                 return 'email exists'
+            verification_status = False
 
         query = """UPDATE users SET firstname=%s,lastname=%s,othernames=%s,\
-                    email=%s,phonenumber=%s WHERE username=%s"""
-        values = new_data['firstname'], new_data['lastname'], new_data['othernames'], new_data['email'], new_data['phoneNumber'], username
+                    email=%s,phonenumber=%s,emailverified=%s WHERE username=%s"""
+        values = new_data['firstname'], new_data['lastname'], new_data['othernames'], new_data['email'], new_data['phoneNumber'], verification_status, username
 
         conn = self.db
         cursor = conn.cursor()
