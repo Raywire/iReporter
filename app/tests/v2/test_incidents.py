@@ -9,6 +9,7 @@ from flask import current_app
 from app.db_config import create_super_user, destroy_tables, create_tables
 from app.tests.data import test_user, redflag_data, redflag_data2, redflag_data3
 from app.api.v2.send_email import send
+from app.api.v2.decorator import get_token
 
 expiration_time = 10
 
@@ -25,8 +26,7 @@ class IncidentTestCase(unittest.TestCase):
         self.app = self.APP.test_client()
 
         self.test_user = test_user
-        token = jwt.encode({'public_id': self.test_user['public_id'], 'exp': datetime.datetime.utcnow(
-        ) + datetime.timedelta(minutes=expiration_time)}, current_app.config['SECRET_KEY'], algorithm='HS256')
+        token = get_token(self.test_user['public_id'], expiration_time, False)
         self.headers = {'Content-Type': 'application/json',
                         'x-access-token': token}
         self.headers_invalid = {
