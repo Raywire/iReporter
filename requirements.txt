@@ -9,7 +9,7 @@ Click==7.0
 coverage==4.5.2
 firebase-admin==2.15.1
 Flask==1.0.2
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 Flask-RESTful==0.3.7
 google-api-core==1.7.0
 google-auth==1.6.2
