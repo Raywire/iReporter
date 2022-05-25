@@ -33,7 +33,7 @@ psycopg2-binary==2.7.7
 py==1.7.0
 pyasn1==0.4.5
 pyasn1-modules==0.2.4
-PyJWT==1.7.1
+PyJWT==2.4.0
 pytest==4.1.1
 pytest-cov==2.6.1
 python-dotenv==0.10.1
