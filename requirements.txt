@@ -27,7 +27,7 @@ MarkupSafe==1.1.0
 more-itertools==5.0.0
 msgpack==0.6.1
 pluggy==0.8.1
-protobuf==3.6.1
+protobuf==3.18.3
 psycopg2==2.7.7
 psycopg2-binary==2.7.7
 py==1.7.0
